@@ -1,0 +1,18 @@
+PHASE 4.2A - Paper Cost Model Foundation v0.1
+
+ROOT-READY PACKAGE
+Extract this ZIP directly into:
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+It adds:
+  src\phase4\paper_cost_model_v0_1.py
+  scripts\phase4_paper_cost_model_selftest_v0_1.py
+
+It does NOT overwrite the Phase 4.1 lifecycle module.
+It does NOT touch production DB.
+It does NOT use network/RPC.
+It does NOT use a wallet or place orders.
+It does NOT define the calibrated Phase-4 research fee/slippage/latency assumptions yet.
+
+Run from activated project venv:
+  python scripts\phase4_paper_cost_model_selftest_v0_1.py

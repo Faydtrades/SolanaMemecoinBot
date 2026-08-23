@@ -1,0 +1,14 @@
+{
+  "cohort_tokens": 1000,
+  "created_at_utc": "2026-08-19T18:53:57.347139+00:00",
+  "deterministic_payload_sha256": "fde76f40f1fe69a55c22193d264458a3015df8f2266e2b3fe895496bc29600d6",
+  "eligible_token_universe": 3901,
+  "probe_stage_metrics_csv": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_large_cohort_v0_1\\phase2_large_cohort_probe_stage_metrics_v0_1.csv",
+  "production_db": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\db\\tradingbot.sqlite3",
+  "production_db_read_only": true,
+  "raw_token_metrics_csv": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_large_cohort_v0_1\\phase2_large_cohort_raw_token_metrics_v0_1.csv",
+  "report_json": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_large_cohort_v0_1\\phase2_large_cohort_report_v0_1.json",
+  "requested_tokens": 1000,
+  "schema_version": "P2LCR-MANIFEST-0.1",
+  "warning": "Setup characterization only. No PnL, exits, future returns, execution, fees, slippage, or performance conclusions."
+}

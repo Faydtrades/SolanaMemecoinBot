@@ -1,0 +1,31 @@
+{
+  "checks": {
+    "B_C_D_unchanged": true,
+    "candidate_rows_match": true,
+    "determinism": true,
+    "exact_175_grid": true,
+    "frontier_consistent": true,
+    "no_exit_optimization": true,
+    "no_profitability_claim": true,
+    "no_winner_selected": true,
+    "terminal_lifecycle_complete": true,
+    "terminal_reject_accounting": true
+  },
+  "counts": {
+    "candidate_outcome_rows": 17388,
+    "frontier_rows": 28,
+    "summary_rows": 175
+  },
+  "experiment_id": "EXP-0002",
+  "hashes": {
+    "EXP-0002_A_impulse_candidate_outcomes_v0_1_1.csv": "1079450705fab4afa8a5200d6275677bd9786647eb9f733eda7f8f50aaceae78",
+    "EXP-0002_A_impulse_frontier_v0_1_1.csv": "be2b4a5665e03cab7b564c87893bfac080508999f33c2bf402378f7333da3857",
+    "EXP-0002_A_impulse_report_v0_1_1.json": "8690b89a0d19ffba8f3fc2ab9bd7432efd95e3517212cfa755a5b211bc1633c9",
+    "EXP-0002_A_impulse_summary_v0_1_1.csv": "96a89e9850884ba9e85b98ce0c2718852ed2690761239935929eea066c544a4e",
+    "EXP-0002_A_neighborhood_diagnostics_v0_1_1.csv": "14dbe2e0b89d0a448beafe00afc1e30ae5a0271bb8f2c2ecdfd44a194b171248",
+    "EXP-0002_manifest_v0_1_1.json": "abfb1d8f769e5e3a2c99f1a32da5e4e31d0e6e3188db8ee3329d7cdb2ac93f5b"
+  },
+  "note": "Read-only result audit except creation of diagnostics/audit artifacts; no strategy/dataset/registry mutation.",
+  "result": "PASS",
+  "schema_version": "P3-EXP0002-POSTAUDIT-0.1.1"
+}

@@ -1,0 +1,17 @@
+PHASE 4.3B1D3 FILLED ENTRY RESTART/REPLAY — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Do NOT re-run B1D2.
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1d3_filled_entry_restart_replay_v0_1.py
+
+This uses an isolated byte-identical copy of the latest B1D2 paper DB.
+The original paper DB is hash-verified before/after and never opened writable.
+
+Proceed to exit orchestration only if RESULT: PASS.

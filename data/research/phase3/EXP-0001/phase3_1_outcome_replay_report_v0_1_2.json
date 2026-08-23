@@ -1,0 +1,267 @@
+{
+  "candidate_extraction": {
+    "candidate_count": 230,
+    "candidate_state_count": 230,
+    "clock_expiry_count": 3623,
+    "expired_count": 3623,
+    "invalidated_count": 48,
+    "run_count": 3901
+  },
+  "candidate_price_identity_counts": {
+    "QUOTE:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": 14,
+    "SOL_NATIVE": 216
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "eligible_tokens": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows": 50760,
+    "locked_search_sha256": "65cd4aa6ebc84929504b2fa4224bbc64dc149737b3f3e344d9e172d72b2e586f",
+    "snapshot_sqlite_sha256": "44e3457b81a16d4e5e2670e24d758756a147867e1d81d627622157ad4bd5813f",
+    "untouched_oos": false
+  },
+  "determinism": {
+    "outcome_rows_sha256": "d416ae8228d6f6d7ca4c29d52a2cefc2e5e24eb772ccc1392f1136292078850e",
+    "pass": true,
+    "second_pass_sha256": "d416ae8228d6f6d7ca4c29d52a2cefc2e5e24eb772ccc1392f1136292078850e"
+  },
+  "deterministic_report_core_sha256": "ccdc01fce63db18873b4e7e15f71c9048b36a5acf81cca07f01fe4c66ac390a7",
+  "experiment_id": "EXP-0001",
+  "experiment_role": "OUTCOME_REPLAY_FOUNDATION_NO_OPTIMIZATION",
+  "foundation_probe": {
+    "buyer_response": {
+      "min_buys": 1,
+      "min_net_flow_reserve_ppm": 0,
+      "min_rebound_bps": 200,
+      "window_id": "3s"
+    },
+    "impulse": {
+      "min_return_bps": 500,
+      "min_trades_since_t0": 2,
+      "min_unique_buyers_since_t0": 1
+    },
+    "max_entry_age_ms": 300000,
+    "parameter_set_id": "FP1-P3-FOUNDATION-PROBE-0001",
+    "pullback": {
+      "max_depth_bps": 9000,
+      "min_depth_bps": 1000
+    },
+    "purpose": "mechanical foundation probe only; not optimized/trading-selected",
+    "reclaim": {
+      "min_extension_from_response_bps": 200
+    },
+    "runaway": {
+      "max_extension_from_response_bps": 10000
+    }
+  },
+  "outcome_observability": {
+    "clean_horizon_mark_age_ms": {
+      "15s": {
+        "max": 14969,
+        "min": 26,
+        "n": 127,
+        "p25": 1468,
+        "p50": 2538,
+        "p75": 4677,
+        "p90": 8119,
+        "p95": 12359
+      },
+      "2m": {
+        "max": 96710,
+        "min": 546,
+        "n": 25,
+        "p25": 4400,
+        "p50": 13021,
+        "p75": 27784,
+        "p90": 64626,
+        "p95": 74880
+      },
+      "30s": {
+        "max": 27376,
+        "min": 0,
+        "n": 67,
+        "p25": 1504,
+        "p50": 3157,
+        "p75": 9065,
+        "p90": 14589,
+        "p95": 20002
+      },
+      "5m": {
+        "max": 172982,
+        "min": 1190,
+        "n": 11,
+        "p25": 3826,
+        "p50": 17714,
+        "p75": 123092,
+        "p90": 140134,
+        "p95": 172982
+      },
+      "5s": {
+        "max": 4998,
+        "min": 2,
+        "n": 121,
+        "p25": 653,
+        "p50": 2182,
+        "p75": 2598,
+        "p90": 4941,
+        "p95": 4972
+      },
+      "60s": {
+        "max": 45149,
+        "min": 505,
+        "n": 27,
+        "p25": 2149,
+        "p50": 5030,
+        "p75": 11826,
+        "p90": 36710,
+        "p95": 39065
+      }
+    },
+    "clean_horizon_return_bps": {
+      "15s": {
+        "max": 7939,
+        "min": -7725,
+        "n": 127,
+        "p25": -924,
+        "p50": 181,
+        "p75": 1030,
+        "p90": 3211,
+        "p95": 4307
+      },
+      "2m": {
+        "max": 48822,
+        "min": -8837,
+        "n": 25,
+        "p25": -4323,
+        "p50": -1403,
+        "p75": 2808,
+        "p90": 10127,
+        "p95": 11921
+      },
+      "30s": {
+        "max": 9059,
+        "min": -7934,
+        "n": 67,
+        "p25": -1280,
+        "p50": 44,
+        "p75": 1142,
+        "p90": 3818,
+        "p95": 5374
+      },
+      "5m": {
+        "max": 8166,
+        "min": -8869,
+        "n": 11,
+        "p25": -8571,
+        "p50": -4555,
+        "p75": -2342,
+        "p90": 3614,
+        "p95": 8166
+      },
+      "5s": {
+        "max": 4715,
+        "min": -3481,
+        "n": 121,
+        "p25": -449,
+        "p50": 315,
+        "p75": 987,
+        "p90": 2287,
+        "p95": 4029
+      },
+      "60s": {
+        "max": 11783,
+        "min": -8812,
+        "n": 27,
+        "p25": -3054,
+        "p50": -253,
+        "p75": 4048,
+        "p90": 8014,
+        "p95": 10821
+      }
+    },
+    "complete_5m_extrema_count": 11,
+    "complete_mae_bps_5m": {
+      "max": -642,
+      "min": -8980,
+      "n": 11,
+      "p25": -8605,
+      "p50": -5517,
+      "p75": -2833,
+      "p90": -2763,
+      "p95": -642
+    },
+    "complete_mfe_bps_5m": {
+      "max": 48822,
+      "min": 0,
+      "n": 11,
+      "p25": 0,
+      "p50": 1679,
+      "p75": 11669,
+      "p90": 12168,
+      "p95": 48822
+    },
+    "horizon_status_counts": {
+      "15s": {
+        "COVERAGE_GAP": 47,
+        "COVERAGE_UNKNOWN": 39,
+        "NO_FUTURE_PRICE": 17,
+        "OBSERVABLE": 127
+      },
+      "2m": {
+        "COVERAGE_GAP": 166,
+        "COVERAGE_UNKNOWN": 39,
+        "OBSERVABLE": 25
+      },
+      "30s": {
+        "COVERAGE_GAP": 119,
+        "COVERAGE_UNKNOWN": 39,
+        "MARKET_CONTINUITY_UNKNOWN": 1,
+        "NO_FUTURE_PRICE": 4,
+        "OBSERVABLE": 67
+      },
+      "5m": {
+        "COVERAGE_GAP": 180,
+        "COVERAGE_UNKNOWN": 39,
+        "OBSERVABLE": 11
+      },
+      "5s": {
+        "COVERAGE_GAP": 13,
+        "COVERAGE_UNKNOWN": 39,
+        "NO_FUTURE_PRICE": 57,
+        "OBSERVABLE": 121
+      },
+      "60s": {
+        "COVERAGE_GAP": 164,
+        "COVERAGE_UNKNOWN": 39,
+        "OBSERVABLE": 27
+      }
+    }
+  },
+  "outcome_semantics": {
+    "collector_coverage_required": "COMPLETE signal-to-target",
+    "hidden_freshness_threshold": false,
+    "horizon_mark_rule": "latest fresh same-identity post-signal observation at_or_before target",
+    "mark_age_recorded": true,
+    "mfe_mae_reference_baseline_bps": 0,
+    "no_future_observation_policy": "NO_FUTURE_PRICE; never synthesize 0/flat",
+    "pump_curve_completion_policy": "real_token_reserve_raw<=0 creates a market-continuity boundary; post-boundary horizons are not clean-observable without migrated-venue continuation"
+  },
+  "performance_claims": {
+    "exit_optimization_performed": false,
+    "fees_modeled": false,
+    "latency_modeled": false,
+    "profitability_claim_allowed": false,
+    "realistic_net_pnl_available": false,
+    "slippage_modeled": false,
+    "tp_sl_tuning_performed": false
+  },
+  "schema_version": "P3-3.1-REALDATA-0.1.2",
+  "versions": {
+    "coverage": "P3COV-0.1",
+    "feature_engine": "DenominationAwareFeatureEngineV01",
+    "outcome_replay": "phase3_outcome_replay_v0.1.3",
+    "quote_price": "QuoteAwarePriceV01",
+    "strategy": "FirstPullback v1.1 / FirstPullbackStrategyV02",
+    "strategy_clock": "SCLOCK-0.2"
+  }
+}

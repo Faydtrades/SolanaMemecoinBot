@@ -1,0 +1,38 @@
+{
+  "E1_path_characterization_gate": {
+    "exit_threshold_optimization_allowed": false,
+    "min_clean_5m_paths_per_robust_regime": 30,
+    "min_clean_5m_rate_per_robust_regime": 0.8
+  },
+  "E2_coarse_exit_search_gate": {
+    "exit_threshold_optimization_allowed": true,
+    "min_clean_5m_paths_per_robust_regime": 100,
+    "min_clean_5m_rate_per_robust_regime": 0.9,
+    "scope": "coarse exit families only; ranges must still be locked before results"
+  },
+  "control_is_gate": false,
+  "coverage_semantics": {
+    "gap_recovery_is_clean_path": false,
+    "known_gap_is_clean": false,
+    "market_continuity_unknown_is_clean": false,
+    "price_identity_mismatch_is_clean": false,
+    "unknown_coverage_is_clean": false
+  },
+  "dataset_role": "DEVELOPMENT_DISCOVERY",
+  "duration_policy": {
+    "fixed_wall_clock_duration_required": false,
+    "informational_milestones_hours": [
+      6,
+      12,
+      24
+    ],
+    "principle": "Collect until evidence gate is met; do not declare readiness from duration alone."
+  },
+  "entry_parameters_fixed": true,
+  "if_not_ready": "Continue continuous collection or diagnose coverage; do not lower gate after seeing outcomes.",
+  "locked_before_new_dataset_results": true,
+  "new_freeze_must_be_fresh_relative_to": "DEV-FREEZE-0001",
+  "path_horizon_ms": 300000,
+  "policy_id": "PHASE-3-CONTINUOUS-DEV-READINESS-001",
+  "schema_version": "P3-CONTDEV-READINESS-0.1"
+}

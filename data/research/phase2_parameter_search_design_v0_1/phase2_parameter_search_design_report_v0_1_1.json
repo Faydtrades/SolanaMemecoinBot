@@ -1,0 +1,318 @@
+{
+  "adapter_skipped": {},
+  "broad_characterization_anchors": {
+    "impulse_min_buyers": 1,
+    "impulse_min_return_bps": 500,
+    "impulse_min_trades": 2,
+    "proto_response_min_buys": 1,
+    "proto_response_min_rebound_bps": 100,
+    "pullback_max_bps": 9000,
+    "pullback_min_bps": 1000,
+    "warning": "CHARACTERIZATION ONLY; NOT LOCKED STRATEGY RULES"
+  },
+  "broad_stage_counts": {
+    "broad_impulse_reached": 985,
+    "broad_proto_response_reached": 393,
+    "broad_pullback_reached": 582,
+    "eligible_tokens": 3901
+  },
+  "deterministic_payload_sha256": "353fc3b6fb0b7305f8370eb253cd75d0757022f6acdc92c696f2b928787b489f",
+  "eligible_tokens": 3901,
+  "empirical_distributions": {
+    "broad_impulse_age_ms": {
+      "max": 296483,
+      "min": 0,
+      "n": 985,
+      "p25": 26,
+      "p50": 6095,
+      "p75": 26375,
+      "p90": 67301,
+      "p95": 133502
+    },
+    "broad_impulse_return_bps": {
+      "max": 160164,
+      "min": 500,
+      "n": 985,
+      "p25": 655,
+      "p50": 971,
+      "p75": 1742,
+      "p90": 3299,
+      "p95": 5188
+    },
+    "broad_impulse_trades": {
+      "max": 65,
+      "min": 2,
+      "n": 985,
+      "p25": 2,
+      "p50": 3,
+      "p75": 5,
+      "p90": 11,
+      "p95": 19
+    },
+    "broad_impulse_unique_buyers": {
+      "max": 42,
+      "min": 1,
+      "n": 985,
+      "p25": 2,
+      "p50": 2,
+      "p75": 3,
+      "p90": 6,
+      "p95": 10
+    },
+    "max_3s_buys": {
+      "max": 24,
+      "min": 0,
+      "n": 3901,
+      "p25": 0,
+      "p50": 1,
+      "p75": 2,
+      "p90": 5,
+      "p95": 7
+    },
+    "max_3s_buys_after_pullback": {
+      "max": 20,
+      "min": 0,
+      "n": 505,
+      "p25": 1,
+      "p50": 2,
+      "p75": 4,
+      "p90": 8,
+      "p95": 11
+    },
+    "max_3s_net_flow_ppm_after_pullback": {
+      "max": 703014,
+      "min": -530049,
+      "n": 505,
+      "p25": 623,
+      "p50": 17460,
+      "p75": 71828,
+      "p90": 163921,
+      "p95": 231902
+    },
+    "max_3s_net_flow_reserve_ppm": {
+      "max": 932443,
+      "min": -575762,
+      "n": 3901,
+      "p25": -1402,
+      "p50": 321,
+      "p75": 24808,
+      "p90": 119056,
+      "p95": 211845
+    },
+    "max_drawdown_depth_bps": {
+      "max": 9999,
+      "min": 0,
+      "n": 3901,
+      "p25": 0,
+      "p50": 0,
+      "p75": 1547,
+      "p90": 5353,
+      "p95": 7767
+    },
+    "max_pullback_depth_after_impulse_bps": {
+      "max": 9999,
+      "min": 0,
+      "n": 913,
+      "p25": 293,
+      "p50": 2535,
+      "p75": 6136,
+      "p90": 8827,
+      "p95": 9746
+    },
+    "max_rebound_after_pullback_bps": {
+      "max": 501037,
+      "min": 0,
+      "n": 505,
+      "p25": 220,
+      "p50": 2305,
+      "p75": 7289,
+      "p90": 20723,
+      "p95": 34060
+    },
+    "max_reclaim_extension_bps": {
+      "max": 420732,
+      "min": 0,
+      "n": 347,
+      "p25": 685,
+      "p50": 2521,
+      "p75": 7135,
+      "p90": 19468,
+      "p95": 30667
+    },
+    "max_return_bps": {
+      "max": 988273,
+      "min": 0,
+      "n": 3901,
+      "p25": 0,
+      "p50": 0,
+      "p75": 520,
+      "p90": 4625,
+      "p95": 9274
+    },
+    "max_trades_since_t0": {
+      "max": 335,
+      "min": 1,
+      "n": 3901,
+      "p25": 1,
+      "p50": 2,
+      "p75": 7,
+      "p90": 24,
+      "p95": 44
+    },
+    "max_unique_buyers_since_t0": {
+      "max": 113,
+      "min": 0,
+      "n": 3901,
+      "p25": 0,
+      "p50": 1,
+      "p75": 3,
+      "p90": 9,
+      "p95": 18
+    },
+    "pullback_depth_activation_bps": {
+      "max": 8950,
+      "min": 1000,
+      "n": 582,
+      "p25": 1249,
+      "p50": 1775,
+      "p75": 3027,
+      "p90": 5095,
+      "p95": 7304
+    }
+  },
+  "normalized_events": 50816,
+  "outcome_pnl_labels_used": false,
+  "parameter_optimization_performed": false,
+  "performance_metrics_used_for_design": false,
+  "proposed_search_space": {
+    "block_combination_counts": {
+      "A_IMPULSE": 175,
+      "B_PULLBACK": 21,
+      "C_BUYER_RESPONSE_3S": 150,
+      "D_RECLAIM_RUNAWAY": 24
+    },
+    "buyer_response": {
+      "min_buys": [
+        1,
+        2,
+        3,
+        4,
+        8
+      ],
+      "min_net_flow_reserve_ppm": [
+        0,
+        6000,
+        30000,
+        93000,
+        185000
+      ],
+      "min_rebound_bps": [
+        200,
+        500,
+        800,
+        2300,
+        7300,
+        20700
+      ],
+      "window_id": [
+        "3s"
+      ]
+    },
+    "design_note": "Use staged/block experiments later; do not evaluate the naive full Cartesian product. These values are feature-support ranges only and were not selected using future returns, PnL, winrate, or expectancy.",
+    "full_cartesian_recommended": false,
+    "impulse": {
+      "min_return_bps": [
+        500,
+        1500,
+        2000,
+        3000,
+        5000,
+        5500,
+        12500
+      ],
+      "min_trades_since_t0": [
+        2,
+        3,
+        5,
+        7,
+        24
+      ],
+      "min_unique_buyers_since_t0": [
+        1,
+        2,
+        3,
+        5,
+        9
+      ]
+    },
+    "max_entry_age_ms": [
+      300000
+    ],
+    "naive_full_cartesian_count": 13230000,
+    "pullback": {
+      "max_depth_bps": [
+        3500,
+        5500,
+        6000,
+        6500,
+        9000
+      ],
+      "min_depth_bps": [
+        1000,
+        2500,
+        3000,
+        4000,
+        6000
+      ],
+      "valid_min_max_pair_count": 21
+    },
+    "reclaim": {
+      "min_extension_from_response_bps": [
+        200,
+        500,
+        700,
+        800,
+        2500,
+        7100,
+        19500
+      ]
+    },
+    "runaway": {
+      "max_extension_from_response_bps": [
+        2000,
+        2500,
+        3000,
+        7000,
+        10000
+      ],
+      "valid_reclaim_runaway_pair_count": 24
+    },
+    "search_blocks": {
+      "A_IMPULSE": [
+        "min_return_bps",
+        "min_trades_since_t0",
+        "min_unique_buyers_since_t0"
+      ],
+      "B_PULLBACK": [
+        "min_depth_bps",
+        "max_depth_bps"
+      ],
+      "C_BUYER_RESPONSE_3S": [
+        "min_rebound_bps",
+        "min_buys",
+        "min_net_flow_reserve_ppm"
+      ],
+      "D_RECLAIM_RUNAWAY": [
+        "min_extension_from_response_bps",
+        "max_extension_from_response_bps"
+      ]
+    },
+    "status": "PROPOSAL_NOT_LOCKED",
+    "strategy_version_target": "v1.1"
+  },
+  "purpose": "FEATURE-SUPPORT PARAMETER SEARCH DESIGN; NO OUTCOME/PnL",
+  "quote_tokens": 109,
+  "schema_version": "P2PSD-0.1.1",
+  "sol_tokens": 3792,
+  "source_rows": 50816
+}

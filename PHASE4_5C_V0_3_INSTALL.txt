@@ -1,0 +1,30 @@
+PHASE 4.5C SCHEMA-ORDER HOTFIX v0.3 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- scripts\phase4_5c_entry_equity_schema_order_selftest_v0_1.py
+- scripts\phase4_5c_live_observability_smoke_v0_3.py
+- docs\phase4\PHASE4_5C_SCHEMA_ORDER_HOTFIX_V0_3.md
+
+Keep the existing v0.2 Decimal-safe binding files.
+
+No other collector should be running before the live smoke.
+
+Run both sequentially:
+
+python scripts\phase4_5c_entry_equity_schema_order_selftest_v0_1.py
+
+if ($LASTEXITCODE -eq 0) {
+    python scripts\phase4_5c_live_observability_smoke_v0_3.py
+}
+
+PRE-DELIVERY:
+- exact schema-order regression self-test: PASS
+- Decimal-safe binding regression: PASS
+- 4.5B observability regression: PASS
+- 4.5B exact-schema regression: PASS
+- exact packaged compile: PASS
+- live market validation: REQUIRES USER PROJECT

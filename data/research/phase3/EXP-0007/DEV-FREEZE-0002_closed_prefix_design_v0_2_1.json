@@ -1,0 +1,53 @@
+{
+  "amendment_reason": "The live collector was interrupted during background queue drain, leaving the final collector interval EOF_UNCERTAIN. Preserve only the maximal definitely closed prefix of the already-observed session and discard the entire uncertain tail.",
+  "cohort_rule": {
+    "entire_t0_to_t0_plus_10m_inside_one_definite_clean_interval": true,
+    "future_activity_filter": false,
+    "future_outcome_filter": false,
+    "global_first_normalizable_tradable_must_be_inside_prefix": true,
+    "global_t0_may_be_gap_recovery": false,
+    "required_tail_after_t0_ms": 600000,
+    "strategy_signal_used_for_cohort_selection": false
+  },
+  "dataset_role": "DEVELOPMENT_DISCOVERY",
+  "design_id": "DEV-FREEZE-0002-DESIGN-002A",
+  "entry_binding": {
+    "A_B_C_D_fixed": true,
+    "entry_counts_may_be_previewed": true,
+    "forward_outcomes_may_not_be_previewed": true,
+    "source": "EXP-0005_D_selection_v0_1.json"
+  },
+  "freeze_id": "DEV-FREEZE-0002",
+  "information_seen_before_amendment": {
+    "coverage_metadata": true,
+    "exit_paths": false,
+    "forward_returns": false,
+    "locked_entry_candidate_counts": true,
+    "mfe_mae": false,
+    "pnl": false
+  },
+  "prefix_rule": {
+    "cutoff": "maximum end_us among non-uncertain reconstructed active intervals",
+    "events_after_cutoff_included": false,
+    "explicit_gaps_before_cutoff_retained": true,
+    "explicit_gaps_ignored": false,
+    "pending_confirmation_jobs_gate_freeze": false,
+    "pending_deep_jobs_gate_freeze": false,
+    "pending_gap_jobs_gate_freeze": false,
+    "required_source_state": "EOF_UNCERTAIN",
+    "source_session": "latest reconstructed collector session",
+    "uncertain_tail_included": false,
+    "why_background_queues_do_not_gate": "The research clock is observed_at/BOT_TRUTH. Confirmation/deep metadata are not FirstPullback decision inputs. GAP_RECOVERY is not fresh market flow, while explicit gap intervals remain non-observable. Eligible tokens must have their full t0->t0+10m window inside one definitely clean interval."
+  },
+  "readiness_binding": {
+    "E1_min_clean_5m_per_robust_regime": 30,
+    "E1_min_clean_rate": 0.8,
+    "E2_min_clean_5m_per_robust_regime": 100,
+    "E2_min_clean_rate": 0.9,
+    "policy_id": "PHASE-3-CONTINUOUS-DEV-READINESS-001"
+  },
+  "schema_version": "P3-DEVFREEZE-CLOSED-PREFIX-DESIGN-0.2.1",
+  "status": "LOCKED_AFTER_INTERRUPTED_SHUTDOWN_BEFORE_FORWARD_OUTCOME_INSPECTION",
+  "supersedes_design_id": "DEV-FREEZE-0002-DESIGN-002",
+  "untouched_oos": false
+}

@@ -1,0 +1,53 @@
+{
+  "background_queue_policy": {
+    "queues_may_remain_pending": true,
+    "reason": "BOT_TRUTH research uses observed_at; pending confirmation/deep metadata are not FirstPullback decision inputs; explicit gaps remain non-observable and eligible windows cannot cross them."
+  },
+  "coverage_snapshot": {
+    "definite_clean_intervals": 70,
+    "explicit_gaps_retained": 69,
+    "file": "collector_coverage_DEV-FREEZE-0002_closed_prefix_v0_2_1.json",
+    "sha256": "a095fc947c836b58e1697899be7680df907e2642c27390729c819c9b5e02ed4d"
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "design_id": "DEV-FREEZE-0002-DESIGN-002A",
+    "development_token_csv_file": "phase3_development_tokens_closed_prefix_v0_2_1.csv",
+    "development_token_csv_sha256": "d09f0fabb8ca1f083d8e00a03fee5cd09b3b6e1d208baf60c35fd6f4df49cdb0",
+    "eligible_token_count": 8649,
+    "freeze_id": "DEV-FREEZE-0002",
+    "frozen_pump_event_rows": 364100,
+    "future_activity_filter": false,
+    "future_outcome_filter": false,
+    "required_tail_after_t0_ms": 600000,
+    "safe_prefix_cutoff_utc": "2026-08-22T11:49:41.838786+00:00",
+    "selection_rule": "global first normalizable BOT_TRUTH BUY/SELL is inside the definitely closed prefix, is not GAP_RECOVERY, and the full [t0,t0+10m] window lies inside one definite clean interval",
+    "session_range_utc": {
+      "end": "2026-08-22T11:49:41.838786+00:00",
+      "start": "2026-08-21T12:59:31.309594+00:00"
+    },
+    "snapshot_sqlite_file": "phase3_development_dataset_closed_prefix_v0_2_1.sqlite3",
+    "snapshot_sqlite_sha256": "13c119e928bb6d0864a162ed28cb7497d431ff447ab2117fb8fe10d286adcd69",
+    "source_session_id": 7,
+    "source_session_observed_through_utc": "2026-08-22T12:23:46.007172+00:00",
+    "source_session_state": "EOF_UNCERTAIN",
+    "strategy_signal_used_for_cohort_selection": false,
+    "uncertain_tail_included": false
+  },
+  "dataset_role": "DEVELOPMENT_DISCOVERY",
+  "design_binding": {
+    "file": "DEV-FREEZE-0002_closed_prefix_design_v0_2_1.json",
+    "sha256": "472b5f04d59e392d98ee771d82b835c921538d37eea03bd650a1ac378be3979b"
+  },
+  "deterministic_manifest_sha256": "68cf2e5a197c6febecdd45f036ee1fc2d48738797061a6576469631129a7a3ab",
+  "entry_binding": {
+    "A_B_C_D_parameters_fixed": true,
+    "EXP-0005_selection_sha256": "408657c1d6dc39435b61e01b368dac69796481864b7462efd150a2d4e1b0daa1"
+  },
+  "freeze_id": "DEV-FREEZE-0002",
+  "freeze_schema_version": "P3DEVFREEZE-CLOSED-PREFIX-0.2.1",
+  "out_of_sample_policy": {
+    "development_discovery": true,
+    "untouched_oos": false
+  }
+}

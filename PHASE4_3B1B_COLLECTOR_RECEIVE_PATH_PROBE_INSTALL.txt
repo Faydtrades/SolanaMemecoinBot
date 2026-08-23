@@ -1,0 +1,18 @@
+PHASE 4.3B1B COLLECTOR RECEIVE-PATH PROBE — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- scripts\phase4_collector_receive_path_probe_v0_1.py
+- docs\phase4\PHASE4_3B1B_COLLECTOR_RECEIVE_PATH_PROBE_V0_1.md
+- PHASE4_3B1B_COLLECTOR_RECEIVE_PATH_PROBE_INSTALL.txt
+
+No existing collector or baseline file is overwritten.
+
+With (.venv) active:
+
+python scripts\phase4_collector_receive_path_probe_v0_1.py
+
+No collector should be running.

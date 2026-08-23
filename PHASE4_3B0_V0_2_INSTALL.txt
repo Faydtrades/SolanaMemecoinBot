@@ -1,0 +1,22 @@
+PHASE 4.3B0 v0.2 — ROOT READY
+
+Extract this ZIP directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+It adds:
+
+scripts\phase4_live_candidate_integration_preflight_v0_2.py
+docs\phase4\PHASE4_3B0_LIVE_INTEGRATION_PREFLIGHT_V0_2.md
+PHASE4_3B0_V0_2_INSTALL.txt
+
+It does NOT overwrite the old v0.1 file.
+
+IMPORTANT:
+Keep the collector stopped while running this preflight.
+
+With (.venv) active:
+
+python scripts\phase4_live_candidate_integration_preflight_v0_2.py
+
+This version intentionally skips full SQLite quick_check and COUNT(*).

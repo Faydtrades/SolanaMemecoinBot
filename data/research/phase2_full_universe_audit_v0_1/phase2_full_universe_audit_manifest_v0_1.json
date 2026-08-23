@@ -1,0 +1,16 @@
+{
+  "created_at_utc": "2026-08-19T19:07:48.173818+00:00",
+  "deterministic_payload_sha256": "f5e23423c60c056da7e49feccde2efc1a210ffc1641d8046cfdb1de5a48a4869",
+  "eligible_tokens": 3901,
+  "fixed_time_bins_csv": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_full_universe_audit_v0_1\\phase2_full_universe_fixed_time_bins_v0_1.csv",
+  "normalized_events": 50760,
+  "price_quality_csv": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_full_universe_audit_v0_1\\phase2_full_universe_price_quality_v0_1.csv",
+  "probe_stage_csv": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_full_universe_audit_v0_1\\phase2_full_universe_probe_stage_metrics_v0_1.csv",
+  "production_db": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\db\\tradingbot.sqlite3",
+  "production_db_read_only": true,
+  "raw_metrics_csv": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_full_universe_audit_v0_1\\phase2_full_universe_raw_token_metrics_v0_1.csv",
+  "report_json": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_full_universe_audit_v0_1\\phase2_full_universe_audit_report_v0_1.json",
+  "schema_version": "P2FUA-MANIFEST-0.1",
+  "source_rows": 50760,
+  "warning": "Coverage/stability/setup incidence only. No PnL, exits, future-return labels, execution, or parameter optimization."
+}

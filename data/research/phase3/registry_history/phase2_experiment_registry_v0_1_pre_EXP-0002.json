@@ -1,0 +1,35 @@
+{
+  "dataset_manifest_sha256": "4955272e268e69eb858627a9634dd63bf4a675b847c7058ab6ae29e4805b63f6",
+  "deterministic_registry_sha256": "e3e9ea32c158930bd99f9590bee133d522e5caa4370f25d383124acef12ac59a",
+  "experiments": [
+    {
+      "candidate_outcomes_path": "data/research/phase3/EXP-0001/phase3_1_candidate_outcomes_v0_1_2.csv",
+      "candidate_outcomes_sha256": "c944741051b36f42c7dff4afc700dcdc020c0f4a63dacecbcbb47dd2ed7364d6",
+      "dataset_freeze_id": "DEV-FREEZE-0001",
+      "dataset_role": "DEVELOPMENT_DISCOVERY",
+      "experiment_id": "EXP-0001",
+      "manifest_path": "data/research/phase3/EXP-0001/EXP-0001_manifest_v0_1_2.json",
+      "manifest_sha256": "7e5036b9576f22b8304ba8f1fd8f6b8d0d1cec1b83d6925433fd82e665ffdc0c",
+      "phase": "PHASE_3_1",
+      "report_path": "data/research/phase3/EXP-0001/phase3_1_outcome_replay_report_v0_1_2.json",
+      "report_sha256": "222f9923404393552bbbd53c150694bcd67a7a31f85f84aeedeb00af39367a12",
+      "role": "OUTCOME_REPLAY_FOUNDATION_NO_OPTIMIZATION",
+      "status": "COMPLETE",
+      "strategy": "FirstPullback v1.1",
+      "summary": {
+        "candidate_signals": 230,
+        "complete_5m_mfe_mae_candidates": 11,
+        "exit_optimization_performed": false,
+        "outcome_replay_deterministic": true,
+        "profitability_claim_allowed": false,
+        "realistic_net_pnl_available": false,
+        "strategy_runs": 3901
+      },
+      "untouched_oos": false
+    }
+  ],
+  "freeze_id": "DEV-FREEZE-0001",
+  "locked_search_decision_id": "PHASE-2-PARAM-SEARCH-001",
+  "next_experiment_id": "EXP-0002",
+  "registry_schema_version": "EXPR-0.1"
+}

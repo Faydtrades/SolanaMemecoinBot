@@ -1,0 +1,80 @@
+{
+  "artifacts": {
+    "candidate_outcomes_csv": "EXP-0003_B_pullback_candidate_outcomes_v0_1.csv",
+    "frontier_csv": "EXP-0003_B_pullback_frontier_v0_1.csv",
+    "summary_csv": "EXP-0003_B_pullback_summary_v0_1.csv"
+  },
+  "block": "B_PULLBACK",
+  "checkpointing": {
+    "computed": 105,
+    "enabled": true,
+    "preexisting": 0,
+    "resumed": 0
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "eligible_tokens": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows": 50760,
+    "untouched_oos": false
+  },
+  "design": {
+    "A_carry_forward_count": 5,
+    "B_valid_pair_count": 21,
+    "C_fixed": {
+      "min_buys": 1,
+      "min_net_flow_reserve_ppm": 0,
+      "min_rebound_bps": 200,
+      "window_id": "3s"
+    },
+    "D_reclaim_fixed": {
+      "min_extension_from_response_bps": 200
+    },
+    "D_runaway_fixed": {
+      "max_extension_from_response_bps": 10000
+    },
+    "combination_count": 105,
+    "five_minute_role": "SUPPORTING_DESCRIPTIVE_ONLY",
+    "full_cartesian_13_23m_run": false,
+    "primary_outcome_horizons": [
+      "15s",
+      "30s"
+    ],
+    "robustness_goal": "cross-A and neighboring-B stability; do not select by highest median alone",
+    "single_winner_selected": false
+  },
+  "determinism": {
+    "candidate_signatures": {
+      "1": "89ec577550fc28e0253da7fcb3966a92ec24ef157d3b421bff3a8b36722e8c2c",
+      "105": "61649e2baf367dc935981f99aa5b65eb3d9e73208043b44ce5cad6200da89298",
+      "53": "1638c6accfe289b44a4a5ba491f86c42eab2aa00e1d340196dfef88c3e686bd5"
+    },
+    "pass": true,
+    "sentinel_indices": [
+      1,
+      53,
+      105
+    ]
+  },
+  "deterministic_report_core_sha256": "b4c1a7eb33a827c89e874536b9208fd5b90fd70e36ad4c36b841356aa9128338",
+  "experiment_id": "EXP-0003",
+  "performance_claims": {
+    "exit_optimization_performed": false,
+    "fees_modeled": false,
+    "latency_modeled": false,
+    "profitability_claim_allowed": false,
+    "realistic_net_pnl_available": false,
+    "slippage_modeled": false,
+    "tp_sl_tuning_performed": false
+  },
+  "result_counts": {
+    "candidate_outcome_rows": 5869,
+    "diagnostic_frontier_rows": 15,
+    "summary_rows": 105
+  },
+  "schema_version": "P3-EXP0003-B-0.1",
+  "selection_binding": {
+    "path": "data/research/phase3/EXP-0002/EXP-0002_A_selection_v0_1.json",
+    "sha256": "29273fa6607381103b05d5016a0955bc24548057a8683b3926d993dac45bc65d"
+  }
+}

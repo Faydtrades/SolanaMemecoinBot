@@ -1,0 +1,133 @@
+{
+  "block_combination_counts": {
+    "A_IMPULSE": 175,
+    "B_PULLBACK": 21,
+    "C_BUYER_RESPONSE_3S": 150,
+    "D_RECLAIM_RUNAWAY": 24
+  },
+  "buyer_response": {
+    "min_buys": [
+      1,
+      2,
+      3,
+      4,
+      8
+    ],
+    "min_net_flow_reserve_ppm": [
+      0,
+      6000,
+      30000,
+      93000,
+      185000
+    ],
+    "min_rebound_bps": [
+      200,
+      500,
+      800,
+      2300,
+      7300,
+      20700
+    ],
+    "window_id": [
+      "3s"
+    ]
+  },
+  "dataset_policy": {
+    "development_dataset_freeze_id": "DEV-FREEZE-0001",
+    "development_discovery_tokens": 3901,
+    "do_not_treat_as_untouched_oos": true,
+    "future_range_changes_require_new_version": true
+  },
+  "decision_id": "PHASE-2-PARAM-SEARCH-001",
+  "full_cartesian_recommended": false,
+  "impulse": {
+    "min_return_bps": [
+      500,
+      1500,
+      2000,
+      3000,
+      5000,
+      5500,
+      12500
+    ],
+    "min_trades_since_t0": [
+      2,
+      3,
+      5,
+      7,
+      24
+    ],
+    "min_unique_buyers_since_t0": [
+      1,
+      2,
+      3,
+      5,
+      9
+    ]
+  },
+  "max_entry_age_ms": [
+    300000
+  ],
+  "naive_full_cartesian_count": 13230000,
+  "pullback": {
+    "max_depth_bps": [
+      3500,
+      5500,
+      6000,
+      6500,
+      9000
+    ],
+    "min_depth_bps": [
+      1000,
+      2500,
+      3000,
+      4000,
+      6000
+    ],
+    "valid_min_max_pair_count": 21
+  },
+  "reclaim": {
+    "min_extension_from_response_bps": [
+      200,
+      500,
+      700,
+      800,
+      2500,
+      7100,
+      19500
+    ]
+  },
+  "runaway": {
+    "max_extension_from_response_bps": [
+      2000,
+      2500,
+      3000,
+      7000,
+      10000
+    ],
+    "valid_reclaim_runaway_pair_count": 24
+  },
+  "search_blocks": {
+    "A_IMPULSE": [
+      "min_return_bps",
+      "min_trades_since_t0",
+      "min_unique_buyers_since_t0"
+    ],
+    "B_PULLBACK": [
+      "min_depth_bps",
+      "max_depth_bps"
+    ],
+    "C_BUYER_RESPONSE_3S": [
+      "min_rebound_bps",
+      "min_buys",
+      "min_net_flow_reserve_ppm"
+    ],
+    "D_RECLAIM_RUNAWAY": [
+      "min_extension_from_response_bps",
+      "max_extension_from_response_bps"
+    ]
+  },
+  "status": "LOCKED_FOR_FIRST_RESEARCH_CYCLE",
+  "strategy_name": "FirstPullback",
+  "strategy_version_target": "v1.1"
+}

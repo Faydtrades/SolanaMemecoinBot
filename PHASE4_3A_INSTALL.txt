@@ -1,0 +1,18 @@
+PHASE 4.3A - ROOT READY
+
+1. Extract this ZIP directly into:
+   D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+2. Keep the existing Phase 4.1 and Phase 4.2 files in place.
+
+3. With (.venv) active, run:
+   python scripts\phase4_paper_entry_router_selftest_v0_1.py
+
+Expected final line:
+   RESULT: PASS
+
+Safety:
+- isolated data\selftest SQLite only
+- production DB touched: NO
+- network/RPC: NO
+- wallet/live orders: NO

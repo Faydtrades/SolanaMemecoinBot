@@ -1,0 +1,25 @@
+PHASE 4.5A DETERMINISTIC TRADE ACCOUNTING — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- src\phase4\paper_trade_accounting_v0_1.py
+- scripts\phase4_5a_trade_accounting_selftest_v0_1.py
+- scripts\phase4_5a_live_postrun_accounting_smoke_v0_1.py
+- data\selftest\phase4_4e_live_exit_pipeline_fixture.sqlite3
+- docs\phase4\PHASE4_5A_TRADE_ACCOUNTING_V0_1.md
+
+No collector should be running for the self-test.
+
+First run:
+
+python scripts\phase4_5a_trade_accounting_selftest_v0_1.py
+
+LOCAL SELF-TEST BEFORE DELIVERY: PASS
+LOCAL READ-ONLY POSTRUN FIXTURE SMOKE: PASS
+
+Do not sum FINAL-A / FINAL-B / SENS-C into one portfolio result.
+MTM drawdown / MAE / MFE and full strategy skip audit are intentionally not
+fabricated in this step.

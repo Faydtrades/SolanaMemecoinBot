@@ -1,0 +1,57 @@
+{
+  "coverage_summary": {
+    "active_intervals": 205,
+    "active_seconds_total": 43089.76684,
+    "control_events": 818,
+    "explicit_gap_seconds_total": 309.952556,
+    "explicit_gaps": 198,
+    "session_versions": {
+      "v0.3.2": 3,
+      "v0.3.3": 4
+    },
+    "sessions": 7,
+    "uncertain_interval_closes": 4
+  },
+  "current_preview_segment": {
+    "end_us": 1787349923518619,
+    "end_utc": "2026-08-21T22:05:23.518619+00:00",
+    "parent_close_reason": "EOF_LAST_OBSERVATION",
+    "projected_eligible_tokens": 25,
+    "seconds": 621.725686,
+    "session_id": 7,
+    "start_us": 1787349301792933,
+    "start_utc": "2026-08-21T21:55:01.792933+00:00",
+    "uncertain_close": true
+  },
+  "current_projected_eligible_token_count": 25,
+  "eligibility_tail_guard_minutes": 10,
+  "freeze_id": "DEV-FREEZE-0002",
+  "immutable_freeze_allowed_from_current_preview": false,
+  "latest_clean_segment": {
+    "end_us": 1787349923518619,
+    "end_utc": "2026-08-21T22:05:23.518619+00:00",
+    "parent_close_reason": "EOF_LAST_OBSERVATION",
+    "projected_eligible_tokens": 25,
+    "seconds": 621.725686,
+    "session_id": 7,
+    "start_us": 1787349301792933,
+    "start_utc": "2026-08-21T21:55:01.792933+00:00",
+    "uncertain_close": true
+  },
+  "longest_clean_segment": {
+    "end_us": 1787347672458555,
+    "end_utc": "2026-08-21T21:27:52.458555+00:00",
+    "parent_close_reason": "WS_DISCONNECTED",
+    "projected_eligible_tokens": 269,
+    "seconds": 2873.962766,
+    "session_id": 7,
+    "start_us": 1787344798495789,
+    "start_utc": "2026-08-21T20:39:58.495789+00:00",
+    "uncertain_close": false
+  },
+  "note": "If the collector is active, uncertain_close is expected and immutable freeze creation remains forbidden.",
+  "preview_only": true,
+  "production_db_changed_during_preview": true,
+  "production_db_read_only": true,
+  "schema_version": "P3-DEVFREEZE-PREVIEW-0.1"
+}

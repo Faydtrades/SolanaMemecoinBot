@@ -1,0 +1,23 @@
+PHASE 4.3B1B CONTROLLED COLLECTOR DIAGNOSTIC v0.2 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- scripts\phase4_controlled_collector_live_diagnostic_v0_2.py
+- docs\phase4\PHASE4_3B1B_CONTROLLED_COLLECTOR_LIVE_DIAGNOSTIC_V0_2.md
+- PHASE4_3B1B_COLLECTOR_DIAGNOSTIC_V0_2_INSTALL.txt
+
+IMPORTANT BEFORE RUNNING:
+No old live_pump_collector_v0_3_3.py or v0.1 diagnostic process should still be running.
+
+With (.venv) active:
+
+python scripts\phase4_controlled_collector_live_diagnostic_v0_2.py
+
+Expected:
+- immediate child PID
+- [HEALTH] line immediately and then every 5 seconds
+- automatic stop after 90 seconds
+- RESULT: PASS or CHECK

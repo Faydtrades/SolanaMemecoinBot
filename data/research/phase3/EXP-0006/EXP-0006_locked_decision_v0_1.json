@@ -1,0 +1,42 @@
+{
+  "dataset": {
+    "freeze_id": "DEV-FREEZE-0001",
+    "role": "DEVELOPMENT_DISCOVERY",
+    "untouched_oos": false
+  },
+  "experiment_id": "EXP-0006",
+  "interpretation": "DEV-FREEZE-0001 is adequate for the completed staged entry research but does not provide clean 5m post-entry paths for any robust full-entry regime. Do not optimize SL/TP/trailing/time-stop thresholds on this freeze.",
+  "locked_result": {
+    "mainline_exit_parameter_grid_allowed_on_DEV_FREEZE_0001": false,
+    "robust_clean_2m": [
+      2,
+      3,
+      3
+    ],
+    "robust_clean_30s": [
+      5,
+      8,
+      7
+    ],
+    "robust_clean_5m": [
+      0,
+      0,
+      0
+    ],
+    "robust_clean_60s": [
+      4,
+      5,
+      5
+    ]
+  },
+  "next_step": {
+    "entry_parameters_remain_fixed": true,
+    "exit_threshold_optimization_allowed": false,
+    "experiment_id": "EXP-0007",
+    "role": "EXIT_PATH_REPLAY_FOUNDATION_AND_CONTINUOUS_DEV_READINESS"
+  },
+  "profitability_claim_allowed": false,
+  "role": "EXIT_RESEARCH_DESIGN_AND_PATH_FEASIBILITY",
+  "schema_version": "P3-EXP0006-DECISION-0.1",
+  "status": "COMPLETE"
+}

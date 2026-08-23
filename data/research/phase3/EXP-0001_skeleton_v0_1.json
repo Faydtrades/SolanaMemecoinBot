@@ -1,0 +1,69 @@
+{
+  "schema_version": "phase3_experiment_skeleton_v0.1",
+  "experiment_id": "EXP-0001",
+  "status": "SKELETON_NOT_RUN",
+  "phase": "3.1",
+  "purpose": "Outcome Replay Foundation validation: label post-CandidateSignal market outcomes without exit optimization.",
+  "dataset": {
+    "dataset_id": "DEV-FREEZE-0001",
+    "role": "DEVELOPMENT_DISCOVERY",
+    "untouched_oos": false,
+    "eligible_tokens": 3901,
+    "frozen_bot_truth_rows": 50760,
+    "frozen_rows_sha256": "c10318d3c1db85d917d7a8d9dbd56f694aab97195420a31c5e618713d08c2ea6",
+    "snapshot_sqlite_sha256": "44e3457b81a16d4e5e2670e24d758756a147867e1d81d627622157ad4bd5813f"
+  },
+  "strategy": {
+    "family": "FirstPullback",
+    "semantic_version": "v1.1",
+    "implementation": "src/phase2/strategy_first_pullback_v0_2.py",
+    "parameter_search_id": "PHASE-2-PARAM-SEARCH-001",
+    "parameter_search_sha256": "65cd4aa6ebc84929504b2fa4224bbc64dc149737b3f3e344d9e172d72b2e586f",
+    "parameter_set_id": null,
+    "candidate_signal_is_order": false
+  },
+  "research_reference_size_sol": 0.1,
+  "outcome_replay": {
+    "implementation": "src/phase3/outcome_replay_v0_1.py",
+    "schema_version": "phase3_outcome_replay_v0.1",
+    "clock": "BOT_TRUTH_observed_at",
+    "horizons_ms": [
+      5000,
+      15000,
+      30000,
+      60000,
+      120000,
+      300000
+    ],
+    "mfe_mae_window_ms": 300000,
+    "gap_recovery_fresh_price_eligible": false,
+    "missing_future_return_policy": "NULL_NOT_ZERO",
+    "price_identity_must_match": true,
+    "point_mark_rule": "latest fresh same-identity observation at_or_before horizon",
+    "point_mark_age_recorded": true,
+    "hidden_freshness_threshold": false,
+    "clean_observability_requires_continuous_collector_coverage": true
+  },
+  "explicit_non_goals": [
+    "exit optimization",
+    "TP tuning",
+    "SL tuning",
+    "fee model",
+    "slippage model",
+    "price impact model",
+    "latency model",
+    "failed execution model",
+    "realistic-net PnL claim"
+  ],
+  "results": {
+    "outcome_replay_validation": null,
+    "gross_raw": null,
+    "realistic_net": null,
+    "execution_quality": null
+  },
+  "decision": null,
+  "notes": [
+    "EXP-0001 remains not-run until Phase 3.1 integration/harness validation passes.",
+    "DEV-FREEZE-0001 is development/discovery data and must never be described as untouched OOS."
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "background_queues_required_to_be_empty": false,
+  "closed_prefix": {
+    "cutoff_utc": "2026-08-22T11:49:41.838786+00:00",
+    "definite_clean_intervals": 70,
+    "discarded_uncertain_intervals": 1,
+    "duration_hours": 22.836258108888888,
+    "explicit_gaps_retained": 69,
+    "start_utc": "2026-08-21T12:59:31.309594+00:00"
+  },
+  "cohort": {
+    "global_normalizable_t0s_in_prefix": 15320,
+    "projected_eligible_tokens": 8649,
+    "required_tail_after_t0_minutes": 10
+  },
+  "design_id": "DEV-FREEZE-0002-DESIGN-002A",
+  "entry_only_counts": [
+    {
+      "candidate_count": 1053,
+      "parameter_set_id": "FP1-EXP0005-D-005-CONTROL-R500-T2-U1-PD1000-9000-RB200-BU1-FL0-RC200-RW10000",
+      "role": "CONTROL",
+      "run_count": 8649
+    },
+    {
+      "candidate_count": 206,
+      "parameter_set_id": "FP1-EXP0005-D-026-ROBUST_1-R1500-T5-U9-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_1",
+      "run_count": 8649
+    },
+    {
+      "candidate_count": 232,
+      "parameter_set_id": "FP1-EXP0005-D-050-ROBUST_2-R2000-T3-U5-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_2",
+      "run_count": 8649
+    },
+    {
+      "candidate_count": 218,
+      "parameter_set_id": "FP1-EXP0005-D-074-ROBUST_3-R5000-T3-U2-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_3",
+      "run_count": 8649
+    }
+  ],
+  "exit_paths_built": false,
+  "forward_outcomes_inspected": false,
+  "freeze_id": "DEV-FREEZE-0002",
+  "immutable_prefix_freeze_candidate": true,
+  "note": "The entire EOF_UNCERTAIN tail after cutoff is discarded. Explicit gaps before cutoff remain non-observable and are never ignored.",
+  "pnl_inspected": false,
+  "preview_only": true,
+  "production_db_changed_during_preview": false,
+  "production_db_read_only": true,
+  "schema_version": "P3-DEVFREEZE-CLOSED-PREFIX-PREVIEW-0.2.1",
+  "source_session": {
+    "observed_through_utc": "2026-08-22T12:23:46.007172+00:00",
+    "session_id": 7,
+    "start_utc": "2026-08-21T12:59:31.309594+00:00",
+    "state": "EOF_UNCERTAIN"
+  }
+}

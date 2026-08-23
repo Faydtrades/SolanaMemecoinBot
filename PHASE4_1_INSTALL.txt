@@ -1,0 +1,18 @@
+PHASE 4.1 - INSTALL / RUN
+
+Copy the included src and scripts folders into:
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+This adds:
+src\phase4\__init__.py
+src\phase4\paper_lifecycle_v0_1.py
+scripts\phase4_paper_lifecycle_selftest_v0_1.py
+
+Then from the project root with the existing venv active, run:
+python scripts\phase4_paper_lifecycle_selftest_v0_1.py
+
+Expected final line:
+RESULT: PASS
+
+The self-test writes only under data\selftest and explicitly refuses the production DB path.
+It performs no network/RPC calls and has no wallet/live-order capability.

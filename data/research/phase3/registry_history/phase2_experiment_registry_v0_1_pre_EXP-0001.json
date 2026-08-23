@@ -1,0 +1,9 @@
+{
+  "dataset_manifest_sha256": "4955272e268e69eb858627a9634dd63bf4a675b847c7058ab6ae29e4805b63f6",
+  "deterministic_registry_sha256": "04913d3dd1c5ca4ca4c28a51109c734f1c266197e64380ea00344763b7afaabc",
+  "experiments": [],
+  "freeze_id": "DEV-FREEZE-0001",
+  "locked_search_decision_id": "PHASE-2-PARAM-SEARCH-001",
+  "next_experiment_id": "EXP-0001",
+  "registry_schema_version": "EXPR-0.1"
+}

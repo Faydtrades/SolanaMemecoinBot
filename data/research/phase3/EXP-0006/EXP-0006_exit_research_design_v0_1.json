@@ -1,0 +1,89 @@
+{
+  "design_id": "PHASE-3-EXIT-DESIGN-001",
+  "evidence_priority": {
+    "cross_entry_regime_stability": true,
+    "fresh_data_validation_required_later": true,
+    "integrity_first": true,
+    "isolated_sparse_spikes_not_promoted": true,
+    "neighbor_stability": true,
+    "sample_support_and_distribution": true
+  },
+  "experiment_id": "EXP-0006",
+  "locked_principles": [
+    "Entry A/B/C/D parameters remain fixed during exit research.",
+    "Do not jointly re-optimize entry and exit parameters on DEV-FREEZE-0001.",
+    "CandidateSignal/reference price is a research entry reference, not an execution fill.",
+    "Missing future data is never flat price, no-trigger, profit, or loss.",
+    "Only same-price-identity fresh observations may drive exit-path labels.",
+    "GAP_RECOVERY is provenance, not a fresh threshold-crossing observation.",
+    "Known collector gaps or unknown coverage invalidate clean path claims across that interval.",
+    "Market-continuity boundaries remain explicit and cannot be bridged silently.",
+    "BOT_TRUTH ordering remains observed_at then ingest_seq.",
+    "The historical manual -30% stop is a hypothesis only, not a default bot stop.",
+    "No exact SL, TP, trailing, or time-stop threshold is locked in EXP-0006.",
+    "Do not select an exit rule by highest gross return alone.",
+    "Fees, slippage, latency and failed execution remain later stages and must not be invented here.",
+    "Deferred high-stringency entry hypotheses remain separate and must not bias mainline exit design.",
+    "No profitability claim is allowed from exit-feasibility or gross exit research alone."
+  ],
+  "purpose": "Design exit research and establish whether the existing development freeze has sufficient causal post-entry path observability before any SL/TP/trailing/time-stop tuning.",
+  "schema_version": "P3-EXIT-DESIGN-0.1",
+  "source_entry_selection": {
+    "experiment_id": "EXP-0005",
+    "full_entry_regime_count": 4,
+    "selection_sha256": "408657c1d6dc39435b61e01b368dac69796481864b7462efd150a2d4e1b0daa1"
+  },
+  "staged_exit_plan": [
+    {
+      "action": "Quantify clean path observability of the four locked full-entry regimes.",
+      "exit_threshold_optimization": false,
+      "experiment": "EXP-0006",
+      "name": "EXIT_PATH_FEASIBILITY",
+      "stage": "E0"
+    },
+    {
+      "action": "Build deterministic first-passage/path replay and characterize path timing only after sufficient continuous development data exists.",
+      "exit_threshold_optimization": false,
+      "name": "EXIT_PATH_REPLAY_FOUNDATION",
+      "stage": "E1"
+    },
+    {
+      "action": "Version coarse hard-stop and time-stop families first; parameter ranges must be locked before results and supported by E1 path characterization.",
+      "exit_threshold_optimization": true,
+      "name": "COARSE_EXIT_FAMILIES",
+      "stage": "E2"
+    },
+    {
+      "action": "Compare simple profit-taking structures such as single TP versus separately versioned partial-exit structures without silently changing trade definition.",
+      "exit_threshold_optimization": true,
+      "name": "PROFIT_TAKING",
+      "stage": "E3"
+    },
+    {
+      "action": "Test trailing exits as a distinct family with causal peak tracking.",
+      "exit_threshold_optimization": true,
+      "name": "TRAILING",
+      "stage": "E4"
+    },
+    {
+      "action": "Combine only a small robust shortlist of exit components and check interactions; do not run a giant entry-plus-exit Cartesian search.",
+      "exit_threshold_optimization": true,
+      "name": "EXIT_INTERACTION_SHORTLIST",
+      "stage": "E5"
+    }
+  ],
+  "status": "LOCKED_BEFORE_EXIT_OPTIMIZATION_RESULTS",
+  "what_EXP0006_may_conclude": [
+    "which horizons are cleanly observable for each locked entry regime",
+    "whether 5m-dependent exit research is supported on DEV-FREEZE-0001",
+    "whether additional continuous development data is needed before mainline exit optimization"
+  ],
+  "what_EXP0006_must_not_do": [
+    "choose a stop-loss",
+    "choose a take-profit",
+    "choose a trailing stop",
+    "choose a time stop",
+    "calculate realistic-net PnL",
+    "claim profitability"
+  ]
+}

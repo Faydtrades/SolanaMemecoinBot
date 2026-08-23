@@ -1,0 +1,500 @@
+{
+  "EXP_0011_exact_reproduction": "PASS",
+  "EXP_0011_reproduction_rows": [
+    {
+      "candidate_id": "FINAL-A",
+      "exact_match_EXP_0011": true,
+      "role": "CONTROL",
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "candidate_id": "FINAL-B",
+      "exact_match_EXP_0011": true,
+      "role": "CONTROL",
+      "variant_id": "E4_ACT10_GB03_T15"
+    },
+    {
+      "candidate_id": "SENS-C",
+      "exact_match_EXP_0011": true,
+      "role": "CONTROL",
+      "variant_id": "SENS_TP20_T5"
+    },
+    {
+      "candidate_id": "FINAL-A",
+      "exact_match_EXP_0011": true,
+      "role": "ROBUST_1",
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "candidate_id": "FINAL-B",
+      "exact_match_EXP_0011": true,
+      "role": "ROBUST_1",
+      "variant_id": "E4_ACT10_GB03_T15"
+    },
+    {
+      "candidate_id": "SENS-C",
+      "exact_match_EXP_0011": true,
+      "role": "ROBUST_1",
+      "variant_id": "SENS_TP20_T5"
+    },
+    {
+      "candidate_id": "FINAL-A",
+      "exact_match_EXP_0011": true,
+      "role": "ROBUST_2",
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "candidate_id": "FINAL-B",
+      "exact_match_EXP_0011": true,
+      "role": "ROBUST_2",
+      "variant_id": "E4_ACT10_GB03_T15"
+    },
+    {
+      "candidate_id": "SENS-C",
+      "exact_match_EXP_0011": true,
+      "role": "ROBUST_2",
+      "variant_id": "SENS_TP20_T5"
+    },
+    {
+      "candidate_id": "FINAL-A",
+      "exact_match_EXP_0011": true,
+      "role": "ROBUST_3",
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "candidate_id": "FINAL-B",
+      "exact_match_EXP_0011": true,
+      "role": "ROBUST_3",
+      "variant_id": "E4_ACT10_GB03_T15"
+    },
+    {
+      "candidate_id": "SENS-C",
+      "exact_match_EXP_0011": true,
+      "role": "ROBUST_3",
+      "variant_id": "SENS_TP20_T5"
+    }
+  ],
+  "cached_path_determinism": "PASS",
+  "cached_path_evaluation_hash_pass1": "cabb205e255d7085a168ce5a97aac4231579bff1f0eace1f39112487a9cb757c",
+  "cached_path_evaluation_hash_pass2": "cabb205e255d7085a168ce5a97aac4231579bff1f0eace1f39112487a9cb757c",
+  "candidate_reselection_performed": false,
+  "clean_5m_counts": {
+    "CONTROL": 1036,
+    "ROBUST_1": 203,
+    "ROBUST_2": 229,
+    "ROBUST_3": 211
+  },
+  "dataset_role": "DEVELOPMENT_DISCOVERY",
+  "design_id": "PHASE-3-FINAL-VALIDATION-001",
+  "entry_candidate_counts": {
+    "CONTROL": 1053,
+    "ROBUST_1": 206,
+    "ROBUST_2": 232,
+    "ROBUST_3": 218
+  },
+  "experiment_id": "EXP-0012",
+  "fees_modeled": false,
+  "freeze_id": "DEV-FREEZE-0002",
+  "further_exit_tuning_performed": false,
+  "latency_modeled": false,
+  "locked_finalist_rows": [
+    {
+      "activation_delay_p50_ms": null,
+      "candidate_id": "FINAL-A",
+      "clean_path_count": 1036,
+      "exit_bps": {
+        "mean": 344.77315296566076,
+        "n": 961,
+        "negative_rate": 0.32466181061394384,
+        "p10": -2393,
+        "p25": -566,
+        "p50": 914,
+        "p75": 1416,
+        "p90": 2568,
+        "positive_rate": 0.6722164412070759
+      },
+      "exit_delay_p50_ms": 7585,
+      "exit_reason_counts": {
+        "FALLBACK": 486,
+        "TAKE_PROFIT": 475
+      },
+      "fallback_mark_age_p50_ms": 2993,
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "role": "CONTROL",
+      "scored_count": 961,
+      "tp_bps": 1000,
+      "track": "MAINLINE",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "unscored_count": 75,
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "activation_delay_p50_ms": 2908,
+      "candidate_id": "FINAL-B",
+      "clean_path_count": 1036,
+      "exit_bps": {
+        "mean": 545.8844953173777,
+        "n": 961,
+        "negative_rate": 0.3756503642039542,
+        "p10": -2499,
+        "p25": -805,
+        "p50": 404,
+        "p75": 1686,
+        "p90": 3451,
+        "positive_rate": 0.6212278876170656
+      },
+      "exit_delay_p50_ms": 9851,
+      "exit_reason_counts": {
+        "FALLBACK": 645,
+        "TRAIL": 316
+      },
+      "fallback_mark_age_p50_ms": 2995,
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "role": "CONTROL",
+      "scored_count": 961,
+      "tp_bps": null,
+      "track": "MAINLINE",
+      "trail_activation_bps": 1000,
+      "trail_giveback_bps": 300,
+      "unscored_count": 75,
+      "variant_id": "E4_ACT10_GB03_T15"
+    },
+    {
+      "activation_delay_p50_ms": null,
+      "candidate_id": "SENS-C",
+      "clean_path_count": 1036,
+      "exit_bps": {
+        "mean": 435.7001303780965,
+        "n": 767,
+        "negative_rate": 0.31290743155149936,
+        "p10": -1911,
+        "p25": -221,
+        "p50": 404,
+        "p75": 1614,
+        "p90": 2551,
+        "positive_rate": 0.6857887874837028
+      },
+      "exit_delay_p50_ms": 2806,
+      "exit_reason_counts": {
+        "FALLBACK": 607,
+        "TAKE_PROFIT": 160
+      },
+      "fallback_mark_age_p50_ms": 2094,
+      "fallback_ms": 5000,
+      "hard_stop_bps": null,
+      "role": "CONTROL",
+      "scored_count": 767,
+      "tp_bps": 2000,
+      "track": "SENSITIVITY_ONLY",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "unscored_count": 269,
+      "variant_id": "SENS_TP20_T5"
+    },
+    {
+      "activation_delay_p50_ms": null,
+      "candidate_id": "FINAL-A",
+      "clean_path_count": 203,
+      "exit_bps": {
+        "mean": 368.19,
+        "n": 200,
+        "negative_rate": 0.295,
+        "p10": -1146,
+        "p25": -242,
+        "p50": 1012,
+        "p75": 1197,
+        "p90": 1484,
+        "positive_rate": 0.705
+      },
+      "exit_delay_p50_ms": 6710,
+      "exit_reason_counts": {
+        "FALLBACK": 96,
+        "TAKE_PROFIT": 104
+      },
+      "fallback_mark_age_p50_ms": 2332,
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "role": "ROBUST_1",
+      "scored_count": 200,
+      "tp_bps": 1000,
+      "track": "MAINLINE",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "unscored_count": 3,
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "activation_delay_p50_ms": 2160,
+      "candidate_id": "FINAL-B",
+      "clean_path_count": 203,
+      "exit_bps": {
+        "mean": 672.315,
+        "n": 200,
+        "negative_rate": 0.3,
+        "p10": -1146,
+        "p25": -260,
+        "p50": 582,
+        "p75": 1386,
+        "p90": 2798,
+        "positive_rate": 0.7
+      },
+      "exit_delay_p50_ms": 10857,
+      "exit_reason_counts": {
+        "FALLBACK": 123,
+        "TRAIL": 77
+      },
+      "fallback_mark_age_p50_ms": 2403,
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "role": "ROBUST_1",
+      "scored_count": 200,
+      "tp_bps": null,
+      "track": "MAINLINE",
+      "trail_activation_bps": 1000,
+      "trail_giveback_bps": 300,
+      "unscored_count": 3,
+      "variant_id": "E4_ACT10_GB03_T15"
+    },
+    {
+      "activation_delay_p50_ms": null,
+      "candidate_id": "SENS-C",
+      "clean_path_count": 203,
+      "exit_bps": {
+        "mean": 530.983606557377,
+        "n": 183,
+        "negative_rate": 0.22950819672131148,
+        "p10": -965,
+        "p25": 18,
+        "p50": 522,
+        "p75": 1591,
+        "p90": 2187,
+        "positive_rate": 0.7704918032786885
+      },
+      "exit_delay_p50_ms": 2926,
+      "exit_reason_counts": {
+        "FALLBACK": 145,
+        "TAKE_PROFIT": 38
+      },
+      "fallback_mark_age_p50_ms": 2012,
+      "fallback_ms": 5000,
+      "hard_stop_bps": null,
+      "role": "ROBUST_1",
+      "scored_count": 183,
+      "tp_bps": 2000,
+      "track": "SENSITIVITY_ONLY",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "unscored_count": 20,
+      "variant_id": "SENS_TP20_T5"
+    },
+    {
+      "activation_delay_p50_ms": null,
+      "candidate_id": "FINAL-A",
+      "clean_path_count": 229,
+      "exit_bps": {
+        "mean": 233.50884955752213,
+        "n": 226,
+        "negative_rate": 0.3230088495575221,
+        "p10": -1454,
+        "p25": -345,
+        "p50": 704,
+        "p75": 1206,
+        "p90": 1557,
+        "positive_rate": 0.6769911504424779
+      },
+      "exit_delay_p50_ms": 7949,
+      "exit_reason_counts": {
+        "FALLBACK": 116,
+        "TAKE_PROFIT": 110
+      },
+      "fallback_mark_age_p50_ms": 2379,
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "role": "ROBUST_2",
+      "scored_count": 226,
+      "tp_bps": 1000,
+      "track": "MAINLINE",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "unscored_count": 3,
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "activation_delay_p50_ms": 2457,
+      "candidate_id": "FINAL-B",
+      "clean_path_count": 229,
+      "exit_bps": {
+        "mean": 461.8628318584071,
+        "n": 226,
+        "negative_rate": 0.3230088495575221,
+        "p10": -1454,
+        "p25": -345,
+        "p50": 546,
+        "p75": 1348,
+        "p90": 2729,
+        "positive_rate": 0.6769911504424779
+      },
+      "exit_delay_p50_ms": 10857,
+      "exit_reason_counts": {
+        "FALLBACK": 146,
+        "TRAIL": 80
+      },
+      "fallback_mark_age_p50_ms": 2546,
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "role": "ROBUST_2",
+      "scored_count": 226,
+      "tp_bps": null,
+      "track": "MAINLINE",
+      "trail_activation_bps": 1000,
+      "trail_giveback_bps": 300,
+      "unscored_count": 3,
+      "variant_id": "E4_ACT10_GB03_T15"
+    },
+    {
+      "activation_delay_p50_ms": null,
+      "candidate_id": "SENS-C",
+      "clean_path_count": 229,
+      "exit_bps": {
+        "mean": 434.2135922330097,
+        "n": 206,
+        "negative_rate": 0.25728155339805825,
+        "p10": -1077,
+        "p25": -14,
+        "p50": 412,
+        "p75": 1341,
+        "p90": 2187,
+        "positive_rate": 0.7427184466019418
+      },
+      "exit_delay_p50_ms": 2918,
+      "exit_reason_counts": {
+        "FALLBACK": 165,
+        "TAKE_PROFIT": 41
+      },
+      "fallback_mark_age_p50_ms": 2016,
+      "fallback_ms": 5000,
+      "hard_stop_bps": null,
+      "role": "ROBUST_2",
+      "scored_count": 206,
+      "tp_bps": 2000,
+      "track": "SENSITIVITY_ONLY",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "unscored_count": 23,
+      "variant_id": "SENS_TP20_T5"
+    },
+    {
+      "activation_delay_p50_ms": null,
+      "candidate_id": "FINAL-A",
+      "clean_path_count": 211,
+      "exit_bps": {
+        "mean": 416.74038461538464,
+        "n": 208,
+        "negative_rate": 0.27403846153846156,
+        "p10": -1554,
+        "p25": -242,
+        "p50": 1038,
+        "p75": 1370,
+        "p90": 2187,
+        "positive_rate": 0.7259615384615384
+      },
+      "exit_delay_p50_ms": 6360,
+      "exit_reason_counts": {
+        "FALLBACK": 90,
+        "TAKE_PROFIT": 118
+      },
+      "fallback_mark_age_p50_ms": 2471,
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "role": "ROBUST_3",
+      "scored_count": 208,
+      "tp_bps": 1000,
+      "track": "MAINLINE",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "unscored_count": 3,
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "activation_delay_p50_ms": 2733,
+      "candidate_id": "FINAL-B",
+      "clean_path_count": 211,
+      "exit_bps": {
+        "mean": 503.8798076923077,
+        "n": 208,
+        "negative_rate": 0.2980769230769231,
+        "p10": -1659,
+        "p25": -345,
+        "p50": 692,
+        "p75": 1499,
+        "p90": 2960,
+        "positive_rate": 0.7019230769230769
+      },
+      "exit_delay_p50_ms": 10596,
+      "exit_reason_counts": {
+        "FALLBACK": 120,
+        "TRAIL": 88
+      },
+      "fallback_mark_age_p50_ms": 2613,
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "role": "ROBUST_3",
+      "scored_count": 208,
+      "tp_bps": null,
+      "track": "MAINLINE",
+      "trail_activation_bps": 1000,
+      "trail_giveback_bps": 300,
+      "unscored_count": 3,
+      "variant_id": "E4_ACT10_GB03_T15"
+    },
+    {
+      "activation_delay_p50_ms": null,
+      "candidate_id": "SENS-C",
+      "clean_path_count": 211,
+      "exit_bps": {
+        "mean": 509.29411764705884,
+        "n": 187,
+        "negative_rate": 0.25133689839572193,
+        "p10": -1350,
+        "p25": -5,
+        "p50": 523,
+        "p75": 1890,
+        "p90": 2389,
+        "positive_rate": 0.7486631016042781
+      },
+      "exit_delay_p50_ms": 2920,
+      "exit_reason_counts": {
+        "FALLBACK": 142,
+        "TAKE_PROFIT": 45
+      },
+      "fallback_mark_age_p50_ms": 2016,
+      "fallback_ms": 5000,
+      "hard_stop_bps": null,
+      "role": "ROBUST_3",
+      "scored_count": 187,
+      "tp_bps": 2000,
+      "track": "SENSITIVITY_ONLY",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "unscored_count": 24,
+      "variant_id": "SENS_TP20_T5"
+    }
+  ],
+  "parameter_search_performed": false,
+  "phase3_final_validation_status": "PHASE3_FINAL_VALIDATION_PASS",
+  "phase4_build_allowed": true,
+  "profitability_claim_allowed": false,
+  "schema_version": "P3-FINAL-VALIDATION-RESULT-0.1",
+  "slippage_modeled": false,
+  "source_hash_binding": "PASS",
+  "source_validation": {
+    "actual_row_count": 364100,
+    "coverage_binding": "PASS",
+    "manifest_row_count": 364100,
+    "sqlite_quick_check": "PASS"
+  },
+  "untouched_oos": false
+}

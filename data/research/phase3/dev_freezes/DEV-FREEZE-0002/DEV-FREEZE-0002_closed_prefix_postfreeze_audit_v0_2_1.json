@@ -1,0 +1,20 @@
+{
+  "checks": {
+    "all_token_10m_windows_inside_definite_clean_interval": true,
+    "entry_binding_fixed": true,
+    "explicit_gaps_not_ignored": true,
+    "future_filters_absent": true,
+    "immutable_hashes": true,
+    "safe_prefix_cutoff_enforced": true,
+    "sqlite_quick_check": true,
+    "uncertain_tail_excluded": true
+  },
+  "definite_clean_intervals": 70,
+  "eligible_token_count": 8649,
+  "explicit_gaps_retained": 69,
+  "freeze_id": "DEV-FREEZE-0002",
+  "frozen_pump_event_rows": 364100,
+  "profitability_claim_allowed": false,
+  "result": "PASS",
+  "schema_version": "P3-DEVFREEZE-CLOSED-PREFIX-AUDIT-0.2.1"
+}

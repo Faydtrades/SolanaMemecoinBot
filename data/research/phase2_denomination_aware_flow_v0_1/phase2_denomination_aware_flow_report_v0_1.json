@@ -1,0 +1,49 @@
+{
+  "adapter_skipped": {},
+  "compatibility_parameter_set": {
+    "parameter_set_id": "FP1-FLOW-COMPAT-0001",
+    "strategy_version": "v1.1",
+    "warning": "MECHANICAL COMPATIBILITY VALUES ONLY; NOT SELECTED/TRADING PARAMETERS"
+  },
+  "deterministic_payload_sha256": "83f825ab9e4826ecd9182c1e30aee1455a3ad334a945e3df2f5bdbdeddfadc5e",
+  "normalized_events": 50816,
+  "purpose": "DENOMINATION-AWARE FLOW + FIRST PULLBACK MECHANICAL COMPATIBILITY; NO PNL",
+  "schema_version": "DAF-0.1",
+  "source_rows": 50816,
+  "summary": {
+    "candidate_count_compatibility_only": 222,
+    "common_flow_feature": "net_flow_reserve_ppm",
+    "common_flow_feature_is_sol_equivalent_volume": false,
+    "deterministic_token_digest": "4d12555d907683f6dd698dc87643c20c44f49ecf7a0598ac65adadc021d4d2f3",
+    "final_strategy_state_counts_compatibility_only": {
+      "CANDIDATE_SIGNAL": 222,
+      "IMPULSE_CONFIRMED": 51,
+      "INVALIDATED": 46,
+      "PULLBACK_ACTIVE": 67,
+      "REJECT": 3,
+      "WAITING_FOR_IMPULSE": 3067,
+      "WAITING_FOR_PULLBACK": 259,
+      "WAITING_FOR_RECLAIM": 41,
+      "WAITING_FOR_RESPONSE": 145
+    },
+    "flow_conflict_tokens": 0,
+    "future_return_labels_included": false,
+    "mechanical_compatibility_parameters_only": true,
+    "performance_pnl_included": false,
+    "price_path_counts": {
+      "QUOTE_ONLY": 109,
+      "SOL_ONLY": 3792
+    },
+    "quote_raw_lamport_contamination_tokens": 0,
+    "quote_strategy_tokens": 109,
+    "raw_sol_and_quote_flow_remain_separate": true,
+    "sol_legacy_parity_failures": 345,
+    "sol_legacy_parity_tokens": 3792,
+    "sol_strategy_tokens": 3792,
+    "strategy_compatible_tokens": 3901,
+    "strategy_error_tokens": 0,
+    "strategy_parameter_optimization_performed": false,
+    "tokens_analyzed": 3901,
+    "unavailable_flow_tokens": 0
+  }
+}

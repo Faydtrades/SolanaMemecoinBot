@@ -1,0 +1,28 @@
+PHASE 4.3B1B — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- scripts\phase4_live_source_sidecar_smoke_v0_1.py
+- docs\phase4\PHASE4_3B1B_LIVE_SOURCE_SIDECAR_SMOKE_V0_1.md
+- PHASE4_3B1B_INSTALL.txt
+
+No existing baseline is overwritten.
+
+RUN ORDER
+
+WINDOW 1 — collector:
+cd D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+python scripts\live_pump_collector_v0_3_3.py --max-pump-events 0 --drain-seconds 120
+
+WINDOW 2 — sidecar:
+cd D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+python scripts\phase4_live_source_sidecar_smoke_v0_1.py
+
+After the sidecar finishes, stop WINDOW 1 with Ctrl+C ONCE and wait for SUMMARY.

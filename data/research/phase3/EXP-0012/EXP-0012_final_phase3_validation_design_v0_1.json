@@ -1,0 +1,120 @@
+{
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "freeze_id": "DEV-FREEZE-0002",
+    "immutable_required": true,
+    "untouched_oos": false
+  },
+  "design_id": "PHASE-3-FINAL-VALIDATION-001",
+  "exact_expected_clean_5m_counts": {
+    "CONTROL": 1036,
+    "ROBUST_1": 203,
+    "ROBUST_2": 229,
+    "ROBUST_3": 211
+  },
+  "exact_expected_entry_counts": {
+    "CONTROL": 1053,
+    "ROBUST_1": 206,
+    "ROBUST_2": 232,
+    "ROBUST_3": 218
+  },
+  "experiment_id": "EXP-0012",
+  "locked_candidates": [
+    {
+      "candidate_id": "FINAL-A",
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "tp_bps": 1000,
+      "track": "MAINLINE",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "candidate_id": "FINAL-B",
+      "fallback_ms": 15000,
+      "hard_stop_bps": null,
+      "tp_bps": null,
+      "track": "MAINLINE",
+      "trail_activation_bps": 1000,
+      "trail_giveback_bps": 300,
+      "variant_id": "E4_ACT10_GB03_T15"
+    },
+    {
+      "candidate_id": "SENS-C",
+      "fallback_ms": 5000,
+      "hard_stop_bps": null,
+      "tp_bps": 2000,
+      "track": "SENSITIVITY_ONLY",
+      "trail_activation_bps": null,
+      "trail_giveback_bps": null,
+      "variant_id": "SENS_TP20_T5"
+    }
+  ],
+  "phase3_gate": {
+    "on_fail": "PHASE3_FINAL_VALIDATION_FAIL",
+    "on_pass": "PHASE3_FINAL_VALIDATION_PASS",
+    "paper_trading_build_allowed_only_on_pass": true,
+    "pass_if": [
+      "all source bindings validate",
+      "immutable freeze quick_check passes",
+      "entry counts reproduce exactly",
+      "clean 5m counts reproduce exactly",
+      "FINAL-A/FINAL-B/SENS-C reproduce audited E5 rows exactly",
+      "two independent exit-evaluation passes over cached clean paths hash identically",
+      "terminal accounting remains complete",
+      "no lookahead/interpolation/future leakage introduced"
+    ]
+  },
+  "phase4_handoff_intent": {
+    "FINAL_A": "paper mainline track",
+    "FINAL_B": "paper mainline track",
+    "SENS_C": "separate sensitivity track",
+    "real_time_cost_and_execution_modeling_begins_in_phase4": true,
+    "same_live_candidate_signals_where_practical": true
+  },
+  "preconditions": {
+    "EXP-0011_final_candidate_selection": "LOCKED",
+    "EXP-0011_postrun_audit": "PASS",
+    "entry_A_B_C_D_fixed": true,
+    "no_further_DEV_FREEZE_0002_exit_tuning": true
+  },
+  "purpose": "Deterministically validate the already-selected Phase-3 finalists end-to-end. This experiment performs no parameter search and cannot select a new winner.",
+  "research_guardrails": {
+    "E5_interactions_reopened": false,
+    "execution_fill_modeled_here": false,
+    "fees_modeled_here": false,
+    "further_exit_tuning_allowed": false,
+    "hard_stop_reopened": false,
+    "latency_modeled_here": false,
+    "live_rule_selected": false,
+    "profitability_claim_allowed": false,
+    "single_DEV_data_winner_selected": false,
+    "slippage_modeled_here": false
+  },
+  "schema_version": "P3-FINAL-VALIDATION-DESIGN-0.1",
+  "source_binding": {
+    "EXP-0011_E5_audit_file": "EXP-0011_E5_small_interaction_postrun_audit_v0_1.json",
+    "EXP-0011_E5_audit_sha256": "8b15cb5936e14aa24ea7e54eeb095370daa52b1220be67612f1b1c32ab120212",
+    "EXP-0011_E5_results_file": "EXP-0011_E5_small_interaction_results_v0_1.json",
+    "EXP-0011_E5_results_sha256": "7d0b8b5dc91eca075688555a0d8bb5d00da91bde6180e59b5136efef9f3fb78c",
+    "EXP-0011_final_selection_file": "EXP-0011_E5_final_candidate_selection_v0_1.json",
+    "EXP-0011_final_selection_sha256": "978559d0aed675bd6e2488a00363bc69cf2f360e172955963cff0f826ca6cfe8"
+  },
+  "status": "LOCKED_BEFORE_FINAL_VALIDATION_RUN",
+  "validation_plan": {
+    "compare_against_audited_EXP_0011_rows": true,
+    "coverage_binding_required": true,
+    "deterministic_result_hash_match_required": true,
+    "double_evaluate_cached_paths_for_determinism": true,
+    "evaluate_only_locked_finalists": true,
+    "exact_metric_reproduction_required": true,
+    "independent_end_to_end_replay": true,
+    "no_candidate_promotion_or_demotion": true,
+    "no_parameter_search": true,
+    "reproduce_locked_clean_5m_counts": true,
+    "reproduce_locked_entry_candidate_counts": true,
+    "source_hash_binding_required": true,
+    "sqlite_quick_check_required": true
+  }
+}

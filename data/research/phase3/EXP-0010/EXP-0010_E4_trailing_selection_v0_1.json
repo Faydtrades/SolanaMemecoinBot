@@ -1,0 +1,162 @@
+{
+  "comparison_to_E3": {
+    "E3_primary_anchor": "TP10_T15s",
+    "E3_primary_remains_locked": true,
+    "E4_does_not_replace_E3_before_E5": true,
+    "interpretation": "Trailing variants increase gross-reference mean relative to TP10/T15s but generally reduce the median exit. This indicates more runner/tail capture, not an unambiguous replacement for fixed TP."
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "freeze_id": "DEV-FREEZE-0002",
+    "untouched_oos": false
+  },
+  "evidence": {
+    "ACT05_GB03": {
+      "activation_count_sum": 409,
+      "activation_rate_clean_paths": 0.6360808709175739,
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1096,
+        -1355,
+        -1627
+      ],
+      "role_p50_exit_bps": [
+        495,
+        412,
+        539
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "trail_exit_count_sum": 312,
+      "trail_exit_rate_activated": 0.7628361858190709,
+      "trail_exit_rate_clean_paths": 0.48522550544323484,
+      "weighted_mean_exit_bps": 518.7839116719243,
+      "weighted_positive_rate": 0.7113564668769716
+    },
+    "ACT05_GB05": {
+      "activation_count_sum": 409,
+      "activation_rate_clean_paths": 0.6360808709175739,
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1096,
+        -1355,
+        -1659
+      ],
+      "role_p50_exit_bps": [
+        495,
+        362,
+        539
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "trail_exit_count_sum": 285,
+      "trail_exit_rate_activated": 0.6968215158924206,
+      "trail_exit_rate_clean_paths": 0.4432348367029549,
+      "weighted_mean_exit_bps": 517.3943217665615,
+      "weighted_positive_rate": 0.7034700315457413
+    },
+    "ACT10_GB03": {
+      "activation_count_sum": 332,
+      "activation_rate_clean_paths": 0.5163297045101088,
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1146,
+        -1454,
+        -1659
+      ],
+      "role_p50_exit_bps": [
+        582,
+        546,
+        692
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "trail_exit_count_sum": 245,
+      "trail_exit_rate_activated": 0.7379518072289156,
+      "trail_exit_rate_clean_paths": 0.3810264385692068,
+      "weighted_mean_exit_bps": 542.0362776025237,
+      "weighted_positive_rate": 0.692429022082019
+    },
+    "ACT10_GB05": {
+      "activation_count_sum": 332,
+      "activation_rate_clean_paths": 0.5163297045101088,
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1146,
+        -1454,
+        -1662
+      ],
+      "role_p50_exit_bps": [
+        551,
+        464,
+        567
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "trail_exit_count_sum": 228,
+      "trail_exit_rate_activated": 0.6867469879518072,
+      "trail_exit_rate_clean_paths": 0.3545878693623639,
+      "weighted_mean_exit_bps": 518.5425867507886,
+      "weighted_positive_rate": 0.6861198738170347
+    }
+  },
+  "experiment_id": "EXP-0010",
+  "guardrails": {
+    "E3_selection_unchanged": true,
+    "T5s_sensitivity_added": false,
+    "entry_A_B_C_D_fixed": true,
+    "fixed_tp_combined_with_trailing": false,
+    "hard_stop_added": false,
+    "note": "This is development-data research carry-forward only. E5 will test a small prelocked interaction shortlist; no live rule is selected here.",
+    "partial_or_multi_tp_added": false,
+    "profitability_claim_allowed": false
+  },
+  "mainline": {
+    "lower_activation_neighbor": {
+      "activation_threshold_bps": 500,
+      "fallback_time_stop_ms": 15000,
+      "giveback_bps": 300,
+      "reason": "Neighboring lower activation retains high positive rate and the highest trail-exit participation; useful for E5 interaction stability.",
+      "variant_id": "ACT05_GB03"
+    },
+    "primary_anchor": {
+      "activation_threshold_bps": 1000,
+      "fallback_time_stop_ms": 15000,
+      "giveback_bps": 300,
+      "reason": "Most consistent mean-ranking across ROBUST_1/2/3, strong median returns, meaningful activation/trail-exit rates, and stable downside without depending on a single robust regime.",
+      "variant_id": "ACT10_GB03"
+    },
+    "wider_giveback_neighbor": {
+      "activation_threshold_bps": 1000,
+      "fallback_time_stop_ms": 15000,
+      "giveback_bps": 500,
+      "reason": "Neighboring wider giveback remains strong across all three robust regimes and tests whether the ACT10/GB03 result is a narrow spike.",
+      "variant_id": "ACT10_GB05"
+    }
+  },
+  "not_promoted": {
+    "ACT15_family": "Not promoted: lower activation participation and generally weaker cross-regime results.",
+    "GB10_family": "Not promoted: wider giveback generally lowers positive rate/median and reduces the evidence that trailing materially helps."
+  },
+  "plateau_context": {
+    "ACT05_GB05": "Retained as supporting plateau evidence but not a mainline slot.",
+    "supported_region": "Activation +5% to +10% with giveback 3% to 5% forms the strongest coarse trailing neighborhood. +15% activation and 10% giveback are generally weaker and less active."
+  },
+  "schema_version": "P3-E4-TRAILING-SELECTION-0.1",
+  "selection_id": "EXP-0010-E4-SELECTION-001",
+  "source_binding": {
+    "EXP-0009_selection_file": "EXP-0009_E3_profit_taking_selection_v0_1.json",
+    "EXP-0009_selection_sha256": "3ba9fc0aae8d27e64f479bf3fbc99a40bff4657404f11797af542d17022136aa",
+    "design_file": "EXP-0010_E4_trailing_design_v0_1.json",
+    "design_sha256": "a2fab084dd4fc3d7f90ddaf16b537be3a66e6148751a5600f71c86057768ef62",
+    "postrun_audit_file": "EXP-0010_E4_trailing_postrun_audit_v0_1.json",
+    "postrun_audit_sha256": "3666847b8d9cdda460f8f09bd84c9abac0138303832c47605a990f03a30be1c2",
+    "results_file": "EXP-0010_E4_trailing_results_v0_1.json",
+    "results_sha256": "0668030b6fc0b79c5bb65c79fdca9b050b8a32076996d0f23e10fe9e3b5d4d7f"
+  },
+  "status": "POSTRUN_RESEARCH_CARRY_FORWARD"
+}

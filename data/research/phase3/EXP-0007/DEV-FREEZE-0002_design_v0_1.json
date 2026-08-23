@@ -1,0 +1,47 @@
+{
+  "dataset_role": "DEVELOPMENT_DISCOVERY",
+  "design_id": "DEV-FREEZE-0002-DESIGN-001",
+  "deterministic_design_sha256": "c695aae5cf24f8ffa5673dffa846e866e96635e66761326b650b2df65523a6b5",
+  "entry_research_binding": {
+    "A_B_C_D_parameters_fixed": true,
+    "deferred_entry_hypotheses_in_mainline": false,
+    "source_selection": "EXP-0005_D_selection_v0_1.json"
+  },
+  "freeze_id": "DEV-FREEZE-0002",
+  "purpose": "fresh continuous development data for exit-path characterization/readiness",
+  "readiness_binding": {
+    "E1_min_clean_5m_per_robust_regime": 30,
+    "E1_min_clean_rate": 0.8,
+    "E2_min_clean_5m_per_robust_regime": 100,
+    "E2_min_clean_rate": 0.9,
+    "duration_alone_declares_ready": false,
+    "policy": "PHASE-3-CONTINUOUS-DEV-READINESS-001"
+  },
+  "safety": {
+    "exit_threshold_optimization_performed": false,
+    "immutable_builder_refuses_overwrite": true,
+    "immutable_builder_requires_closed_non_uncertain_segment": true,
+    "preview_opens_production_db_read_only": true,
+    "production_db_rows_mutated": false,
+    "profitability_claim_allowed": false
+  },
+  "schema_version": "P3-DEVFREEZE-DESIGN-0.1",
+  "selection_semantics": {
+    "clean_collector_segment_required": true,
+    "eligibility_rule": "t0 must fall inside the clean segment and t0+10m must be <= segment end; this guarantees room for a signal as late as t0+5m plus a 5m exit path",
+    "entry_window_ms": 300000,
+    "exit_path_horizon_ms": 300000,
+    "explicit_gaps_allowed_inside_selected_segment": false,
+    "future_activity_filter": false,
+    "future_outcome_filter": false,
+    "global_first_observed_tradable_must_be_inside_segment": true,
+    "global_first_trade_may_be_gap_recovery": false,
+    "required_tail_after_t0_ms": 600000,
+    "t0_definition": "global first observed BOT_TRUTH BUY/SELL for the mint",
+    "uncertain_close_allowed_for_immutable_freeze": false,
+    "uncertain_close_allowed_for_preview_only": true
+  },
+  "source": "production Phase-1 BOT_TRUTH database",
+  "status": "LOCKED_BEFORE_DEV_FREEZE_0002_RESULTS",
+  "untouched_oos": false
+}

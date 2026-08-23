@@ -1,0 +1,16 @@
+PHASE 4.3B0 — ROOT READY
+
+Extract this ZIP directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+It only adds:
+- scripts\phase4_live_candidate_integration_preflight_v0_1.py
+- docs\phase4\PHASE4_3B0_LIVE_INTEGRATION_PREFLIGHT_V0_1.md
+
+With (.venv) active and the collector STOPPED, run:
+
+python scripts\phase4_live_candidate_integration_preflight_v0_1.py
+
+This preflight performs no network/RPC, no wallet action, no paper order,
+and opens the production DB query-only.

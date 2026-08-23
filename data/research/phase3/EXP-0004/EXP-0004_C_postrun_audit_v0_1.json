@@ -1,0 +1,30 @@
+{
+  "checks": {
+    "candidate_rows_match": true,
+    "determinism": true,
+    "exact_600_grid": true,
+    "frontier_consistent": true,
+    "no_exit_optimization": true,
+    "no_profitability_claim": true,
+    "no_winner_selected": true,
+    "terminal_accounting": true
+  },
+  "counts": {
+    "candidate_outcome_rows": 14443,
+    "frontier_rows": 31,
+    "summary_rows": 600
+  },
+  "experiment_id": "EXP-0004",
+  "hashes": {
+    "EXP-0004_C_buyer_response_candidate_outcomes_v0_1.csv": "68aae2d06207888597eae9f987a91a18be2ff022477bd62d7325e6ae00d25856",
+    "EXP-0004_C_buyer_response_frontier_v0_1.csv": "9830e2e394adf89aef5fbb27453d71c4b1f1af6cd4e76133e515365e8909a592",
+    "EXP-0004_C_buyer_response_report_v0_1.json": "90da7b3f07aad824f1a33f8be91bbd2eb613131187b80db906f0368a831a8996",
+    "EXP-0004_C_buyer_response_summary_v0_1.csv": "1c68fbcb1c8468f6753299c06956cf53ae8a3c17015b5a288f0b03585f52c402",
+    "EXP-0004_C_crossAB_diagnostics_v0_1.csv": "40e3018678f5439bc49719225c0e52bec751fbdb2a6edd471c39bf3a59dfc13f",
+    "EXP-0004_C_neighborhood_diagnostics_v0_1.csv": "dc0023175af063c7ade3df5255fb7b6e13bf9cb723271a52ef66193bfb88660d",
+    "EXP-0004_manifest_v0_1.json": "123bd87161afda82a14116835d2501e87e961c40db40f482fccf8e64bf4f9935"
+  },
+  "method_note": "Cross-AB diagnostics summarize four regime-level results per C triple; overlapping candidate cohorts are not pooled as independent evidence.",
+  "result": "PASS",
+  "schema_version": "P3-EXP0004-POSTAUDIT-0.1"
+}

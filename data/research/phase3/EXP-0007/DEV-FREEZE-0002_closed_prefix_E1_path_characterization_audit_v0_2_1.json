@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "clean_paths_only": true,
+    "exact_three_robust_regimes": true,
+    "no_entry_parameter_change": true,
+    "no_exit_threshold_selection": true,
+    "no_profitability_claim": true,
+    "source_readiness_binding": true
+  },
+  "hashes": {
+    "DEV-FREEZE-0002_closed_prefix_E1_path_characterization_by_regime_v0_2_1.csv": "cbf39d0aa7819e0bc0f68a8025269b591c50a8661c40cd623ccaaa94b07d4eb2",
+    "DEV-FREEZE-0002_closed_prefix_E1_path_characterization_v0_2_1.json": "03c048918557c4b0993a8f523e1ced06e60e9f82f3825ba7c9ff9e43630bc396",
+    "DEV-FREEZE-0002_closed_prefix_locked_entry_readiness_report_v0_2_1.json": "c90064a0bb9b629746e56f306cd1740cf0d61d45c9882b537052885f56cce660"
+  },
+  "result": "PASS",
+  "schema_version": "P3-E1-CLOSED-PREFIX-AUDIT-0.2.1",
+  "source_readiness_tier": "E2_COARSE_EXIT_SEARCH_READY"
+}

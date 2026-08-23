@@ -1,0 +1,54 @@
+{
+  "amendment_reason": "Coverage diagnostic showed the live collector session is ~99.75% active but contains brief explicit WS reconnect gaps. Requiring one globally gap-free session segment would discard valid observations unrelated to those gaps.",
+  "dataset_role": "DEVELOPMENT_DISCOVERY",
+  "design_id": "DEV-FREEZE-0002-DESIGN-002",
+  "entry_research_binding": {
+    "A_B_C_D_parameters_fixed": true,
+    "deferred_entry_hypotheses_in_mainline": false,
+    "source_selection": "EXP-0005_D_selection_v0_1.json"
+  },
+  "freeze_id": "DEV-FREEZE-0002",
+  "readiness_binding": {
+    "E1_min_clean_5m_per_robust_regime": 30,
+    "E1_min_clean_rate": 0.8,
+    "E2_min_clean_5m_per_robust_regime": 100,
+    "E2_min_clean_rate": 0.9,
+    "duration_alone_declares_ready": false,
+    "policy": "PHASE-3-CONTINUOUS-DEV-READINESS-001"
+  },
+  "safety": {
+    "exit_threshold_optimization_performed": false,
+    "immutable_builder_refuses_overwrite": true,
+    "immutable_builder_requires_closed_non_uncertain_session": true,
+    "preview_opens_production_db_read_only": true,
+    "production_db_rows_mutated": false,
+    "profitability_claim_allowed": false
+  },
+  "schema_version": "P3-DEVFREEZE-DESIGN-0.2",
+  "selection_semantics": {
+    "eligibility_rule": "A token is eligible only if its global t0 and the entire closed interval [t0, t0+10m] lie inside one clean active collector interval in the selected session. Therefore any explicit WS gap touching that 10m window excludes that token, while gaps elsewhere in the session do not discard unrelated data.",
+    "entry_window_ms": 300000,
+    "exit_path_horizon_ms": 300000,
+    "explicit_gaps_allowed_in_session": true,
+    "explicit_gaps_ignored": false,
+    "future_activity_filter": false,
+    "future_outcome_filter": false,
+    "global_first_observed_tradable_must_be_inside_session": true,
+    "global_first_trade_may_be_gap_recovery": false,
+    "required_tail_after_t0_ms": 600000,
+    "selected_unit": "ONE CLOSED COLLECTOR SESSION",
+    "strategy_signal_used_for_cohort_selection": false,
+    "t0_definition": "global first observed BOT_TRUTH BUY/SELL for the mint",
+    "uncertain_close_allowed_for_immutable_freeze": false,
+    "uncertain_close_allowed_for_preview_only": true
+  },
+  "status": "LOCKED_AFTER_COVERAGE_DIAGNOSTIC_BEFORE_STRATEGY_OUTCOME_RESULTS",
+  "supersedes_design_id": "DEV-FREEZE-0002-DESIGN-001",
+  "untouched_oos": false,
+  "what_was_observed_before_amendment": {
+    "coverage_metadata_only": true,
+    "exit_outcomes_seen": false,
+    "pnl_seen": false,
+    "strategy_candidate_outcomes_seen": false
+  }
+}

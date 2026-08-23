@@ -1,0 +1,30 @@
+{
+  "checks": {
+    "candidate_rows_match": true,
+    "determinism": true,
+    "exact_105_grid": true,
+    "frontier_consistent": true,
+    "no_exit_optimization": true,
+    "no_profitability_claim": true,
+    "no_winner_selected": true,
+    "terminal_accounting": true
+  },
+  "counts": {
+    "candidate_outcome_rows": 5869,
+    "frontier_rows": 15,
+    "summary_rows": 105
+  },
+  "experiment_id": "EXP-0003",
+  "hashes": {
+    "EXP-0003_B_crossA_diagnostics_v0_1.csv": "d22c0634f5a4d16236850a900a3e2ceb282e25cb09c844a991ab252aeba7c018",
+    "EXP-0003_B_neighborhood_diagnostics_v0_1.csv": "b89a8243d3d2278b7bd24c34a76641ef704a4d867eb0862f199da547853106fe",
+    "EXP-0003_B_pullback_candidate_outcomes_v0_1.csv": "5d416e7e1aa7b9028ca14a8b054c12937b05bb22149eb25f2fc4842cac6f2410",
+    "EXP-0003_B_pullback_frontier_v0_1.csv": "8e710d08ea16339e086415e04e7592b1b82bc5fd4079f4941cc0d2e0d15791a8",
+    "EXP-0003_B_pullback_report_v0_1.json": "1260eb06a48c0241021a41f6324414284f3f677c540c53159a286cdc4aa3c915",
+    "EXP-0003_B_pullback_summary_v0_1.csv": "65b2fe15f679460f1b7430c730c500d16f864df3f42f19c6abe1e17710b4f8a9",
+    "EXP-0003_manifest_v0_1.json": "abe146b65d5ef1af698e78db6df0c5a57fe9b18a0847632a2095c0632721df62"
+  },
+  "method_note": "Cross-A diagnostics summarize five A-level results per B pair; overlapping cohorts are not pooled as independent evidence.",
+  "result": "PASS",
+  "schema_version": "P3-EXP0003-POSTAUDIT-0.1"
+}

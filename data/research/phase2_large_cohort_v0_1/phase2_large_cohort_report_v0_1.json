@@ -1,0 +1,1711 @@
+{
+  "adapter_skipped": {},
+  "cohort": {
+    "end_t0_observed_at_us": 1787078016873189,
+    "selection_rule": "BOT_TRUTH mints with >=1 BUY/SELL; newest by first Phase-1 tradable rowid; no minimum future activity/outcome filter",
+    "start_t0_observed_at_us": 1787071068723109,
+    "time_segment_count": 5,
+    "time_segments": [
+      {
+        "end_t0_observed_at_us": 1787071469779387,
+        "segment_id": 1,
+        "start_t0_observed_at_us": 1787071068723109,
+        "tokens": 200
+      },
+      {
+        "end_t0_observed_at_us": 1787074089038467,
+        "segment_id": 2,
+        "start_t0_observed_at_us": 1787071469780387,
+        "tokens": 200
+      },
+      {
+        "end_t0_observed_at_us": 1787074944344498,
+        "segment_id": 3,
+        "start_t0_observed_at_us": 1787074091437276,
+        "tokens": 200
+      },
+      {
+        "end_t0_observed_at_us": 1787075812823794,
+        "segment_id": 4,
+        "start_t0_observed_at_us": 1787074946582526,
+        "tokens": 200
+      },
+      {
+        "end_t0_observed_at_us": 1787078016873189,
+        "segment_id": 5,
+        "start_t0_observed_at_us": 1787075812865899,
+        "tokens": 200
+      }
+    ],
+    "tokens": 1000
+  },
+  "deterministic_payload_sha256": "fde76f40f1fe69a55c22193d264458a3015df8f2266e2b3fe895496bc29600d6",
+  "entry_window_ms": 300000,
+  "execution_model_used": false,
+  "future_return_label_included": false,
+  "normalized_events": 14459,
+  "performance_pnl_included": false,
+  "probes": [
+    {
+      "dropoff": {
+        "impulse_without_pullback": 74,
+        "no_impulse": 804,
+        "pullback_without_response": 44,
+        "response_without_candidate": 20
+      },
+      "final_classification_counts": {
+        "CANDIDATE_SIGNAL": 58,
+        "EXPIRED": 932,
+        "INVALIDATED": 10
+      },
+      "funnel": {
+        "buyer_response_confirmed": 78,
+        "candidate_signal": 58,
+        "clock_expired": 932,
+        "eligible_tokens": 1000,
+        "expired": 932,
+        "impulse_confirmed": 196,
+        "invalidated": 10,
+        "open_at_data_end": 0,
+        "pullback_active": 122,
+        "rejected": 0
+      },
+      "furthest_stage_counts": {
+        "CANDIDATE_SIGNAL": 58,
+        "DISCOVERED": 23,
+        "IMPULSE_CONFIRMED": 10,
+        "PULLBACK_ACTIVE": 8,
+        "WAITING_FOR_IMPULSE": 781,
+        "WAITING_FOR_PULLBACK": 64,
+        "WAITING_FOR_RECLAIM": 20,
+        "WAITING_FOR_RESPONSE": 36
+      },
+      "last_reason_counts": {
+        "ENTRY_WINDOW_EXPIRED": 932,
+        "PULLBACK_TOO_DEEP": 10,
+        "RECLAIM_CONFIRMED": 58
+      },
+      "metrics": {
+        "candidate_age_ms": {
+          "max": 287778,
+          "min": 9857,
+          "n": 58,
+          "p10": 17116,
+          "p25": 27647,
+          "p50": 60866,
+          "p75": 117397,
+          "p90": 211105,
+          "p95": 228102
+        },
+        "candidate_drawdown_from_high_bps": {
+          "max": 0,
+          "min": -6088,
+          "n": 58,
+          "p10": -4811,
+          "p25": -3733,
+          "p50": -1361,
+          "p75": 0,
+          "p90": 0,
+          "p95": 0
+        },
+        "candidate_return_from_t0_bps": {
+          "max": 32440,
+          "min": -5123,
+          "n": 58,
+          "p10": -2358,
+          "p25": -152,
+          "p50": 3377,
+          "p75": 8456,
+          "p90": 14370,
+          "p95": 22265
+        },
+        "deepest_pullback_depth_bps": {
+          "max": 9700,
+          "min": 1003,
+          "n": 124,
+          "p10": 1436,
+          "p25": 1815,
+          "p50": 2782,
+          "p75": 5151,
+          "p90": 6439,
+          "p95": 7028
+        },
+        "impulse_3s_buys": {
+          "max": 8,
+          "min": 0,
+          "n": 196,
+          "p10": 1,
+          "p25": 1,
+          "p50": 2,
+          "p75": 2,
+          "p90": 3,
+          "p95": 4
+        },
+        "impulse_3s_net_flow_lamports": {
+          "max": 20926383171,
+          "min": -1030200235,
+          "n": 196,
+          "p10": 21291851,
+          "p25": 128317116,
+          "p50": 1522476671,
+          "p75": 3338613742,
+          "p90": 5609876542,
+          "p95": 7860000000
+        },
+        "impulse_age_ms": {
+          "max": 296483,
+          "min": 0,
+          "n": 196,
+          "p10": 5,
+          "p25": 24,
+          "p50": 3164,
+          "p75": 35939,
+          "p90": 141091,
+          "p95": 200787
+        },
+        "impulse_peak_age_ms": {
+          "max": 299631,
+          "min": 1,
+          "n": 196,
+          "p10": 1691,
+          "p25": 5104,
+          "p50": 19265,
+          "p75": 81849,
+          "p90": 196266,
+          "p95": 277325
+        },
+        "impulse_peak_return_bps": {
+          "max": 138496,
+          "min": 520,
+          "n": 196,
+          "p10": 773,
+          "p25": 1352,
+          "p50": 2658,
+          "p75": 5341,
+          "p90": 9332,
+          "p95": 14299
+        },
+        "impulse_return_bps": {
+          "max": 138496,
+          "min": 502,
+          "n": 196,
+          "p10": 576,
+          "p25": 668,
+          "p50": 1033,
+          "p75": 1721,
+          "p90": 2825,
+          "p95": 4456
+        },
+        "impulse_to_pullback_ms": {
+          "max": 297591,
+          "min": 4,
+          "n": 122,
+          "p10": 4333,
+          "p25": 8179,
+          "p50": 19887,
+          "p75": 47347,
+          "p90": 109232,
+          "p95": 181688
+        },
+        "impulse_trade_count": {
+          "max": 38,
+          "min": 2,
+          "n": 196,
+          "p10": 2,
+          "p25": 2,
+          "p50": 3,
+          "p75": 5,
+          "p90": 13,
+          "p95": 24
+        },
+        "impulse_unique_buyers": {
+          "max": 20,
+          "min": 2,
+          "n": 196,
+          "p10": 2,
+          "p25": 2,
+          "p50": 2,
+          "p75": 3,
+          "p90": 5,
+          "p95": 8
+        },
+        "pullback_active_age_ms": {
+          "max": 297597,
+          "min": 1915,
+          "n": 122,
+          "p10": 8032,
+          "p25": 14348,
+          "p50": 32173,
+          "p75": 86326,
+          "p90": 173805,
+          "p95": 219516
+        },
+        "pullback_depth_at_activation_bps": {
+          "max": 6643,
+          "min": 0,
+          "n": 122,
+          "p10": 1053,
+          "p25": 1130,
+          "p50": 1632,
+          "p75": 2238,
+          "p90": 3327,
+          "p95": 4332
+        },
+        "pullback_low_age_ms": {
+          "max": 297597,
+          "min": 1915,
+          "n": 124,
+          "p10": 13013,
+          "p25": 26383,
+          "p50": 51918,
+          "p75": 151142,
+          "p90": 240128,
+          "p95": 257536
+        },
+        "pullback_low_depth_at_response_bps": {
+          "max": 6741,
+          "min": 1003,
+          "n": 78,
+          "p10": 1329,
+          "p25": 1767,
+          "p50": 2866,
+          "p75": 4620,
+          "p90": 5452,
+          "p95": 6377
+        },
+        "pullback_to_response_ms": {
+          "max": 177510,
+          "min": 3,
+          "n": 78,
+          "p10": 3313,
+          "p25": 6883,
+          "p50": 12366,
+          "p75": 32570,
+          "p90": 77971,
+          "p95": 106446
+        },
+        "reclaim_extension_bps": {
+          "max": 4047,
+          "min": 201,
+          "n": 58,
+          "p10": 266,
+          "p25": 370,
+          "p50": 772,
+          "p75": 1693,
+          "p90": 2815,
+          "p95": 3309
+        },
+        "response_10s_buys": {
+          "max": 15,
+          "min": 1,
+          "n": 78,
+          "p10": 1,
+          "p25": 1,
+          "p50": 2,
+          "p75": 3,
+          "p90": 5,
+          "p95": 9
+        },
+        "response_10s_net_flow_lamports": {
+          "max": 14303096090,
+          "min": -15123217281,
+          "n": 78,
+          "p10": -1855474087,
+          "p25": -43908121,
+          "p50": 29333333,
+          "p75": 462469907,
+          "p90": 1317615418,
+          "p95": 3230006454
+        },
+        "response_10s_sells": {
+          "max": 15,
+          "min": 0,
+          "n": 78,
+          "p10": 0,
+          "p25": 0,
+          "p50": 2,
+          "p75": 2,
+          "p90": 4,
+          "p95": 6
+        },
+        "response_age_ms": {
+          "max": 299069,
+          "min": 5795,
+          "n": 78,
+          "p10": 14286,
+          "p25": 21027,
+          "p50": 49373,
+          "p75": 100084,
+          "p90": 185699,
+          "p95": 217659
+        },
+        "response_failed_new_low_count": {
+          "max": 3,
+          "min": 0,
+          "n": 1000,
+          "p10": 0,
+          "p25": 0,
+          "p50": 0,
+          "p75": 0,
+          "p90": 0,
+          "p95": 0
+        },
+        "response_rebound_bps": {
+          "max": 14361,
+          "min": 216,
+          "n": 78,
+          "p10": 282,
+          "p25": 541,
+          "p50": 1415,
+          "p75": 2459,
+          "p90": 4852,
+          "p95": 7577
+        },
+        "response_to_candidate_ms": {
+          "max": 176550,
+          "min": 0,
+          "n": 58,
+          "p10": 5,
+          "p25": 1674,
+          "p50": 4859,
+          "p75": 15341,
+          "p90": 39694,
+          "p95": 89156
+        },
+        "response_window_buys": {
+          "max": 10,
+          "min": 1,
+          "n": 78,
+          "p10": 1,
+          "p25": 1,
+          "p50": 1,
+          "p75": 2,
+          "p90": 3,
+          "p95": 4
+        },
+        "response_window_net_flow_lamports": {
+          "max": 4781114709,
+          "min": 97777,
+          "n": 78,
+          "p10": 8368969,
+          "p25": 29333333,
+          "p50": 197530863,
+          "p75": 720541218,
+          "p90": 1496104164,
+          "p95": 2860068984
+        },
+        "response_window_price_change_bps": {
+          "max": 4660,
+          "min": -1838,
+          "n": 78,
+          "p10": -18,
+          "p25": 0,
+          "p50": 0,
+          "p75": 216,
+          "p90": 1623,
+          "p95": 2459
+        },
+        "response_window_sells": {
+          "max": 9,
+          "min": 0,
+          "n": 78,
+          "p10": 0,
+          "p25": 0,
+          "p50": 0,
+          "p75": 1,
+          "p90": 1,
+          "p95": 2
+        },
+        "runaway_reject_age_ms": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null
+        },
+        "transition_count": {
+          "max": 13,
+          "min": 1,
+          "n": 1000,
+          "p10": 2,
+          "p25": 2,
+          "p50": 2,
+          "p75": 2,
+          "p90": 6,
+          "p95": 7
+        }
+      },
+      "parameter_set": {
+        "buyer_response_parameters": {
+          "min_buys": 1,
+          "min_net_flow_lamports": 1,
+          "min_rebound_bps": 200,
+          "window_id": "3s"
+        },
+        "impulse_parameters": {
+          "min_return_bps": 500,
+          "min_trades_since_t0": 2,
+          "min_unique_buyers_since_t0": 2
+        },
+        "max_entry_age_ms": 300000,
+        "parameter_set_id": "FP1-RESEARCH-PROBE-LOOSE-0001",
+        "pullback_parameters": {
+          "max_depth_bps": 7000,
+          "min_depth_bps": 1000
+        },
+        "reclaim_parameters": {
+          "min_extension_from_response_bps": 200
+        },
+        "runaway_entry_parameters": {
+          "max_extension_from_response_bps": 5000
+        },
+        "strategy_version": "v1.0"
+      },
+      "time_segments": [
+        {
+          "buyer_response_confirmed": 10,
+          "candidate_rate_ppm": 30000,
+          "candidate_signal": 6,
+          "end_t0_observed_at_us": 1787071469779387,
+          "expired": 192,
+          "impulse_confirmed": 29,
+          "invalidated": 2,
+          "open_at_data_end": 0,
+          "pullback_active": 15,
+          "rejected": 0,
+          "segment_id": 1,
+          "start_t0_observed_at_us": 1787071068723109,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 8,
+          "candidate_rate_ppm": 30000,
+          "candidate_signal": 6,
+          "end_t0_observed_at_us": 1787074089038467,
+          "expired": 194,
+          "impulse_confirmed": 26,
+          "invalidated": 0,
+          "open_at_data_end": 0,
+          "pullback_active": 14,
+          "rejected": 0,
+          "segment_id": 2,
+          "start_t0_observed_at_us": 1787071469780387,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 19,
+          "candidate_rate_ppm": 75000,
+          "candidate_signal": 15,
+          "end_t0_observed_at_us": 1787074944344498,
+          "expired": 184,
+          "impulse_confirmed": 49,
+          "invalidated": 1,
+          "open_at_data_end": 0,
+          "pullback_active": 29,
+          "rejected": 0,
+          "segment_id": 3,
+          "start_t0_observed_at_us": 1787074091437276,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 18,
+          "candidate_rate_ppm": 70000,
+          "candidate_signal": 14,
+          "end_t0_observed_at_us": 1787075812823794,
+          "expired": 182,
+          "impulse_confirmed": 39,
+          "invalidated": 4,
+          "open_at_data_end": 0,
+          "pullback_active": 27,
+          "rejected": 0,
+          "segment_id": 4,
+          "start_t0_observed_at_us": 1787074946582526,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 23,
+          "candidate_rate_ppm": 85000,
+          "candidate_signal": 17,
+          "end_t0_observed_at_us": 1787078016873189,
+          "expired": 180,
+          "impulse_confirmed": 53,
+          "invalidated": 3,
+          "open_at_data_end": 0,
+          "pullback_active": 37,
+          "rejected": 0,
+          "segment_id": 5,
+          "start_t0_observed_at_us": 1787075812865899,
+          "tokens": 200
+        }
+      ]
+    },
+    {
+      "dropoff": {
+        "impulse_without_pullback": 59,
+        "no_impulse": 870,
+        "pullback_without_response": 46,
+        "response_without_candidate": 11
+      },
+      "final_classification_counts": {
+        "CANDIDATE_SIGNAL": 14,
+        "EXPIRED": 962,
+        "INVALIDATED": 22,
+        "REJECT": 2
+      },
+      "funnel": {
+        "buyer_response_confirmed": 25,
+        "candidate_signal": 14,
+        "clock_expired": 962,
+        "eligible_tokens": 1000,
+        "expired": 962,
+        "impulse_confirmed": 130,
+        "invalidated": 22,
+        "open_at_data_end": 0,
+        "pullback_active": 71,
+        "rejected": 2
+      },
+      "furthest_stage_counts": {
+        "CANDIDATE_SIGNAL": 14,
+        "DISCOVERED": 23,
+        "IMPULSE_CONFIRMED": 8,
+        "PULLBACK_ACTIVE": 5,
+        "WAITING_FOR_IMPULSE": 847,
+        "WAITING_FOR_PULLBACK": 51,
+        "WAITING_FOR_RECLAIM": 11,
+        "WAITING_FOR_RESPONSE": 41
+      },
+      "last_reason_counts": {
+        "ENTRY_WINDOW_EXPIRED": 962,
+        "PRICE_RAN_AWAY": 2,
+        "PULLBACK_TOO_DEEP": 22,
+        "RECLAIM_CONFIRMED": 14
+      },
+      "metrics": {
+        "candidate_age_ms": {
+          "max": 265066,
+          "min": 23156,
+          "n": 14,
+          "p10": 27961,
+          "p25": 60888,
+          "p50": 88998,
+          "p75": 228130,
+          "p90": 252720,
+          "p95": 265066
+        },
+        "candidate_drawdown_from_high_bps": {
+          "max": 0,
+          "min": -3697,
+          "n": 14,
+          "p10": -3277,
+          "p25": -3185,
+          "p50": -2736,
+          "p75": -357,
+          "p90": 0,
+          "p95": 0
+        },
+        "candidate_return_from_t0_bps": {
+          "max": 32440,
+          "min": -1516,
+          "n": 14,
+          "p10": -385,
+          "p25": 2105,
+          "p50": 5076,
+          "p75": 8502,
+          "p90": 25771,
+          "p95": 32440
+        },
+        "deepest_pullback_depth_bps": {
+          "max": 9799,
+          "min": 2073,
+          "n": 72,
+          "p10": 2782,
+          "p25": 3318,
+          "p50": 4735,
+          "p75": 6007,
+          "p90": 6909,
+          "p95": 8053
+        },
+        "impulse_3s_buys": {
+          "max": 9,
+          "min": 0,
+          "n": 130,
+          "p10": 1,
+          "p25": 1,
+          "p50": 3,
+          "p75": 3,
+          "p90": 4,
+          "p95": 5
+        },
+        "impulse_3s_net_flow_lamports": {
+          "max": 28000000000,
+          "min": -181571447,
+          "n": 130,
+          "p10": 23308983,
+          "p25": 197530863,
+          "p50": 2558169338,
+          "p75": 5629629626,
+          "p90": 8730000000,
+          "p95": 11730000000
+        },
+        "impulse_age_ms": {
+          "max": 299631,
+          "min": 1,
+          "n": 130,
+          "p10": 9,
+          "p25": 35,
+          "p50": 8231,
+          "p75": 74540,
+          "p90": 161922,
+          "p95": 253431
+        },
+        "impulse_peak_age_ms": {
+          "max": 299631,
+          "min": 2,
+          "n": 130,
+          "p10": 2512,
+          "p25": 6582,
+          "p50": 23494,
+          "p75": 136482,
+          "p90": 219042,
+          "p95": 286736
+        },
+        "impulse_peak_return_bps": {
+          "max": 138496,
+          "min": 1584,
+          "n": 130,
+          "p10": 1846,
+          "p25": 2475,
+          "p50": 4341,
+          "p75": 8310,
+          "p90": 16408,
+          "p95": 26559
+        },
+        "impulse_return_bps": {
+          "max": 138496,
+          "min": 1502,
+          "n": 130,
+          "p10": 1585,
+          "p25": 1797,
+          "p50": 2161,
+          "p75": 3249,
+          "p90": 5609,
+          "p95": 9332
+        },
+        "impulse_to_pullback_ms": {
+          "max": 297585,
+          "min": 14,
+          "n": 71,
+          "p10": 8140,
+          "p25": 14130,
+          "p50": 38531,
+          "p75": 87760,
+          "p90": 139783,
+          "p95": 204154
+        },
+        "impulse_trade_count": {
+          "max": 102,
+          "min": 3,
+          "n": 130,
+          "p10": 3,
+          "p25": 3,
+          "p50": 4,
+          "p75": 10,
+          "p90": 22,
+          "p95": 28
+        },
+        "impulse_unique_buyers": {
+          "max": 42,
+          "min": 3,
+          "n": 130,
+          "p10": 3,
+          "p25": 3,
+          "p50": 3,
+          "p75": 4,
+          "p90": 8,
+          "p95": 12
+        },
+        "pullback_active_age_ms": {
+          "max": 297597,
+          "min": 8142,
+          "n": 71,
+          "p10": 17130,
+          "p25": 28592,
+          "p50": 60015,
+          "p75": 151142,
+          "p90": 224029,
+          "p95": 277639
+        },
+        "pullback_depth_at_activation_bps": {
+          "max": 5438,
+          "min": 61,
+          "n": 71,
+          "p10": 2516,
+          "p25": 2624,
+          "p50": 2883,
+          "p75": 3835,
+          "p90": 4511,
+          "p95": 5151
+        },
+        "pullback_low_age_ms": {
+          "max": 297597,
+          "min": 8628,
+          "n": 72,
+          "p10": 21950,
+          "p25": 47757,
+          "p50": 102521,
+          "p75": 188768,
+          "p90": 241841,
+          "p95": 281782
+        },
+        "pullback_low_depth_at_response_bps": {
+          "max": 5618,
+          "min": 2621,
+          "n": 25,
+          "p10": 2760,
+          "p25": 3092,
+          "p50": 3841,
+          "p75": 5020,
+          "p90": 5509,
+          "p95": 5544
+        },
+        "pullback_to_response_ms": {
+          "max": 207696,
+          "min": 39,
+          "n": 25,
+          "p10": 2648,
+          "p25": 4885,
+          "p50": 10543,
+          "p75": 19605,
+          "p90": 58154,
+          "p95": 82550
+        },
+        "reclaim_extension_bps": {
+          "max": 2043,
+          "min": 542,
+          "n": 14,
+          "p10": 545,
+          "p25": 579,
+          "p50": 699,
+          "p75": 1304,
+          "p90": 1888,
+          "p95": 2043
+        },
+        "response_10s_buys": {
+          "max": 10,
+          "min": 2,
+          "n": 25,
+          "p10": 2,
+          "p25": 2,
+          "p50": 4,
+          "p75": 5,
+          "p90": 7,
+          "p95": 9
+        },
+        "response_10s_net_flow_lamports": {
+          "max": 3467745066,
+          "min": -11626685203,
+          "n": 25,
+          "p10": -4362910761,
+          "p25": -164997692,
+          "p50": 499896926,
+          "p75": 977777777,
+          "p90": 1699492477,
+          "p95": 1889330843
+        },
+        "response_10s_sells": {
+          "max": 10,
+          "min": 0,
+          "n": 25,
+          "p10": 0,
+          "p25": 0,
+          "p50": 2,
+          "p75": 3,
+          "p90": 5,
+          "p95": 6
+        },
+        "response_age_ms": {
+          "max": 254756,
+          "min": 18297,
+          "n": 25,
+          "p10": 22285,
+          "p25": 25311,
+          "p50": 69168,
+          "p75": 173254,
+          "p90": 229409,
+          "p95": 238829
+        },
+        "response_failed_new_low_count": {
+          "max": 1,
+          "min": 0,
+          "n": 1000,
+          "p10": 0,
+          "p25": 0,
+          "p50": 0,
+          "p75": 0,
+          "p90": 0,
+          "p95": 0
+        },
+        "response_rebound_bps": {
+          "max": 9288,
+          "min": 502,
+          "n": 25,
+          "p10": 534,
+          "p25": 624,
+          "p50": 1450,
+          "p75": 3617,
+          "p90": 5258,
+          "p95": 6129
+        },
+        "response_to_candidate_ms": {
+          "max": 35042,
+          "min": 12,
+          "n": 14,
+          "p10": 22,
+          "p25": 35,
+          "p50": 2585,
+          "p75": 10024,
+          "p90": 12803,
+          "p95": 35042
+        },
+        "response_window_buys": {
+          "max": 5,
+          "min": 2,
+          "n": 25,
+          "p10": 2,
+          "p25": 2,
+          "p50": 2,
+          "p75": 3,
+          "p90": 4,
+          "p95": 5
+        },
+        "response_window_net_flow_lamports": {
+          "max": 2054202291,
+          "min": 102354616,
+          "n": 25,
+          "p10": 143303163,
+          "p25": 342862231,
+          "p50": 607676082,
+          "p75": 977777777,
+          "p90": 1595061728,
+          "p95": 1601714700
+        },
+        "response_window_price_change_bps": {
+          "max": 4660,
+          "min": -2383,
+          "n": 25,
+          "p10": 6,
+          "p25": 64,
+          "p50": 297,
+          "p75": 541,
+          "p90": 3157,
+          "p95": 3558
+        },
+        "response_window_sells": {
+          "max": 5,
+          "min": 0,
+          "n": 25,
+          "p10": 0,
+          "p25": 0,
+          "p50": 0,
+          "p75": 1,
+          "p90": 2,
+          "p95": 2
+        },
+        "runaway_reject_age_ms": {
+          "max": 96665,
+          "min": 25271,
+          "n": 2,
+          "p10": 25271,
+          "p25": 25271,
+          "p50": 25271,
+          "p75": 96665,
+          "p90": 96665,
+          "p95": 96665
+        },
+        "transition_count": {
+          "max": 9,
+          "min": 1,
+          "n": 1000,
+          "p10": 2,
+          "p25": 2,
+          "p50": 2,
+          "p75": 2,
+          "p90": 4,
+          "p95": 6
+        }
+      },
+      "parameter_set": {
+        "buyer_response_parameters": {
+          "min_buys": 2,
+          "min_net_flow_lamports": 100000000,
+          "min_rebound_bps": 500,
+          "window_id": "3s"
+        },
+        "impulse_parameters": {
+          "min_return_bps": 1500,
+          "min_trades_since_t0": 3,
+          "min_unique_buyers_since_t0": 3
+        },
+        "max_entry_age_ms": 300000,
+        "parameter_set_id": "FP1-RESEARCH-PROBE-MID-0001",
+        "pullback_parameters": {
+          "max_depth_bps": 6000,
+          "min_depth_bps": 2500
+        },
+        "reclaim_parameters": {
+          "min_extension_from_response_bps": 500
+        },
+        "runaway_entry_parameters": {
+          "max_extension_from_response_bps": 2500
+        },
+        "strategy_version": "v1.0"
+      },
+      "time_segments": [
+        {
+          "buyer_response_confirmed": 3,
+          "candidate_rate_ppm": 10000,
+          "candidate_signal": 2,
+          "end_t0_observed_at_us": 1787071469779387,
+          "expired": 194,
+          "impulse_confirmed": 22,
+          "invalidated": 4,
+          "open_at_data_end": 0,
+          "pullback_active": 8,
+          "rejected": 0,
+          "segment_id": 1,
+          "start_t0_observed_at_us": 1787071068723109,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 2,
+          "candidate_rate_ppm": 5000,
+          "candidate_signal": 1,
+          "end_t0_observed_at_us": 1787074089038467,
+          "expired": 196,
+          "impulse_confirmed": 19,
+          "invalidated": 3,
+          "open_at_data_end": 0,
+          "pullback_active": 7,
+          "rejected": 0,
+          "segment_id": 2,
+          "start_t0_observed_at_us": 1787071469780387,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 7,
+          "candidate_rate_ppm": 25000,
+          "candidate_signal": 5,
+          "end_t0_observed_at_us": 1787074944344498,
+          "expired": 191,
+          "impulse_confirmed": 30,
+          "invalidated": 4,
+          "open_at_data_end": 0,
+          "pullback_active": 18,
+          "rejected": 0,
+          "segment_id": 3,
+          "start_t0_observed_at_us": 1787074091437276,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 6,
+          "candidate_rate_ppm": 15000,
+          "candidate_signal": 3,
+          "end_t0_observed_at_us": 1787075812823794,
+          "expired": 192,
+          "impulse_confirmed": 25,
+          "invalidated": 4,
+          "open_at_data_end": 0,
+          "pullback_active": 18,
+          "rejected": 1,
+          "segment_id": 4,
+          "start_t0_observed_at_us": 1787074946582526,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 7,
+          "candidate_rate_ppm": 15000,
+          "candidate_signal": 3,
+          "end_t0_observed_at_us": 1787078016873189,
+          "expired": 189,
+          "impulse_confirmed": 34,
+          "invalidated": 7,
+          "open_at_data_end": 0,
+          "pullback_active": 20,
+          "rejected": 1,
+          "segment_id": 5,
+          "start_t0_observed_at_us": 1787075812865899,
+          "tokens": 200
+        }
+      ]
+    },
+    {
+      "dropoff": {
+        "impulse_without_pullback": 34,
+        "no_impulse": 924,
+        "pullback_without_response": 32,
+        "response_without_candidate": 5
+      },
+      "final_classification_counts": {
+        "CANDIDATE_SIGNAL": 5,
+        "EXPIRED": 974,
+        "INVALIDATED": 20,
+        "REJECT": 1
+      },
+      "funnel": {
+        "buyer_response_confirmed": 10,
+        "candidate_signal": 5,
+        "clock_expired": 974,
+        "eligible_tokens": 1000,
+        "expired": 974,
+        "impulse_confirmed": 76,
+        "invalidated": 20,
+        "open_at_data_end": 0,
+        "pullback_active": 42,
+        "rejected": 1
+      },
+      "furthest_stage_counts": {
+        "CANDIDATE_SIGNAL": 5,
+        "DISCOVERED": 23,
+        "IMPULSE_CONFIRMED": 1,
+        "WAITING_FOR_IMPULSE": 901,
+        "WAITING_FOR_PULLBACK": 33,
+        "WAITING_FOR_RECLAIM": 5,
+        "WAITING_FOR_RESPONSE": 32
+      },
+      "last_reason_counts": {
+        "ENTRY_WINDOW_EXPIRED": 974,
+        "PRICE_RAN_AWAY": 1,
+        "PULLBACK_TOO_DEEP": 20,
+        "RECLAIM_CONFIRMED": 5
+      },
+      "metrics": {
+        "candidate_age_ms": {
+          "max": 252720,
+          "min": 66177,
+          "n": 5,
+          "p10": 66177,
+          "p25": 69408,
+          "p50": 89178,
+          "p75": 187906,
+          "p90": 252720,
+          "p95": 252720
+        },
+        "candidate_drawdown_from_high_bps": {
+          "max": -1531,
+          "min": -3185,
+          "n": 5,
+          "p10": -3185,
+          "p25": -3042,
+          "p50": -2909,
+          "p75": -2623,
+          "p90": -1531,
+          "p95": -1531
+        },
+        "candidate_return_from_t0_bps": {
+          "max": 16970,
+          "min": 1769,
+          "n": 5,
+          "p10": 1769,
+          "p25": 3308,
+          "p50": 6595,
+          "p75": 8502,
+          "p90": 16970,
+          "p95": 16970
+        },
+        "deepest_pullback_depth_bps": {
+          "max": 9799,
+          "min": 55,
+          "n": 47,
+          "p10": 3306,
+          "p25": 3976,
+          "p50": 4855,
+          "p75": 5743,
+          "p90": 6278,
+          "p95": 6749
+        },
+        "impulse_3s_buys": {
+          "max": 7,
+          "min": 0,
+          "n": 76,
+          "p10": 1,
+          "p25": 1,
+          "p50": 4,
+          "p75": 4,
+          "p90": 6,
+          "p95": 7
+        },
+        "impulse_3s_net_flow_lamports": {
+          "max": 36000000000,
+          "min": -2056777433,
+          "n": 76,
+          "p10": 3731,
+          "p25": 137792948,
+          "p50": 3889656626,
+          "p75": 7777777777,
+          "p90": 11851851844,
+          "p95": 15600000000
+        },
+        "impulse_age_ms": {
+          "max": 299631,
+          "min": 4,
+          "n": 76,
+          "p10": 16,
+          "p25": 66,
+          "p50": 10064,
+          "p75": 67106,
+          "p90": 156168,
+          "p95": 221286
+        },
+        "impulse_peak_age_ms": {
+          "max": 299631,
+          "min": 17,
+          "n": 76,
+          "p10": 2592,
+          "p25": 9869,
+          "p50": 38424,
+          "p75": 144231,
+          "p90": 219042,
+          "p95": 288574
+        },
+        "impulse_peak_return_bps": {
+          "max": 138496,
+          "min": 3076,
+          "n": 76,
+          "p10": 3497,
+          "p25": 4341,
+          "p50": 6350,
+          "p75": 12094,
+          "p90": 26280,
+          "p95": 38642
+        },
+        "impulse_return_bps": {
+          "max": 138496,
+          "min": 3024,
+          "n": 76,
+          "p10": 3079,
+          "p25": 3256,
+          "p50": 3802,
+          "p75": 5187,
+          "p90": 8884,
+          "p95": 14562
+        },
+        "impulse_to_pullback_ms": {
+          "max": 281740,
+          "min": 2540,
+          "n": 42,
+          "p10": 9569,
+          "p25": 18335,
+          "p50": 45092,
+          "p75": 96619,
+          "p90": 157258,
+          "p95": 190003
+        },
+        "impulse_trade_count": {
+          "max": 50,
+          "min": 4,
+          "n": 76,
+          "p10": 4,
+          "p25": 4,
+          "p50": 7,
+          "p75": 15,
+          "p90": 28,
+          "p95": 41
+        },
+        "impulse_unique_buyers": {
+          "max": 19,
+          "min": 4,
+          "n": 76,
+          "p10": 4,
+          "p25": 4,
+          "p50": 5,
+          "p75": 7,
+          "p90": 11,
+          "p95": 14
+        },
+        "pullback_active_age_ms": {
+          "max": 293836,
+          "min": 8602,
+          "n": 42,
+          "p10": 18582,
+          "p25": 35767,
+          "p50": 85054,
+          "p75": 188757,
+          "p90": 224088,
+          "p95": 277639
+        },
+        "pullback_depth_at_activation_bps": {
+          "max": 5438,
+          "min": 837,
+          "n": 42,
+          "p10": 3046,
+          "p25": 3163,
+          "p50": 3445,
+          "p75": 4168,
+          "p90": 4511,
+          "p95": 4679
+        },
+        "pullback_low_age_ms": {
+          "max": 296129,
+          "min": 8628,
+          "n": 47,
+          "p10": 18924,
+          "p25": 46493,
+          "p50": 151542,
+          "p75": 200034,
+          "p90": 236221,
+          "p95": 281782
+        },
+        "pullback_low_depth_at_response_bps": {
+          "max": 5162,
+          "min": 3033,
+          "n": 10,
+          "p10": 3033,
+          "p25": 3605,
+          "p50": 3713,
+          "p75": 4376,
+          "p90": 4735,
+          "p95": 5162
+        },
+        "pullback_to_response_ms": {
+          "max": 209860,
+          "min": 7527,
+          "n": 10,
+          "p10": 7527,
+          "p25": 8618,
+          "p50": 19627,
+          "p75": 23746,
+          "p90": 29060,
+          "p95": 209860
+        },
+        "reclaim_extension_bps": {
+          "max": 1943,
+          "min": 816,
+          "n": 5,
+          "p10": 816,
+          "p25": 909,
+          "p50": 994,
+          "p75": 1026,
+          "p90": 1943,
+          "p95": 1943
+        },
+        "response_10s_buys": {
+          "max": 6,
+          "min": 3,
+          "n": 10,
+          "p10": 3,
+          "p25": 3,
+          "p50": 4,
+          "p75": 5,
+          "p90": 5,
+          "p95": 6
+        },
+        "response_10s_net_flow_lamports": {
+          "max": 5284638281,
+          "min": -2194600961,
+          "n": 10,
+          "p10": -2194600961,
+          "p25": 549062926,
+          "p50": 993925892,
+          "p75": 3129876542,
+          "p90": 4155555555,
+          "p95": 5284638281
+        },
+        "response_10s_sells": {
+          "max": 6,
+          "min": 0,
+          "n": 10,
+          "p10": 0,
+          "p25": 0,
+          "p50": 0,
+          "p75": 1,
+          "p90": 2,
+          "p95": 6
+        },
+        "response_age_ms": {
+          "max": 265281,
+          "min": 42328,
+          "n": 10,
+          "p10": 42328,
+          "p25": 69170,
+          "p50": 92487,
+          "p75": 217679,
+          "p90": 241030,
+          "p95": 265281
+        },
+        "response_failed_new_low_count": {
+          "max": 1,
+          "min": 0,
+          "n": 1000,
+          "p10": 0,
+          "p25": 0,
+          "p50": 0,
+          "p75": 0,
+          "p90": 0,
+          "p95": 0
+        },
+        "response_rebound_bps": {
+          "max": 9487,
+          "min": 757,
+          "n": 10,
+          "p10": 757,
+          "p25": 1092,
+          "p50": 1795,
+          "p75": 2322,
+          "p90": 3280,
+          "p95": 9487
+        },
+        "response_to_candidate_ms": {
+          "max": 95419,
+          "min": 238,
+          "n": 5,
+          "p10": 238,
+          "p25": 2765,
+          "p50": 5289,
+          "p75": 35041,
+          "p90": 95419,
+          "p95": 95419
+        },
+        "response_window_buys": {
+          "max": 4,
+          "min": 3,
+          "n": 10,
+          "p10": 3,
+          "p25": 3,
+          "p50": 3,
+          "p75": 3,
+          "p90": 3,
+          "p95": 4
+        },
+        "response_window_net_flow_lamports": {
+          "max": 4155555555,
+          "min": 580324016,
+          "n": 10,
+          "p10": 580324016,
+          "p25": 628944169,
+          "p50": 1792592591,
+          "p75": 2953086418,
+          "p90": 3032098765,
+          "p95": 4155555555
+        },
+        "response_window_price_change_bps": {
+          "max": 4778,
+          "min": 201,
+          "n": 10,
+          "p10": 201,
+          "p25": 264,
+          "p50": 634,
+          "p75": 1649,
+          "p90": 2313,
+          "p95": 4778
+        },
+        "response_window_sells": {
+          "max": 2,
+          "min": 0,
+          "n": 10,
+          "p10": 0,
+          "p25": 0,
+          "p50": 0,
+          "p75": 0,
+          "p90": 0,
+          "p95": 2
+        },
+        "runaway_reject_age_ms": {
+          "max": 44800,
+          "min": 44800,
+          "n": 1,
+          "p10": 44800,
+          "p25": 44800,
+          "p50": 44800,
+          "p75": 44800,
+          "p90": 44800,
+          "p95": 44800
+        },
+        "transition_count": {
+          "max": 9,
+          "min": 1,
+          "n": 1000,
+          "p10": 2,
+          "p25": 2,
+          "p50": 2,
+          "p75": 2,
+          "p90": 2,
+          "p95": 4
+        }
+      },
+      "parameter_set": {
+        "buyer_response_parameters": {
+          "min_buys": 3,
+          "min_net_flow_lamports": 500000000,
+          "min_rebound_bps": 750,
+          "window_id": "3s"
+        },
+        "impulse_parameters": {
+          "min_return_bps": 3000,
+          "min_trades_since_t0": 4,
+          "min_unique_buyers_since_t0": 4
+        },
+        "max_entry_age_ms": 300000,
+        "parameter_set_id": "FP1-RESEARCH-PROBE-STRICT-0001",
+        "pullback_parameters": {
+          "max_depth_bps": 5500,
+          "min_depth_bps": 3000
+        },
+        "reclaim_parameters": {
+          "min_extension_from_response_bps": 750
+        },
+        "runaway_entry_parameters": {
+          "max_extension_from_response_bps": 2000
+        },
+        "strategy_version": "v1.0"
+      },
+      "time_segments": [
+        {
+          "buyer_response_confirmed": 2,
+          "candidate_rate_ppm": 5000,
+          "candidate_signal": 1,
+          "end_t0_observed_at_us": 1787071469779387,
+          "expired": 198,
+          "impulse_confirmed": 14,
+          "invalidated": 1,
+          "open_at_data_end": 0,
+          "pullback_active": 5,
+          "rejected": 0,
+          "segment_id": 1,
+          "start_t0_observed_at_us": 1787071068723109,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 1,
+          "candidate_rate_ppm": 0,
+          "candidate_signal": 0,
+          "end_t0_observed_at_us": 1787074089038467,
+          "expired": 197,
+          "impulse_confirmed": 11,
+          "invalidated": 2,
+          "open_at_data_end": 0,
+          "pullback_active": 3,
+          "rejected": 1,
+          "segment_id": 2,
+          "start_t0_observed_at_us": 1787071469780387,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 4,
+          "candidate_rate_ppm": 10000,
+          "candidate_signal": 2,
+          "end_t0_observed_at_us": 1787074944344498,
+          "expired": 194,
+          "impulse_confirmed": 17,
+          "invalidated": 4,
+          "open_at_data_end": 0,
+          "pullback_active": 12,
+          "rejected": 0,
+          "segment_id": 3,
+          "start_t0_observed_at_us": 1787074091437276,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 1,
+          "candidate_rate_ppm": 5000,
+          "candidate_signal": 1,
+          "end_t0_observed_at_us": 1787075812823794,
+          "expired": 192,
+          "impulse_confirmed": 17,
+          "invalidated": 7,
+          "open_at_data_end": 0,
+          "pullback_active": 13,
+          "rejected": 0,
+          "segment_id": 4,
+          "start_t0_observed_at_us": 1787074946582526,
+          "tokens": 200
+        },
+        {
+          "buyer_response_confirmed": 2,
+          "candidate_rate_ppm": 5000,
+          "candidate_signal": 1,
+          "end_t0_observed_at_us": 1787078016873189,
+          "expired": 193,
+          "impulse_confirmed": 17,
+          "invalidated": 6,
+          "open_at_data_end": 0,
+          "pullback_active": 9,
+          "rejected": 0,
+          "segment_id": 5,
+          "start_t0_observed_at_us": 1787075812865899,
+          "tokens": 200
+        }
+      ]
+    }
+  ],
+  "raw_market_summary": {
+    "metrics": {
+      "events_available": {
+        "max": 710,
+        "min": 1,
+        "n": 1000,
+        "p10": 1,
+        "p25": 1,
+        "p50": 2,
+        "p75": 8,
+        "p90": 36,
+        "p95": 78
+      },
+      "first_trade_pump_timestamp_delta_ms": {
+        "max": 870760,
+        "min": 0,
+        "n": 1000,
+        "p10": 2291,
+        "p25": 12669,
+        "p50": 34800,
+        "p75": 159231,
+        "p90": 384238,
+        "p95": 476515
+      },
+      "max_10s_trades": {
+        "max": 51,
+        "min": 1,
+        "n": 1000,
+        "p10": 1,
+        "p25": 1,
+        "p50": 1,
+        "p75": 3,
+        "p90": 7,
+        "p95": 11
+      },
+      "max_10s_volume_lamports": {
+        "max": 85005359057,
+        "min": 0,
+        "n": 1000,
+        "p10": 9999,
+        "p25": 2052505,
+        "p50": 140620394,
+        "p75": 1315695906,
+        "p90": 5002825143,
+        "p95": 9800000000
+      },
+      "max_3s_buys": {
+        "max": 17,
+        "min": 0,
+        "n": 1000,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 2,
+        "p90": 4,
+        "p95": 6
+      },
+      "max_3s_net_flow_lamports": {
+        "max": 85005359057,
+        "min": -8689193637,
+        "n": 1000,
+        "p10": -355555554,
+        "p25": -15468342,
+        "p50": -99,
+        "p75": 488888888,
+        "p90": 3189497268,
+        "p95": 6500130797
+      },
+      "max_3s_price_change_bps": {
+        "max": 38642,
+        "min": 0,
+        "n": 977,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 25,
+        "p90": 2204,
+        "p95": 4341
+      },
+      "max_3s_sells": {
+        "max": 44,
+        "min": 0,
+        "n": 1000,
+        "p10": 0,
+        "p25": 1,
+        "p50": 1,
+        "p75": 1,
+        "p90": 3,
+        "p95": 4
+      },
+      "max_drawdown_depth_bps": {
+        "max": 9988,
+        "min": 0,
+        "n": 1000,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 615,
+        "p90": 4342,
+        "p95": 7013
+      },
+      "max_return_from_t0_bps": {
+        "max": 138496,
+        "min": 0,
+        "n": 977,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 276,
+        "p90": 3918,
+        "p95": 7835
+      },
+      "max_total_volume_since_t0_lamports": {
+        "max": 139852052274,
+        "min": 0,
+        "n": 1000,
+        "p10": 9999,
+        "p25": 2062063,
+        "p50": 195555555,
+        "p75": 1850883613,
+        "p90": 9654755261,
+        "p95": 21855810256
+      },
+      "max_trades_since_t0": {
+        "max": 285,
+        "min": 1,
+        "n": 1000,
+        "p10": 1,
+        "p25": 1,
+        "p50": 1,
+        "p75": 6,
+        "p90": 23,
+        "p95": 47
+      },
+      "max_unique_buyers_since_t0": {
+        "max": 104,
+        "min": 0,
+        "n": 1000,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 2,
+        "p90": 7,
+        "p95": 14
+      },
+      "states_in_entry_window": {
+        "max": 285,
+        "min": 1,
+        "n": 1000,
+        "p10": 1,
+        "p25": 1,
+        "p50": 1,
+        "p75": 6,
+        "p90": 23,
+        "p95": 47
+      }
+    },
+    "quantile_method": "nearest-rank",
+    "tokens": 1000,
+    "tokens_with_gap_events": 0,
+    "tokens_with_no_observable_state_inside_entry_window": 0,
+    "tokens_with_post_window_observation": 210
+  },
+  "research_scope": "LARGE_COHORT_SETUP_CHARACTERIZATION_ONLY",
+  "risk_manager_used": false,
+  "schema_version": "P2LCR-0.1",
+  "source_rows": 14459
+}

@@ -1,0 +1,14 @@
+PHASE 4.3B1D2 POSTRUN POSITION AUDIT — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Do NOT re-run B1D2 yet.
+No collector is needed.
+
+With (.venv) active:
+
+python scripts\phase4_3b1d2_postrun_position_audit_v0_1.py
+
+This reads only the most recent B1D2 paper DB and audit JSON.

@@ -1,0 +1,18 @@
+PHASE 4.3B1B COLLECTOR STARTUP DB PROBE — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- scripts\phase4_collector_startup_db_probe_v0_1.py
+- docs\phase4\PHASE4_3B1B_COLLECTOR_STARTUP_DB_PROBE_V0_1.md
+- PHASE4_3B1B_COLLECTOR_STARTUP_DB_PROBE_INSTALL.txt
+
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_collector_startup_db_probe_v0_1.py
+
+Production SQLite is opened query-only/read-only.

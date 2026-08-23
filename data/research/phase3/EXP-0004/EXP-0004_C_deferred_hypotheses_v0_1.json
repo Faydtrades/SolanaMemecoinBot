@@ -1,0 +1,40 @@
+{
+  "future_evaluation": {
+    "development_replay": "re-run on larger/fresher datasets without altering historical results",
+    "must_not_bias_EXP0005_Block_D_selection": true,
+    "phase4_paper": "log as parallel research/shadow signals with no money",
+    "required_evidence": [
+      "larger clean sample support",
+      "stability across fresh time ranges",
+      "outcome distribution, not median alone",
+      "false-positive / false-negative implications",
+      "friction-aware behavior before any live promotion"
+    ]
+  },
+  "hypotheses": [
+    {
+      "family": {
+        "min_buys_gte": 4,
+        "min_net_flow_reserve_ppm_gte": 93000
+      },
+      "hypothesis_id": "EXP0004-C-DEFER-001",
+      "name": "HIGH_BUY_COUNT_PLUS_HIGH_RESERVE_FLOW",
+      "promotion_status": "DEFERRED_NOT_REJECTED",
+      "reason_retained": "Sparse pockets showed unusually strong post-signal outcomes in some A+B regimes, but clean 30s sample counts were too small for promotion."
+    },
+    {
+      "family": {
+        "extreme_subfamily_min_rebound_bps": 20700,
+        "min_rebound_bps_gte": 7300
+      },
+      "hypothesis_id": "EXP0004-C-DEFER-002",
+      "name": "VERY_HIGH_REBOUND",
+      "promotion_status": "DEFERRED_NOT_REJECTED",
+      "reason_retained": "Some very high rebound settings showed strong-looking outcomes, especially at 207%+, but often on only a handful of clean observations."
+    }
+  ],
+  "principle": "Not selected for main carry-forward because current clean sample support is too small. Not disproven. Re-evaluate only with larger/fresher evidence.",
+  "schema_version": "P3-DEFERRED-HYPOTHESES-0.1",
+  "source_experiment_id": "EXP-0004",
+  "status": "RETAIN_FOR_FRESH_DATA_AND_PHASE4_SHADOW_RESEARCH"
+}

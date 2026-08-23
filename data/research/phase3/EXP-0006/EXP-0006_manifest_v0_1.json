@@ -1,0 +1,15 @@
+{
+  "artifacts": {
+    "EXP-0006_exit_feasibility_by_regime_v0_1.csv": "42f62d93f31445786cc8772db05d7a13c1c3ce4f12470037e0020a99eaf6a6a6",
+    "EXP-0006_exit_feasibility_report_v0_1.json": "306d8778167227b0193c7140a2595f673a7d22a29f6bc09f0086154d988bb105",
+    "EXP-0006_exit_research_design_v0_1.json": "2f4900294a430c7831f9d3d19cc9dc422ca97861ae102bbc993b27c182d7006a"
+  },
+  "dataset_freeze_id": "DEV-FREEZE-0001",
+  "dataset_role": "DEVELOPMENT_DISCOVERY",
+  "decision": "REVIEW_OBSERVABILITY_BEFORE_BUILDING_EXIT_THRESHOLD_SEARCH",
+  "exit_optimization_performed": false,
+  "experiment_id": "EXP-0006",
+  "manifest_schema_version": "EXPM-0.1-P3EXT",
+  "role": "EXIT_RESEARCH_DESIGN_AND_PATH_FEASIBILITY",
+  "status": "RUN_COMPLETE_PENDING_POSTRUN_AUDIT_AND_REVIEW"
+}

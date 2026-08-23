@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "design_locked_before_results": true,
+    "entry_fixed": true,
+    "exact_36_rows": true,
+    "exact_9_variants": true,
+    "gross_reference_only": true,
+    "no_profitability_claim": true,
+    "non_cartesian": true
+  },
+  "hashes": {
+    "EXP-0011_E5_small_interaction_by_regime_v0_1.csv": "6bb5bd45f992d1075f8c7cb3f72ceb589c0fada955f296241987b34044a3f67f",
+    "EXP-0011_E5_small_interaction_design_v0_1.json": "67902517de0ae567175df94b254d4c52c33753c95db8a70912a9019f525c2610",
+    "EXP-0011_E5_small_interaction_results_v0_1.json": "7d0b8b5dc91eca075688555a0d8bb5d00da91bde6180e59b5136efef9f3fb78c"
+  },
+  "result": "PASS",
+  "schema_version": "P3-E5-SMALL-INTERACTION-AUDIT-0.1"
+}

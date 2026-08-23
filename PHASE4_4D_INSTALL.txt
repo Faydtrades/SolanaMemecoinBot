@@ -1,0 +1,21 @@
+PHASE 4.4D CAUSAL EXIT-FILL EXECUTOR — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- src\phase4\paper_exit_fill_executor_v0_1.py
+- scripts\phase4_4d_exit_fill_executor_selftest_v0_1.py
+- docs\phase4\PHASE4_4D_EXIT_FILL_EXECUTOR_V0_1.md
+
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_4d_exit_fill_executor_selftest_v0_1.py
+
+LOCAL SELF-TEST BEFORE DELIVERY: PASS
+
+This step does not calculate PnL/accounting and does not use wallet/live orders.
+After project RESULT: PASS, next step is the controlled live causal exit-fill smoke.

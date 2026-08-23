@@ -1,0 +1,35 @@
+PHASE 4.4E CONTROLLED LIVE CAUSAL EXIT-FILL SMOKE — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- scripts\phase4_4e_live_entry_exit_smoke_v0_1.py
+- scripts\phase4_4e_live_exit_pipeline_fixture_selftest_v0_1.py
+- docs\phase4\PHASE4_4E_LIVE_CAUSAL_EXIT_FILL_SMOKE_V0_1.md
+
+Prerequisites:
+- Phase 4.4A PASS
+- Phase 4.4B / 4.4B1 PASS
+- Phase 4.4C PASS
+- Phase 4.4D PASS
+- validated live_pump_collector_v0_3_4.py
+
+No other collector should be running.
+
+LOCAL FIXTURE SELF-TEST BEFORE DELIVERY:
+RESULT: PASS
+
+Normal project/live validation:
+
+python scripts\phase4_4e_live_entry_exit_smoke_v0_1.py
+
+Default maximum:
+- 15 minutes to acquire accepted live entry
+- 60 seconds after entry for all three locked exits
+
+The collector auto-stops. No Ctrl+C should be needed.
+
+No wallet, signing, or live order path is used.
+PnL/accounting remains intentionally deferred to the next bounded step.

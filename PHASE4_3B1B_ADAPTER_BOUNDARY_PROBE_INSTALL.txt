@@ -1,0 +1,14 @@
+PHASE 4.3B1B ADAPTER BOUNDARY PROBE — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1b_adapter_boundary_probe_v0_1.py
+
+This test is read-only and automatically uses the most recent
+phase4_3b1b_v034_live_source_smoke_*.json audit.

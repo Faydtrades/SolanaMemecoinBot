@@ -1,0 +1,78 @@
+{
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "development_token_csv_sha256": "c7a794be4b84cc0256c014fa37184c0d07301a970bcbafd7fd391c07c7cc9289",
+    "eligible_token_count": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "freeze_schema_version": "P2FREEZE-0.1",
+    "frozen_pump_event_rows": 50760,
+    "frozen_rows_sha256": "c10318d3c1db85d917d7a8d9dbd56f694aab97195420a31c5e618713d08c2ea6",
+    "selection_rule": "Exact Phase 2.13 v0.1.1 development mint list; each mint had >=1 observed BOT_TRUTH BUY/SELL; no future-activity/outcome filter.",
+    "snapshot_sqlite_sha256": "44e3457b81a16d4e5e2670e24d758756a147867e1d81d627622157ad4bd5813f",
+    "source_cutoff": {
+      "max_observed_at_utc": "2026-08-18T18:33:36.873189+00:00",
+      "max_source_p1_rowid": 50851,
+      "normalized_events_seen_by_phase2_13": 50816,
+      "source_rows_seen_by_phase2_13": 50816
+    },
+    "source_decoded_file_counts": {
+      "LIVE_WEBSOCKET_EVENT_V0_3": 37166,
+      "LIVE_WEBSOCKET_EVENT_V0_3_2": 10665,
+      "LIVE_WEBSOCKET_EVENT_V0_3_3": 2929
+    },
+    "source_event_type_counts": {
+      "BUY": 25614,
+      "LAUNCH": 477,
+      "SELL": 24669
+    },
+    "t0_observed_range_utc": {
+      "end": "2026-08-18T18:33:36.873189+00:00",
+      "start": "2026-08-18T14:26:33.375632+00:00"
+    }
+  },
+  "dataset_role": "DEVELOPMENT_DISCOVERY",
+  "deterministic_manifest_sha256": "4955272e268e69eb858627a9634dd63bf4a675b847c7058ab6ae29e4805b63f6",
+  "freeze_id": "DEV-FREEZE-0001",
+  "freeze_schema_version": "P2FREEZE-0.1",
+  "out_of_sample_policy": {
+    "fresh_oos_validation_required_after_range_or_strategy_change": true,
+    "future_new_tokens_are_not_automatically_oos_if_used_to_change_search_ranges": true,
+    "range_change_requires_new_version": true,
+    "these_3901_tokens_are_development_discovery": true,
+    "these_3901_tokens_are_untouched_oos": false
+  },
+  "parameter_search": {
+    "decision_id": "PHASE-2-PARAM-SEARCH-001",
+    "first_cycle_buyer_response_window": "3s",
+    "first_cycle_entry_window_ms": 300000,
+    "locked_search_space_file": "phase2_locked_param_search_001.json",
+    "locked_search_space_sha256": "65cd4aa6ebc84929504b2fa4224bbc64dc149737b3f3e344d9e172d72b2e586f",
+    "naive_full_cartesian_recommended": false,
+    "research_method": "STAGED_BLOCK_EXPERIMENTS"
+  },
+  "phase2_versions": {
+    "bot_truth_feature_clock": "FeatureEngineV02",
+    "denomination_aware_flow": "DenominationAwareFeatureEngineV01",
+    "first_pullback_strategy": "v1.1 / FirstPullbackStrategyV02",
+    "market_state": "MS-0.1",
+    "normalized_market_event": "NME-0.1",
+    "parameter_search_design": "P2PSD-0.1.1",
+    "quote_aware_price": "QuoteAwarePriceV01",
+    "strategy_clock": "SCLOCK-0.1"
+  },
+  "phase3_readiness": {
+    "execution_model_defined": false,
+    "exit_model_defined": false,
+    "next_experiment_id": "EXP-0001",
+    "note": "Phase 3 may use this frozen development dataset for research, but it must not call these tokens untouched out-of-sample.",
+    "outcome_pnl_opened_yet": false
+  },
+  "upstream_phase2_13": {
+    "proposal_file": "phase2_parameter_search_space_proposal_v0_1_1.json",
+    "proposal_sha256": "c9ac0ffe637b3bc7959117ded4fbf13ddcc662345289b8593c6e8bc2b19fc74e",
+    "report_file": "phase2_parameter_search_design_report_v0_1_1.json",
+    "report_sha256": "3af2e793e1de9000e8bcc6082e7c28bf63ea73ad2ff28c4b68d11ac58d053478",
+    "token_metrics_file": "phase2_parameter_search_design_token_metrics_v0_1_1.csv",
+    "token_metrics_sha256": "93264cd9ad7d5595a9be81f083f42f8cb9144b6bedbd83182a722fab7035fe2b"
+  }
+}

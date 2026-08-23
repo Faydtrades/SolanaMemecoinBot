@@ -1,0 +1,28 @@
+PHASE 4.3B1D2 CAUSAL SOL_NATIVE ENTRY FILL — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Prerequisites:
+- Phase 4.3B1C PASS
+- Phase 4.3B1D0 PASS
+- Phase 4.3B1D1 provider self-test PASS
+- live_pump_collector_v0_3_4.py validated
+
+No other collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1d2_causal_sol_entry_fill_smoke_v0_1.py
+
+Default:
+- maximum 15 minutes
+- auto-stops on first accepted SOL_NATIVE paper entry fill
+- collector auto-stops
+- no Ctrl+C required
+- no wallet/signing/live orders
+- fresh isolated paper DB
+
+A legitimate REJECTED_SLIPPAGE is recorded and the unchanged smoke continues.
+Do not modify locked parameters to force a fill.

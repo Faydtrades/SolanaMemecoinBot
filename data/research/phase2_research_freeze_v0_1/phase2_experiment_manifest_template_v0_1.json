@@ -1,0 +1,62 @@
+{
+  "dataset": {
+    "dataset_manifest_sha256": "4955272e268e69eb858627a9634dd63bf4a675b847c7058ab6ae29e4805b63f6",
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "date_time_range": {
+      "end": "2026-08-18T18:33:36.873189+00:00",
+      "start": "2026-08-18T14:26:33.375632+00:00"
+    },
+    "freeze_id": "DEV-FREEZE-0001",
+    "source_cutoff": {
+      "max_observed_at_utc": "2026-08-18T18:33:36.873189+00:00",
+      "max_source_p1_rowid": 50851,
+      "normalized_events_seen_by_phase2_13": 50816,
+      "source_rows_seen_by_phase2_13": 50816
+    },
+    "token_count": 3901
+  },
+  "decision": "TBD",
+  "execution_model": {
+    "failed_execution_behavior": "NOT_DEFINED_YET",
+    "fee_model": "NOT_DEFINED_YET",
+    "latency_model": "NOT_DEFINED_YET",
+    "reference_position_size_sol": 0.1,
+    "reference_size_note": "Locked research/comparison size from the Phase-1 master checkpoint; not a promise of initial live-trading size.",
+    "slippage_model": "NOT_DEFINED_YET",
+    "version": "NOT_DEFINED_YET"
+  },
+  "experiment_id": "EXP-XXXX",
+  "filters": [],
+  "hypothesis": "REQUIRED_BEFORE_RUN",
+  "manifest_schema_version": "EXPM-0.1",
+  "notes": "",
+  "parameters": {},
+  "reproducibility": {
+    "code_versions_must_be_recorded": true,
+    "dataset_freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows_sha256": "c10318d3c1db85d917d7a8d9dbd56f694aab97195420a31c5e618713d08c2ea6",
+    "random_seed_if_applicable": null
+  },
+  "result_metrics": {
+    "execution_quality": {},
+    "gross_raw": {},
+    "realistic_net": {}
+  },
+  "search_space": {
+    "decision_id": "PHASE-2-PARAM-SEARCH-001",
+    "experiment_block": "REQUIRED:A_IMPULSE|B_PULLBACK|C_BUYER_RESPONSE_3S|D_RECLAIM_RUNAWAY",
+    "locked_search_space_sha256": "65cd4aa6ebc84929504b2fa4224bbc64dc149737b3f3e344d9e172d72b2e586f"
+  },
+  "status": "TEMPLATE_NOT_RUN",
+  "strategy": {
+    "feature_stack": [
+      "FeatureEngineV02/BOT_TRUTH_CLOCK",
+      "QuoteAwarePriceV01",
+      "DenominationAwareFeatureEngineV01"
+    ],
+    "market_state_schema": "MS-0.1",
+    "name": "FirstPullback",
+    "strategy_clock": "SCLOCK-0.1",
+    "version": "v1.1"
+  }
+}

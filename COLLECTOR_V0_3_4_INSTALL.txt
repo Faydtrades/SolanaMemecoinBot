@@ -1,0 +1,21 @@
+COLLECTOR v0.3.4 QUEUE CUTOVER — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+v0.3.3 is NOT overwritten.
+
+STEP 1:
+python scripts\build_live_pump_collector_v0_3_4.py
+
+STEP 2:
+python scripts\live_pump_collector_v0_3_4_selftest.py
+
+Only if BOTH show RESULT: PASS:
+
+STEP 3:
+python scripts\live_pump_collector_v0_3_4_controlled_smoke.py
+
+No other collector instance should be running.
+The controlled smoke auto-stops; no Ctrl+C is needed.

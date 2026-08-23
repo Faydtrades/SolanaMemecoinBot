@@ -1,0 +1,41 @@
+{
+  "adapter_skipped": {},
+  "deterministic_payload_sha256": "9a0743a6630d1bea0f1625e52376a66138ba89d9bfd56d91c5120b7517772002",
+  "future_return_labels_included": false,
+  "normalized_events": 50816,
+  "performance_pnl_included": false,
+  "purpose": "QUOTE-AWARE PRICE PATH VALIDATION; NO PNL",
+  "schema_version": "QAP-0.1",
+  "source_rows": 50816,
+  "strategy_parameter_optimization_performed": false,
+  "strategy_v01_run_on_quote_tokens": false,
+  "summary": {
+    "absolute_human_price_units_resolved": false,
+    "deterministic_state_digest": "12688659e8aa55ca6a773b1076ada7cc70732ed89bbc316ff878fd85dcb8dff2",
+    "enhanced_price_coverage_tokens": 3901,
+    "old_sol_unpriceable_tokens": 109,
+    "path_conflict_tokens": 0,
+    "quote_amount_missing_or_zero_events": 0,
+    "quote_amount_positive_events": 884,
+    "quote_flow_mint_conflict_tokens": 0,
+    "quote_mint_event_counts": {
+      "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": 884
+    },
+    "quote_mint_token_counts": {
+      "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": 109
+    },
+    "quote_path_sol_amount_positive_events": 0,
+    "quote_path_sol_amount_zero_events": 884,
+    "quote_priceable_events": 884,
+    "relative_price_bps_supported_for_quote_path": true,
+    "remaining_unavailable_or_mixed_tokens": 0,
+    "rescued_by_quote_path_tokens": 109,
+    "sol_price_proxy_parity_failures": 0,
+    "strategy_v01_quote_flow_compatible": false,
+    "token_class_counts": {
+      "QUOTE_ONLY": 109,
+      "SOL_ONLY": 3792
+    },
+    "tokens_analyzed": 3901
+  }
+}

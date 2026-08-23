@@ -1,0 +1,20 @@
+{
+  "checks": {
+    "T5s_sensitivity_absent": true,
+    "design_locked_before_results": true,
+    "entry_fixed": true,
+    "exact_36_rows": true,
+    "fixed_tp_absent": true,
+    "gross_reference_only": true,
+    "hard_stop_absent": true,
+    "no_profitability_claim": true,
+    "partial_multi_tp_absent": true
+  },
+  "hashes": {
+    "EXP-0010_E4_trailing_by_regime_v0_1.csv": "bd8db19fb9627aae303add60a3f5ab107ba4ad46a7b875ddf071069566bd49df",
+    "EXP-0010_E4_trailing_design_v0_1.json": "a2fab084dd4fc3d7f90ddaf16b537be3a66e6148751a5600f71c86057768ef62",
+    "EXP-0010_E4_trailing_results_v0_1.json": "0668030b6fc0b79c5bb65c79fdca9b050b8a32076996d0f23e10fe9e3b5d4d7f"
+  },
+  "result": "PASS",
+  "schema_version": "P3-E4-TRAILING-AUDIT-0.1"
+}

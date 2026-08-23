@@ -1,0 +1,31 @@
+{
+  "checks": {
+    "candidate_rows_match": true,
+    "deferred_BlockC_hypotheses_separate": true,
+    "determinism": true,
+    "exact_96_grid": true,
+    "frontier_consistent": true,
+    "no_exit_optimization": true,
+    "no_profitability_claim": true,
+    "no_winner_selected": true,
+    "terminal_accounting": true
+  },
+  "counts": {
+    "candidate_outcome_rows": 5514,
+    "frontier_rows": 23,
+    "summary_rows": 96
+  },
+  "experiment_id": "EXP-0005",
+  "hashes": {
+    "EXP-0005_D_crossABC_diagnostics_v0_1.csv": "223feebcb6a9502f14c0a1a53aa16432ab40e00db4bf7e49aecbac42a3cc70ea",
+    "EXP-0005_D_neighborhood_diagnostics_v0_1.csv": "bea335b98e361b05402cebab3d1bd0f29a2995c588ad9c3fec8527b649d11ea3",
+    "EXP-0005_D_reclaim_runaway_candidate_outcomes_v0_1.csv": "5f5c0b7b4acd770bd08cb97b1be642bf291c39cd13ffc3397b28ce99c82aee98",
+    "EXP-0005_D_reclaim_runaway_frontier_v0_1.csv": "1490d7caef477a2a984e0d010e948774c0523a8f08a7df0cc9f4b04ddd9a3d94",
+    "EXP-0005_D_reclaim_runaway_report_v0_1.json": "401e1e02e57470bb3e0cc5e94ecbce24e160d7e2d482cd3877217dd3e4b95094",
+    "EXP-0005_D_reclaim_runaway_summary_v0_1.csv": "5691edc3cac032e39c2af262d95d8e6f5ced1d6edc0b0875c85d6b4d999cf5d3",
+    "EXP-0005_manifest_v0_1.json": "da52234e586cc45a91205499714c909f0ed4962258118b98fae78b9dadab3f5c"
+  },
+  "method_note": "Cross-ABC diagnostics summarize four regime-level results per D pair; overlapping candidate cohorts are not pooled.",
+  "result": "PASS",
+  "schema_version": "P3-EXP0005-POSTAUDIT-0.1"
+}

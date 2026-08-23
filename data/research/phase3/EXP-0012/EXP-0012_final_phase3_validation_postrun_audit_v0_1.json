@@ -1,0 +1,27 @@
+{
+  "checks": {
+    "EXP_0011_exact_reproduction": true,
+    "clean_5m_exact_reproduction": true,
+    "coverage_binding": true,
+    "design_prelocked": true,
+    "double_cached_path_determinism": true,
+    "entry_exact_reproduction": true,
+    "exact_12_finalist_rows": true,
+    "no_candidate_reselection": true,
+    "no_further_exit_tuning": true,
+    "no_parameter_search": true,
+    "no_profitability_claim": true,
+    "source_hash_binding": true,
+    "sqlite_quick_check": true
+  },
+  "deterministic_sha256": "cabb205e255d7085a168ce5a97aac4231579bff1f0eace1f39112487a9cb757c",
+  "hashes": {
+    "EXP-0012_final_phase3_validation_by_regime_v0_1.csv": "7fd40ea5a7c505a047477f7f09d1c51674d8e81d535243b4b316381f69e279e4",
+    "EXP-0012_final_phase3_validation_design_v0_1.json": "14380c5d67c88ad5588fec4df5610ce8caaf5231a725c73513cf0478f69d5079",
+    "EXP-0012_final_phase3_validation_results_v0_1.json": "356de44fe109378c3ff1d67ddb120119288acfac7464c1f619734f14af4c8d0d"
+  },
+  "phase3_status": "COMPLETE_PENDING_CHECKPOINT_WRITE",
+  "phase4_build_allowed": true,
+  "result": "PASS",
+  "schema_version": "P3-FINAL-VALIDATION-AUDIT-0.1"
+}

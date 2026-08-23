@@ -1,0 +1,282 @@
+{
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "freeze_id": "DEV-FREEZE-0002",
+    "untouched_oos": false
+  },
+  "decision": {
+    "paper_phase_intent": "Where practical, FINAL-A and FINAL-B should be evaluated in parallel from the same live CandidateSignals during Phase 4. SENS-C remains a separately labeled sensitivity track.",
+    "reason": "DEV-FREEZE-0002 is development/discovery data. E5 does not provide a clean dominance relation between simple TP10/T15 and ACT10/GB3/T15: fixed TP has stronger medians, trailing has higher gross-reference mean. Both advance to deterministic final validation and then fresh real-time paper evaluation.",
+    "single_dev_data_winner_selected": false
+  },
+  "evidence": {
+    "ACT10_GB03_SL10_T15": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1229,
+        -1328,
+        -1655
+      ],
+      "role_p25_exit_bps": [
+        -481,
+        -752,
+        -1014
+      ],
+      "role_p50_exit_bps": [
+        495,
+        362,
+        539
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "weighted_mean_exit_bps": 531.1703470031546,
+      "weighted_positive_rate": 0.6419558359621451
+    },
+    "E3_TP10_T15": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1146,
+        -1454,
+        -1554
+      ],
+      "role_p25_exit_bps": [
+        -242,
+        -345,
+        -242
+      ],
+      "role_p50_exit_bps": [
+        1012,
+        704,
+        1038
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "weighted_mean_exit_bps": 336.108832807571,
+      "weighted_positive_rate": 0.7018927444794952
+    },
+    "E4_ACT10_GB03_T15": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1146,
+        -1454,
+        -1659
+      ],
+      "role_p25_exit_bps": [
+        -260,
+        -345,
+        -345
+      ],
+      "role_p50_exit_bps": [
+        582,
+        546,
+        692
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "weighted_mean_exit_bps": 542.0362776025237,
+      "weighted_positive_rate": 0.692429022082019
+    },
+    "REF_T15": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -2036,
+        -2312,
+        -3912
+      ],
+      "role_p25_exit_bps": [
+        -585,
+        -752,
+        -1048
+      ],
+      "role_p50_exit_bps": [
+        278,
+        229,
+        280
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "weighted_mean_exit_bps": 214.42902208201892,
+      "weighted_positive_rate": 0.5993690851735016
+    },
+    "SENS_TP20_T5": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -965,
+        -1077,
+        -1350
+      ],
+      "role_p25_exit_bps": [
+        18,
+        -14,
+        -5
+      ],
+      "role_p50_exit_bps": [
+        522,
+        412,
+        523
+      ],
+      "scored_count_sum": 576,
+      "scored_coverage": 0.895800933125972,
+      "weighted_mean_exit_bps": 489.3333333333333,
+      "weighted_positive_rate": 0.7534722222222222
+    },
+    "TP10_ACT05_GB03_SL10_T15": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1185,
+        -1320,
+        -1502
+      ],
+      "role_p25_exit_bps": [
+        -264,
+        -496,
+        -594
+      ],
+      "role_p50_exit_bps": [
+        442,
+        323,
+        503
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "weighted_mean_exit_bps": 313.903785488959,
+      "weighted_positive_rate": 0.6703470031545742
+    },
+    "TP10_ACT05_GB03_T15": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1096,
+        -1355,
+        -1454
+      ],
+      "role_p25_exit_bps": [
+        -41,
+        -288,
+        -101
+      ],
+      "role_p50_exit_bps": [
+        582,
+        442,
+        1012
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "weighted_mean_exit_bps": 325.93690851735016,
+      "weighted_positive_rate": 0.7208201892744479
+    },
+    "TP10_SL10_T15": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1229,
+        -1328,
+        -1502
+      ],
+      "role_p25_exit_bps": [
+        -420,
+        -752,
+        -654
+      ],
+      "role_p50_exit_bps": [
+        692,
+        412,
+        1012
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "weighted_mean_exit_bps": 328.64195583596216,
+      "weighted_positive_rate": 0.6514195583596214
+    },
+    "TP15_ACT10_GB03_T15": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1146,
+        -1454,
+        -1624
+      ],
+      "role_p25_exit_bps": [
+        -242,
+        -345,
+        -264
+      ],
+      "role_p50_exit_bps": [
+        614,
+        554,
+        806
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "weighted_mean_exit_bps": 432.99053627760253,
+      "weighted_positive_rate": 0.6987381703470031
+    }
+  },
+  "experiment_id": "EXP-0011",
+  "final_mainline_candidates": [
+    {
+      "candidate_id": "FINAL-A",
+      "fallback_ms": 15000,
+      "reason": "Simplest strong exit rule. Across all robust regimes it preserves the strongest central tendency/median profile with high scored coverage and ~70% positive exits.",
+      "tp_bps": 1000,
+      "type": "FIXED_TP",
+      "variant_id": "E3_TP10_T15"
+    },
+    {
+      "activation_bps": 1000,
+      "candidate_id": "FINAL-B",
+      "fallback_ms": 15000,
+      "giveback_bps": 300,
+      "reason": "Highest robust weighted gross-reference mean among the mainline E5 references, with similar positive-rate and strong cross-regime consistency, but more tail/runner dependence than FINAL-A.",
+      "type": "TRAILING",
+      "variant_id": "E4_ACT10_GB03_T15"
+    }
+  ],
+  "guardrails": {
+    "entry_A_B_C_D_fixed": true,
+    "fees_modeled_here": false,
+    "latency_modeled_here": false,
+    "live_rule_selected": false,
+    "no_further_DEV_FREEZE_0002_winner_search": true,
+    "no_further_exit_parameter_tuning_before_final_validation": true,
+    "profitability_claim_allowed": false,
+    "slippage_modeled_here": false
+  },
+  "not_promoted": {
+    "ACT10_GB03_SL10_T15": "Mean remains high but downside/positive-rate profile is worse than simpler E4 trailing; SL10 not earned.",
+    "TP10_ACT05_GB03_SL10_T15": "Three-component complexity does not earn its place.",
+    "TP10_ACT05_GB03_T15": "Does not materially beat simpler E3/E4 references; complexity not earned.",
+    "TP10_SL10_T15": "SL10 reduces positive rate/central tendency without a sufficiently consistent downside improvement.",
+    "TP15_ACT10_GB03_T15": "Intermediate compromise, but does not clearly dominate either simpler E3 or E4 reference.",
+    "standalone_or_mainline_SL10": "REJECTED_FOR_MAINLINE_AT_THIS_STAGE"
+  },
+  "reference": {
+    "reason": "Keep pure T15 as a benchmark only; not a final strategy candidate.",
+    "variant_id": "REF_T15"
+  },
+  "schema_version": "P3-E5-FINAL-CANDIDATE-SELECTION-0.1",
+  "selection_id": "EXP-0011-E5-FINAL-CANDIDATES-001",
+  "sensitivity_only": {
+    "candidate_id": "SENS-C",
+    "fallback_ms": 5000,
+    "reason": "Strong early sensitivity result with best positive-rate/downside profile in E5, but only ~89.6% scored coverage and much greater execution/latency sensitivity. It must remain separate from mainline.",
+    "tp_bps": 2000,
+    "type": "EARLY_FIXED_TP",
+    "variant_id": "SENS_TP20_T5"
+  },
+  "source_binding": {
+    "E5_design_file": "EXP-0011_E5_small_interaction_design_v0_1.json",
+    "E5_design_sha256": "67902517de0ae567175df94b254d4c52c33753c95db8a70912a9019f525c2610",
+    "E5_postrun_audit_file": "EXP-0011_E5_small_interaction_postrun_audit_v0_1.json",
+    "E5_postrun_audit_sha256": "8b15cb5936e14aa24ea7e54eeb095370daa52b1220be67612f1b1c32ab120212",
+    "E5_results_file": "EXP-0011_E5_small_interaction_results_v0_1.json",
+    "E5_results_sha256": "7d0b8b5dc91eca075688555a0d8bb5d00da91bde6180e59b5136efef9f3fb78c"
+  },
+  "status": "POSTRUN_FINAL_PHASE3_CANDIDATE_SET"
+}

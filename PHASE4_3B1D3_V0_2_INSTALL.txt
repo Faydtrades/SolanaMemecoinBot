@@ -1,0 +1,18 @@
+PHASE 4.3B1D3 FILLED ENTRY RESTART/REPLAY v0.2 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Do NOT run B1D3 v0.1 again.
+Do NOT re-run B1D2.
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1d3_filled_entry_restart_replay_v0_2.py
+
+Correction:
+- PaperOrder uses signal_key, not candidate_id.
+- EntryRoute candidate state is read through router.list_routes().
+- original B1D2 paper DB remains untouched.

@@ -1,0 +1,21 @@
+{
+  "checks": {
+    "design_locked_before_results": true,
+    "entry_fixed": true,
+    "exact_48_rows": true,
+    "gross_reference_only": true,
+    "hard_stop_absent": true,
+    "no_profitability_claim": true,
+    "partial_multi_tp_absent": true,
+    "primary_T15s_rows_24": true,
+    "sensitivity_T5s_rows_24": true,
+    "trailing_absent": true
+  },
+  "hashes": {
+    "EXP-0009_E3_profit_taking_by_regime_v0_1.csv": "82651ade572f7f47e1d6da776ebd7db88a0ec0b32b3580892170f30a58c7e6ee",
+    "EXP-0009_E3_profit_taking_design_v0_1.json": "0dedf0c413e593ea82b3f1c74b28d242939ae572e450e5d3ec4f22442db48bc5",
+    "EXP-0009_E3_profit_taking_results_v0_1.json": "e9ca42a360b005a99ec5afaa378667bfc8040b7cc4d30a6eecf1e29854c7432f"
+  },
+  "result": "PASS",
+  "schema_version": "P3-E3-PROFIT-TAKING-AUDIT-0.1"
+}

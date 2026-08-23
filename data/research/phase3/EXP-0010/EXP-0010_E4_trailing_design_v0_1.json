@@ -1,0 +1,110 @@
+{
+  "analysis_cohort": {
+    "clean_5m_paths_only": true,
+    "control_is_informational": true,
+    "robust_roles_drive_research_judgment": true
+  },
+  "dataset": {
+    "closed_prefix_design": "DEV-FREEZE-0002-DESIGN-002A",
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "freeze_id": "DEV-FREEZE-0002",
+    "untouched_oos": false
+  },
+  "design_id": "PHASE-3-E4-TRAILING-001",
+  "e3_carry_forward_context": {
+    "mainline_neighborhood": [
+      "TP05_T15s",
+      "TP10_T15s",
+      "TP15_T15s"
+    ],
+    "note": "E4 does NOT combine trailing with any E3 TP. The E3 selection is preserved for later small interaction testing in E5.",
+    "primary_anchor": "TP10_T15s",
+    "sensitivity_only": "TP20_T5s"
+  },
+  "experiment_id": "EXP-0010",
+  "factor_isolation": {
+    "T5s_sensitivity_used": false,
+    "breakeven_stop_used": false,
+    "dynamic_time_stop_used": false,
+    "fixed_take_profit_used": false,
+    "hard_stop_used": false,
+    "multiple_take_profit_used": false,
+    "note": "E4 isolates trailing only. TP/trailing interaction, SL interaction, and T5s interaction are deferred to E5 small interaction research.",
+    "partial_take_profit_used": false
+  },
+  "preconditions": {
+    "E3_T5s_sensitivity": "TP20_T5s",
+    "E3_mainline_neighbors": [
+      "TP05_T15s",
+      "TP15_T15s"
+    ],
+    "E3_primary_anchor": "TP10_T15s",
+    "EXP-0009_E3_postrun_audit": "PASS",
+    "EXP-0009_E3_result": "PASS",
+    "EXP-0009_E3_selection": "LOCKED",
+    "entry_A_B_C_D_fixed": true
+  },
+  "reporting": {
+    "execution_fill_modeled": false,
+    "fees_modeled": false,
+    "gross_reference_returns_only": true,
+    "latency_modeled": false,
+    "profitability_claim_allowed": false,
+    "required_metrics": [
+      "clean_path_count",
+      "scored_count",
+      "unscored_count",
+      "activation_count",
+      "activation_rate",
+      "trail_exit_count",
+      "trail_exit_rate",
+      "fallback_exit_count",
+      "p10_exit_bps",
+      "p25_exit_bps",
+      "p50_exit_bps",
+      "p75_exit_bps",
+      "p90_exit_bps",
+      "mean_exit_bps",
+      "positive_rate",
+      "exit_delay_p50_ms",
+      "activation_delay_p50_ms",
+      "fallback_mark_age_p50_ms"
+    ],
+    "slippage_modeled": false
+  },
+  "schema_version": "P3-E4-TRAILING-DESIGN-0.1",
+  "selection_guardrails": [
+    "Do not select a trailing variant by highest gross mean alone.",
+    "Prefer robust cross-regime agreement and neighboring-grid stability.",
+    "Activation rate and trail-exit rate must be considered alongside returns.",
+    "A variant that mostly falls back to T15s is not strong evidence for trailing.",
+    "No E3 TP is allowed inside E4.",
+    "No hard-stop interaction is allowed inside E4.",
+    "E4 may produce a trailing shortlist, not a live exit rule.",
+    "No realistic-net profitability claim is allowed."
+  ],
+  "source_binding": {
+    "EXP-0009_selection_file": "EXP-0009_E3_profit_taking_selection_v0_1.json",
+    "EXP-0009_selection_sha256": "3ba9fc0aae8d27e64f479bf3fbc99a40bff4657404f11797af542d17022136aa"
+  },
+  "status": "LOCKED_BEFORE_E4_RESULTS",
+  "trailing_family": {
+    "activation_semantics": "Trailing activates at the first observed fresh same-identity point with return_bps >= activation threshold; no interpolation.",
+    "activation_thresholds_bps": [
+      500,
+      1000,
+      1500
+    ],
+    "exit_semantics": "Exit on the first observed fresh same-identity point at or below the current trail level, at or before 15s; no interpolation.",
+    "fallback_semantics": "If trailing never activates or no trail exit occurs by 15s, exit at the latest fresh same-identity observation at or before 15s; expose fallback mark age.",
+    "fallback_time_stop_ms": 15000,
+    "giveback_distances_bps": [
+      300,
+      500,
+      1000
+    ],
+    "range_reason": "Activation +5/+10/+15% spans the locked E3 mainline TP neighborhood. Giveback 3/5/10% is a deliberately coarse range, small enough to test meaningful ratcheting without a dense post-hoc grid.",
+    "ratchet_semantics": "After activation, running peak is updated only from observed fresh same-identity points. The trail level is running_peak_bps minus the fixed giveback distance.",
+    "variant_count": 9
+  }
+}

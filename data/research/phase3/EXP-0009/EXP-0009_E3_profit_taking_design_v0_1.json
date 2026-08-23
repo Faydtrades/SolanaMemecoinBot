@@ -1,0 +1,106 @@
+{
+  "analysis_cohort": {
+    "clean_5m_paths_only": true,
+    "control_is_informational": true,
+    "robust_roles_drive_research_judgment": true
+  },
+  "dataset": {
+    "closed_prefix_design": "DEV-FREEZE-0002-DESIGN-002A",
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "freeze_id": "DEV-FREEZE-0002",
+    "untouched_oos": false
+  },
+  "design_id": "PHASE-3-E3-PROFIT-TAKING-001",
+  "e2_basis": {
+    "T15s": {
+      "reason": "Positive robust-regime medians/means with near-complete scoring and substantially better methodological coverage than T5s.",
+      "role": "PRIMARY_ROBUST_ANCHOR"
+    },
+    "T30s": {
+      "reason": "E2 showed the early edge largely decayed by ~30s.",
+      "role": "BOUNDARY_REFERENCE_ONLY"
+    },
+    "T5s": {
+      "reason": "Highest early gross reference results across robust regimes, but materially more unscored paths than T15s.",
+      "role": "AGGRESSIVE_SENSITIVITY"
+    },
+    "hard_stop": {
+      "SL10_retained_only_as_future_interaction_hypothesis": true,
+      "historical_SL30_promoted": false,
+      "mainline_carry_forward": false
+    }
+  },
+  "experiment_id": "EXP-0009",
+  "factor_isolation": {
+    "breakeven_stop_used": false,
+    "dynamic_time_stop_used": false,
+    "hard_stop_used": false,
+    "multiple_profit_targets_per_trade": false,
+    "note": "E3 isolates single-threshold profit-taking with only the already-carried E2 time-stop fallback. Hard-stop/trailing/partials remain deferred.",
+    "partial_take_profit_used": false,
+    "trailing_used": false
+  },
+  "preconditions": {
+    "E2_hard_stop_mainline_winner": null,
+    "E2_time_stop_primary_anchor": "T15s",
+    "E2_time_stop_sensitivity": "T5s",
+    "EXP-0008_E2_result": "PASS",
+    "EXP-0008_postrun_audit": "PASS",
+    "entry_A_B_C_D_fixed": true
+  },
+  "profit_taking_family": {
+    "evaluation_window": "A TP hit counts only if its observed_at is <= the selected fallback horizon.",
+    "fallback_semantics": "If TP is not observed before the fallback horizon, exit at the latest fresh same-identity observation at or before that horizon; mark_age_ms exposed.",
+    "fallback_time_stops_ms": [
+      15000,
+      5000
+    ],
+    "primary_fallback_ms": 15000,
+    "sensitivity_fallback_ms": 5000,
+    "take_profit_thresholds_bps": [
+      300,
+      500,
+      1000,
+      1500,
+      2000,
+      3000
+    ],
+    "threshold_crossing_semantics": "First observed fresh same-identity point >= TP threshold; no interpolation."
+  },
+  "reporting": {
+    "execution_fill_modeled": false,
+    "fees_modeled": false,
+    "gross_reference_returns_only": true,
+    "latency_modeled": false,
+    "profitability_claim_allowed": false,
+    "required_metrics": [
+      "clean_path_count",
+      "scored_count",
+      "unscored_count",
+      "tp_hit_count",
+      "tp_hit_rate",
+      "p10_exit_bps",
+      "p25_exit_bps",
+      "p50_exit_bps",
+      "p75_exit_bps",
+      "p90_exit_bps",
+      "mean_exit_bps",
+      "positive_rate",
+      "exit_delay_p50_ms",
+      "fallback_mark_age_p50_ms"
+    ],
+    "slippage_modeled": false
+  },
+  "schema_version": "P3-E3-PROFIT-TAKING-DESIGN-0.1",
+  "selection_guardrails": [
+    "Do not choose a TP by highest mean gross return alone.",
+    "Primary judgment uses T15s fallback; T5s is a sensitivity check, not the main anchor.",
+    "Prefer cross-regime agreement and neighboring-threshold plateau behavior.",
+    "A single isolated TP spike is not promoted.",
+    "Sparse/high TP levels may be retained as hypotheses but not promoted from small hit counts.",
+    "No hard-stop or trailing interaction is allowed in E3.",
+    "E3 may produce a profit-taking shortlist, not a live exit rule.",
+    "No realistic-net profitability claim is allowed."
+  ],
+  "status": "LOCKED_BEFORE_E3_RESULTS"
+}

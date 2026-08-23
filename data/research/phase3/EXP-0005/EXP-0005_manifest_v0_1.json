@@ -1,0 +1,39 @@
+{
+  "artifacts": {
+    "candidate_outcomes_csv_sha256": "5f5c0b7b4acd770bd08cb97b1be642bf291c39cd13ffc3397b28ce99c82aee98",
+    "frontier_csv_sha256": "1490d7caef477a2a984e0d010e948774c0523a8f08a7df0cc9f4b04ddd9a3d94",
+    "report_json_sha256": "401e1e02e57470bb3e0cc5e94ecbce24e160d7e2d482cd3877217dd3e4b95094",
+    "summary_csv_sha256": "5691edc3cac032e39c2af262d95d8e6f5ced1d6edc0b0875c85d6b4d999cf5d3"
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "eligible_tokens": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows": 50760,
+    "untouched_oos": false
+  },
+  "decision": "REVIEW_CROSS_ABC_AND_NEIGHBORING_D_STABILITY_BEFORE_FINAL_ENTRY_SYNTHESIS",
+  "design": {
+    "ABC_carry_forward_count": 4,
+    "D_valid_pair_count": 24,
+    "combination_count": 96,
+    "deferred_BlockC_hypotheses_in_main_search": false,
+    "five_minute_role": "SUPPORTING_DESCRIPTIVE_ONLY",
+    "full_cartesian_13_23m_run": false,
+    "primary_outcome_horizons": [
+      "15s",
+      "30s"
+    ],
+    "robustness_goal": "cross-ABC and neighboring-D stability; no highest-median selection",
+    "single_winner_selected": false
+  },
+  "experiment_id": "EXP-0005",
+  "hypothesis": "Reclaim minimum and runaway-entry cap change candidate incidence and post-signal outcomes across locked full A+B+C regimes.",
+  "manifest_schema_version": "EXPM-0.1-P3EXT",
+  "notes": "Development/discovery only; no winner, no exits/PnL, deferred C hypotheses remain separate.",
+  "selection_binding": {
+    "path": "data/research/phase3/EXP-0004/EXP-0004_C_selection_v0_1.json",
+    "sha256": "554c12d34892dd558ba88d15def58efc6432c9ba458bf039442ee0bae54cb0ef"
+  },
+  "status": "RUN_COMPLETE_PENDING_POSTRUN_AUDIT_AND_REVIEW"
+}

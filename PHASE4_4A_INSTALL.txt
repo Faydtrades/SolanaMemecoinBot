@@ -1,0 +1,23 @@
+PHASE 4.4A — DETERMINISTIC PERSISTENT EXIT-TRACK ORCHESTRATOR v0.1
+
+Extract this ROOT_READY package directly into:
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+It adds only:
+  src\phase4\paper_exit_orchestrator_v0_1.py
+  scripts\phase4_4a_exit_track_orchestrator_selftest_v0_1.py
+  docs\phase4\PHASE4_4A_EXIT_TRACK_ORCHESTRATOR_V0_1.md
+
+Run from the project root with the existing .venv active:
+  python scripts\phase4_4a_exit_track_orchestrator_selftest_v0_1.py
+
+Expected final line:
+  RESULT: PASS
+
+Safety / scope:
+- no production DB access
+- no network/RPC
+- no wallet/signing/live orders
+- no paper position mutation in this bounded step
+- no simulated exit fill or PnL yet
+- no parameter tuning/reselection

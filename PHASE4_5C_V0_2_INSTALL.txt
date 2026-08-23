@@ -1,0 +1,20 @@
+PHASE 4.5C DECIMAL-SAFE HOTFIX v0.2 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- src\phase4\paper_live_observability_binding_v0_2.py
+- scripts\phase4_5c_live_observability_binding_selftest_v0_2.py
+- scripts\phase4_5c_live_observability_smoke_v0_2.py
+- docs\phase4\PHASE4_5C_DECIMAL_HOTFIX_V0_2.md
+
+Do not delete the v0.1 files; v0.2 is versioned separately.
+
+No other collector should be running before the live smoke.
+
+LOCAL SELF-TEST BEFORE DELIVERY: PASS
+PHASE 4.5B REGRESSION SELF-TEST: PASS
+PHASE 4.5B EXACT-SCHEMA REGRESSION: PASS
+LIVE MARKET PATH: REQUIRES USER PROJECT/LIVE VALIDATION

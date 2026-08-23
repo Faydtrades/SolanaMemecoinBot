@@ -1,0 +1,75 @@
+{
+  "artifacts": {
+    "candidate_outcomes_csv": "EXP-0004_C_buyer_response_candidate_outcomes_v0_1.csv",
+    "frontier_csv": "EXP-0004_C_buyer_response_frontier_v0_1.csv",
+    "summary_csv": "EXP-0004_C_buyer_response_summary_v0_1.csv"
+  },
+  "block": "C_BUYER_RESPONSE_3S",
+  "checkpointing": {
+    "computed": 600,
+    "enabled": true,
+    "preexisting": 0,
+    "resumed": 0
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "eligible_tokens": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows": 50760,
+    "untouched_oos": false
+  },
+  "design": {
+    "AB_carry_forward_count": 4,
+    "C_combination_count_per_AB": 150,
+    "D_reclaim_fixed": {
+      "min_extension_from_response_bps": 200
+    },
+    "D_runaway_fixed": {
+      "max_extension_from_response_bps": 10000
+    },
+    "buyer_response_window": "3s",
+    "combination_count": 600,
+    "five_minute_role": "SUPPORTING_DESCRIPTIVE_ONLY",
+    "full_cartesian_13_23m_run": false,
+    "primary_outcome_horizons": [
+      "15s",
+      "30s"
+    ],
+    "robustness_goal": "cross-AB and neighboring-C stability; no highest-median selection",
+    "single_winner_selected": false
+  },
+  "determinism": {
+    "candidate_signatures": {
+      "1": "89a796cd21bee373bccf86ebba02b39bcf8d374b519172e5efa89eae92fcc476",
+      "300": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "600": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "pass": true,
+    "sentinel_indices": [
+      1,
+      300,
+      600
+    ]
+  },
+  "deterministic_report_core_sha256": "f0d92c960e1af3110df4ae9bfd031dbef69f8e7ac8f08161c2414bdfe949f4b9",
+  "experiment_id": "EXP-0004",
+  "performance_claims": {
+    "exit_optimization_performed": false,
+    "fees_modeled": false,
+    "latency_modeled": false,
+    "profitability_claim_allowed": false,
+    "realistic_net_pnl_available": false,
+    "slippage_modeled": false,
+    "tp_sl_tuning_performed": false
+  },
+  "result_counts": {
+    "candidate_outcome_rows": 14443,
+    "diagnostic_frontier_rows": 31,
+    "summary_rows": 600
+  },
+  "schema_version": "P3-EXP0004-C-0.1",
+  "selection_binding": {
+    "path": "data/research/phase3/EXP-0003/EXP-0003_B_selection_v0_1.json",
+    "sha256": "c323d5080f707852fb0d9155042cd7f344f26048fcc73b92cff07a6617253579"
+  }
+}

@@ -1,0 +1,20 @@
+PHASE 4.3B1D0 RUNTIME PRICE-IMPACT PROBE v0.2 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Do not run v0.1 again.
+
+No collector needs to be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1d0_runtime_price_impact_probe_v0_2.py
+
+Expected immediately:
+[STEP 1/3] Opening production SQLite read-only ...
+[STEP 2/3] Validating required pump_events columns ...
+[STEP 3/3] Loading bounded recent trade slice ...
+
+The probe is read-only and does not create paper fills or live orders.

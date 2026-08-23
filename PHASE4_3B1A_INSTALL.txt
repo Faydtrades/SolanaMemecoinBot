@@ -1,0 +1,18 @@
+PHASE 4.3B1A — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- scripts\phase4_live_runtime_binding_probe_v0_1.py
+- docs\phase4\PHASE4_3B1A_RUNTIME_BINDING_PROBE_V0_1.md
+- PHASE4_3B1A_INSTALL.txt
+
+Keep the collector stopped.
+
+With (.venv) active:
+
+python scripts\phase4_live_runtime_binding_probe_v0_1.py
+
+This is read-only and has no network/wallet/order path.

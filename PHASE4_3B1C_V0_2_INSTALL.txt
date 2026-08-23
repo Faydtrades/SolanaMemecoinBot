@@ -1,0 +1,27 @@
+PHASE 4.3B1C LIVE CANDIDATE ROUTE SMOKE v0.2 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Correction:
+- v0.1 incorrectly used strategy_clock_v0_1 / FirstPullbackStrategyClockV01.
+- v0.2 uses strategy_clock_v0_2 / FirstPullbackStrategyClockV02.
+- exact locked FirstPullback v1.1 parameters remain unchanged.
+
+No other collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1c_live_candidate_route_smoke_v0_2.py
+
+Default:
+- maximum 10 minutes
+- auto-stop on first routable live CandidateSignal
+- collector auto-stop
+- no Ctrl+C required
+- no wallet/signing/live orders
+- isolated paper DB only
+
+If no CandidateSignal appears, RESULT: CHECK is observational only.
+Do not change locked parameters.

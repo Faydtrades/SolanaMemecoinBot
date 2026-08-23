@@ -1,0 +1,13 @@
+PHASE 4.3B1C0 EXACT CONTRACT CAPTURE — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1c_exact_candidate_router_contract_v0_1.py
+
+No production DB/network/wallet/order path is used.

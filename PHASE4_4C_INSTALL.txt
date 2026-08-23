@@ -1,0 +1,18 @@
+PHASE 4.4C SOL_NATIVE EXIT PRICE-IMPACT PROVIDER — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- src\phase4\runtime_exit_price_impact_v0_1.py
+- scripts\phase4_4c_exit_price_impact_selftest_v0_1.py
+- docs\phase4\PHASE4_4C_EXIT_PRICE_IMPACT_PROVIDER_V0_1.md
+
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_4c_exit_price_impact_selftest_v0_1.py
+
+This self-test does not touch production SQLite or paper positions.

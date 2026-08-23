@@ -1,0 +1,10 @@
+{
+  "created_at_utc": "2026-08-19T17:56:20.910173+00:00",
+  "deterministic_payload_sha256": "ece0262c0e77e6f647b3a8cfe564e5d7fe134f47368b31d06ae320f86f5e2787",
+  "production_db": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\db\\tradingbot.sqlite3",
+  "production_db_read_only": true,
+  "report_json": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_research_v0_1\\phase2_research_replay_v0_1.json",
+  "schema_version": "P2RR-MANIFEST-0.1",
+  "token_metrics_csv": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase2_research_v0_1\\phase2_research_token_metrics_v0_1.csv",
+  "warning": "No PnL, exits, fees, slippage, execution, or performance conclusions in this harness."
+}

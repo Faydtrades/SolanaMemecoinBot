@@ -1,0 +1,20 @@
+COLLECTOR v0.3.4 SELF-TEST v0.2 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+This package only adds a corrected validator:
+
+scripts\live_pump_collector_v0_3_4_selftest_v0_2.py
+
+It does NOT rebuild or modify:
+- live_pump_collector_v0_3_3.py
+- live_pump_collector_v0_3_4.py
+- production SQLite
+
+With (.venv) active:
+
+python scripts\live_pump_collector_v0_3_4_selftest_v0_2.py
+
+Do not run the live smoke unless RESULT: PASS.

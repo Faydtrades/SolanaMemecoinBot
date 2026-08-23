@@ -1,0 +1,28 @@
+PHASE 4.3B1C LIVE CANDIDATE ROUTE SMOKE — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Prerequisites:
+- Phase 4.3B1B PASS
+- Phase 4.3B1C0 PASS
+- Phase 4.3B1C0B PASS
+- live_pump_collector_v0_3_4.py validated
+
+No other collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1c_live_candidate_route_smoke_v0_1.py
+
+Default:
+- maximum 10 minutes
+- auto-stops on first routable live CandidateSignal
+- auto-stops collector
+- no Ctrl+C needed
+- no wallet/live orders
+- isolated paper DB only
+
+If RESULT: CHECK only because no CandidateSignal appeared, do not change
+parameters. Re-run the exact same smoke.

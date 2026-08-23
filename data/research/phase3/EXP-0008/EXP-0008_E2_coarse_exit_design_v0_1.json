@@ -1,0 +1,108 @@
+{
+  "analysis_cohort": {
+    "clean_5m_paths_only": true,
+    "control_is_informational": true,
+    "robust_roles_drive_research_judgment": true
+  },
+  "dataset": {
+    "closed_prefix_design": "DEV-FREEZE-0002-DESIGN-002A",
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "freeze_id": "DEV-FREEZE-0002",
+    "untouched_oos": false
+  },
+  "design_id": "PHASE-3-E2-COARSE-EXIT-001",
+  "e1_supporting_observations": {
+    "ROBUST_1": {
+      "clean_5m": 203,
+      "peak_p50_bps": 3159,
+      "trough_p50_bps": -3388
+    },
+    "ROBUST_2": {
+      "clean_5m": 229,
+      "peak_p50_bps": 3135,
+      "trough_p50_bps": -3435
+    },
+    "ROBUST_3": {
+      "clean_5m": 211,
+      "peak_p50_bps": 3494,
+      "trough_p50_bps": -4107
+    },
+    "interpretation": "E1 shows large positive and negative observed excursions. These are marginal path distributions, not executable trade returns and not a reason to promote any one exit threshold."
+  },
+  "experiment_id": "EXP-0008",
+  "factor_isolation": {
+    "hard_stop_family_has_profit_target": false,
+    "hard_stop_family_has_trailing": false,
+    "hard_stop_time_stop_cartesian_search": false,
+    "note": "E2 studies coarse hard-stop and time-stop families separately. Component interactions are deferred; no giant exit Cartesian search.",
+    "time_stop_family_has_hard_stop": false,
+    "time_stop_family_has_profit_target": false,
+    "time_stop_family_has_trailing": false
+  },
+  "families": {
+    "hard_stop": {
+      "crossing_semantics": "first observed point <= threshold; no interpolation",
+      "reason_for_range": "Coarse 10%-step range from -10% to -60% brackets the E1 median adverse excursions (~-34% to -41%) and includes the historical -30% hypothesis without privileging it.",
+      "terminal_if_no_stop": "latest fresh same-identity mark at or before 5m",
+      "thresholds_bps": [
+        -1000,
+        -2000,
+        -3000,
+        -4000,
+        -5000,
+        -6000
+      ]
+    },
+    "time_stop": {
+      "horizons_ms": [
+        5000,
+        15000,
+        30000,
+        60000,
+        120000,
+        300000
+      ],
+      "mark_semantics": "latest fresh same-identity observation at or before the time-stop horizon; mark_age_ms exposed; no hidden freshness threshold",
+      "reason_for_range": "Reuse the fixed OutcomeReplay horizons 5s/15s/30s/60s/2m/5m, avoiding a new timing grid chosen from E2 outcomes."
+    }
+  },
+  "preconditions": {
+    "e1_path_characterization_result": "PASS",
+    "entry_A_B_C_D_fixed": true,
+    "postfreeze_audit_result": "PASS",
+    "readiness_tier": "E2_COARSE_EXIT_SEARCH_READY"
+  },
+  "reporting": {
+    "execution_fill_modeled": false,
+    "fees_modeled": false,
+    "gross_reference_returns_only": true,
+    "latency_modeled": false,
+    "profitability_claim_allowed": false,
+    "required_metrics": [
+      "scored_count",
+      "unscored_count",
+      "p10_exit_bps",
+      "p25_exit_bps",
+      "p50_exit_bps",
+      "p75_exit_bps",
+      "p90_exit_bps",
+      "mean_exit_bps",
+      "positive_rate",
+      "exit_delay_p50_ms",
+      "mark_age_p50_ms",
+      "stop_hit_rate_for_hard_stop"
+    ],
+    "slippage_modeled": false
+  },
+  "schema_version": "P3-E2-COARSE-EXIT-DESIGN-0.1",
+  "selection_guardrails": [
+    "Do not choose a winner by highest median or mean gross return alone.",
+    "Prefer broad cross-regime stability to isolated spikes.",
+    "Neighboring coarse thresholds/horizons must be reviewed for plateau behavior.",
+    "Sparse or low-scored variants are not promoted.",
+    "E2 may create a research shortlist, not a live exit rule.",
+    "Profit-taking and trailing remain untouched until E3/E4.",
+    "No realistic-net profitability claim is allowed."
+  ],
+  "status": "LOCKED_BEFORE_E2_RESULTS"
+}

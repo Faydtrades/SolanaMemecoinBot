@@ -1,0 +1,45 @@
+{
+  "artifacts": {
+    "candidate_outcomes_csv_sha256": "68aae2d06207888597eae9f987a91a18be2ff022477bd62d7325e6ae00d25856",
+    "frontier_csv_sha256": "9830e2e394adf89aef5fbb27453d71c4b1f1af6cd4e76133e515365e8909a592",
+    "report_json_sha256": "90da7b3f07aad824f1a33f8be91bbd2eb613131187b80db906f0368a831a8996",
+    "summary_csv_sha256": "1c68fbcb1c8468f6753299c06956cf53ae8a3c17015b5a288f0b03585f52c402"
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "eligible_tokens": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows": 50760,
+    "untouched_oos": false
+  },
+  "decision": "REVIEW_CROSS_AB_AND_NEIGHBORING_C_STABILITY_BEFORE_BLOCK_D",
+  "design": {
+    "AB_carry_forward_count": 4,
+    "C_combination_count_per_AB": 150,
+    "D_reclaim_fixed": {
+      "min_extension_from_response_bps": 200
+    },
+    "D_runaway_fixed": {
+      "max_extension_from_response_bps": 10000
+    },
+    "buyer_response_window": "3s",
+    "combination_count": 600,
+    "five_minute_role": "SUPPORTING_DESCRIPTIVE_ONLY",
+    "full_cartesian_13_23m_run": false,
+    "primary_outcome_horizons": [
+      "15s",
+      "30s"
+    ],
+    "robustness_goal": "cross-AB and neighboring-C stability; no highest-median selection",
+    "single_winner_selected": false
+  },
+  "experiment_id": "EXP-0004",
+  "hypothesis": "Buyer-response thresholds change candidate incidence and post-signal outcomes across four locked A+B regimes.",
+  "manifest_schema_version": "EXPM-0.1-P3EXT",
+  "notes": "Development/discovery data only; no winner, no PnL, no exit optimization.",
+  "selection_binding": {
+    "path": "data/research/phase3/EXP-0003/EXP-0003_B_selection_v0_1.json",
+    "sha256": "c323d5080f707852fb0d9155042cd7f344f26048fcc73b92cff07a6617253579"
+  },
+  "status": "RUN_COMPLETE_PENDING_POSTRUN_AUDIT_AND_REVIEW"
+}

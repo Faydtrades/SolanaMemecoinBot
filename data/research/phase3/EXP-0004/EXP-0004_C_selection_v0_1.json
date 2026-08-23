@@ -1,0 +1,113 @@
+{
+  "buyer_response_interpretation": {
+    "control": {
+      "min_buys": 1,
+      "min_net_flow_reserve_ppm": 0,
+      "min_rebound_bps": 200
+    },
+    "representative_is_permanent_optimum": false,
+    "robust_representative": {
+      "min_buys": 2,
+      "min_net_flow_reserve_ppm": 6000,
+      "min_rebound_bps": 2300
+    }
+  },
+  "carry_forward": [
+    {
+      "candidate_count": 230,
+      "h15_observable_n": 127,
+      "h15_p50_bps": 181,
+      "h30_observable_n": 67,
+      "h30_p50_bps": 44,
+      "max_depth_bps": 9000,
+      "min_buys": 1,
+      "min_depth_bps": 1000,
+      "min_net_flow_reserve_ppm": 0,
+      "min_rebound_bps": 200,
+      "min_return_bps": 500,
+      "min_trades_since_t0": 2,
+      "min_unique_buyers_since_t0": 1,
+      "parameter_set_id": "FP1-EXP0004-C-001-CONTROL-R500-T2-U1-PD1000-9000-RB200-BU1-FL0",
+      "role": "CONTROL"
+    },
+    {
+      "candidate_count": 19,
+      "h15_observable_n": 9,
+      "h15_p50_bps": 741,
+      "h30_observable_n": 5,
+      "h30_p50_bps": 1213,
+      "max_depth_bps": 6500,
+      "min_buys": 2,
+      "min_depth_bps": 2500,
+      "min_net_flow_reserve_ppm": 6000,
+      "min_rebound_bps": 2300,
+      "min_return_bps": 1500,
+      "min_trades_since_t0": 5,
+      "min_unique_buyers_since_t0": 9,
+      "parameter_set_id": "FP1-EXP0004-C-232-ROBUST_1-R1500-T5-U9-PD2500-6500-RB2300-BU2-FL6000",
+      "role": "ROBUST_1"
+    },
+    {
+      "candidate_count": 23,
+      "h15_observable_n": 10,
+      "h15_p50_bps": 645,
+      "h30_observable_n": 8,
+      "h30_p50_bps": 826,
+      "max_depth_bps": 6500,
+      "min_buys": 2,
+      "min_depth_bps": 2500,
+      "min_net_flow_reserve_ppm": 6000,
+      "min_rebound_bps": 2300,
+      "min_return_bps": 2000,
+      "min_trades_since_t0": 3,
+      "min_unique_buyers_since_t0": 5,
+      "parameter_set_id": "FP1-EXP0004-C-382-ROBUST_2-R2000-T3-U5-PD2500-6500-RB2300-BU2-FL6000",
+      "role": "ROBUST_2"
+    },
+    {
+      "candidate_count": 25,
+      "h15_observable_n": 10,
+      "h15_p50_bps": 483,
+      "h30_observable_n": 9,
+      "h30_p50_bps": 748,
+      "max_depth_bps": 6500,
+      "min_buys": 2,
+      "min_depth_bps": 2500,
+      "min_net_flow_reserve_ppm": 6000,
+      "min_rebound_bps": 2300,
+      "min_return_bps": 5000,
+      "min_trades_since_t0": 3,
+      "min_unique_buyers_since_t0": 2,
+      "parameter_set_id": "FP1-EXP0004-C-532-ROBUST_3-R5000-T3-U2-PD2500-6500-RB2300-BU2-FL6000",
+      "role": "ROBUST_3"
+    }
+  ],
+  "dataset": {
+    "freeze_id": "DEV-FREEZE-0001",
+    "role": "DEVELOPMENT_DISCOVERY",
+    "untouched_oos": false
+  },
+  "deferred_hypotheses_path": "data/research/phase3/EXP-0004/EXP-0004_C_deferred_hypotheses_v0_1.json",
+  "deferred_hypotheses_sha256": "bb4853f88b775060cde699ba76d59c5ea44763945f2737a59d63dec70002b9c8",
+  "experiment_id": "EXP-0004",
+  "next_block": {
+    "ABC_configuration_count": 4,
+    "block": "D_RECLAIM_RUNAWAY",
+    "experiment_id": "EXP-0005",
+    "planned_combination_count": 96,
+    "valid_D_pair_count": 24
+  },
+  "notes": "Main carry-forward and deferred high-stringency hypotheses are separate. Deferred hypotheses are explicitly retained for future fresh-data and Phase-4 shadow research.",
+  "preanalysis_methodology": {
+    "five_minute_mfe_mae_role": "SUPPORTING_DESCRIPTIVE_ONLY",
+    "locked_before_results": true,
+    "primary_outcome_horizons": [
+      "15s",
+      "30s"
+    ],
+    "selection_rule": "retain control plus robust A+B+C settings with sample support, cross-regime and local-neighborhood stability; do not select highest median alone",
+    "single_winner_selected": false
+  },
+  "schema_version": "P3-EXP0004-C-SELECTION-0.1",
+  "status": "LOCKED_FOR_EXP0005_BLOCK_D"
+}

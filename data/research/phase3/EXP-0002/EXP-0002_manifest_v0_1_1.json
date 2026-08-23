@@ -1,0 +1,78 @@
+{
+  "artifacts": {
+    "candidate_outcomes_csv_sha256": "1079450705fab4afa8a5200d6275677bd9786647eb9f733eda7f8f50aaceae78",
+    "frontier_csv_sha256": "be2b4a5665e03cab7b564c87893bfac080508999f33c2bf402378f7333da3857",
+    "report_json_sha256": "8690b89a0d19ffba8f3fc2ab9bd7432efd95e3517212cfa755a5b211bc1633c9",
+    "summary_csv_sha256": "96a89e9850884ba9e85b98ce0c2718852ed2690761239935929eea066c544a4e"
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "eligible_tokens": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows": 50760,
+    "locked_search_sha256": "65cd4aa6ebc84929504b2fa4224bbc64dc149737b3f3e344d9e172d72b2e586f",
+    "snapshot_sqlite_sha256": "44e3457b81a16d4e5e2670e24d758756a147867e1d81d627622157ad4bd5813f",
+    "untouched_oos": false
+  },
+  "decision": "REVIEW_DIAGNOSTIC_FRONTIER_BEFORE_BLOCK_B",
+  "execution_model": {
+    "failed_execution_behavior": "NOT_DEFINED_YET",
+    "fee_model": "NOT_DEFINED_YET",
+    "latency_model": "NOT_DEFINED_YET",
+    "reference_position_size_sol": 0.1,
+    "slippage_model": "NOT_DEFINED_YET",
+    "version": "NOT_DEFINED_YET"
+  },
+  "experiment_design": {
+    "buyer_response_window": "3s",
+    "combination_count": 175,
+    "diagnostic_frontier_only": true,
+    "fixed_downstream_foundation_anchors": {
+      "buyer_response": {
+        "min_buys": 1,
+        "min_net_flow_reserve_ppm": 0,
+        "min_rebound_bps": 200,
+        "window_id": "3s"
+      },
+      "pullback": {
+        "max_depth_bps": 9000,
+        "min_depth_bps": 1000
+      },
+      "reclaim": {
+        "min_extension_from_response_bps": 200
+      },
+      "runaway": {
+        "max_extension_from_response_bps": 10000
+      }
+    },
+    "full_cartesian_13_23m_run": false,
+    "max_entry_age_ms": 300000,
+    "pareto_eligibility": "at least one clean OBSERVABLE 15s and 30s return",
+    "pareto_metrics_maximized": [
+      "candidate_count",
+      "h15_observable_n",
+      "h15_p50_bps",
+      "h30_observable_n",
+      "h30_p50_bps"
+    ],
+    "reason": "isolate Block A while preserving signal-support dimensions; do not silently promote a tiny high-return sample to winner",
+    "single_winner_selected": false,
+    "varied_block": "A_IMPULSE",
+    "varied_parameters": [
+      "min_return_bps",
+      "min_trades_since_t0",
+      "min_unique_buyers_since_t0"
+    ]
+  },
+  "experiment_id": "EXP-0002",
+  "hypothesis": "Within the locked PHASE-2-PARAM-SEARCH-001 impulse block, changing impulse confirmation thresholds changes FirstPullback candidate incidence and post-signal outcome distributions while B/C/D remain fixed.",
+  "manifest_schema_version": "EXPM-0.1-P3EXT",
+  "notes": "DEV-FREEZE-0001 remains development/discovery data, not untouched OOS. The diagnostic Pareto frontier is not a profitability ranking and does not constitute a final trading parameter selection. Harness v0.1.1 corrects the v0.1 omission of REJECT from terminal accounting and persists each completed parameter combination atomically for resume.",
+  "search_space": {
+    "block": "A_IMPULSE",
+    "combination_count": 175,
+    "decision_id": "PHASE-2-PARAM-SEARCH-001",
+    "locked_search_space_sha256": "65cd4aa6ebc84929504b2fa4224bbc64dc149737b3f3e344d9e172d72b2e586f"
+  },
+  "status": "RUN_COMPLETE_PENDING_POSTRUN_AUDIT_AND_REVIEW"
+}

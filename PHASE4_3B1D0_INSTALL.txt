@@ -1,0 +1,21 @@
+PHASE 4.3B1D0 RUNTIME PRICE-IMPACT MECHANICS PROBE v0.1 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+No collector needs to be running for this step.
+
+With (.venv) active:
+
+python scripts\phase4_3b1d0_runtime_price_impact_probe_v0_1.py
+
+Expected safety properties:
+- production DB = QUERY-ONLY / READ-ONLY
+- collector = NOT STARTED
+- network/RPC = NO
+- paper orders/fills = NO
+- wallet/signing/live orders = NO
+- parameter tuning/reselection = NO
+
+Send the complete terminal output back to ChatGPT before the next step.

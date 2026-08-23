@@ -1,0 +1,17 @@
+PHASE 4.3B1B v0.3 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+No other collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1b_v034_live_source_smoke_v0_3.py
+
+Fixes only:
+- normalize_rows -> (events, skipped)
+- rowid AS p1_rowid
+
+Collector lifecycle is automatic.

@@ -1,0 +1,69 @@
+{
+  "artifacts": {
+    "candidate_outcomes_csv": "EXP-0005_D_reclaim_runaway_candidate_outcomes_v0_1.csv",
+    "frontier_csv": "EXP-0005_D_reclaim_runaway_frontier_v0_1.csv",
+    "summary_csv": "EXP-0005_D_reclaim_runaway_summary_v0_1.csv"
+  },
+  "block": "D_RECLAIM_RUNAWAY",
+  "checkpointing": {
+    "computed": 96,
+    "enabled": true,
+    "preexisting": 0,
+    "resumed": 0
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "eligible_tokens": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows": 50760,
+    "untouched_oos": false
+  },
+  "design": {
+    "ABC_carry_forward_count": 4,
+    "D_valid_pair_count": 24,
+    "combination_count": 96,
+    "deferred_BlockC_hypotheses_in_main_search": false,
+    "five_minute_role": "SUPPORTING_DESCRIPTIVE_ONLY",
+    "full_cartesian_13_23m_run": false,
+    "primary_outcome_horizons": [
+      "15s",
+      "30s"
+    ],
+    "robustness_goal": "cross-ABC and neighboring-D stability; no highest-median selection",
+    "single_winner_selected": false
+  },
+  "determinism": {
+    "candidate_signatures": {
+      "1": "6c071dae845b61ea53f80d8f7c62f3f2c422c637ffab66b958c769eecfb56a5d",
+      "48": "f34543b323d5998990821ab161870fc0f6eddedcd51bf99bb2fadacd70e30142",
+      "96": "934c755cc3d8abc1f42eda57dd46bfb3cf4081223da94765673a641fd481e091"
+    },
+    "pass": true,
+    "sentinel_indices": [
+      1,
+      48,
+      96
+    ]
+  },
+  "deterministic_report_core_sha256": "70e95952ea0225d137dd333f4f6c7b24729a1180b095c99c8981a6011c855a36",
+  "experiment_id": "EXP-0005",
+  "performance_claims": {
+    "exit_optimization_performed": false,
+    "fees_modeled": false,
+    "latency_modeled": false,
+    "profitability_claim_allowed": false,
+    "realistic_net_pnl_available": false,
+    "slippage_modeled": false,
+    "tp_sl_tuning_performed": false
+  },
+  "result_counts": {
+    "candidate_outcome_rows": 5514,
+    "diagnostic_frontier_rows": 23,
+    "summary_rows": 96
+  },
+  "schema_version": "P3-EXP0005-D-0.1",
+  "selection_binding": {
+    "path": "data/research/phase3/EXP-0004/EXP-0004_C_selection_v0_1.json",
+    "sha256": "554c12d34892dd558ba88d15def58efc6432c9ba458bf039442ee0bae54cb0ef"
+  }
+}

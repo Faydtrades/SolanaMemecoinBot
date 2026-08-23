@@ -1,0 +1,16 @@
+PHASE 4.2B - ROOT READY
+=======================
+
+Extract this ZIP directly into:
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+It adds new versioned files and does NOT overwrite the validated v0.1 cost model.
+
+With the existing project .venv active, run:
+
+python scripts\phase4_paper_cost_baseline_selftest_v0_1.py
+
+Expected final line:
+RESULT: PASS
+
+This self-test does not touch the production DB, network/RPC, wallet, or live orders.

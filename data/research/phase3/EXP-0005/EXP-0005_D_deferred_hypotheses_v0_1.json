@@ -1,0 +1,30 @@
+{
+  "future_evaluation": {
+    "fresh_development_data": true,
+    "must_not_bias_main_exit_search": true,
+    "phase4_parallel_shadow_logging": true
+  },
+  "hypotheses": [
+    {
+      "family": {
+        "max_extension_from_response_bps": 3000,
+        "min_extension_from_response_bps": 2500
+      },
+      "hypothesis_id": "EXP0005-D-DEFER-001",
+      "name": "HIGH_RECLAIM_NARROW_RUNAWAY",
+      "observed_development_summary": {
+        "median_ABC_candidate_count": 7,
+        "median_ABC_clean_30s_n": 4,
+        "median_of_ABC_30s_p50_bps": 1584,
+        "robust_subset_30s_median_signal_bps": 2420
+      },
+      "promotion_status": "DEFERRED_NOT_REJECTED",
+      "reason_not_promoted": "Very strong-looking 30s outcomes but sparse clean support. Retain as a hypothesis for larger/fresher data and Phase-4 shadow logging."
+    }
+  ],
+  "principle": "Not selected now does not mean disproven.",
+  "prior_deferred_ledger": "data/research/phase3/EXP-0004/EXP-0004_C_deferred_hypotheses_v0_1.json",
+  "schema_version": "P3-EXP0005-D-DEFERRED-0.1",
+  "source_experiment_id": "EXP-0005",
+  "status": "RETAIN_FOR_FRESH_DATA_AND_PHASE4_SHADOW_RESEARCH"
+}

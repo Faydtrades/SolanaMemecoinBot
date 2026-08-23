@@ -1,0 +1,13 @@
+PHASE 4.3B1C0B — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1c0b_runtime_bridge_contract_v0_1.py
+
+This is read-only source/runtime introspection only.

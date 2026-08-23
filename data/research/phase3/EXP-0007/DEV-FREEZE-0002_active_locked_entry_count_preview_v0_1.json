@@ -1,0 +1,103 @@
+{
+  "cohort": {
+    "global_t0s_inside_session": 14732,
+    "normalized_events_replayed": 133024,
+    "projected_eligible_tokens_t0_to_t0_plus_10m_clean": 8085,
+    "strategy_rows_replayed_through_exact_t0_plus_5m": 133024
+  },
+  "entry_binding": {
+    "A_B_C_D_fixed": true,
+    "experiment_id": "EXP-0005",
+    "selection_path": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\research\\phase3\\EXP-0005\\EXP-0005_D_selection_v0_1.json",
+    "selection_sha256": "408657c1d6dc39435b61e01b368dac69796481864b7462efd150a2d4e1b0daa1",
+    "status": "LOCKED_FOR_EXIT_RESEARCH"
+  },
+  "exit_paths_built": false,
+  "exit_threshold_tuning_performed": false,
+  "outcomes_inspected": false,
+  "pnl_inspected": false,
+  "production_db_read_only": true,
+  "purpose": "ENTRY_CANDIDATE_COUNT_ONLY",
+  "readiness_note": "These are exact locked ENTRY candidate counts at this read snapshot. They are NOT yet exact E1/E2 clean-5m-path counts because no forward outcome/ExitPathReplay was inspected.",
+  "regimes": [
+    {
+      "candidate_count": 954,
+      "candidate_mint_count": 954,
+      "parameter_set_id": "FP1-EXP0005-D-005-CONTROL-R500-T2-U1-PD1000-9000-RB200-BU1-FL0-RC200-RW10000",
+      "role": "CONTROL",
+      "run_count": 8085,
+      "terminal": {
+        "candidate_state": 954,
+        "expired": 7112,
+        "invalidated": 19,
+        "rejected": 0,
+        "trade": 0
+      }
+    },
+    {
+      "candidate_count": 175,
+      "candidate_mint_count": 175,
+      "parameter_set_id": "FP1-EXP0005-D-026-ROBUST_1-R1500-T5-U9-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_1",
+      "run_count": 8085,
+      "terminal": {
+        "candidate_state": 175,
+        "expired": 7850,
+        "invalidated": 59,
+        "rejected": 1,
+        "trade": 0
+      }
+    },
+    {
+      "candidate_count": 198,
+      "candidate_mint_count": 198,
+      "parameter_set_id": "FP1-EXP0005-D-050-ROBUST_2-R2000-T3-U5-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_2",
+      "run_count": 8085,
+      "terminal": {
+        "candidate_state": 198,
+        "expired": 7765,
+        "invalidated": 118,
+        "rejected": 4,
+        "trade": 0
+      }
+    },
+    {
+      "candidate_count": 189,
+      "candidate_mint_count": 189,
+      "parameter_set_id": "FP1-EXP0005-D-074-ROBUST_3-R5000-T3-U2-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_3",
+      "run_count": 8085,
+      "terminal": {
+        "candidate_state": 189,
+        "expired": 7702,
+        "invalidated": 186,
+        "rejected": 8,
+        "trade": 0
+      }
+    }
+  ],
+  "robust_overlap_by_mint": {
+    "mints_in_all_three_robust_regimes": 145,
+    "pairwise": {
+      "ROBUST_1&ROBUST_2": 172,
+      "ROBUST_1&ROBUST_3": 145,
+      "ROBUST_2&ROBUST_3": 157
+    },
+    "unique_mints_in_any_robust_regime": 233
+  },
+  "schema_version": "P3-ACTIVE-LOCKED-ENTRY-COUNT-0.1",
+  "snapshot": {
+    "active_hours": 22.403232581111112,
+    "active_ratio": 0.9981366090689062,
+    "collector_version": "v0.3.3",
+    "explicit_gap_count": 69,
+    "explicit_gap_seconds": 161.328645,
+    "observed_through_utc": "2026-08-22T11:26:13.512979+00:00",
+    "session_id": 7,
+    "session_start_utc": "2026-08-21T12:59:31.309594+00:00",
+    "session_state": "EOF_UNCERTAIN",
+    "snapshot_max_pump_event_rowid": 513421,
+    "wall_hours": 22.445056495833335
+  }
+}

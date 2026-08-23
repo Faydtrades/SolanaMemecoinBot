@@ -1,0 +1,19 @@
+SOLANA / PUMP WEBSOCKET DIAGNOSTIC — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- scripts\solana_pump_ws_subscription_diagnostic_v0_1.py
+- docs\phase4\SOLANA_PUMP_WS_SUBSCRIPTION_DIAGNOSTIC_V0_1.md
+- SOLANA_PUMP_WS_DIAGNOSTIC_INSTALL.txt
+
+IMPORTANT:
+Make sure no collector is currently running.
+
+With (.venv) active:
+
+python scripts\solana_pump_ws_subscription_diagnostic_v0_1.py
+
+This does not open the production DB and does not use any wallet/order path.

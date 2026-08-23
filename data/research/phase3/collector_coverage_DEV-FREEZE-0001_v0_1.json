@@ -1,0 +1,2893 @@
+{
+  "active_intervals": [
+    {
+      "close_reason": "LIVE_COLLECTION_STOPPED",
+      "end_us": 1787063204003335,
+      "end_utc": "2026-08-18T14:26:44.003335+00:00",
+      "session_id": 1,
+      "start_us": 1787063193375632,
+      "start_utc": "2026-08-18T14:26:33.375632+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064051050932,
+      "end_utc": "2026-08-18T14:40:51.050932+00:00",
+      "session_id": 2,
+      "start_us": 1787064009388157,
+      "start_utc": "2026-08-18T14:40:09.388157+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064094632978,
+      "end_utc": "2026-08-18T14:41:34.632978+00:00",
+      "session_id": 2,
+      "start_us": 1787064052324281,
+      "start_utc": "2026-08-18T14:40:52.324281+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064137874586,
+      "end_utc": "2026-08-18T14:42:17.874586+00:00",
+      "session_id": 2,
+      "start_us": 1787064095910404,
+      "start_utc": "2026-08-18T14:41:35.910404+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064181639081,
+      "end_utc": "2026-08-18T14:43:01.639081+00:00",
+      "session_id": 2,
+      "start_us": 1787064139212956,
+      "start_utc": "2026-08-18T14:42:19.212956+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064226647099,
+      "end_utc": "2026-08-18T14:43:46.647099+00:00",
+      "session_id": 2,
+      "start_us": 1787064182890591,
+      "start_utc": "2026-08-18T14:43:02.890591+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064271791286,
+      "end_utc": "2026-08-18T14:44:31.791286+00:00",
+      "session_id": 2,
+      "start_us": 1787064227932878,
+      "start_utc": "2026-08-18T14:43:47.932878+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064317951881,
+      "end_utc": "2026-08-18T14:45:17.951881+00:00",
+      "session_id": 2,
+      "start_us": 1787064273068354,
+      "start_utc": "2026-08-18T14:44:33.068354+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064363120668,
+      "end_utc": "2026-08-18T14:46:03.120668+00:00",
+      "session_id": 2,
+      "start_us": 1787064319214292,
+      "start_utc": "2026-08-18T14:45:19.214292+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064407017738,
+      "end_utc": "2026-08-18T14:46:47.017738+00:00",
+      "session_id": 2,
+      "start_us": 1787064364378517,
+      "start_utc": "2026-08-18T14:46:04.378517+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064451507844,
+      "end_utc": "2026-08-18T14:47:31.507844+00:00",
+      "session_id": 2,
+      "start_us": 1787064408294557,
+      "start_utc": "2026-08-18T14:46:48.294557+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064496550334,
+      "end_utc": "2026-08-18T14:48:16.550334+00:00",
+      "session_id": 2,
+      "start_us": 1787064452774358,
+      "start_utc": "2026-08-18T14:47:32.774358+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064543498087,
+      "end_utc": "2026-08-18T14:49:03.498087+00:00",
+      "session_id": 2,
+      "start_us": 1787064497834102,
+      "start_utc": "2026-08-18T14:48:17.834102+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064586512226,
+      "end_utc": "2026-08-18T14:49:46.512226+00:00",
+      "session_id": 2,
+      "start_us": 1787064544767111,
+      "start_utc": "2026-08-18T14:49:04.767111+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064631658153,
+      "end_utc": "2026-08-18T14:50:31.658153+00:00",
+      "session_id": 2,
+      "start_us": 1787064587769447,
+      "start_utc": "2026-08-18T14:49:47.769447+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064677973887,
+      "end_utc": "2026-08-18T14:51:17.973887+00:00",
+      "session_id": 2,
+      "start_us": 1787064632920349,
+      "start_utc": "2026-08-18T14:50:32.920349+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064721058976,
+      "end_utc": "2026-08-18T14:52:01.058976+00:00",
+      "session_id": 2,
+      "start_us": 1787064679247084,
+      "start_utc": "2026-08-18T14:51:19.247084+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064766477966,
+      "end_utc": "2026-08-18T14:52:46.477966+00:00",
+      "session_id": 2,
+      "start_us": 1787064722324076,
+      "start_utc": "2026-08-18T14:52:02.324076+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064811364619,
+      "end_utc": "2026-08-18T14:53:31.364619+00:00",
+      "session_id": 2,
+      "start_us": 1787064767757860,
+      "start_utc": "2026-08-18T14:52:47.757860+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064860234102,
+      "end_utc": "2026-08-18T14:54:20.234102+00:00",
+      "session_id": 2,
+      "start_us": 1787064812635991,
+      "start_utc": "2026-08-18T14:53:32.635991+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064907363256,
+      "end_utc": "2026-08-18T14:55:07.363256+00:00",
+      "session_id": 2,
+      "start_us": 1787064861503101,
+      "start_utc": "2026-08-18T14:54:21.503101+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064954686408,
+      "end_utc": "2026-08-18T14:55:54.686408+00:00",
+      "session_id": 2,
+      "start_us": 1787064908653661,
+      "start_utc": "2026-08-18T14:55:08.653661+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787064998148211,
+      "end_utc": "2026-08-18T14:56:38.148211+00:00",
+      "session_id": 2,
+      "start_us": 1787064955965447,
+      "start_utc": "2026-08-18T14:55:55.965447+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065046070568,
+      "end_utc": "2026-08-18T14:57:26.070568+00:00",
+      "session_id": 2,
+      "start_us": 1787065000216260,
+      "start_utc": "2026-08-18T14:56:40.216260+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065093020329,
+      "end_utc": "2026-08-18T14:58:13.020329+00:00",
+      "session_id": 2,
+      "start_us": 1787065047329626,
+      "start_utc": "2026-08-18T14:57:27.329626+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065140018162,
+      "end_utc": "2026-08-18T14:59:00.018162+00:00",
+      "session_id": 2,
+      "start_us": 1787065094289595,
+      "start_utc": "2026-08-18T14:58:14.289595+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065183892260,
+      "end_utc": "2026-08-18T14:59:43.892260+00:00",
+      "session_id": 2,
+      "start_us": 1787065141296674,
+      "start_utc": "2026-08-18T14:59:01.296674+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065230018424,
+      "end_utc": "2026-08-18T15:00:30.018424+00:00",
+      "session_id": 2,
+      "start_us": 1787065185202499,
+      "start_utc": "2026-08-18T14:59:45.202499+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065275780186,
+      "end_utc": "2026-08-18T15:01:15.780186+00:00",
+      "session_id": 2,
+      "start_us": 1787065231339195,
+      "start_utc": "2026-08-18T15:00:31.339195+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065319990499,
+      "end_utc": "2026-08-18T15:01:59.990499+00:00",
+      "session_id": 2,
+      "start_us": 1787065277095236,
+      "start_utc": "2026-08-18T15:01:17.095236+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065365089445,
+      "end_utc": "2026-08-18T15:02:45.089445+00:00",
+      "session_id": 2,
+      "start_us": 1787065321301542,
+      "start_utc": "2026-08-18T15:02:01.301542+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065412430150,
+      "end_utc": "2026-08-18T15:03:32.430150+00:00",
+      "session_id": 2,
+      "start_us": 1787065366371528,
+      "start_utc": "2026-08-18T15:02:46.371528+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065457374944,
+      "end_utc": "2026-08-18T15:04:17.374944+00:00",
+      "session_id": 2,
+      "start_us": 1787065413701345,
+      "start_utc": "2026-08-18T15:03:33.701345+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065500529982,
+      "end_utc": "2026-08-18T15:05:00.529982+00:00",
+      "session_id": 2,
+      "start_us": 1787065458647079,
+      "start_utc": "2026-08-18T15:04:18.647079+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065545735249,
+      "end_utc": "2026-08-18T15:05:45.735249+00:00",
+      "session_id": 2,
+      "start_us": 1787065501798369,
+      "start_utc": "2026-08-18T15:05:01.798369+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065593352562,
+      "end_utc": "2026-08-18T15:06:33.352562+00:00",
+      "session_id": 2,
+      "start_us": 1787065546985733,
+      "start_utc": "2026-08-18T15:05:46.985733+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065644275059,
+      "end_utc": "2026-08-18T15:07:24.275059+00:00",
+      "session_id": 2,
+      "start_us": 1787065596421836,
+      "start_utc": "2026-08-18T15:06:36.421836+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065689985728,
+      "end_utc": "2026-08-18T15:08:09.985728+00:00",
+      "session_id": 2,
+      "start_us": 1787065645530055,
+      "start_utc": "2026-08-18T15:07:25.530055+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065738113875,
+      "end_utc": "2026-08-18T15:08:58.113875+00:00",
+      "session_id": 2,
+      "start_us": 1787065691225748,
+      "start_utc": "2026-08-18T15:08:11.225748+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065787141647,
+      "end_utc": "2026-08-18T15:09:47.141647+00:00",
+      "session_id": 2,
+      "start_us": 1787065739346639,
+      "start_utc": "2026-08-18T15:08:59.346639+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065833296840,
+      "end_utc": "2026-08-18T15:10:33.296840+00:00",
+      "session_id": 2,
+      "start_us": 1787065788409863,
+      "start_utc": "2026-08-18T15:09:48.409863+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065882003067,
+      "end_utc": "2026-08-18T15:11:22.003067+00:00",
+      "session_id": 2,
+      "start_us": 1787065834585839,
+      "start_utc": "2026-08-18T15:10:34.585839+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065927948818,
+      "end_utc": "2026-08-18T15:12:07.948818+00:00",
+      "session_id": 2,
+      "start_us": 1787065883296376,
+      "start_utc": "2026-08-18T15:11:23.296376+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787065973948147,
+      "end_utc": "2026-08-18T15:12:53.948147+00:00",
+      "session_id": 2,
+      "start_us": 1787065929215818,
+      "start_utc": "2026-08-18T15:12:09.215818+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066018956459,
+      "end_utc": "2026-08-18T15:13:38.956459+00:00",
+      "session_id": 2,
+      "start_us": 1787065975206972,
+      "start_utc": "2026-08-18T15:12:55.206972+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066068047865,
+      "end_utc": "2026-08-18T15:14:28.047865+00:00",
+      "session_id": 2,
+      "start_us": 1787066020230457,
+      "start_utc": "2026-08-18T15:13:40.230457+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066114250309,
+      "end_utc": "2026-08-18T15:15:14.250309+00:00",
+      "session_id": 2,
+      "start_us": 1787066069326319,
+      "start_utc": "2026-08-18T15:14:29.326319+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066157836823,
+      "end_utc": "2026-08-18T15:15:57.836823+00:00",
+      "session_id": 2,
+      "start_us": 1787066115504140,
+      "start_utc": "2026-08-18T15:15:15.504140+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066203691654,
+      "end_utc": "2026-08-18T15:16:43.691654+00:00",
+      "session_id": 2,
+      "start_us": 1787066159116715,
+      "start_utc": "2026-08-18T15:15:59.116715+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066250611621,
+      "end_utc": "2026-08-18T15:17:30.611621+00:00",
+      "session_id": 2,
+      "start_us": 1787066204969696,
+      "start_utc": "2026-08-18T15:16:44.969696+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066297651111,
+      "end_utc": "2026-08-18T15:18:17.651111+00:00",
+      "session_id": 2,
+      "start_us": 1787066251893075,
+      "start_utc": "2026-08-18T15:17:31.893075+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066342068722,
+      "end_utc": "2026-08-18T15:19:02.068722+00:00",
+      "session_id": 2,
+      "start_us": 1787066298917595,
+      "start_utc": "2026-08-18T15:18:18.917595+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066386977799,
+      "end_utc": "2026-08-18T15:19:46.977799+00:00",
+      "session_id": 2,
+      "start_us": 1787066343349541,
+      "start_utc": "2026-08-18T15:19:03.349541+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066437461157,
+      "end_utc": "2026-08-18T15:20:37.461157+00:00",
+      "session_id": 2,
+      "start_us": 1787066388249801,
+      "start_utc": "2026-08-18T15:19:48.249801+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066486202567,
+      "end_utc": "2026-08-18T15:21:26.202567+00:00",
+      "session_id": 2,
+      "start_us": 1787066438729204,
+      "start_utc": "2026-08-18T15:20:38.729204+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066532651701,
+      "end_utc": "2026-08-18T15:22:12.651701+00:00",
+      "session_id": 2,
+      "start_us": 1787066487500656,
+      "start_utc": "2026-08-18T15:21:27.500656+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066577644073,
+      "end_utc": "2026-08-18T15:22:57.644073+00:00",
+      "session_id": 2,
+      "start_us": 1787066533926209,
+      "start_utc": "2026-08-18T15:22:13.926209+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066625750676,
+      "end_utc": "2026-08-18T15:23:45.750676+00:00",
+      "session_id": 2,
+      "start_us": 1787066578924131,
+      "start_utc": "2026-08-18T15:22:58.924131+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066673780459,
+      "end_utc": "2026-08-18T15:24:33.780459+00:00",
+      "session_id": 2,
+      "start_us": 1787066627025674,
+      "start_utc": "2026-08-18T15:23:47.025674+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066721460475,
+      "end_utc": "2026-08-18T15:25:21.460475+00:00",
+      "session_id": 2,
+      "start_us": 1787066675034498,
+      "start_utc": "2026-08-18T15:24:35.034498+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066767725280,
+      "end_utc": "2026-08-18T15:26:07.725280+00:00",
+      "session_id": 2,
+      "start_us": 1787066724443244,
+      "start_utc": "2026-08-18T15:25:24.443244+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066814581974,
+      "end_utc": "2026-08-18T15:26:54.581974+00:00",
+      "session_id": 2,
+      "start_us": 1787066770639993,
+      "start_utc": "2026-08-18T15:26:10.639993+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066863405909,
+      "end_utc": "2026-08-18T15:27:43.405909+00:00",
+      "session_id": 2,
+      "start_us": 1787066819263075,
+      "start_utc": "2026-08-18T15:26:59.263075+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066910472080,
+      "end_utc": "2026-08-18T15:28:30.472080+00:00",
+      "session_id": 2,
+      "start_us": 1787066866299324,
+      "start_utc": "2026-08-18T15:27:46.299324+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787066957612457,
+      "end_utc": "2026-08-18T15:29:17.612457+00:00",
+      "session_id": 2,
+      "start_us": 1787066913690999,
+      "start_utc": "2026-08-18T15:28:33.690999+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067009799738,
+      "end_utc": "2026-08-18T15:30:09.799738+00:00",
+      "session_id": 2,
+      "start_us": 1787066960184640,
+      "start_utc": "2026-08-18T15:29:20.184640+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067064344973,
+      "end_utc": "2026-08-18T15:31:04.344973+00:00",
+      "session_id": 2,
+      "start_us": 1787067012514001,
+      "start_utc": "2026-08-18T15:30:12.514001+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067112501999,
+      "end_utc": "2026-08-18T15:31:52.501999+00:00",
+      "session_id": 2,
+      "start_us": 1787067065898668,
+      "start_utc": "2026-08-18T15:31:05.898668+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067159092512,
+      "end_utc": "2026-08-18T15:32:39.092512+00:00",
+      "session_id": 2,
+      "start_us": 1787067115008002,
+      "start_utc": "2026-08-18T15:31:55.008002+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067205627929,
+      "end_utc": "2026-08-18T15:33:25.627929+00:00",
+      "session_id": 2,
+      "start_us": 1787067160628993,
+      "start_utc": "2026-08-18T15:32:40.628993+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067253555810,
+      "end_utc": "2026-08-18T15:34:13.555810+00:00",
+      "session_id": 2,
+      "start_us": 1787067207544780,
+      "start_utc": "2026-08-18T15:33:27.544780+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067300702074,
+      "end_utc": "2026-08-18T15:35:00.702074+00:00",
+      "session_id": 2,
+      "start_us": 1787067255701194,
+      "start_utc": "2026-08-18T15:34:15.701194+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067348219974,
+      "end_utc": "2026-08-18T15:35:48.219974+00:00",
+      "session_id": 2,
+      "start_us": 1787067301979949,
+      "start_utc": "2026-08-18T15:35:01.979949+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067395252928,
+      "end_utc": "2026-08-18T15:36:35.252928+00:00",
+      "session_id": 2,
+      "start_us": 1787067349507903,
+      "start_utc": "2026-08-18T15:35:49.507903+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067443308769,
+      "end_utc": "2026-08-18T15:37:23.308769+00:00",
+      "session_id": 2,
+      "start_us": 1787067396531447,
+      "start_utc": "2026-08-18T15:36:36.531447+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067489871067,
+      "end_utc": "2026-08-18T15:38:09.871067+00:00",
+      "session_id": 2,
+      "start_us": 1787067444604467,
+      "start_utc": "2026-08-18T15:37:24.604467+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067533492497,
+      "end_utc": "2026-08-18T15:38:53.492497+00:00",
+      "session_id": 2,
+      "start_us": 1787067491192475,
+      "start_utc": "2026-08-18T15:38:11.192475+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067576166240,
+      "end_utc": "2026-08-18T15:39:36.166240+00:00",
+      "session_id": 2,
+      "start_us": 1787067534775978,
+      "start_utc": "2026-08-18T15:38:54.775978+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067622568464,
+      "end_utc": "2026-08-18T15:40:22.568464+00:00",
+      "session_id": 2,
+      "start_us": 1787067577502107,
+      "start_utc": "2026-08-18T15:39:37.502107+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067665729027,
+      "end_utc": "2026-08-18T15:41:05.729027+00:00",
+      "session_id": 2,
+      "start_us": 1787067623890027,
+      "start_utc": "2026-08-18T15:40:23.890027+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067712366411,
+      "end_utc": "2026-08-18T15:41:52.366411+00:00",
+      "session_id": 2,
+      "start_us": 1787067667047820,
+      "start_utc": "2026-08-18T15:41:07.047820+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067757218740,
+      "end_utc": "2026-08-18T15:42:37.218740+00:00",
+      "session_id": 2,
+      "start_us": 1787067713687208,
+      "start_utc": "2026-08-18T15:41:53.687208+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067806692431,
+      "end_utc": "2026-08-18T15:43:26.692431+00:00",
+      "session_id": 2,
+      "start_us": 1787067758507497,
+      "start_utc": "2026-08-18T15:42:38.507497+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067854126016,
+      "end_utc": "2026-08-18T15:44:14.126016+00:00",
+      "session_id": 2,
+      "start_us": 1787067807990429,
+      "start_utc": "2026-08-18T15:43:27.990429+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067902048607,
+      "end_utc": "2026-08-18T15:45:02.048607+00:00",
+      "session_id": 2,
+      "start_us": 1787067855410017,
+      "start_utc": "2026-08-18T15:44:15.410017+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787067951901985,
+      "end_utc": "2026-08-18T15:45:51.901985+00:00",
+      "session_id": 2,
+      "start_us": 1787067903325603,
+      "start_utc": "2026-08-18T15:45:03.325603+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068000699663,
+      "end_utc": "2026-08-18T15:46:40.699663+00:00",
+      "session_id": 2,
+      "start_us": 1787067953182857,
+      "start_utc": "2026-08-18T15:45:53.182857+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068048870868,
+      "end_utc": "2026-08-18T15:47:28.870868+00:00",
+      "session_id": 2,
+      "start_us": 1787068001981866,
+      "start_utc": "2026-08-18T15:46:41.981866+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068095160185,
+      "end_utc": "2026-08-18T15:48:15.160185+00:00",
+      "session_id": 2,
+      "start_us": 1787068050149948,
+      "start_utc": "2026-08-18T15:47:30.149948+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068142047707,
+      "end_utc": "2026-08-18T15:49:02.047707+00:00",
+      "session_id": 2,
+      "start_us": 1787068096446186,
+      "start_utc": "2026-08-18T15:48:16.446186+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068188433233,
+      "end_utc": "2026-08-18T15:49:48.433233+00:00",
+      "session_id": 2,
+      "start_us": 1787068143349221,
+      "start_utc": "2026-08-18T15:49:03.349221+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068236033319,
+      "end_utc": "2026-08-18T15:50:36.033319+00:00",
+      "session_id": 2,
+      "start_us": 1787068189704358,
+      "start_utc": "2026-08-18T15:49:49.704358+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068282489903,
+      "end_utc": "2026-08-18T15:51:22.489903+00:00",
+      "session_id": 2,
+      "start_us": 1787068237330074,
+      "start_utc": "2026-08-18T15:50:37.330074+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068333209472,
+      "end_utc": "2026-08-18T15:52:13.209472+00:00",
+      "session_id": 2,
+      "start_us": 1787068283757903,
+      "start_utc": "2026-08-18T15:51:23.757903+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068380445397,
+      "end_utc": "2026-08-18T15:53:00.445397+00:00",
+      "session_id": 2,
+      "start_us": 1787068334494470,
+      "start_utc": "2026-08-18T15:52:14.494470+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068427706686,
+      "end_utc": "2026-08-18T15:53:47.706686+00:00",
+      "session_id": 2,
+      "start_us": 1787068381716410,
+      "start_utc": "2026-08-18T15:53:01.716410+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068473948267,
+      "end_utc": "2026-08-18T15:54:33.948267+00:00",
+      "session_id": 2,
+      "start_us": 1787068428981111,
+      "start_utc": "2026-08-18T15:53:48.981111+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068525063790,
+      "end_utc": "2026-08-18T15:55:25.063790+00:00",
+      "session_id": 2,
+      "start_us": 1787068475237163,
+      "start_utc": "2026-08-18T15:54:35.237163+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068569978259,
+      "end_utc": "2026-08-18T15:56:09.978259+00:00",
+      "session_id": 2,
+      "start_us": 1787068526358293,
+      "start_utc": "2026-08-18T15:55:26.358293+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068619668763,
+      "end_utc": "2026-08-18T15:56:59.668763+00:00",
+      "session_id": 2,
+      "start_us": 1787068571235294,
+      "start_utc": "2026-08-18T15:56:11.235294+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068667140582,
+      "end_utc": "2026-08-18T15:57:47.140582+00:00",
+      "session_id": 2,
+      "start_us": 1787068620922272,
+      "start_utc": "2026-08-18T15:57:00.922272+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068712672755,
+      "end_utc": "2026-08-18T15:58:32.672755+00:00",
+      "session_id": 2,
+      "start_us": 1787068668456635,
+      "start_utc": "2026-08-18T15:57:48.456635+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068760920800,
+      "end_utc": "2026-08-18T15:59:20.920800+00:00",
+      "session_id": 2,
+      "start_us": 1787068713990751,
+      "start_utc": "2026-08-18T15:58:33.990751+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068811469687,
+      "end_utc": "2026-08-18T16:00:11.469687+00:00",
+      "session_id": 2,
+      "start_us": 1787068762182841,
+      "start_utc": "2026-08-18T15:59:22.182841+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068857529309,
+      "end_utc": "2026-08-18T16:00:57.529309+00:00",
+      "session_id": 2,
+      "start_us": 1787068812797121,
+      "start_utc": "2026-08-18T16:00:12.797121+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068902769742,
+      "end_utc": "2026-08-18T16:01:42.769742+00:00",
+      "session_id": 2,
+      "start_us": 1787068858805816,
+      "start_utc": "2026-08-18T16:00:58.805816+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068949895806,
+      "end_utc": "2026-08-18T16:02:29.895806+00:00",
+      "session_id": 2,
+      "start_us": 1787068904053257,
+      "start_utc": "2026-08-18T16:01:44.053257+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787068992224962,
+      "end_utc": "2026-08-18T16:03:12.224962+00:00",
+      "session_id": 2,
+      "start_us": 1787068951175845,
+      "start_utc": "2026-08-18T16:02:31.175845+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069039672438,
+      "end_utc": "2026-08-18T16:03:59.672438+00:00",
+      "session_id": 2,
+      "start_us": 1787068993480068,
+      "start_utc": "2026-08-18T16:03:13.480068+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069088136509,
+      "end_utc": "2026-08-18T16:04:48.136509+00:00",
+      "session_id": 2,
+      "start_us": 1787069040932230,
+      "start_utc": "2026-08-18T16:04:00.932230+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069134801448,
+      "end_utc": "2026-08-18T16:05:34.801448+00:00",
+      "session_id": 2,
+      "start_us": 1787069089346509,
+      "start_utc": "2026-08-18T16:04:49.346509+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069183466060,
+      "end_utc": "2026-08-18T16:06:23.466060+00:00",
+      "session_id": 2,
+      "start_us": 1787069136070999,
+      "start_utc": "2026-08-18T16:05:36.070999+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069231434260,
+      "end_utc": "2026-08-18T16:07:11.434260+00:00",
+      "session_id": 2,
+      "start_us": 1787069184737115,
+      "start_utc": "2026-08-18T16:06:24.737115+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069275010296,
+      "end_utc": "2026-08-18T16:07:55.010296+00:00",
+      "session_id": 2,
+      "start_us": 1787069232707012,
+      "start_utc": "2026-08-18T16:07:12.707012+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069325904789,
+      "end_utc": "2026-08-18T16:08:45.904789+00:00",
+      "session_id": 2,
+      "start_us": 1787069276265079,
+      "start_utc": "2026-08-18T16:07:56.265079+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069372819302,
+      "end_utc": "2026-08-18T16:09:32.819302+00:00",
+      "session_id": 2,
+      "start_us": 1787069327182513,
+      "start_utc": "2026-08-18T16:08:47.182513+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069419817267,
+      "end_utc": "2026-08-18T16:10:19.817267+00:00",
+      "session_id": 2,
+      "start_us": 1787069374080331,
+      "start_utc": "2026-08-18T16:09:34.080331+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069465890349,
+      "end_utc": "2026-08-18T16:11:05.890349+00:00",
+      "session_id": 2,
+      "start_us": 1787069421062029,
+      "start_utc": "2026-08-18T16:10:21.062029+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069514373529,
+      "end_utc": "2026-08-18T16:11:54.373529+00:00",
+      "session_id": 2,
+      "start_us": 1787069467152612,
+      "start_utc": "2026-08-18T16:11:07.152612+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069560114559,
+      "end_utc": "2026-08-18T16:12:40.114559+00:00",
+      "session_id": 2,
+      "start_us": 1787069516130527,
+      "start_utc": "2026-08-18T16:11:56.130527+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069611931697,
+      "end_utc": "2026-08-18T16:13:31.931697+00:00",
+      "session_id": 2,
+      "start_us": 1787069561942407,
+      "start_utc": "2026-08-18T16:12:41.942407+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069660214523,
+      "end_utc": "2026-08-18T16:14:20.214523+00:00",
+      "session_id": 2,
+      "start_us": 1787069613792562,
+      "start_utc": "2026-08-18T16:13:33.792562+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069711477669,
+      "end_utc": "2026-08-18T16:15:11.477669+00:00",
+      "session_id": 2,
+      "start_us": 1787069662004621,
+      "start_utc": "2026-08-18T16:14:22.004621+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069763025561,
+      "end_utc": "2026-08-18T16:16:03.025561+00:00",
+      "session_id": 2,
+      "start_us": 1787069713903386,
+      "start_utc": "2026-08-18T16:15:13.903386+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069812380116,
+      "end_utc": "2026-08-18T16:16:52.380116+00:00",
+      "session_id": 2,
+      "start_us": 1787069764800057,
+      "start_utc": "2026-08-18T16:16:04.800057+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069856988310,
+      "end_utc": "2026-08-18T16:17:36.988310+00:00",
+      "session_id": 2,
+      "start_us": 1787069813638972,
+      "start_utc": "2026-08-18T16:16:53.638972+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069904717270,
+      "end_utc": "2026-08-18T16:18:24.717270+00:00",
+      "session_id": 2,
+      "start_us": 1787069858253195,
+      "start_utc": "2026-08-18T16:17:38.253195+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787069951885213,
+      "end_utc": "2026-08-18T16:19:11.885213+00:00",
+      "session_id": 2,
+      "start_us": 1787069905966981,
+      "start_utc": "2026-08-18T16:18:25.966981+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070001214589,
+      "end_utc": "2026-08-18T16:20:01.214589+00:00",
+      "session_id": 2,
+      "start_us": 1787069953136213,
+      "start_utc": "2026-08-18T16:19:13.136213+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070045500288,
+      "end_utc": "2026-08-18T16:20:45.500288+00:00",
+      "session_id": 2,
+      "start_us": 1787070002468386,
+      "start_utc": "2026-08-18T16:20:02.468386+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070094461663,
+      "end_utc": "2026-08-18T16:21:34.461663+00:00",
+      "session_id": 2,
+      "start_us": 1787070046768760,
+      "start_utc": "2026-08-18T16:20:46.768760+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070142227661,
+      "end_utc": "2026-08-18T16:22:22.227661+00:00",
+      "session_id": 2,
+      "start_us": 1787070095726406,
+      "start_utc": "2026-08-18T16:21:35.726406+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070193339380,
+      "end_utc": "2026-08-18T16:23:13.339380+00:00",
+      "session_id": 2,
+      "start_us": 1787070143923228,
+      "start_utc": "2026-08-18T16:22:23.923228+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070219435290,
+      "end_utc": "2026-08-18T16:23:39.435290+00:00",
+      "session_id": 2,
+      "start_us": 1787070194952122,
+      "start_utc": "2026-08-18T16:23:14.952122+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070269293460,
+      "end_utc": "2026-08-18T16:24:29.293460+00:00",
+      "session_id": 2,
+      "start_us": 1787070222930055,
+      "start_utc": "2026-08-18T16:23:42.930055+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070318200764,
+      "end_utc": "2026-08-18T16:25:18.200764+00:00",
+      "session_id": 2,
+      "start_us": 1787070271408189,
+      "start_utc": "2026-08-18T16:24:31.408189+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070365283428,
+      "end_utc": "2026-08-18T16:26:05.283428+00:00",
+      "session_id": 2,
+      "start_us": 1787070321515894,
+      "start_utc": "2026-08-18T16:25:21.515894+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070415225775,
+      "end_utc": "2026-08-18T16:26:55.225775+00:00",
+      "session_id": 2,
+      "start_us": 1787070366950149,
+      "start_utc": "2026-08-18T16:26:06.950149+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070466595765,
+      "end_utc": "2026-08-18T16:27:46.595765+00:00",
+      "session_id": 2,
+      "start_us": 1787070416878859,
+      "start_utc": "2026-08-18T16:26:56.878859+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070516089272,
+      "end_utc": "2026-08-18T16:28:36.089272+00:00",
+      "session_id": 2,
+      "start_us": 1787070469641185,
+      "start_utc": "2026-08-18T16:27:49.641185+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070563794587,
+      "end_utc": "2026-08-18T16:29:23.794587+00:00",
+      "session_id": 2,
+      "start_us": 1787070517394626,
+      "start_utc": "2026-08-18T16:28:37.394626+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070613443367,
+      "end_utc": "2026-08-18T16:30:13.443367+00:00",
+      "session_id": 2,
+      "start_us": 1787070565052586,
+      "start_utc": "2026-08-18T16:29:25.052586+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070662649824,
+      "end_utc": "2026-08-18T16:31:02.649824+00:00",
+      "session_id": 2,
+      "start_us": 1787070614703283,
+      "start_utc": "2026-08-18T16:30:14.703283+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070710615391,
+      "end_utc": "2026-08-18T16:31:50.615391+00:00",
+      "session_id": 2,
+      "start_us": 1787070663928913,
+      "start_utc": "2026-08-18T16:31:03.928913+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070760506320,
+      "end_utc": "2026-08-18T16:32:40.506320+00:00",
+      "session_id": 2,
+      "start_us": 1787070711869423,
+      "start_utc": "2026-08-18T16:31:51.869423+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070811304405,
+      "end_utc": "2026-08-18T16:33:31.304405+00:00",
+      "session_id": 2,
+      "start_us": 1787070761788011,
+      "start_utc": "2026-08-18T16:32:41.788011+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070862048005,
+      "end_utc": "2026-08-18T16:34:22.048005+00:00",
+      "session_id": 2,
+      "start_us": 1787070812572402,
+      "start_utc": "2026-08-18T16:33:32.572402+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070913241332,
+      "end_utc": "2026-08-18T16:35:13.241332+00:00",
+      "session_id": 2,
+      "start_us": 1787070863317437,
+      "start_utc": "2026-08-18T16:34:23.317437+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787070962095754,
+      "end_utc": "2026-08-18T16:36:02.095754+00:00",
+      "session_id": 2,
+      "start_us": 1787070914516139,
+      "start_utc": "2026-08-18T16:35:14.516139+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071010294742,
+      "end_utc": "2026-08-18T16:36:50.294742+00:00",
+      "session_id": 2,
+      "start_us": 1787070963377066,
+      "start_utc": "2026-08-18T16:36:03.377066+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071060132721,
+      "end_utc": "2026-08-18T16:37:40.132721+00:00",
+      "session_id": 2,
+      "start_us": 1787071011551743,
+      "start_utc": "2026-08-18T16:36:51.551743+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071115201453,
+      "end_utc": "2026-08-18T16:38:35.201453+00:00",
+      "session_id": 2,
+      "start_us": 1787071062603341,
+      "start_utc": "2026-08-18T16:37:42.603341+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071166809992,
+      "end_utc": "2026-08-18T16:39:26.809992+00:00",
+      "session_id": 2,
+      "start_us": 1787071117631884,
+      "start_utc": "2026-08-18T16:38:37.631884+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071223798974,
+      "end_utc": "2026-08-18T16:40:23.798974+00:00",
+      "session_id": 2,
+      "start_us": 1787071169203009,
+      "start_utc": "2026-08-18T16:39:29.203009+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071278544062,
+      "end_utc": "2026-08-18T16:41:18.544062+00:00",
+      "session_id": 2,
+      "start_us": 1787071226213012,
+      "start_utc": "2026-08-18T16:40:26.213012+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071331326276,
+      "end_utc": "2026-08-18T16:42:11.326276+00:00",
+      "session_id": 2,
+      "start_us": 1787071280888772,
+      "start_utc": "2026-08-18T16:41:20.888772+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071385922423,
+      "end_utc": "2026-08-18T16:43:05.922423+00:00",
+      "session_id": 2,
+      "start_us": 1787071333705206,
+      "start_utc": "2026-08-18T16:42:13.705206+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071434356132,
+      "end_utc": "2026-08-18T16:43:54.356132+00:00",
+      "session_id": 2,
+      "start_us": 1787071387201327,
+      "start_utc": "2026-08-18T16:43:07.201327+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071482650154,
+      "end_utc": "2026-08-18T16:44:42.650154+00:00",
+      "session_id": 2,
+      "start_us": 1787071435605128,
+      "start_utc": "2026-08-18T16:43:55.605128+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071533462801,
+      "end_utc": "2026-08-18T16:45:33.462801+00:00",
+      "session_id": 2,
+      "start_us": 1787071483901154,
+      "start_utc": "2026-08-18T16:44:43.901154+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071580484238,
+      "end_utc": "2026-08-18T16:46:20.484238+00:00",
+      "session_id": 2,
+      "start_us": 1787071534728798,
+      "start_utc": "2026-08-18T16:45:34.728798+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071627766317,
+      "end_utc": "2026-08-18T16:47:07.766317+00:00",
+      "session_id": 2,
+      "start_us": 1787071581717102,
+      "start_utc": "2026-08-18T16:46:21.717102+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787071679865092,
+      "end_utc": "2026-08-18T16:47:59.865092+00:00",
+      "session_id": 2,
+      "start_us": 1787071629035123,
+      "start_utc": "2026-08-18T16:47:09.035123+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "NEXT_COLLECTOR_START",
+      "end_us": 1787071726199699,
+      "end_utc": "2026-08-18T16:48:46.199699+00:00",
+      "session_id": 2,
+      "start_us": 1787071681102927,
+      "start_utc": "2026-08-18T16:48:01.102927+00:00",
+      "uncertain_close": true
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787074361210984,
+      "end_utc": "2026-08-18T17:32:41.210984+00:00",
+      "session_id": 3,
+      "start_us": 1787074076346682,
+      "start_utc": "2026-08-18T17:27:56.346682+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787074882270367,
+      "end_utc": "2026-08-18T17:41:22.270367+00:00",
+      "session_id": 3,
+      "start_us": 1787074362498193,
+      "start_utc": "2026-08-18T17:32:42.498193+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "WS_DISCONNECTED",
+      "end_us": 1787075355582151,
+      "end_utc": "2026-08-18T17:49:15.582151+00:00",
+      "session_id": 3,
+      "start_us": 1787074886733670,
+      "start_utc": "2026-08-18T17:41:26.733670+00:00",
+      "uncertain_close": false
+    },
+    {
+      "close_reason": "NEXT_COLLECTOR_START",
+      "end_us": 1787076027428829,
+      "end_utc": "2026-08-18T18:00:27.428829+00:00",
+      "session_id": 3,
+      "start_us": 1787075357781805,
+      "start_utc": "2026-08-18T17:49:17.781805+00:00",
+      "uncertain_close": true
+    },
+    {
+      "close_reason": "NEXT_COLLECTOR_START",
+      "end_us": 1787077690721961,
+      "end_utc": "2026-08-18T18:28:10.721961+00:00",
+      "session_id": 4,
+      "start_us": 1787076730642882,
+      "start_utc": "2026-08-18T18:12:10.642882+00:00",
+      "uncertain_close": true
+    },
+    {
+      "close_reason": "LIVE_COLLECTION_STOPPED",
+      "end_us": 1787078016873189,
+      "end_utc": "2026-08-18T18:33:36.873189+00:00",
+      "session_id": 5,
+      "start_us": 1787078016482005,
+      "start_utc": "2026-08-18T18:33:36.482005+00:00",
+      "uncertain_close": false
+    }
+  ],
+  "coverage_reconstruction_summary": {
+    "active_intervals": 170,
+    "active_seconds_total": 10396.706588,
+    "control_events": 679,
+    "explicit_gap_seconds_total": 227.914626,
+    "explicit_gaps": 165,
+    "session_versions": {
+      "v0.3.2": 3,
+      "v0.3.3": 2
+    },
+    "sessions": 5,
+    "uncertain_interval_closes": 3
+  },
+  "dataset_range_utc": {
+    "end": "2026-08-18T18:33:36.873189+00:00",
+    "start": "2026-08-18T14:26:33.375632+00:00"
+  },
+  "dataset_role": "DEVELOPMENT_DISCOVERY",
+  "deterministic_coverage_sha256": "2026bfb69f5d9ff3958d7034b0e5ec57dadec76195ed3183356f2aac78138368",
+  "explicit_gaps": [
+    {
+      "duration_us": 1206839,
+      "end_us": 1787064052257771,
+      "end_utc": "2026-08-18T14:40:52.257771+00:00",
+      "session_id": 2,
+      "start_us": 1787064051050932,
+      "start_utc": "2026-08-18T14:40:51.050932+00:00"
+    },
+    {
+      "duration_us": 1227433,
+      "end_us": 1787064095859403,
+      "end_utc": "2026-08-18T14:41:35.859403+00:00",
+      "session_id": 2,
+      "start_us": 1787064094631970,
+      "start_utc": "2026-08-18T14:41:34.631970+00:00"
+    },
+    {
+      "duration_us": 1276732,
+      "end_us": 1787064139151318,
+      "end_utc": "2026-08-18T14:42:19.151318+00:00",
+      "session_id": 2,
+      "start_us": 1787064137874586,
+      "start_utc": "2026-08-18T14:42:17.874586+00:00"
+    },
+    {
+      "duration_us": 1183367,
+      "end_us": 1787064182822448,
+      "end_utc": "2026-08-18T14:43:02.822448+00:00",
+      "session_id": 2,
+      "start_us": 1787064181639081,
+      "start_utc": "2026-08-18T14:43:01.639081+00:00"
+    },
+    {
+      "duration_us": 1210802,
+      "end_us": 1787064227857901,
+      "end_utc": "2026-08-18T14:43:47.857901+00:00",
+      "session_id": 2,
+      "start_us": 1787064226647099,
+      "start_utc": "2026-08-18T14:43:46.647099+00:00"
+    },
+    {
+      "duration_us": 1211736,
+      "end_us": 1787064273003022,
+      "end_utc": "2026-08-18T14:44:33.003022+00:00",
+      "session_id": 2,
+      "start_us": 1787064271791286,
+      "start_utc": "2026-08-18T14:44:31.791286+00:00"
+    },
+    {
+      "duration_us": 1186561,
+      "end_us": 1787064319138442,
+      "end_utc": "2026-08-18T14:45:19.138442+00:00",
+      "session_id": 2,
+      "start_us": 1787064317951881,
+      "start_utc": "2026-08-18T14:45:17.951881+00:00"
+    },
+    {
+      "duration_us": 1190755,
+      "end_us": 1787064364311423,
+      "end_utc": "2026-08-18T14:46:04.311423+00:00",
+      "session_id": 2,
+      "start_us": 1787064363120668,
+      "start_utc": "2026-08-18T14:46:03.120668+00:00"
+    },
+    {
+      "duration_us": 1202823,
+      "end_us": 1787064408220561,
+      "end_utc": "2026-08-18T14:46:48.220561+00:00",
+      "session_id": 2,
+      "start_us": 1787064407017738,
+      "start_utc": "2026-08-18T14:46:47.017738+00:00"
+    },
+    {
+      "duration_us": 1198513,
+      "end_us": 1787064452706357,
+      "end_utc": "2026-08-18T14:47:32.706357+00:00",
+      "session_id": 2,
+      "start_us": 1787064451507844,
+      "start_utc": "2026-08-18T14:47:31.507844+00:00"
+    },
+    {
+      "duration_us": 1213767,
+      "end_us": 1787064497764101,
+      "end_utc": "2026-08-18T14:48:17.764101+00:00",
+      "session_id": 2,
+      "start_us": 1787064496550334,
+      "start_utc": "2026-08-18T14:48:16.550334+00:00"
+    },
+    {
+      "duration_us": 1195024,
+      "end_us": 1787064544693111,
+      "end_utc": "2026-08-18T14:49:04.693111+00:00",
+      "session_id": 2,
+      "start_us": 1787064543498087,
+      "start_utc": "2026-08-18T14:49:03.498087+00:00"
+    },
+    {
+      "duration_us": 1186222,
+      "end_us": 1787064587698448,
+      "end_utc": "2026-08-18T14:49:47.698448+00:00",
+      "session_id": 2,
+      "start_us": 1787064586512226,
+      "start_utc": "2026-08-18T14:49:46.512226+00:00"
+    },
+    {
+      "duration_us": 1194201,
+      "end_us": 1787064632852354,
+      "end_utc": "2026-08-18T14:50:32.852354+00:00",
+      "session_id": 2,
+      "start_us": 1787064631658153,
+      "start_utc": "2026-08-18T14:50:31.658153+00:00"
+    },
+    {
+      "duration_us": 1204197,
+      "end_us": 1787064679178084,
+      "end_utc": "2026-08-18T14:51:19.178084+00:00",
+      "session_id": 2,
+      "start_us": 1787064677973887,
+      "start_utc": "2026-08-18T14:51:17.973887+00:00"
+    },
+    {
+      "duration_us": 1194331,
+      "end_us": 1787064722253307,
+      "end_utc": "2026-08-18T14:52:02.253307+00:00",
+      "session_id": 2,
+      "start_us": 1787064721058976,
+      "start_utc": "2026-08-18T14:52:01.058976+00:00"
+    },
+    {
+      "duration_us": 1195895,
+      "end_us": 1787064767673861,
+      "end_utc": "2026-08-18T14:52:47.673861+00:00",
+      "session_id": 2,
+      "start_us": 1787064766477966,
+      "start_utc": "2026-08-18T14:52:46.477966+00:00"
+    },
+    {
+      "duration_us": 1199366,
+      "end_us": 1787064812563985,
+      "end_utc": "2026-08-18T14:53:32.563985+00:00",
+      "session_id": 2,
+      "start_us": 1787064811364619,
+      "start_utc": "2026-08-18T14:53:31.364619+00:00"
+    },
+    {
+      "duration_us": 1200005,
+      "end_us": 1787064861433102,
+      "end_utc": "2026-08-18T14:54:21.433102+00:00",
+      "session_id": 2,
+      "start_us": 1787064860233097,
+      "start_utc": "2026-08-18T14:54:20.233097+00:00"
+    },
+    {
+      "duration_us": 1214001,
+      "end_us": 1787064908577257,
+      "end_utc": "2026-08-18T14:55:08.577257+00:00",
+      "session_id": 2,
+      "start_us": 1787064907363256,
+      "start_utc": "2026-08-18T14:55:07.363256+00:00"
+    },
+    {
+      "duration_us": 1203040,
+      "end_us": 1787064955889448,
+      "end_utc": "2026-08-18T14:55:55.889448+00:00",
+      "session_id": 2,
+      "start_us": 1787064954686408,
+      "start_utc": "2026-08-18T14:55:54.686408+00:00"
+    },
+    {
+      "duration_us": 1991049,
+      "end_us": 1787065000139260,
+      "end_utc": "2026-08-18T14:56:40.139260+00:00",
+      "session_id": 2,
+      "start_us": 1787064998148211,
+      "start_utc": "2026-08-18T14:56:38.148211+00:00"
+    },
+    {
+      "duration_us": 1190058,
+      "end_us": 1787065047260626,
+      "end_utc": "2026-08-18T14:57:27.260626+00:00",
+      "session_id": 2,
+      "start_us": 1787065046070568,
+      "start_utc": "2026-08-18T14:57:26.070568+00:00"
+    },
+    {
+      "duration_us": 1201266,
+      "end_us": 1787065094221595,
+      "end_utc": "2026-08-18T14:58:14.221595+00:00",
+      "session_id": 2,
+      "start_us": 1787065093020329,
+      "start_utc": "2026-08-18T14:58:13.020329+00:00"
+    },
+    {
+      "duration_us": 1209998,
+      "end_us": 1787065141228160,
+      "end_utc": "2026-08-18T14:59:01.228160+00:00",
+      "session_id": 2,
+      "start_us": 1787065140018162,
+      "start_utc": "2026-08-18T14:59:00.018162+00:00"
+    },
+    {
+      "duration_us": 1239234,
+      "end_us": 1787065185131494,
+      "end_utc": "2026-08-18T14:59:45.131494+00:00",
+      "session_id": 2,
+      "start_us": 1787065183892260,
+      "start_utc": "2026-08-18T14:59:43.892260+00:00"
+    },
+    {
+      "duration_us": 1245772,
+      "end_us": 1787065231264196,
+      "end_utc": "2026-08-18T15:00:31.264196+00:00",
+      "session_id": 2,
+      "start_us": 1787065230018424,
+      "start_utc": "2026-08-18T15:00:30.018424+00:00"
+    },
+    {
+      "duration_us": 1209050,
+      "end_us": 1787065276989236,
+      "end_utc": "2026-08-18T15:01:16.989236+00:00",
+      "session_id": 2,
+      "start_us": 1787065275780186,
+      "start_utc": "2026-08-18T15:01:15.780186+00:00"
+    },
+    {
+      "duration_us": 1194044,
+      "end_us": 1787065321184543,
+      "end_utc": "2026-08-18T15:02:01.184543+00:00",
+      "session_id": 2,
+      "start_us": 1787065319990499,
+      "start_utc": "2026-08-18T15:01:59.990499+00:00"
+    },
+    {
+      "duration_us": 1211080,
+      "end_us": 1787065366300525,
+      "end_utc": "2026-08-18T15:02:46.300525+00:00",
+      "session_id": 2,
+      "start_us": 1787065365089445,
+      "start_utc": "2026-08-18T15:02:45.089445+00:00"
+    },
+    {
+      "duration_us": 1198196,
+      "end_us": 1787065413628346,
+      "end_utc": "2026-08-18T15:03:33.628346+00:00",
+      "session_id": 2,
+      "start_us": 1787065412430150,
+      "start_utc": "2026-08-18T15:03:32.430150+00:00"
+    },
+    {
+      "duration_us": 1191136,
+      "end_us": 1787065458566080,
+      "end_utc": "2026-08-18T15:04:18.566080+00:00",
+      "session_id": 2,
+      "start_us": 1787065457374944,
+      "start_utc": "2026-08-18T15:04:17.374944+00:00"
+    },
+    {
+      "duration_us": 1193387,
+      "end_us": 1787065501723369,
+      "end_utc": "2026-08-18T15:05:01.723369+00:00",
+      "session_id": 2,
+      "start_us": 1787065500529982,
+      "start_utc": "2026-08-18T15:05:00.529982+00:00"
+    },
+    {
+      "duration_us": 1185484,
+      "end_us": 1787065546920733,
+      "end_utc": "2026-08-18T15:05:46.920733+00:00",
+      "session_id": 2,
+      "start_us": 1787065545735249,
+      "start_utc": "2026-08-18T15:05:45.735249+00:00"
+    },
+    {
+      "duration_us": 3039270,
+      "end_us": 1787065596391832,
+      "end_utc": "2026-08-18T15:06:36.391832+00:00",
+      "session_id": 2,
+      "start_us": 1787065593352562,
+      "start_utc": "2026-08-18T15:06:33.352562+00:00"
+    },
+    {
+      "duration_us": 1188996,
+      "end_us": 1787065645464055,
+      "end_utc": "2026-08-18T15:07:25.464055+00:00",
+      "session_id": 2,
+      "start_us": 1787065644275059,
+      "start_utc": "2026-08-18T15:07:24.275059+00:00"
+    },
+    {
+      "duration_us": 1175021,
+      "end_us": 1787065691160749,
+      "end_utc": "2026-08-18T15:08:11.160749+00:00",
+      "session_id": 2,
+      "start_us": 1787065689985728,
+      "start_utc": "2026-08-18T15:08:09.985728+00:00"
+    },
+    {
+      "duration_us": 1196764,
+      "end_us": 1787065739310639,
+      "end_utc": "2026-08-18T15:08:59.310639+00:00",
+      "session_id": 2,
+      "start_us": 1787065738113875,
+      "start_utc": "2026-08-18T15:08:58.113875+00:00"
+    },
+    {
+      "duration_us": 1194217,
+      "end_us": 1787065788335864,
+      "end_utc": "2026-08-18T15:09:48.335864+00:00",
+      "session_id": 2,
+      "start_us": 1787065787141647,
+      "start_utc": "2026-08-18T15:09:47.141647+00:00"
+    },
+    {
+      "duration_us": 1214000,
+      "end_us": 1787065834510840,
+      "end_utc": "2026-08-18T15:10:34.510840+00:00",
+      "session_id": 2,
+      "start_us": 1787065833296840,
+      "start_utc": "2026-08-18T15:10:33.296840+00:00"
+    },
+    {
+      "duration_us": 1193001,
+      "end_us": 1787065883196068,
+      "end_utc": "2026-08-18T15:11:23.196068+00:00",
+      "session_id": 2,
+      "start_us": 1787065882003067,
+      "start_utc": "2026-08-18T15:11:22.003067+00:00"
+    },
+    {
+      "duration_us": 1197000,
+      "end_us": 1787065929145818,
+      "end_utc": "2026-08-18T15:12:09.145818+00:00",
+      "session_id": 2,
+      "start_us": 1787065927948818,
+      "start_utc": "2026-08-18T15:12:07.948818+00:00"
+    },
+    {
+      "duration_us": 1190825,
+      "end_us": 1787065975138972,
+      "end_utc": "2026-08-18T15:12:55.138972+00:00",
+      "session_id": 2,
+      "start_us": 1787065973948147,
+      "start_utc": "2026-08-18T15:12:53.948147+00:00"
+    },
+    {
+      "duration_us": 1195998,
+      "end_us": 1787066020152457,
+      "end_utc": "2026-08-18T15:13:40.152457+00:00",
+      "session_id": 2,
+      "start_us": 1787066018956459,
+      "start_utc": "2026-08-18T15:13:38.956459+00:00"
+    },
+    {
+      "duration_us": 1206455,
+      "end_us": 1787066069254320,
+      "end_utc": "2026-08-18T15:14:29.254320+00:00",
+      "session_id": 2,
+      "start_us": 1787066068047865,
+      "start_utc": "2026-08-18T15:14:28.047865+00:00"
+    },
+    {
+      "duration_us": 1212831,
+      "end_us": 1787066115463140,
+      "end_utc": "2026-08-18T15:15:15.463140+00:00",
+      "session_id": 2,
+      "start_us": 1787066114250309,
+      "start_utc": "2026-08-18T15:15:14.250309+00:00"
+    },
+    {
+      "duration_us": 1207892,
+      "end_us": 1787066159044715,
+      "end_utc": "2026-08-18T15:15:59.044715+00:00",
+      "session_id": 2,
+      "start_us": 1787066157836823,
+      "start_utc": "2026-08-18T15:15:57.836823+00:00"
+    },
+    {
+      "duration_us": 1207042,
+      "end_us": 1787066204898696,
+      "end_utc": "2026-08-18T15:16:44.898696+00:00",
+      "session_id": 2,
+      "start_us": 1787066203691654,
+      "start_utc": "2026-08-18T15:16:43.691654+00:00"
+    },
+    {
+      "duration_us": 1207454,
+      "end_us": 1787066251819075,
+      "end_utc": "2026-08-18T15:17:31.819075+00:00",
+      "session_id": 2,
+      "start_us": 1787066250611621,
+      "start_utc": "2026-08-18T15:17:30.611621+00:00"
+    },
+    {
+      "duration_us": 1198485,
+      "end_us": 1787066298849596,
+      "end_utc": "2026-08-18T15:18:18.849596+00:00",
+      "session_id": 2,
+      "start_us": 1787066297651111,
+      "start_utc": "2026-08-18T15:18:17.651111+00:00"
+    },
+    {
+      "duration_us": 1212127,
+      "end_us": 1787066343280849,
+      "end_utc": "2026-08-18T15:19:03.280849+00:00",
+      "session_id": 2,
+      "start_us": 1787066342068722,
+      "start_utc": "2026-08-18T15:19:02.068722+00:00"
+    },
+    {
+      "duration_us": 1200999,
+      "end_us": 1787066388178798,
+      "end_utc": "2026-08-18T15:19:48.178798+00:00",
+      "session_id": 2,
+      "start_us": 1787066386977799,
+      "start_utc": "2026-08-18T15:19:46.977799+00:00"
+    },
+    {
+      "duration_us": 1199049,
+      "end_us": 1787066438660206,
+      "end_utc": "2026-08-18T15:20:38.660206+00:00",
+      "session_id": 2,
+      "start_us": 1787066437461157,
+      "start_utc": "2026-08-18T15:20:37.461157+00:00"
+    },
+    {
+      "duration_us": 1211090,
+      "end_us": 1787066487413657,
+      "end_utc": "2026-08-18T15:21:27.413657+00:00",
+      "session_id": 2,
+      "start_us": 1787066486202567,
+      "start_utc": "2026-08-18T15:21:26.202567+00:00"
+    },
+    {
+      "duration_us": 1204509,
+      "end_us": 1787066533856210,
+      "end_utc": "2026-08-18T15:22:13.856210+00:00",
+      "session_id": 2,
+      "start_us": 1787066532651701,
+      "start_utc": "2026-08-18T15:22:12.651701+00:00"
+    },
+    {
+      "duration_us": 1207059,
+      "end_us": 1787066578851132,
+      "end_utc": "2026-08-18T15:22:58.851132+00:00",
+      "session_id": 2,
+      "start_us": 1787066577644073,
+      "start_utc": "2026-08-18T15:22:57.644073+00:00"
+    },
+    {
+      "duration_us": 1203998,
+      "end_us": 1787066626954674,
+      "end_utc": "2026-08-18T15:23:46.954674+00:00",
+      "session_id": 2,
+      "start_us": 1787066625750676,
+      "start_utc": "2026-08-18T15:23:45.750676+00:00"
+    },
+    {
+      "duration_us": 1183042,
+      "end_us": 1787066674963501,
+      "end_utc": "2026-08-18T15:24:34.963501+00:00",
+      "session_id": 2,
+      "start_us": 1787066673780459,
+      "start_utc": "2026-08-18T15:24:33.780459+00:00"
+    },
+    {
+      "duration_us": 2452768,
+      "end_us": 1787066723913243,
+      "end_utc": "2026-08-18T15:25:23.913243+00:00",
+      "session_id": 2,
+      "start_us": 1787066721460475,
+      "start_utc": "2026-08-18T15:25:21.460475+00:00"
+    },
+    {
+      "duration_us": 2472715,
+      "end_us": 1787066770197995,
+      "end_utc": "2026-08-18T15:26:10.197995+00:00",
+      "session_id": 2,
+      "start_us": 1787066767725280,
+      "start_utc": "2026-08-18T15:26:07.725280+00:00"
+    },
+    {
+      "duration_us": 2477511,
+      "end_us": 1787066817059485,
+      "end_utc": "2026-08-18T15:26:57.059485+00:00",
+      "session_id": 2,
+      "start_us": 1787066814581974,
+      "start_utc": "2026-08-18T15:26:54.581974+00:00"
+    },
+    {
+      "duration_us": 2466067,
+      "end_us": 1787066865871976,
+      "end_utc": "2026-08-18T15:27:45.871976+00:00",
+      "session_id": 2,
+      "start_us": 1787066863405909,
+      "start_utc": "2026-08-18T15:27:43.405909+00:00"
+    },
+    {
+      "duration_us": 2445001,
+      "end_us": 1787066912917081,
+      "end_utc": "2026-08-18T15:28:32.917081+00:00",
+      "session_id": 2,
+      "start_us": 1787066910472080,
+      "start_utc": "2026-08-18T15:28:30.472080+00:00"
+    },
+    {
+      "duration_us": 2245185,
+      "end_us": 1787066959857642,
+      "end_utc": "2026-08-18T15:29:19.857642+00:00",
+      "session_id": 2,
+      "start_us": 1787066957612457,
+      "start_utc": "2026-08-18T15:29:17.612457+00:00"
+    },
+    {
+      "duration_us": 2452263,
+      "end_us": 1787067012252001,
+      "end_utc": "2026-08-18T15:30:12.252001+00:00",
+      "session_id": 2,
+      "start_us": 1787067009799738,
+      "start_utc": "2026-08-18T15:30:09.799738+00:00"
+    },
+    {
+      "duration_us": 1461694,
+      "end_us": 1787067065806667,
+      "end_utc": "2026-08-18T15:31:05.806667+00:00",
+      "session_id": 2,
+      "start_us": 1787067064344973,
+      "start_utc": "2026-08-18T15:31:04.344973+00:00"
+    },
+    {
+      "duration_us": 1466004,
+      "end_us": 1787067113968003,
+      "end_utc": "2026-08-18T15:31:53.968003+00:00",
+      "session_id": 2,
+      "start_us": 1787067112501999,
+      "start_utc": "2026-08-18T15:31:52.501999+00:00"
+    },
+    {
+      "duration_us": 1445483,
+      "end_us": 1787067160537995,
+      "end_utc": "2026-08-18T15:32:40.537995+00:00",
+      "session_id": 2,
+      "start_us": 1787067159092512,
+      "start_utc": "2026-08-18T15:32:39.092512+00:00"
+    },
+    {
+      "duration_us": 1458853,
+      "end_us": 1787067207086782,
+      "end_utc": "2026-08-18T15:33:27.086782+00:00",
+      "session_id": 2,
+      "start_us": 1787067205627929,
+      "start_utc": "2026-08-18T15:33:25.627929+00:00"
+    },
+    {
+      "duration_us": 1458932,
+      "end_us": 1787067255014742,
+      "end_utc": "2026-08-18T15:34:15.014742+00:00",
+      "session_id": 2,
+      "start_us": 1787067253555810,
+      "start_utc": "2026-08-18T15:34:13.555810+00:00"
+    },
+    {
+      "duration_us": 1200873,
+      "end_us": 1787067301902947,
+      "end_utc": "2026-08-18T15:35:01.902947+00:00",
+      "session_id": 2,
+      "start_us": 1787067300702074,
+      "start_utc": "2026-08-18T15:35:00.702074+00:00"
+    },
+    {
+      "duration_us": 1211929,
+      "end_us": 1787067349431903,
+      "end_utc": "2026-08-18T15:35:49.431903+00:00",
+      "session_id": 2,
+      "start_us": 1787067348219974,
+      "start_utc": "2026-08-18T15:35:48.219974+00:00"
+    },
+    {
+      "duration_us": 1224519,
+      "end_us": 1787067396477447,
+      "end_utc": "2026-08-18T15:36:36.477447+00:00",
+      "session_id": 2,
+      "start_us": 1787067395252928,
+      "start_utc": "2026-08-18T15:36:35.252928+00:00"
+    },
+    {
+      "duration_us": 1212698,
+      "end_us": 1787067444521467,
+      "end_utc": "2026-08-18T15:37:24.521467+00:00",
+      "session_id": 2,
+      "start_us": 1787067443308769,
+      "start_utc": "2026-08-18T15:37:23.308769+00:00"
+    },
+    {
+      "duration_us": 1260411,
+      "end_us": 1787067491131478,
+      "end_utc": "2026-08-18T15:38:11.131478+00:00",
+      "session_id": 2,
+      "start_us": 1787067489871067,
+      "start_utc": "2026-08-18T15:38:09.871067+00:00"
+    },
+    {
+      "duration_us": 1206000,
+      "end_us": 1787067534698497,
+      "end_utc": "2026-08-18T15:38:54.698497+00:00",
+      "session_id": 2,
+      "start_us": 1787067533492497,
+      "start_utc": "2026-08-18T15:38:53.492497+00:00"
+    },
+    {
+      "duration_us": 1196868,
+      "end_us": 1787067577363108,
+      "end_utc": "2026-08-18T15:39:37.363108+00:00",
+      "session_id": 2,
+      "start_us": 1787067576166240,
+      "start_utc": "2026-08-18T15:39:36.166240+00:00"
+    },
+    {
+      "duration_us": 1260830,
+      "end_us": 1787067623829294,
+      "end_utc": "2026-08-18T15:40:23.829294+00:00",
+      "session_id": 2,
+      "start_us": 1787067622568464,
+      "start_utc": "2026-08-18T15:40:22.568464+00:00"
+    },
+    {
+      "duration_us": 1216792,
+      "end_us": 1787067666945819,
+      "end_utc": "2026-08-18T15:41:06.945819+00:00",
+      "session_id": 2,
+      "start_us": 1787067665729027,
+      "start_utc": "2026-08-18T15:41:05.729027+00:00"
+    },
+    {
+      "duration_us": 1205792,
+      "end_us": 1787067713572203,
+      "end_utc": "2026-08-18T15:41:53.572203+00:00",
+      "session_id": 2,
+      "start_us": 1787067712366411,
+      "start_utc": "2026-08-18T15:41:52.366411+00:00"
+    },
+    {
+      "duration_us": 1214759,
+      "end_us": 1787067758433499,
+      "end_utc": "2026-08-18T15:42:38.433499+00:00",
+      "session_id": 2,
+      "start_us": 1787067757218740,
+      "start_utc": "2026-08-18T15:42:37.218740+00:00"
+    },
+    {
+      "duration_us": 1209999,
+      "end_us": 1787067807902430,
+      "end_utc": "2026-08-18T15:43:27.902430+00:00",
+      "session_id": 2,
+      "start_us": 1787067806692431,
+      "start_utc": "2026-08-18T15:43:26.692431+00:00"
+    },
+    {
+      "duration_us": 1208002,
+      "end_us": 1787067855334018,
+      "end_utc": "2026-08-18T15:44:15.334018+00:00",
+      "session_id": 2,
+      "start_us": 1787067854126016,
+      "start_utc": "2026-08-18T15:44:14.126016+00:00"
+    },
+    {
+      "duration_us": 1200997,
+      "end_us": 1787067903249604,
+      "end_utc": "2026-08-18T15:45:03.249604+00:00",
+      "session_id": 2,
+      "start_us": 1787067902048607,
+      "start_utc": "2026-08-18T15:45:02.048607+00:00"
+    },
+    {
+      "duration_us": 1188873,
+      "end_us": 1787067953090858,
+      "end_utc": "2026-08-18T15:45:53.090858+00:00",
+      "session_id": 2,
+      "start_us": 1787067951901985,
+      "start_utc": "2026-08-18T15:45:51.901985+00:00"
+    },
+    {
+      "duration_us": 1208202,
+      "end_us": 1787068001907865,
+      "end_utc": "2026-08-18T15:46:41.907865+00:00",
+      "session_id": 2,
+      "start_us": 1787068000699663,
+      "start_utc": "2026-08-18T15:46:40.699663+00:00"
+    },
+    {
+      "duration_us": 1207078,
+      "end_us": 1787068050077946,
+      "end_utc": "2026-08-18T15:47:30.077946+00:00",
+      "session_id": 2,
+      "start_us": 1787068048870868,
+      "start_utc": "2026-08-18T15:47:28.870868+00:00"
+    },
+    {
+      "duration_us": 1211001,
+      "end_us": 1787068096371186,
+      "end_utc": "2026-08-18T15:48:16.371186+00:00",
+      "session_id": 2,
+      "start_us": 1787068095160185,
+      "start_utc": "2026-08-18T15:48:15.160185+00:00"
+    },
+    {
+      "duration_us": 1218513,
+      "end_us": 1787068143266220,
+      "end_utc": "2026-08-18T15:49:03.266220+00:00",
+      "session_id": 2,
+      "start_us": 1787068142047707,
+      "start_utc": "2026-08-18T15:49:02.047707+00:00"
+    },
+    {
+      "duration_us": 1198127,
+      "end_us": 1787068189631360,
+      "end_utc": "2026-08-18T15:49:49.631360+00:00",
+      "session_id": 2,
+      "start_us": 1787068188433233,
+      "start_utc": "2026-08-18T15:49:48.433233+00:00"
+    },
+    {
+      "duration_us": 1233756,
+      "end_us": 1787068237267075,
+      "end_utc": "2026-08-18T15:50:37.267075+00:00",
+      "session_id": 2,
+      "start_us": 1787068236033319,
+      "start_utc": "2026-08-18T15:50:36.033319+00:00"
+    },
+    {
+      "duration_us": 1201999,
+      "end_us": 1787068283691902,
+      "end_utc": "2026-08-18T15:51:23.691902+00:00",
+      "session_id": 2,
+      "start_us": 1787068282489903,
+      "start_utc": "2026-08-18T15:51:22.489903+00:00"
+    },
+    {
+      "duration_us": 1213000,
+      "end_us": 1787068334422472,
+      "end_utc": "2026-08-18T15:52:14.422472+00:00",
+      "session_id": 2,
+      "start_us": 1787068333209472,
+      "start_utc": "2026-08-18T15:52:13.209472+00:00"
+    },
+    {
+      "duration_us": 1227016,
+      "end_us": 1787068381672413,
+      "end_utc": "2026-08-18T15:53:01.672413+00:00",
+      "session_id": 2,
+      "start_us": 1787068380445397,
+      "start_utc": "2026-08-18T15:53:00.445397+00:00"
+    },
+    {
+      "duration_us": 1197426,
+      "end_us": 1787068428904112,
+      "end_utc": "2026-08-18T15:53:48.904112+00:00",
+      "session_id": 2,
+      "start_us": 1787068427706686,
+      "start_utc": "2026-08-18T15:53:47.706686+00:00"
+    },
+    {
+      "duration_us": 1202897,
+      "end_us": 1787068475151164,
+      "end_utc": "2026-08-18T15:54:35.151164+00:00",
+      "session_id": 2,
+      "start_us": 1787068473948267,
+      "start_utc": "2026-08-18T15:54:33.948267+00:00"
+    },
+    {
+      "duration_us": 1217505,
+      "end_us": 1787068526281295,
+      "end_utc": "2026-08-18T15:55:26.281295+00:00",
+      "session_id": 2,
+      "start_us": 1787068525063790,
+      "start_utc": "2026-08-18T15:55:25.063790+00:00"
+    },
+    {
+      "duration_us": 1216038,
+      "end_us": 1787068571194297,
+      "end_utc": "2026-08-18T15:56:11.194297+00:00",
+      "session_id": 2,
+      "start_us": 1787068569978259,
+      "start_utc": "2026-08-18T15:56:09.978259+00:00"
+    },
+    {
+      "duration_us": 1203511,
+      "end_us": 1787068620872274,
+      "end_utc": "2026-08-18T15:57:00.872274+00:00",
+      "session_id": 2,
+      "start_us": 1787068619668763,
+      "start_utc": "2026-08-18T15:56:59.668763+00:00"
+    },
+    {
+      "duration_us": 1233056,
+      "end_us": 1787068668373638,
+      "end_utc": "2026-08-18T15:57:48.373638+00:00",
+      "session_id": 2,
+      "start_us": 1787068667140582,
+      "start_utc": "2026-08-18T15:57:47.140582+00:00"
+    },
+    {
+      "duration_us": 1237997,
+      "end_us": 1787068713910752,
+      "end_utc": "2026-08-18T15:58:33.910752+00:00",
+      "session_id": 2,
+      "start_us": 1787068712672755,
+      "start_utc": "2026-08-18T15:58:32.672755+00:00"
+    },
+    {
+      "duration_us": 1188040,
+      "end_us": 1787068762108840,
+      "end_utc": "2026-08-18T15:59:22.108840+00:00",
+      "session_id": 2,
+      "start_us": 1787068760920800,
+      "start_utc": "2026-08-18T15:59:20.920800+00:00"
+    },
+    {
+      "duration_us": 1252435,
+      "end_us": 1787068812722122,
+      "end_utc": "2026-08-18T16:00:12.722122+00:00",
+      "session_id": 2,
+      "start_us": 1787068811469687,
+      "start_utc": "2026-08-18T16:00:11.469687+00:00"
+    },
+    {
+      "duration_us": 1201507,
+      "end_us": 1787068858730816,
+      "end_utc": "2026-08-18T16:00:58.730816+00:00",
+      "session_id": 2,
+      "start_us": 1787068857529309,
+      "start_utc": "2026-08-18T16:00:57.529309+00:00"
+    },
+    {
+      "duration_us": 1205515,
+      "end_us": 1787068903975257,
+      "end_utc": "2026-08-18T16:01:43.975257+00:00",
+      "session_id": 2,
+      "start_us": 1787068902769742,
+      "start_utc": "2026-08-18T16:01:42.769742+00:00"
+    },
+    {
+      "duration_us": 1212039,
+      "end_us": 1787068951107845,
+      "end_utc": "2026-08-18T16:02:31.107845+00:00",
+      "session_id": 2,
+      "start_us": 1787068949895806,
+      "start_utc": "2026-08-18T16:02:29.895806+00:00"
+    },
+    {
+      "duration_us": 1188105,
+      "end_us": 1787068993413067,
+      "end_utc": "2026-08-18T16:03:13.413067+00:00",
+      "session_id": 2,
+      "start_us": 1787068992224962,
+      "start_utc": "2026-08-18T16:03:12.224962+00:00"
+    },
+    {
+      "duration_us": 1193791,
+      "end_us": 1787069040866229,
+      "end_utc": "2026-08-18T16:04:00.866229+00:00",
+      "session_id": 2,
+      "start_us": 1787069039672438,
+      "start_utc": "2026-08-18T16:03:59.672438+00:00"
+    },
+    {
+      "duration_us": 1176000,
+      "end_us": 1787069089312509,
+      "end_utc": "2026-08-18T16:04:49.312509+00:00",
+      "session_id": 2,
+      "start_us": 1787069088136509,
+      "start_utc": "2026-08-18T16:04:48.136509+00:00"
+    },
+    {
+      "duration_us": 1203553,
+      "end_us": 1787069136005001,
+      "end_utc": "2026-08-18T16:05:36.005001+00:00",
+      "session_id": 2,
+      "start_us": 1787069134801448,
+      "start_utc": "2026-08-18T16:05:34.801448+00:00"
+    },
+    {
+      "duration_us": 1201055,
+      "end_us": 1787069184667115,
+      "end_utc": "2026-08-18T16:06:24.667115+00:00",
+      "session_id": 2,
+      "start_us": 1787069183466060,
+      "start_utc": "2026-08-18T16:06:23.466060+00:00"
+    },
+    {
+      "duration_us": 1194752,
+      "end_us": 1787069232629012,
+      "end_utc": "2026-08-18T16:07:12.629012+00:00",
+      "session_id": 2,
+      "start_us": 1787069231434260,
+      "start_utc": "2026-08-18T16:07:11.434260+00:00"
+    },
+    {
+      "duration_us": 1184781,
+      "end_us": 1787069276195077,
+      "end_utc": "2026-08-18T16:07:56.195077+00:00",
+      "session_id": 2,
+      "start_us": 1787069275010296,
+      "start_utc": "2026-08-18T16:07:55.010296+00:00"
+    },
+    {
+      "duration_us": 1203723,
+      "end_us": 1787069327108512,
+      "end_utc": "2026-08-18T16:08:47.108512+00:00",
+      "session_id": 2,
+      "start_us": 1787069325904789,
+      "start_utc": "2026-08-18T16:08:45.904789+00:00"
+    },
+    {
+      "duration_us": 1193029,
+      "end_us": 1787069374012331,
+      "end_utc": "2026-08-18T16:09:34.012331+00:00",
+      "session_id": 2,
+      "start_us": 1787069372819302,
+      "start_utc": "2026-08-18T16:09:32.819302+00:00"
+    },
+    {
+      "duration_us": 1200762,
+      "end_us": 1787069421018029,
+      "end_utc": "2026-08-18T16:10:21.018029+00:00",
+      "session_id": 2,
+      "start_us": 1787069419817267,
+      "start_utc": "2026-08-18T16:10:19.817267+00:00"
+    },
+    {
+      "duration_us": 1191262,
+      "end_us": 1787069467081611,
+      "end_utc": "2026-08-18T16:11:07.081611+00:00",
+      "session_id": 2,
+      "start_us": 1787069465890349,
+      "start_utc": "2026-08-18T16:11:05.890349+00:00"
+    },
+    {
+      "duration_us": 1619999,
+      "end_us": 1787069515993528,
+      "end_utc": "2026-08-18T16:11:55.993528+00:00",
+      "session_id": 2,
+      "start_us": 1787069514373529,
+      "start_utc": "2026-08-18T16:11:54.373529+00:00"
+    },
+    {
+      "duration_us": 1681847,
+      "end_us": 1787069561796406,
+      "end_utc": "2026-08-18T16:12:41.796406+00:00",
+      "session_id": 2,
+      "start_us": 1787069560114559,
+      "start_utc": "2026-08-18T16:12:40.114559+00:00"
+    },
+    {
+      "duration_us": 1708866,
+      "end_us": 1787069613640563,
+      "end_utc": "2026-08-18T16:13:33.640563+00:00",
+      "session_id": 2,
+      "start_us": 1787069611931697,
+      "start_utc": "2026-08-18T16:13:31.931697+00:00"
+    },
+    {
+      "duration_us": 1650097,
+      "end_us": 1787069661864620,
+      "end_utc": "2026-08-18T16:14:21.864620+00:00",
+      "session_id": 2,
+      "start_us": 1787069660214523,
+      "start_utc": "2026-08-18T16:14:20.214523+00:00"
+    },
+    {
+      "duration_us": 1652714,
+      "end_us": 1787069713130383,
+      "end_utc": "2026-08-18T16:15:13.130383+00:00",
+      "session_id": 2,
+      "start_us": 1787069711477669,
+      "start_utc": "2026-08-18T16:15:11.477669+00:00"
+    },
+    {
+      "duration_us": 1637496,
+      "end_us": 1787069764663057,
+      "end_utc": "2026-08-18T16:16:04.663057+00:00",
+      "session_id": 2,
+      "start_us": 1787069763025561,
+      "start_utc": "2026-08-18T16:16:03.025561+00:00"
+    },
+    {
+      "duration_us": 1192857,
+      "end_us": 1787069813572973,
+      "end_utc": "2026-08-18T16:16:53.572973+00:00",
+      "session_id": 2,
+      "start_us": 1787069812380116,
+      "start_utc": "2026-08-18T16:16:52.380116+00:00"
+    },
+    {
+      "duration_us": 1193884,
+      "end_us": 1787069858182194,
+      "end_utc": "2026-08-18T16:17:38.182194+00:00",
+      "session_id": 2,
+      "start_us": 1787069856988310,
+      "start_utc": "2026-08-18T16:17:36.988310+00:00"
+    },
+    {
+      "duration_us": 1183711,
+      "end_us": 1787069905900981,
+      "end_utc": "2026-08-18T16:18:25.900981+00:00",
+      "session_id": 2,
+      "start_us": 1787069904717270,
+      "start_utc": "2026-08-18T16:18:24.717270+00:00"
+    },
+    {
+      "duration_us": 1185002,
+      "end_us": 1787069953070215,
+      "end_utc": "2026-08-18T16:19:13.070215+00:00",
+      "session_id": 2,
+      "start_us": 1787069951885213,
+      "start_utc": "2026-08-18T16:19:11.885213+00:00"
+    },
+    {
+      "duration_us": 1183796,
+      "end_us": 1787070002398385,
+      "end_utc": "2026-08-18T16:20:02.398385+00:00",
+      "session_id": 2,
+      "start_us": 1787070001214589,
+      "start_utc": "2026-08-18T16:20:01.214589+00:00"
+    },
+    {
+      "duration_us": 1201472,
+      "end_us": 1787070046701760,
+      "end_utc": "2026-08-18T16:20:46.701760+00:00",
+      "session_id": 2,
+      "start_us": 1787070045500288,
+      "start_utc": "2026-08-18T16:20:45.500288+00:00"
+    },
+    {
+      "duration_us": 1196742,
+      "end_us": 1787070095658405,
+      "end_utc": "2026-08-18T16:21:35.658405+00:00",
+      "session_id": 2,
+      "start_us": 1787070094461663,
+      "start_utc": "2026-08-18T16:21:34.461663+00:00"
+    },
+    {
+      "duration_us": 1575567,
+      "end_us": 1787070143803228,
+      "end_utc": "2026-08-18T16:22:23.803228+00:00",
+      "session_id": 2,
+      "start_us": 1787070142227661,
+      "start_utc": "2026-08-18T16:22:22.227661+00:00"
+    },
+    {
+      "duration_us": 1505743,
+      "end_us": 1787070194845123,
+      "end_utc": "2026-08-18T16:23:14.845123+00:00",
+      "session_id": 2,
+      "start_us": 1787070193339380,
+      "start_utc": "2026-08-18T16:23:13.339380+00:00"
+    },
+    {
+      "duration_us": 3376765,
+      "end_us": 1787070222812055,
+      "end_utc": "2026-08-18T16:23:42.812055+00:00",
+      "session_id": 2,
+      "start_us": 1787070219435290,
+      "start_utc": "2026-08-18T16:23:39.435290+00:00"
+    },
+    {
+      "duration_us": 1521109,
+      "end_us": 1787070270814569,
+      "end_utc": "2026-08-18T16:24:30.814569+00:00",
+      "session_id": 2,
+      "start_us": 1787070269293460,
+      "start_utc": "2026-08-18T16:24:29.293460+00:00"
+    },
+    {
+      "duration_us": 1576976,
+      "end_us": 1787070319777740,
+      "end_utc": "2026-08-18T16:25:19.777740+00:00",
+      "session_id": 2,
+      "start_us": 1787070318200764,
+      "start_utc": "2026-08-18T16:25:18.200764+00:00"
+    },
+    {
+      "duration_us": 1550724,
+      "end_us": 1787070366834152,
+      "end_utc": "2026-08-18T16:26:06.834152+00:00",
+      "session_id": 2,
+      "start_us": 1787070365283428,
+      "start_utc": "2026-08-18T16:26:05.283428+00:00"
+    },
+    {
+      "duration_us": 1527085,
+      "end_us": 1787070416752860,
+      "end_utc": "2026-08-18T16:26:56.752860+00:00",
+      "session_id": 2,
+      "start_us": 1787070415225775,
+      "start_utc": "2026-08-18T16:26:55.225775+00:00"
+    },
+    {
+      "duration_us": 3009421,
+      "end_us": 1787070469605186,
+      "end_utc": "2026-08-18T16:27:49.605186+00:00",
+      "session_id": 2,
+      "start_us": 1787070466595765,
+      "start_utc": "2026-08-18T16:27:46.595765+00:00"
+    },
+    {
+      "duration_us": 1227353,
+      "end_us": 1787070517316625,
+      "end_utc": "2026-08-18T16:28:37.316625+00:00",
+      "session_id": 2,
+      "start_us": 1787070516089272,
+      "start_utc": "2026-08-18T16:28:36.089272+00:00"
+    },
+    {
+      "duration_us": 1190999,
+      "end_us": 1787070564985586,
+      "end_utc": "2026-08-18T16:29:24.985586+00:00",
+      "session_id": 2,
+      "start_us": 1787070563794587,
+      "start_utc": "2026-08-18T16:29:23.794587+00:00"
+    },
+    {
+      "duration_us": 1209913,
+      "end_us": 1787070614653280,
+      "end_utc": "2026-08-18T16:30:14.653280+00:00",
+      "session_id": 2,
+      "start_us": 1787070613443367,
+      "start_utc": "2026-08-18T16:30:13.443367+00:00"
+    },
+    {
+      "duration_us": 1204094,
+      "end_us": 1787070663853918,
+      "end_utc": "2026-08-18T16:31:03.853918+00:00",
+      "session_id": 2,
+      "start_us": 1787070662649824,
+      "start_utc": "2026-08-18T16:31:02.649824+00:00"
+    },
+    {
+      "duration_us": 1207032,
+      "end_us": 1787070711822423,
+      "end_utc": "2026-08-18T16:31:51.822423+00:00",
+      "session_id": 2,
+      "start_us": 1787070710615391,
+      "start_utc": "2026-08-18T16:31:50.615391+00:00"
+    },
+    {
+      "duration_us": 1202693,
+      "end_us": 1787070761709013,
+      "end_utc": "2026-08-18T16:32:41.709013+00:00",
+      "session_id": 2,
+      "start_us": 1787070760506320,
+      "start_utc": "2026-08-18T16:32:40.506320+00:00"
+    },
+    {
+      "duration_us": 1198998,
+      "end_us": 1787070812503403,
+      "end_utc": "2026-08-18T16:33:32.503403+00:00",
+      "session_id": 2,
+      "start_us": 1787070811304405,
+      "start_utc": "2026-08-18T16:33:31.304405+00:00"
+    },
+    {
+      "duration_us": 1199446,
+      "end_us": 1787070863247451,
+      "end_utc": "2026-08-18T16:34:23.247451+00:00",
+      "session_id": 2,
+      "start_us": 1787070862048005,
+      "start_utc": "2026-08-18T16:34:22.048005+00:00"
+    },
+    {
+      "duration_us": 1207808,
+      "end_us": 1787070914449140,
+      "end_utc": "2026-08-18T16:35:14.449140+00:00",
+      "session_id": 2,
+      "start_us": 1787070913241332,
+      "start_utc": "2026-08-18T16:35:13.241332+00:00"
+    },
+    {
+      "duration_us": 1209317,
+      "end_us": 1787070963305071,
+      "end_utc": "2026-08-18T16:36:03.305071+00:00",
+      "session_id": 2,
+      "start_us": 1787070962095754,
+      "start_utc": "2026-08-18T16:36:02.095754+00:00"
+    },
+    {
+      "duration_us": 1186997,
+      "end_us": 1787071011481739,
+      "end_utc": "2026-08-18T16:36:51.481739+00:00",
+      "session_id": 2,
+      "start_us": 1787071010294742,
+      "start_utc": "2026-08-18T16:36:50.294742+00:00"
+    },
+    {
+      "duration_us": 2182619,
+      "end_us": 1787071062315340,
+      "end_utc": "2026-08-18T16:37:42.315340+00:00",
+      "session_id": 2,
+      "start_us": 1787071060132721,
+      "start_utc": "2026-08-18T16:37:40.132721+00:00"
+    },
+    {
+      "duration_us": 2160374,
+      "end_us": 1787071117361827,
+      "end_utc": "2026-08-18T16:38:37.361827+00:00",
+      "session_id": 2,
+      "start_us": 1787071115201453,
+      "start_utc": "2026-08-18T16:38:35.201453+00:00"
+    },
+    {
+      "duration_us": 2130015,
+      "end_us": 1787071168940007,
+      "end_utc": "2026-08-18T16:39:28.940007+00:00",
+      "session_id": 2,
+      "start_us": 1787071166809992,
+      "start_utc": "2026-08-18T16:39:26.809992+00:00"
+    },
+    {
+      "duration_us": 2139040,
+      "end_us": 1787071225938014,
+      "end_utc": "2026-08-18T16:40:25.938014+00:00",
+      "session_id": 2,
+      "start_us": 1787071223798974,
+      "start_utc": "2026-08-18T16:40:23.798974+00:00"
+    },
+    {
+      "duration_us": 2088711,
+      "end_us": 1787071280632773,
+      "end_utc": "2026-08-18T16:41:20.632773+00:00",
+      "session_id": 2,
+      "start_us": 1787071278544062,
+      "start_utc": "2026-08-18T16:41:18.544062+00:00"
+    },
+    {
+      "duration_us": 2115934,
+      "end_us": 1787071333442210,
+      "end_utc": "2026-08-18T16:42:13.442210+00:00",
+      "session_id": 2,
+      "start_us": 1787071331326276,
+      "start_utc": "2026-08-18T16:42:11.326276+00:00"
+    },
+    {
+      "duration_us": 1210904,
+      "end_us": 1787071387133327,
+      "end_utc": "2026-08-18T16:43:07.133327+00:00",
+      "session_id": 2,
+      "start_us": 1787071385922423,
+      "start_utc": "2026-08-18T16:43:05.922423+00:00"
+    },
+    {
+      "duration_us": 1179997,
+      "end_us": 1787071435536129,
+      "end_utc": "2026-08-18T16:43:55.536129+00:00",
+      "session_id": 2,
+      "start_us": 1787071434356132,
+      "start_utc": "2026-08-18T16:43:54.356132+00:00"
+    },
+    {
+      "duration_us": 1184002,
+      "end_us": 1787071483834156,
+      "end_utc": "2026-08-18T16:44:43.834156+00:00",
+      "session_id": 2,
+      "start_us": 1787071482650154,
+      "start_utc": "2026-08-18T16:44:42.650154+00:00"
+    },
+    {
+      "duration_us": 1193998,
+      "end_us": 1787071534656799,
+      "end_utc": "2026-08-18T16:45:34.656799+00:00",
+      "session_id": 2,
+      "start_us": 1787071533462801,
+      "start_utc": "2026-08-18T16:45:33.462801+00:00"
+    },
+    {
+      "duration_us": 1172865,
+      "end_us": 1787071581657103,
+      "end_utc": "2026-08-18T16:46:21.657103+00:00",
+      "session_id": 2,
+      "start_us": 1787071580484238,
+      "start_utc": "2026-08-18T16:46:20.484238+00:00"
+    },
+    {
+      "duration_us": 1199807,
+      "end_us": 1787071628966124,
+      "end_utc": "2026-08-18T16:47:08.966124+00:00",
+      "session_id": 2,
+      "start_us": 1787071627766317,
+      "start_utc": "2026-08-18T16:47:07.766317+00:00"
+    },
+    {
+      "duration_us": 1203835,
+      "end_us": 1787071681068927,
+      "end_utc": "2026-08-18T16:48:01.068927+00:00",
+      "session_id": 2,
+      "start_us": 1787071679865092,
+      "start_utc": "2026-08-18T16:47:59.865092+00:00"
+    },
+    {
+      "duration_us": 1219210,
+      "end_us": 1787074362430194,
+      "end_utc": "2026-08-18T17:32:42.430194+00:00",
+      "session_id": 3,
+      "start_us": 1787074361210984,
+      "start_utc": "2026-08-18T17:32:41.210984+00:00"
+    },
+    {
+      "duration_us": 2654042,
+      "end_us": 1787074884924409,
+      "end_utc": "2026-08-18T17:41:24.924409+00:00",
+      "session_id": 3,
+      "start_us": 1787074882270367,
+      "start_utc": "2026-08-18T17:41:22.270367+00:00"
+    },
+    {
+      "duration_us": 2160973,
+      "end_us": 1787075357743124,
+      "end_utc": "2026-08-18T17:49:17.743124+00:00",
+      "session_id": 3,
+      "start_us": 1787075355582151,
+      "start_utc": "2026-08-18T17:49:15.582151+00:00"
+    }
+  ],
+  "freeze_id": "DEV-FREEZE-0001",
+  "provenance": {
+    "exported_at_utc": "2026-08-20T12:40:24.645722+00:00",
+    "production_db_mtime_ns_after": 1787078027278272600,
+    "production_db_mtime_ns_before": 1787078027278272600,
+    "production_db_path": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\db\\tradingbot.sqlite3",
+    "production_db_size_bytes": 1667309568
+  },
+  "schema_version": "P3COV-0.1",
+  "semantics": {
+    "complete_only_when_entire_query_is_inside_non_uncertain_active_intervals": true,
+    "explicit_gap_overrides_complete": true,
+    "production_db_opened_read_only": true,
+    "production_market_rows_copied": false,
+    "uncovered_or_uncertain_time_is_unknown": true
+  },
+  "source_control_event_count": 679,
+  "source_session_count": 5
+}

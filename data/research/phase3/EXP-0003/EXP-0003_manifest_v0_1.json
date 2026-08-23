@@ -1,0 +1,50 @@
+{
+  "artifacts": {
+    "candidate_outcomes_csv_sha256": "5d416e7e1aa7b9028ca14a8b054c12937b05bb22149eb25f2fc4842cac6f2410",
+    "frontier_csv_sha256": "8e710d08ea16339e086415e04e7592b1b82bc5fd4079f4941cc0d2e0d15791a8",
+    "report_json_sha256": "1260eb06a48c0241021a41f6324414284f3f677c540c53159a286cdc4aa3c915",
+    "summary_csv_sha256": "65b2fe15f679460f1b7430c730c500d16f864df3f42f19c6abe1e17710b4f8a9"
+  },
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "eligible_tokens": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows": 50760,
+    "untouched_oos": false
+  },
+  "decision": "REVIEW_CROSS_A_AND_NEIGHBORING_B_STABILITY_BEFORE_BLOCK_C",
+  "design": {
+    "A_carry_forward_count": 5,
+    "B_valid_pair_count": 21,
+    "C_fixed": {
+      "min_buys": 1,
+      "min_net_flow_reserve_ppm": 0,
+      "min_rebound_bps": 200,
+      "window_id": "3s"
+    },
+    "D_reclaim_fixed": {
+      "min_extension_from_response_bps": 200
+    },
+    "D_runaway_fixed": {
+      "max_extension_from_response_bps": 10000
+    },
+    "combination_count": 105,
+    "five_minute_role": "SUPPORTING_DESCRIPTIVE_ONLY",
+    "full_cartesian_13_23m_run": false,
+    "primary_outcome_horizons": [
+      "15s",
+      "30s"
+    ],
+    "robustness_goal": "cross-A and neighboring-B stability; do not select by highest median alone",
+    "single_winner_selected": false
+  },
+  "experiment_id": "EXP-0003",
+  "hypothesis": "Pullback depth/range changes post-signal outcome distributions across the locked Block-A carry-forward configurations.",
+  "manifest_schema_version": "EXPM-0.1-P3EXT",
+  "notes": "Development/discovery data only; no winner, no PnL, no exit optimization.",
+  "selection_binding": {
+    "path": "data/research/phase3/EXP-0002/EXP-0002_A_selection_v0_1.json",
+    "sha256": "29273fa6607381103b05d5016a0955bc24548057a8683b3926d993dac45bc65d"
+  },
+  "status": "RUN_COMPLETE_PENDING_POSTRUN_AUDIT_AND_REVIEW"
+}

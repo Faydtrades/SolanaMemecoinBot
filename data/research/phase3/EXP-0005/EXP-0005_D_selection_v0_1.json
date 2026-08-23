@@ -1,0 +1,135 @@
+{
+  "D_interpretation": {
+    "control": {
+      "max_extension_from_response_bps": 10000,
+      "min_extension_from_response_bps": 200
+    },
+    "representative_is_permanent_optimum": false,
+    "robust_representative": {
+      "max_extension_from_response_bps": 2500,
+      "min_extension_from_response_bps": 200
+    },
+    "robust_runaway_plateau_bps": [
+      2000,
+      2500,
+      3000
+    ]
+  },
+  "carry_forward": [
+    {
+      "candidate_count": 230,
+      "h15_observable_n": 127,
+      "h15_p50_bps": 181,
+      "h2m_observable_n": 25,
+      "h30_observable_n": 67,
+      "h30_p50_bps": 44,
+      "h5m_observable_n": 11,
+      "h60_observable_n": 27,
+      "max_depth_bps": 9000,
+      "max_extension_from_response_bps": 10000,
+      "min_buys": 1,
+      "min_depth_bps": 1000,
+      "min_extension_from_response_bps": 200,
+      "min_net_flow_reserve_ppm": 0,
+      "min_rebound_bps": 200,
+      "min_return_bps": 500,
+      "min_trades_since_t0": 2,
+      "min_unique_buyers_since_t0": 1,
+      "parameter_set_id": "FP1-EXP0005-D-005-CONTROL-R500-T2-U1-PD1000-9000-RB200-BU1-FL0-RC200-RW10000",
+      "role": "CONTROL"
+    },
+    {
+      "candidate_count": 19,
+      "h15_observable_n": 9,
+      "h15_p50_bps": 741,
+      "h2m_observable_n": 2,
+      "h30_observable_n": 5,
+      "h30_p50_bps": 1213,
+      "h5m_observable_n": 0,
+      "h60_observable_n": 4,
+      "max_depth_bps": 6500,
+      "max_extension_from_response_bps": 2500,
+      "min_buys": 2,
+      "min_depth_bps": 2500,
+      "min_extension_from_response_bps": 200,
+      "min_net_flow_reserve_ppm": 6000,
+      "min_rebound_bps": 2300,
+      "min_return_bps": 1500,
+      "min_trades_since_t0": 5,
+      "min_unique_buyers_since_t0": 9,
+      "parameter_set_id": "FP1-EXP0005-D-026-ROBUST_1-R1500-T5-U9-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_1"
+    },
+    {
+      "candidate_count": 22,
+      "h15_observable_n": 10,
+      "h15_p50_bps": 645,
+      "h2m_observable_n": 3,
+      "h30_observable_n": 8,
+      "h30_p50_bps": 826,
+      "h5m_observable_n": 0,
+      "h60_observable_n": 5,
+      "max_depth_bps": 6500,
+      "max_extension_from_response_bps": 2500,
+      "min_buys": 2,
+      "min_depth_bps": 2500,
+      "min_extension_from_response_bps": 200,
+      "min_net_flow_reserve_ppm": 6000,
+      "min_rebound_bps": 2300,
+      "min_return_bps": 2000,
+      "min_trades_since_t0": 3,
+      "min_unique_buyers_since_t0": 5,
+      "parameter_set_id": "FP1-EXP0005-D-050-ROBUST_2-R2000-T3-U5-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_2"
+    },
+    {
+      "candidate_count": 21,
+      "h15_observable_n": 9,
+      "h15_p50_bps": 692,
+      "h2m_observable_n": 3,
+      "h30_observable_n": 7,
+      "h30_p50_bps": 826,
+      "h5m_observable_n": 0,
+      "h60_observable_n": 5,
+      "max_depth_bps": 6500,
+      "max_extension_from_response_bps": 2500,
+      "min_buys": 2,
+      "min_depth_bps": 2500,
+      "min_extension_from_response_bps": 200,
+      "min_net_flow_reserve_ppm": 6000,
+      "min_rebound_bps": 2300,
+      "min_return_bps": 5000,
+      "min_trades_since_t0": 3,
+      "min_unique_buyers_since_t0": 2,
+      "parameter_set_id": "FP1-EXP0005-D-074-ROBUST_3-R5000-T3-U2-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_3"
+    }
+  ],
+  "dataset": {
+    "freeze_id": "DEV-FREEZE-0001",
+    "role": "DEVELOPMENT_DISCOVERY",
+    "untouched_oos": false
+  },
+  "deferred_hypotheses_path": "data/research/phase3/EXP-0005/EXP-0005_D_deferred_hypotheses_v0_1.json",
+  "deferred_hypotheses_sha256": "3463bda8df9cf7b3ac80541d32d8331ee9a90867396f1a03b4fa0f6bc891b7af",
+  "experiment_id": "EXP-0005",
+  "next_step": {
+    "exit_thresholds_locked": false,
+    "experiment_id": "EXP-0006",
+    "role": "EXIT_RESEARCH_DESIGN_AND_PATH_FEASIBILITY",
+    "sl_tp_trailing_time_stop_tuning_allowed_yet": false
+  },
+  "notes": "A/B/C/D entry research is now represented by one control and three robust full-entry regimes. This is not a profitability claim.",
+  "preanalysis_methodology": {
+    "five_minute_mfe_mae_role": "SUPPORTING_DESCRIPTIVE_ONLY",
+    "locked_before_results": true,
+    "primary_outcome_horizons": [
+      "15s",
+      "30s"
+    ],
+    "selection_rule": "retain permissive control plus robust full-entry regimes with cross-regime and neighboring-D stability; not highest median alone",
+    "single_winner_selected": false
+  },
+  "schema_version": "P3-EXP0005-D-SELECTION-0.1",
+  "status": "LOCKED_FOR_EXIT_RESEARCH"
+}

@@ -1,0 +1,216 @@
+{
+  "cohort_preview": {
+    "future_outcome_filter": false,
+    "global_first_normalizable_tradables_inside_session": 15813,
+    "projected_eligible_tokens": 9002,
+    "required_tail_after_t0_minutes": 10,
+    "selection_uses_normalizable_bot_truth_requirements": true,
+    "strategy_signal_used_for_selection": false
+  },
+  "design_id": "DEV-FREEZE-0002-DESIGN-002",
+  "eligible_preview_first_20": [
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:32.670936+00:00",
+      "mint": "kfYk2oR7m4kWJZubocgCp7Nabs4k2Gw9XWgVvH5pump",
+      "p1_rowid": 50882,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317172670936
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:33.024934+00:00",
+      "mint": "Ake2f3dDaKQMaGppgzoGH9GsRAZ3aKNwXRnVPFWVpump",
+      "p1_rowid": 50883,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317173024934
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:33.118935+00:00",
+      "mint": "5nQhwuZgMkMcyR8hvAaDU9xi68QQy9MhFBt3aU9mpump",
+      "p1_rowid": 50884,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317173118935
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:33.453934+00:00",
+      "mint": "GjocMpcKaJXh7YmA1CmjwCheLA62zVSHWK4ohAZxpump",
+      "p1_rowid": 50887,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317173453934
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:33.523938+00:00",
+      "mint": "5XiSb8CoQTPpZHFRDEkA58e9GEGeaigzxC6ouXrvpump",
+      "p1_rowid": 50888,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317173523938
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:33.672449+00:00",
+      "mint": "HGmG767SkuzP5HKpX9mS4PsJSjn9SUb7FCPJZr4Kpump",
+      "p1_rowid": 50889,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317173672449
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:33.817444+00:00",
+      "mint": "9U1ZsA8SssRDpKufSJpjQKSGqeQJf6VsBqcRcv3Dpump",
+      "p1_rowid": 50890,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317173817444
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:33.971444+00:00",
+      "mint": "Et5ZQeKUMvawfa6HTYbo9A4UduXUmRmYjEd28aqqpump",
+      "p1_rowid": 50891,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317173971444
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:34.202464+00:00",
+      "mint": "5eVjQvZXyWGRFp4MpaT9tWU7nagDVtydfWyph5wvpump",
+      "p1_rowid": 50892,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317174202464
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:34.390116+00:00",
+      "mint": "D81Jmgo9Qgw5NVaczxqLUhYWoePMswexjf5TiFXmpump",
+      "p1_rowid": 50893,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317174390116
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:34.699119+00:00",
+      "mint": "9YAxepRq1tcw9NQeZytp3yGQxQU1ub9MPYHaUBsapump",
+      "p1_rowid": 50895,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317174699119
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:34.903550+00:00",
+      "mint": "F182Kz88HWSzzww8iw8v3JvFoGTsf73gv5pQ79wPpump",
+      "p1_rowid": 50896,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317174903550
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:36.577601+00:00",
+      "mint": "A8NCZejAZtRqYwSj7XQTnHRLbezNEY3uhcg1ND5Xpump",
+      "p1_rowid": 50899,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317176577601
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:36.620603+00:00",
+      "mint": "GmA7xR5hQY9V3MSQTs4v6c74CmPG6b3Uyy1WMDufpump",
+      "p1_rowid": 50900,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317176620603
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:37.045115+00:00",
+      "mint": "9bKQtrm2zu6qPtmCCEN4YfjuDc1zCMLoqDmbdJEEpump",
+      "p1_rowid": 50905,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317177045115
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:37.062117+00:00",
+      "mint": "3wE3PWzFHMXLz6KiSws7niPLVWrgNn8b3uZ9QJejpump",
+      "p1_rowid": 50906,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317177062117
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:37.958128+00:00",
+      "mint": "7qM6BAu4m8GTGsGeQgHxE2XQrqAeYzLw95EjJCGbpump",
+      "p1_rowid": 50910,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317177958128
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:38.054127+00:00",
+      "mint": "8tXvmq97D3HKxNyyDCWVajUiocwv1fU7Ynsi9V5Npump",
+      "p1_rowid": 50912,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317178054127
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:38.156991+00:00",
+      "mint": "2PBb4eUwBp5d2rkVWtPMMRtJ5kPKJLdANufafhXipump",
+      "p1_rowid": 50913,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317178156991
+    },
+    {
+      "clean_interval_end_utc": "2026-08-21T13:11:45.233475+00:00",
+      "clean_interval_start_utc": "2026-08-21T12:59:32.399734+00:00",
+      "decoded_at_utc": "2026-08-21T12:59:38.228991+00:00",
+      "mint": "9gRQKvwA3mtoMGAbhea5jAgSRG2pfS8RsQBv2wDqpump",
+      "p1_rowid": 50914,
+      "source_decoded_file": "LIVE_WEBSOCKET_EVENT_V0_3_3",
+      "t0_us": 1787317178228991
+    }
+  ],
+  "freeze_id": "DEV-FREEZE-0002",
+  "immutable_freeze_allowed_now": false,
+  "latest_session": {
+    "active_hours": 23.361753183055555,
+    "active_intervals": 71,
+    "active_ratio": 0.9981913635277259,
+    "clean_intervals_at_least_10m": 57,
+    "explicit_gap_seconds": 163.22663,
+    "explicit_gaps": 70,
+    "longest_clean_interval_minutes": 96.68375351666667,
+    "observed_through_utc": "2026-08-22T12:23:46.007172+00:00",
+    "provisional_close": true,
+    "session_id": 7,
+    "start_utc": "2026-08-21T12:59:31.309594+00:00",
+    "stop_kind": "EOF_UNCERTAIN",
+    "version": "v0.3.3",
+    "wall_hours": 23.404082660555556
+  },
+  "note": "Each token requires global normalizable BOT_TRUTH t0 and full [t0,t0+10m] inside one clean active interval.",
+  "preview_only": true,
+  "production_db_changed_during_preview": false,
+  "production_db_read_only": true,
+  "schema_version": "P3-DEVFREEZE-PREVIEW-0.2.1"
+}

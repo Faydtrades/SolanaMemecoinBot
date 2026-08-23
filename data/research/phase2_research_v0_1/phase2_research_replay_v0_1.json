@@ -1,0 +1,4646 @@
+{
+  "adapter_skipped": {},
+  "cohort": {
+    "mints": [
+      "24qjbbQ6Z28bVVFChRt8PfRQi36Q5w8kpRAhzDT2pump",
+      "D3CZDkRhK578EYZ4sXuGQT5SiPTcjRbWTHFtLcfLpump",
+      "2F6EXXSJPWmFcT5WZMgMwtVwPEzyoeqELLBeGkt19yaq",
+      "FHNAWXNnVyhCRkMaxyeVKTHrvJD9TEQkdz54uzXyH5Ui",
+      "8tMnE8SMA86oVnwF7mfQzKgkrMb9B4fH6bYwT81bpump",
+      "ErxeYzaKJbD48uf1Hp3bN97PUh5SpsyTHpTGUujypump",
+      "CQNpNCHbmEUhmTB7xsYgRmGKWpj4LB3CU1EnEs6upump",
+      "D7LhFQJt24gVM1QTKGS25tSrgXgsZAq57StpkZdupump",
+      "8SxVsvd3CS8GheiCWDQgg9oK8jPimufvy8PMjpcbpump",
+      "7TGno7LGF4mJHT1mvBMsthaEmavcKM5H8ojXCVcJpump",
+      "AxFT1YGrrf4NKb7eg99iW3vMhWQMEamk2DJLKGYnpump",
+      "8pGvyeMVv9kwGN265xrmUiJ5bFRTbyxPDfP3ELnJpump",
+      "68zfuMUEqq4A7mdDqoQQvTsUn6zLvYQkafw787K2FBze",
+      "FLp9ohj7Lye6JpoB5FLdoETAKHdHDZm5Vk7ZAxYRpump",
+      "9ULnHREJdBvzYjesUhm46A6EfwmMj1yMPuoEJYVDBpkZ",
+      "5RKCoUbp5HKPJR49svNs53emqU2ffWmvA53ceWs6pump",
+      "6sCLdjJp1BGy5DmMLkFYCv6Aeu82Y9iqSNhNwfWKpump",
+      "CnanqtomBVJnT1MXAhoQLE1NuAdhpFqyd9r2DyDzpump",
+      "2GeLRyHhF7pWHQZVMrrB8RQJ6skNbkNxToh1ipzKpump",
+      "B6FgnQMU4VZKrC3fxVJfQ9MbaUBBn6XCsXg4mRUFpump",
+      "EZ1CJhJA7HVqbV3nLDsuB2pk9X5fjjLieBySe6fcSuYj",
+      "4UeoZ7ufmdLv5ZNpoYCX4Cnud9LuLpHJyyvZwRbpgGSW",
+      "Dx1qqmSFoJ8Fko2xcUpYbQ95eYfzkKhqGxcrZVoFpump",
+      "4ddtVZbrQ1JivaA9rT9YxafyXwRbjYkXq7gfhPs8DQ4V",
+      "89RSsU93dKCLW2rnvexmzzVwwo8xkF41nT7VA1VWpump",
+      "65ZfvDHPXnZxUpGYxruAaMWRjus4i4eo6dGPd9Rppump",
+      "7GysKgQyT6nr4KhNM4J9cVQreTie45rLf9SKuxXSeDF7",
+      "B5CrrbdHp2rTxycmbwAy4tdLwxk2FeUFzsSoPer5pump",
+      "H4oVAFf8Uor3G3rwuHMmACqaY1HMRVSeDg4zk8nzpump",
+      "ADWtiF1roQR2LXkV7UB3pBRXuh5hCWfp6zF8tRvLStxo",
+      "24ciaAuJ9gYHFiBGo9umfXTLcnZv2DGZ29qW2uZWpump",
+      "8YBBhovjGX1EpZ6jJqKHamhqn3c6SBc2dmmGwX43pump",
+      "4YQchgMod9WqHCVJmbduGr4vG5QrLXJqfrsTTmkapump",
+      "99Eqt9f1pDiBfaRQJUpxMcbLMHgyGtSLj5Nbgmj7HSzo",
+      "3z1aun6tqmGGD75w23DLcQawy655xMgPJTgmRy2cpump",
+      "GN8cnxehow6suzvczfM2ZzangFMRSxFQUL4Yt36gpump",
+      "J3BLJyPNMV1YHtqn81wUjTq4KsB3mFD8WKez44EJpump",
+      "FYocWZxfrGyqAXmLAatXws6zb56pbY2gZUa3KqVpQEk2",
+      "3NDr1uLVdeNQKpdHasDC3SpQb1A2w3QEQ9x9fwSNpump",
+      "ETMYJeCNgm3HW63Z6fSz7Ks6U7KzVcrMWPdE1822pump",
+      "HpQ7g272RNeDbeCfKEZrBdPJG6bTSHtBtsQddaoipump",
+      "F1VET93pHMiaQbDQEefDfcAkGCQk3yTq7ihg5diCpump",
+      "388MmbRP3mvHyiiNtL5mGcEN3cGrKibj8jUjvRo1yK9W",
+      "3cRRwsW47pxYF2pbLKjGJhp1u2nBajfJLgTqeCaBpump",
+      "4eo7RywxSifvBaorqKhr7JE5qYH4Ufc3BAX7NJEwoEuS",
+      "kRSYfJiDDjbA5B6VtwweBG4RA8moGyTam6fGW5HvDja",
+      "oou2cQqU3kpWJ23BGMm4BuBbJ72nnEbrfHHioDzanxs",
+      "4T1KogxQcpvNKRwr2zbsMbg6hxUp1XNCgPTZGTrBpump",
+      "DnsP5EFLTVbFDhRpodTXXrHrW7Hz1LyQfNMgyHCFpump",
+      "Be3xxfigaYz4hVNzZ3KUyu26BhnQ6ABeGtx3YYLfrkSL",
+      "GyHaKaX8qYapyeXmUWYySnY3LZjuPe9B962VPbCipump",
+      "AcRtEv1cj7HeegGqXo4AGkruMVaHgFbnTK1Ao8t6pump",
+      "468eVWi964Jy1SAFq1HJixr7erdTzTp9NKnKzKPYpump",
+      "B9D5uDCxJmr9reRMoUdzvrS8sefwCDyQXGoTNNg3fgYw",
+      "2baicCwq8XaXZsni2jt9ofaBiNsCtFsjT5vHZUscpump",
+      "J4AUPKtYEqt5VHe8zWN72o7QzWt1wjVRyZxEbUDepump",
+      "HNKCC9MRbADQZeud31YvyDapjjD1JENkwvEKSvvgpump",
+      "77oUtJndaiELNWWn7PD2cRtW4EMo3dsFFPmye75apump",
+      "CEnCFYxux8H6gKUh6QMduyzAYxaPy3TQBZKy3hCVhoCQ",
+      "61a3gXbmshsQFwBPpJZoe6SNzV4qm35ZCJxFtK4Jpump",
+      "8aM5uquSuunJFo25zafzHr72AF4BTbWiz78rwYqpump",
+      "3S27EpFcXVMghvMxsBNKYsZ4sKug1pUsmY1fBXrBpump",
+      "FW4v33A3x7GTTDZBQxozWfPkxnJ3eowM3cye7uLNpump",
+      "Di1EMmx93SbFcWymKJAiW3h8PfSss7XbzDrH6Epgpump",
+      "7VPDdPcjYp3h49sqMHtMtCppxqDhg8dDB1n5XLdppump",
+      "34x9M7rcmv9ycDA8LdcX8cfmR7THWKPxX1zUxXX1pump",
+      "7G5QwVrFkRu4QmDB3nAkqjxJFsBx9WYwm1eGBGmMpump",
+      "Au9ZAJ7nR3xtB9MXiUy57X4Z1x9RnyJGK5jkXMropump",
+      "EoD9acf25KrHhJb7ime8nr3NyqDnf1stUMk3pyDZEmtS",
+      "AssE3k56q7kSPZSSnrtxXpnDvDn4n5MuwCAhARVopump",
+      "BW7SPidghGfjYSCkVEGXTm2stHAhPLgm3sv9kVtBpump",
+      "BxaBbACnyDobzDzAGSDx6AwzoCexk4vx1SdpK6C5pump",
+      "2wmaWULyFCsfSuBreB2z6Rvqqqqj2CfyamaVJjV6pump",
+      "7jJUtWKJziKAhF9WLmm8Sfni1Xcz82bsYiKPVEeqpump",
+      "DTv3pz8peeZkZdvoHxHvJ1JUhty6ts9SGvfC4kGzDnn8",
+      "FStDTDuGtYYBwVRZ18S6TYcoDiiEqVMiorrK89fqpump",
+      "SndJGLp57MtRWUrDDhZGT2p4mxmMsV7eyDoQkgMpump",
+      "CDhGbKqXPEgh9PvwwwsVaPTJ7XwFh8Jpo7XzY6Zdpump",
+      "4guznapky4xswi8Qoc16HGf3k3hoFD7yEbKxEZyGpump",
+      "HCnZgsFH45ZGR9irM6D5R2dTdFF2hcHBc9XeRXDcpump",
+      "ByCuLLJYnaBXgDiQ7tpir9MDpNMtvDzjrQdf3JX1pump",
+      "V8pwrntDFeYXVDDSS3H5NygoudcHbToB8Q37mQFpump",
+      "HQ9bG7FeTWVbFvKEvXonjHc5CJVjVFNXG8tveE9icyvZ",
+      "CpxmLWH1bN8Mddbj1WX583BoJrwAQTucvDFe6eBhpump",
+      "5MHeqv63kDyREwMxGSbxG6w1tNR4jePekNMbP1NfNmca",
+      "GtVFV7BQzhUtEeBW3Qr7pzw4hgw6xBhUGnKDPbWXpump",
+      "PeBVYRsRQZAiUoSnBXXhX5E9HUgBZyDURWrerYcYgiz",
+      "BrtFjxbryd56QRziBsN18qAcd9iRtrMuDZQF8DVH2ix4",
+      "BXrAJKpAcGJt2NACiXdt5wHwEi2KukWTAbgmjeKUpump",
+      "EZG1FtAVKbvK7bFcUcvekGbx5MQyjzWQraEqJJeapump",
+      "9caYv4QJPXPNBG8ghnbLdXowyuVzfVkB8Y4a4umpump",
+      "HYcZNR8fUdUFSAW2PmgivxuQU2avfUwX6XmeQKPepump",
+      "7De9qBYKGiqnJA3dU6Pv9sjZyvXecdZNfRK8dNtpump",
+      "CXt2iDWiovFYk4fTMnx5wEve98fQGfBgiqmfvVxHpump",
+      "AXF1HmVmXa2d7WJzANJpERtdTSegsw9kBHdgK3H1pump",
+      "6pMDSx3dC9gAFgFyb19DgaBpdP2q1mv3w4Gj4sRn5n4X",
+      "4tDwumTUKbNMskmbYy31fTJ16a1Aeb9KszNWxsiNpump",
+      "gRrXUqdki1PQ5UC7EP64v6wjUvEfftEN98VDHexpump",
+      "43dbNPdxKfU3ZkJteR9U84dGGc4SkGcVDLjEzU3gpump",
+      "8P3CGNvDiKnS2AeVq8UsYoKyNLRUg2Ym3RgZESpgpump"
+    ],
+    "selection_rule": "BOT_TRUTH mints with >=1 BUY/SELL; newest by first Phase-1 tradable rowid; no minimum future activity/outcome filter",
+    "tokens": 100
+  },
+  "deterministic_payload_sha256": "ece0262c0e77e6f647b3a8cfe564e5d7fe134f47368b31d06ae320f86f5e2787",
+  "entry_window_ms": 300000,
+  "execution_model_used": false,
+  "normalized_events": 903,
+  "performance_pnl_included": false,
+  "probes": [
+    {
+      "final_classification_counts": {
+        "EXPIRED": 77,
+        "OPEN_AT_DATA_END": 23
+      },
+      "funnel": {
+        "buyer_response_confirmed": 0,
+        "candidate_signal": 0,
+        "eligible_tokens": 100,
+        "expired": 77,
+        "impulse_confirmed": 2,
+        "invalidated": 0,
+        "open_at_data_end": 23,
+        "pullback_active": 1,
+        "rejected": 0,
+        "waiting_for_impulse": 44
+      },
+      "last_reason_counts": {
+        "ENTRY_WINDOW_EXPIRED": 77,
+        "STRATEGY_ARMED": 19,
+        "WAITING_FOR_IMPULSE": 1,
+        "WAITING_FOR_PULLBACK": 1,
+        "WAITING_FOR_TRADABLE_DATA": 2
+      },
+      "parameter_set": {
+        "buyer_response_parameters": {
+          "min_buys": 1,
+          "min_net_flow_lamports": 0,
+          "min_rebound_bps": 200,
+          "window_id": "3s"
+        },
+        "impulse_parameters": {
+          "min_return_bps": 1500,
+          "min_trades_since_t0": 2,
+          "min_unique_buyers_since_t0": 2
+        },
+        "max_entry_age_ms": 300000,
+        "parameter_set_id": "FP1-RESEARCH-PROBE-LOOSE-0001",
+        "pullback_parameters": {
+          "max_depth_bps": 6500,
+          "min_depth_bps": 2500
+        },
+        "reclaim_parameters": {
+          "min_extension_from_response_bps": 200
+        },
+        "runaway_entry_parameters": {
+          "max_extension_from_response_bps": 3000
+        },
+        "strategy_version": "v1.0"
+      },
+      "reached_state_counts": {
+        "DISCOVERED": 100,
+        "EXPIRED": 77,
+        "IMPULSE_CONFIRMED": 2,
+        "PULLBACK_ACTIVE": 1,
+        "WAITING_FOR_IMPULSE": 44,
+        "WAITING_FOR_PULLBACK": 2,
+        "WAITING_FOR_RESPONSE": 1
+      },
+      "stage_age_ms": {
+        "CANDIDATE_SIGNAL": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null
+        },
+        "IMPULSE_CONFIRMED": {
+          "max": 167549,
+          "min": 90265,
+          "n": 2,
+          "p10": 90265,
+          "p25": 90265,
+          "p50": 90265,
+          "p75": 167549,
+          "p90": 167549,
+          "p95": 167549
+        },
+        "PULLBACK_ACTIVE": {
+          "max": 294418,
+          "min": 294418,
+          "n": 1,
+          "p10": 294418,
+          "p25": 294418,
+          "p50": 294418,
+          "p75": 294418,
+          "p90": 294418,
+          "p95": 294418
+        },
+        "WAITING_FOR_RECLAIM": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null
+        }
+      },
+      "token_results": [
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 0,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "24qjbbQ6Z28bVVFChRt8PfRQi36Q5w8kpRAhzDT2pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 870760,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "D3CZDkRhK578EYZ4sXuGQT5SiPTcjRbWTHFtLcfLpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 845274,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "2F6EXXSJPWmFcT5WZMgMwtVwPEzyoeqELLBeGkt19yaq",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 842875,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "FHNAWXNnVyhCRkMaxyeVKTHrvJD9TEQkdz54uzXyH5Ui",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 811665,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8tMnE8SMA86oVnwF7mfQzKgkrMb9B4fH6bYwT81bpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 805525,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ErxeYzaKJbD48uf1Hp3bN97PUh5SpsyTHpTGUujypump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 789358,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CQNpNCHbmEUhmTB7xsYgRmGKWpj4LB3CU1EnEs6upump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 789251,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "D7LhFQJt24gVM1QTKGS25tSrgXgsZAq57StpkZdupump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 766067,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8SxVsvd3CS8GheiCWDQgg9oK8jPimufvy8PMjpcbpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 721428,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7TGno7LGF4mJHT1mvBMsthaEmavcKM5H8ojXCVcJpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 697405,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "AxFT1YGrrf4NKb7eg99iW3vMhWQMEamk2DJLKGYnpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 684771,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8pGvyeMVv9kwGN265xrmUiJ5bFRTbyxPDfP3ELnJpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 677288,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "68zfuMUEqq4A7mdDqoQQvTsUn6zLvYQkafw787K2FBze",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 674906,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "FLp9ohj7Lye6JpoB5FLdoETAKHdHDZm5Vk7ZAxYRpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 673326,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "9ULnHREJdBvzYjesUhm46A6EfwmMj1yMPuoEJYVDBpkZ",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 668669,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "5RKCoUbp5HKPJR49svNs53emqU2ffWmvA53ceWs6pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 663297,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "6sCLdjJp1BGy5DmMLkFYCv6Aeu82Y9iqSNhNwfWKpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 653683,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CnanqtomBVJnT1MXAhoQLE1NuAdhpFqyd9r2DyDzpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 628132,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "2GeLRyHhF7pWHQZVMrrB8RQJ6skNbkNxToh1ipzKpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 621510,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "B6FgnQMU4VZKrC3fxVJfQ9MbaUBBn6XCsXg4mRUFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 614015,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "EZ1CJhJA7HVqbV3nLDsuB2pk9X5fjjLieBySe6fcSuYj",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 566764,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4UeoZ7ufmdLv5ZNpoYCX4Cnud9LuLpHJyyvZwRbpgGSW",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 564138,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "Dx1qqmSFoJ8Fko2xcUpYbQ95eYfzkKhqGxcrZVoFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 564121,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4ddtVZbrQ1JivaA9rT9YxafyXwRbjYkXq7gfhPs8DQ4V",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 528787,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "89RSsU93dKCLW2rnvexmzzVwwo8xkF41nT7VA1VWpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 514921,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "65ZfvDHPXnZxUpGYxruAaMWRjus4i4eo6dGPd9Rppump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 509695,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7GysKgQyT6nr4KhNM4J9cVQreTie45rLf9SKuxXSeDF7",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 478471,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "B5CrrbdHp2rTxycmbwAy4tdLwxk2FeUFzsSoPer5pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 454501,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "H4oVAFf8Uor3G3rwuHMmACqaY1HMRVSeDg4zk8nzpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 452203,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ADWtiF1roQR2LXkV7UB3pBRXuh5hCWfp6zF8tRvLStxo",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 448471,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "24ciaAuJ9gYHFiBGo9umfXTLcnZv2DGZ29qW2uZWpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 443884,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8YBBhovjGX1EpZ6jJqKHamhqn3c6SBc2dmmGwX43pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 443810,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4YQchgMod9WqHCVJmbduGr4vG5QrLXJqfrsTTmkapump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 441054,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "99Eqt9f1pDiBfaRQJUpxMcbLMHgyGtSLj5Nbgmj7HSzo",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 432839,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "3z1aun6tqmGGD75w23DLcQawy655xMgPJTgmRy2cpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 427350,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "GN8cnxehow6suzvczfM2ZzangFMRSxFQUL4Yt36gpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 425904,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "J3BLJyPNMV1YHtqn81wUjTq4KsB3mFD8WKez44EJpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 419209,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "FYocWZxfrGyqAXmLAatXws6zb56pbY2gZUa3KqVpQEk2",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 413022,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "3NDr1uLVdeNQKpdHasDC3SpQb1A2w3QEQ9x9fwSNpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 402593,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ETMYJeCNgm3HW63Z6fSz7Ks6U7KzVcrMWPdE1822pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 395685,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "HpQ7g272RNeDbeCfKEZrBdPJG6bTSHtBtsQddaoipump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 395660,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "F1VET93pHMiaQbDQEefDfcAkGCQk3yTq7ihg5diCpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 395614,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "388MmbRP3mvHyiiNtL5mGcEN3cGrKibj8jUjvRo1yK9W",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 392248,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "3cRRwsW47pxYF2pbLKjGJhp1u2nBajfJLgTqeCaBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 384238,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4eo7RywxSifvBaorqKhr7JE5qYH4Ufc3BAX7NJEwoEuS",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 377968,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "kRSYfJiDDjbA5B6VtwweBG4RA8moGyTam6fGW5HvDja",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 373248,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "oou2cQqU3kpWJ23BGMm4BuBbJ72nnEbrfHHioDzanxs",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 371793,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4T1KogxQcpvNKRwr2zbsMbg6hxUp1XNCgPTZGTrBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 369229,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "DnsP5EFLTVbFDhRpodTXXrHrW7Hz1LyQfNMgyHCFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 343383,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "Be3xxfigaYz4hVNzZ3KUyu26BhnQ6ABeGtx3YYLfrkSL",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 340628,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "GyHaKaX8qYapyeXmUWYySnY3LZjuPe9B962VPbCipump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 340613,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "AcRtEv1cj7HeegGqXo4AGkruMVaHgFbnTK1Ao8t6pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 338621,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "468eVWi964Jy1SAFq1HJixr7erdTzTp9NKnKzKPYpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 309073,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "B9D5uDCxJmr9reRMoUdzvrS8sefwCDyQXGoTNNg3fgYw",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 318047,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "2baicCwq8XaXZsni2jt9ofaBiNsCtFsjT5vHZUscpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 407565,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "J4AUPKtYEqt5VHe8zWN72o7QzWt1wjVRyZxEbUDepump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 427727,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "HNKCC9MRbADQZeud31YvyDapjjD1JENkwvEKSvvgpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 262999,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "77oUtJndaiELNWWn7PD2cRtW4EMo3dsFFPmye75apump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 260566,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "CEnCFYxux8H6gKUh6QMduyzAYxaPy3TQBZKy3hCVhoCQ",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 253640,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "61a3gXbmshsQFwBPpJZoe6SNzV4qm35ZCJxFtK4Jpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 245663,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "8aM5uquSuunJFo25zafzHr72AF4BTbWiz78rwYqpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 244025,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "3S27EpFcXVMghvMxsBNKYsZ4sKug1pUsmY1fBXrBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 241933,
+          "last_reason": "WAITING_FOR_TRADABLE_DATA",
+          "mint": "FW4v33A3x7GTTDZBQxozWfPkxnJ3eowM3cye7uLNpump",
+          "reached_states": [
+            "DISCOVERED"
+          ],
+          "transition_sequence": []
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 241719,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "Di1EMmx93SbFcWymKJAiW3h8PfSss7XbzDrH6Epgpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 535065,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7VPDdPcjYp3h49sqMHtMtCppxqDhg8dDB1n5XLdppump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 808071,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "34x9M7rcmv9ycDA8LdcX8cfmR7THWKPxX1zUxXX1pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 221566,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "7G5QwVrFkRu4QmDB3nAkqjxJFsBx9WYwm1eGBGmMpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 842134,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "Au9ZAJ7nR3xtB9MXiUy57X4Z1x9RnyJGK5jkXMropump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 308570,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "EoD9acf25KrHhJb7ime8nr3NyqDnf1stUMk3pyDZEmtS",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 316280,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "AssE3k56q7kSPZSSnrtxXpnDvDn4n5MuwCAhARVopump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 447760,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "BW7SPidghGfjYSCkVEGXTm2stHAhPLgm3sv9kVtBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 198703,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "BxaBbACnyDobzDzAGSDx6AwzoCexk4vx1SdpK6C5pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 193341,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "2wmaWULyFCsfSuBreB2z6Rvqqqqj2CfyamaVJjV6pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 927540,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7jJUtWKJziKAhF9WLmm8Sfni1Xcz82bsYiKPVEeqpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 372257,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "DTv3pz8peeZkZdvoHxHvJ1JUhty6ts9SGvfC4kGzDnn8",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 170169,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "FStDTDuGtYYBwVRZ18S6TYcoDiiEqVMiorrK89fqpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 167603,
+          "last_reason": "WAITING_FOR_IMPULSE",
+          "mint": "SndJGLp57MtRWUrDDhZGT2p4mxmMsV7eyDoQkgMpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 192990,
+          "last_reason": "WAITING_FOR_PULLBACK",
+          "mint": "CDhGbKqXPEgh9PvwwwsVaPTJ7XwFh8Jpo7XzY6Zdpump",
+          "reached_states": [
+            "DISCOVERED",
+            "IMPULSE_CONFIRMED",
+            "WAITING_FOR_IMPULSE",
+            "WAITING_FOR_PULLBACK"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "IMPULSE_CONFIRMED",
+            "WAITING_FOR_PULLBACK"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 161754,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "4guznapky4xswi8Qoc16HGf3k3hoFD7yEbKxEZyGpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 158893,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "HCnZgsFH45ZGR9irM6D5R2dTdFF2hcHBc9XeRXDcpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 303578,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ByCuLLJYnaBXgDiQ7tpir9MDpNMtvDzjrQdf3JX1pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 479568,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "V8pwrntDFeYXVDDSS3H5NygoudcHbToB8Q37mQFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 138466,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "HQ9bG7FeTWVbFvKEvXonjHc5CJVjVFNXG8tveE9icyvZ",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 819320,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CpxmLWH1bN8Mddbj1WX583BoJrwAQTucvDFe6eBhpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 127704,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "5MHeqv63kDyREwMxGSbxG6w1tNR4jePekNMbP1NfNmca",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 303805,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "GtVFV7BQzhUtEeBW3Qr7pzw4hgw6xBhUGnKDPbWXpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 517042,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "PeBVYRsRQZAiUoSnBXXhX5E9HUgBZyDURWrerYcYgiz",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 317888,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "BrtFjxbryd56QRziBsN18qAcd9iRtrMuDZQF8DVH2ix4",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 447738,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "BXrAJKpAcGJt2NACiXdt5wHwEi2KukWTAbgmjeKUpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 711726,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "EZG1FtAVKbvK7bFcUcvekGbx5MQyjzWQraEqJJeapump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 72200,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "9caYv4QJPXPNBG8ghnbLdXowyuVzfVkB8Y4a4umpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 310534,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "HYcZNR8fUdUFSAW2PmgivxuQU2avfUwX6XmeQKPepump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "IMPULSE_CONFIRMED",
+            "PULLBACK_ACTIVE",
+            "WAITING_FOR_IMPULSE",
+            "WAITING_FOR_PULLBACK",
+            "WAITING_FOR_RESPONSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "IMPULSE_CONFIRMED",
+            "WAITING_FOR_PULLBACK",
+            "PULLBACK_ACTIVE",
+            "WAITING_FOR_RESPONSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 55776,
+          "last_reason": "WAITING_FOR_TRADABLE_DATA",
+          "mint": "7De9qBYKGiqnJA3dU6Pv9sjZyvXecdZNfRK8dNtpump",
+          "reached_states": [
+            "DISCOVERED"
+          ],
+          "transition_sequence": []
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 717434,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CXt2iDWiovFYk4fTMnx5wEve98fQGfBgiqmfvVxHpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 49568,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "AXF1HmVmXa2d7WJzANJpERtdTSegsw9kBHdgK3H1pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 314136,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "6pMDSx3dC9gAFgFyb19DgaBpdP2q1mv3w4Gj4sRn5n4X",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 324163,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4tDwumTUKbNMskmbYy31fTJ16a1Aeb9KszNWxsiNpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 37706,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "gRrXUqdki1PQ5UC7EP64v6wjUvEfftEN98VDHexpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 328801,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "43dbNPdxKfU3ZkJteR9U84dGGc4SkGcVDLjEzU3gpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 30813,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "8P3CGNvDiKnS2AeVq8UsYoKyNLRUg2Ym3RgZESpgpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        }
+      ]
+    },
+    {
+      "final_classification_counts": {
+        "EXPIRED": 77,
+        "OPEN_AT_DATA_END": 23
+      },
+      "funnel": {
+        "buyer_response_confirmed": 0,
+        "candidate_signal": 0,
+        "eligible_tokens": 100,
+        "expired": 77,
+        "impulse_confirmed": 1,
+        "invalidated": 0,
+        "open_at_data_end": 23,
+        "pullback_active": 1,
+        "rejected": 0,
+        "waiting_for_impulse": 44
+      },
+      "last_reason_counts": {
+        "ENTRY_WINDOW_EXPIRED": 77,
+        "STRATEGY_ARMED": 19,
+        "WAITING_FOR_IMPULSE": 2,
+        "WAITING_FOR_TRADABLE_DATA": 2
+      },
+      "parameter_set": {
+        "buyer_response_parameters": {
+          "min_buys": 2,
+          "min_net_flow_lamports": 0,
+          "min_rebound_bps": 500,
+          "window_id": "3s"
+        },
+        "impulse_parameters": {
+          "min_return_bps": 3000,
+          "min_trades_since_t0": 3,
+          "min_unique_buyers_since_t0": 3
+        },
+        "max_entry_age_ms": 300000,
+        "parameter_set_id": "FP1-RESEARCH-PROBE-MID-0001",
+        "pullback_parameters": {
+          "max_depth_bps": 6000,
+          "min_depth_bps": 3000
+        },
+        "reclaim_parameters": {
+          "min_extension_from_response_bps": 500
+        },
+        "runaway_entry_parameters": {
+          "max_extension_from_response_bps": 2500
+        },
+        "strategy_version": "v1.0"
+      },
+      "reached_state_counts": {
+        "DISCOVERED": 100,
+        "EXPIRED": 77,
+        "IMPULSE_CONFIRMED": 1,
+        "PULLBACK_ACTIVE": 1,
+        "WAITING_FOR_IMPULSE": 44,
+        "WAITING_FOR_PULLBACK": 1,
+        "WAITING_FOR_RESPONSE": 1
+      },
+      "stage_age_ms": {
+        "CANDIDATE_SIGNAL": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null
+        },
+        "IMPULSE_CONFIRMED": {
+          "max": 90266,
+          "min": 90266,
+          "n": 1,
+          "p10": 90266,
+          "p25": 90266,
+          "p50": 90266,
+          "p75": 90266,
+          "p90": 90266,
+          "p95": 90266
+        },
+        "PULLBACK_ACTIVE": {
+          "max": 294418,
+          "min": 294418,
+          "n": 1,
+          "p10": 294418,
+          "p25": 294418,
+          "p50": 294418,
+          "p75": 294418,
+          "p90": 294418,
+          "p95": 294418
+        },
+        "WAITING_FOR_RECLAIM": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null
+        }
+      },
+      "token_results": [
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 0,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "24qjbbQ6Z28bVVFChRt8PfRQi36Q5w8kpRAhzDT2pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 870760,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "D3CZDkRhK578EYZ4sXuGQT5SiPTcjRbWTHFtLcfLpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 845274,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "2F6EXXSJPWmFcT5WZMgMwtVwPEzyoeqELLBeGkt19yaq",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 842875,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "FHNAWXNnVyhCRkMaxyeVKTHrvJD9TEQkdz54uzXyH5Ui",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 811665,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8tMnE8SMA86oVnwF7mfQzKgkrMb9B4fH6bYwT81bpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 805525,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ErxeYzaKJbD48uf1Hp3bN97PUh5SpsyTHpTGUujypump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 789358,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CQNpNCHbmEUhmTB7xsYgRmGKWpj4LB3CU1EnEs6upump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 789251,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "D7LhFQJt24gVM1QTKGS25tSrgXgsZAq57StpkZdupump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 766067,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8SxVsvd3CS8GheiCWDQgg9oK8jPimufvy8PMjpcbpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 721428,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7TGno7LGF4mJHT1mvBMsthaEmavcKM5H8ojXCVcJpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 697405,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "AxFT1YGrrf4NKb7eg99iW3vMhWQMEamk2DJLKGYnpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 684771,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8pGvyeMVv9kwGN265xrmUiJ5bFRTbyxPDfP3ELnJpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 677288,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "68zfuMUEqq4A7mdDqoQQvTsUn6zLvYQkafw787K2FBze",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 674906,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "FLp9ohj7Lye6JpoB5FLdoETAKHdHDZm5Vk7ZAxYRpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 673326,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "9ULnHREJdBvzYjesUhm46A6EfwmMj1yMPuoEJYVDBpkZ",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 668669,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "5RKCoUbp5HKPJR49svNs53emqU2ffWmvA53ceWs6pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 663297,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "6sCLdjJp1BGy5DmMLkFYCv6Aeu82Y9iqSNhNwfWKpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 653683,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CnanqtomBVJnT1MXAhoQLE1NuAdhpFqyd9r2DyDzpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 628132,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "2GeLRyHhF7pWHQZVMrrB8RQJ6skNbkNxToh1ipzKpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 621510,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "B6FgnQMU4VZKrC3fxVJfQ9MbaUBBn6XCsXg4mRUFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 614015,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "EZ1CJhJA7HVqbV3nLDsuB2pk9X5fjjLieBySe6fcSuYj",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 566764,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4UeoZ7ufmdLv5ZNpoYCX4Cnud9LuLpHJyyvZwRbpgGSW",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 564138,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "Dx1qqmSFoJ8Fko2xcUpYbQ95eYfzkKhqGxcrZVoFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 564121,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4ddtVZbrQ1JivaA9rT9YxafyXwRbjYkXq7gfhPs8DQ4V",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 528787,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "89RSsU93dKCLW2rnvexmzzVwwo8xkF41nT7VA1VWpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 514921,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "65ZfvDHPXnZxUpGYxruAaMWRjus4i4eo6dGPd9Rppump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 509695,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7GysKgQyT6nr4KhNM4J9cVQreTie45rLf9SKuxXSeDF7",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 478471,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "B5CrrbdHp2rTxycmbwAy4tdLwxk2FeUFzsSoPer5pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 454501,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "H4oVAFf8Uor3G3rwuHMmACqaY1HMRVSeDg4zk8nzpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 452203,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ADWtiF1roQR2LXkV7UB3pBRXuh5hCWfp6zF8tRvLStxo",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 448471,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "24ciaAuJ9gYHFiBGo9umfXTLcnZv2DGZ29qW2uZWpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 443884,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8YBBhovjGX1EpZ6jJqKHamhqn3c6SBc2dmmGwX43pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 443810,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4YQchgMod9WqHCVJmbduGr4vG5QrLXJqfrsTTmkapump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 441054,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "99Eqt9f1pDiBfaRQJUpxMcbLMHgyGtSLj5Nbgmj7HSzo",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 432839,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "3z1aun6tqmGGD75w23DLcQawy655xMgPJTgmRy2cpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 427350,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "GN8cnxehow6suzvczfM2ZzangFMRSxFQUL4Yt36gpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 425904,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "J3BLJyPNMV1YHtqn81wUjTq4KsB3mFD8WKez44EJpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 419209,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "FYocWZxfrGyqAXmLAatXws6zb56pbY2gZUa3KqVpQEk2",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 413022,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "3NDr1uLVdeNQKpdHasDC3SpQb1A2w3QEQ9x9fwSNpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 402593,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ETMYJeCNgm3HW63Z6fSz7Ks6U7KzVcrMWPdE1822pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 395685,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "HpQ7g272RNeDbeCfKEZrBdPJG6bTSHtBtsQddaoipump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 395660,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "F1VET93pHMiaQbDQEefDfcAkGCQk3yTq7ihg5diCpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 395614,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "388MmbRP3mvHyiiNtL5mGcEN3cGrKibj8jUjvRo1yK9W",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 392248,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "3cRRwsW47pxYF2pbLKjGJhp1u2nBajfJLgTqeCaBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 384238,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4eo7RywxSifvBaorqKhr7JE5qYH4Ufc3BAX7NJEwoEuS",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 377968,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "kRSYfJiDDjbA5B6VtwweBG4RA8moGyTam6fGW5HvDja",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 373248,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "oou2cQqU3kpWJ23BGMm4BuBbJ72nnEbrfHHioDzanxs",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 371793,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4T1KogxQcpvNKRwr2zbsMbg6hxUp1XNCgPTZGTrBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 369229,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "DnsP5EFLTVbFDhRpodTXXrHrW7Hz1LyQfNMgyHCFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 343383,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "Be3xxfigaYz4hVNzZ3KUyu26BhnQ6ABeGtx3YYLfrkSL",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 340628,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "GyHaKaX8qYapyeXmUWYySnY3LZjuPe9B962VPbCipump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 340613,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "AcRtEv1cj7HeegGqXo4AGkruMVaHgFbnTK1Ao8t6pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 338621,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "468eVWi964Jy1SAFq1HJixr7erdTzTp9NKnKzKPYpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 309073,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "B9D5uDCxJmr9reRMoUdzvrS8sefwCDyQXGoTNNg3fgYw",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 318047,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "2baicCwq8XaXZsni2jt9ofaBiNsCtFsjT5vHZUscpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 407565,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "J4AUPKtYEqt5VHe8zWN72o7QzWt1wjVRyZxEbUDepump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 427727,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "HNKCC9MRbADQZeud31YvyDapjjD1JENkwvEKSvvgpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 262999,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "77oUtJndaiELNWWn7PD2cRtW4EMo3dsFFPmye75apump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 260566,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "CEnCFYxux8H6gKUh6QMduyzAYxaPy3TQBZKy3hCVhoCQ",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 253640,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "61a3gXbmshsQFwBPpJZoe6SNzV4qm35ZCJxFtK4Jpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 245663,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "8aM5uquSuunJFo25zafzHr72AF4BTbWiz78rwYqpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 244025,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "3S27EpFcXVMghvMxsBNKYsZ4sKug1pUsmY1fBXrBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 241933,
+          "last_reason": "WAITING_FOR_TRADABLE_DATA",
+          "mint": "FW4v33A3x7GTTDZBQxozWfPkxnJ3eowM3cye7uLNpump",
+          "reached_states": [
+            "DISCOVERED"
+          ],
+          "transition_sequence": []
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 241719,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "Di1EMmx93SbFcWymKJAiW3h8PfSss7XbzDrH6Epgpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 535065,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7VPDdPcjYp3h49sqMHtMtCppxqDhg8dDB1n5XLdppump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 808071,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "34x9M7rcmv9ycDA8LdcX8cfmR7THWKPxX1zUxXX1pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 221566,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "7G5QwVrFkRu4QmDB3nAkqjxJFsBx9WYwm1eGBGmMpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 842134,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "Au9ZAJ7nR3xtB9MXiUy57X4Z1x9RnyJGK5jkXMropump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 308570,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "EoD9acf25KrHhJb7ime8nr3NyqDnf1stUMk3pyDZEmtS",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 316280,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "AssE3k56q7kSPZSSnrtxXpnDvDn4n5MuwCAhARVopump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 447760,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "BW7SPidghGfjYSCkVEGXTm2stHAhPLgm3sv9kVtBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 198703,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "BxaBbACnyDobzDzAGSDx6AwzoCexk4vx1SdpK6C5pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 193341,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "2wmaWULyFCsfSuBreB2z6Rvqqqqj2CfyamaVJjV6pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 927540,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7jJUtWKJziKAhF9WLmm8Sfni1Xcz82bsYiKPVEeqpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 372257,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "DTv3pz8peeZkZdvoHxHvJ1JUhty6ts9SGvfC4kGzDnn8",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 170169,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "FStDTDuGtYYBwVRZ18S6TYcoDiiEqVMiorrK89fqpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 167603,
+          "last_reason": "WAITING_FOR_IMPULSE",
+          "mint": "SndJGLp57MtRWUrDDhZGT2p4mxmMsV7eyDoQkgMpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 192990,
+          "last_reason": "WAITING_FOR_IMPULSE",
+          "mint": "CDhGbKqXPEgh9PvwwwsVaPTJ7XwFh8Jpo7XzY6Zdpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 161754,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "4guznapky4xswi8Qoc16HGf3k3hoFD7yEbKxEZyGpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 158893,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "HCnZgsFH45ZGR9irM6D5R2dTdFF2hcHBc9XeRXDcpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 303578,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ByCuLLJYnaBXgDiQ7tpir9MDpNMtvDzjrQdf3JX1pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 479568,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "V8pwrntDFeYXVDDSS3H5NygoudcHbToB8Q37mQFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 138466,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "HQ9bG7FeTWVbFvKEvXonjHc5CJVjVFNXG8tveE9icyvZ",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 819320,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CpxmLWH1bN8Mddbj1WX583BoJrwAQTucvDFe6eBhpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 127704,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "5MHeqv63kDyREwMxGSbxG6w1tNR4jePekNMbP1NfNmca",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 303805,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "GtVFV7BQzhUtEeBW3Qr7pzw4hgw6xBhUGnKDPbWXpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 517042,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "PeBVYRsRQZAiUoSnBXXhX5E9HUgBZyDURWrerYcYgiz",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 317888,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "BrtFjxbryd56QRziBsN18qAcd9iRtrMuDZQF8DVH2ix4",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 447738,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "BXrAJKpAcGJt2NACiXdt5wHwEi2KukWTAbgmjeKUpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 711726,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "EZG1FtAVKbvK7bFcUcvekGbx5MQyjzWQraEqJJeapump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 72200,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "9caYv4QJPXPNBG8ghnbLdXowyuVzfVkB8Y4a4umpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 310534,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "HYcZNR8fUdUFSAW2PmgivxuQU2avfUwX6XmeQKPepump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "IMPULSE_CONFIRMED",
+            "PULLBACK_ACTIVE",
+            "WAITING_FOR_IMPULSE",
+            "WAITING_FOR_PULLBACK",
+            "WAITING_FOR_RESPONSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "IMPULSE_CONFIRMED",
+            "WAITING_FOR_PULLBACK",
+            "PULLBACK_ACTIVE",
+            "WAITING_FOR_RESPONSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 55776,
+          "last_reason": "WAITING_FOR_TRADABLE_DATA",
+          "mint": "7De9qBYKGiqnJA3dU6Pv9sjZyvXecdZNfRK8dNtpump",
+          "reached_states": [
+            "DISCOVERED"
+          ],
+          "transition_sequence": []
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 717434,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CXt2iDWiovFYk4fTMnx5wEve98fQGfBgiqmfvVxHpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 49568,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "AXF1HmVmXa2d7WJzANJpERtdTSegsw9kBHdgK3H1pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 314136,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "6pMDSx3dC9gAFgFyb19DgaBpdP2q1mv3w4Gj4sRn5n4X",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 324163,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4tDwumTUKbNMskmbYy31fTJ16a1Aeb9KszNWxsiNpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 37706,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "gRrXUqdki1PQ5UC7EP64v6wjUvEfftEN98VDHexpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 328801,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "43dbNPdxKfU3ZkJteR9U84dGGc4SkGcVDLjEzU3gpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 30813,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "8P3CGNvDiKnS2AeVq8UsYoKyNLRUg2Ym3RgZESpgpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        }
+      ]
+    },
+    {
+      "final_classification_counts": {
+        "EXPIRED": 77,
+        "OPEN_AT_DATA_END": 23
+      },
+      "funnel": {
+        "buyer_response_confirmed": 0,
+        "candidate_signal": 0,
+        "eligible_tokens": 100,
+        "expired": 77,
+        "impulse_confirmed": 1,
+        "invalidated": 0,
+        "open_at_data_end": 23,
+        "pullback_active": 0,
+        "rejected": 0,
+        "waiting_for_impulse": 44
+      },
+      "last_reason_counts": {
+        "ENTRY_WINDOW_EXPIRED": 77,
+        "STRATEGY_ARMED": 19,
+        "WAITING_FOR_IMPULSE": 2,
+        "WAITING_FOR_TRADABLE_DATA": 2
+      },
+      "parameter_set": {
+        "buyer_response_parameters": {
+          "min_buys": 3,
+          "min_net_flow_lamports": 0,
+          "min_rebound_bps": 800,
+          "window_id": "3s"
+        },
+        "impulse_parameters": {
+          "min_return_bps": 5000,
+          "min_trades_since_t0": 5,
+          "min_unique_buyers_since_t0": 5
+        },
+        "max_entry_age_ms": 300000,
+        "parameter_set_id": "FP1-RESEARCH-PROBE-STRICT-0001",
+        "pullback_parameters": {
+          "max_depth_bps": 5500,
+          "min_depth_bps": 4000
+        },
+        "reclaim_parameters": {
+          "min_extension_from_response_bps": 800
+        },
+        "runaway_entry_parameters": {
+          "max_extension_from_response_bps": 2000
+        },
+        "strategy_version": "v1.0"
+      },
+      "reached_state_counts": {
+        "DISCOVERED": 100,
+        "EXPIRED": 77,
+        "IMPULSE_CONFIRMED": 1,
+        "WAITING_FOR_IMPULSE": 44,
+        "WAITING_FOR_PULLBACK": 1
+      },
+      "stage_age_ms": {
+        "CANDIDATE_SIGNAL": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null
+        },
+        "IMPULSE_CONFIRMED": {
+          "max": 94890,
+          "min": 94890,
+          "n": 1,
+          "p10": 94890,
+          "p25": 94890,
+          "p50": 94890,
+          "p75": 94890,
+          "p90": 94890,
+          "p95": 94890
+        },
+        "PULLBACK_ACTIVE": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null
+        },
+        "WAITING_FOR_RECLAIM": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null
+        }
+      },
+      "token_results": [
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 0,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "24qjbbQ6Z28bVVFChRt8PfRQi36Q5w8kpRAhzDT2pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 870760,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "D3CZDkRhK578EYZ4sXuGQT5SiPTcjRbWTHFtLcfLpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 845274,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "2F6EXXSJPWmFcT5WZMgMwtVwPEzyoeqELLBeGkt19yaq",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 842875,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "FHNAWXNnVyhCRkMaxyeVKTHrvJD9TEQkdz54uzXyH5Ui",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 811665,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8tMnE8SMA86oVnwF7mfQzKgkrMb9B4fH6bYwT81bpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 805525,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ErxeYzaKJbD48uf1Hp3bN97PUh5SpsyTHpTGUujypump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 789358,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CQNpNCHbmEUhmTB7xsYgRmGKWpj4LB3CU1EnEs6upump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 789251,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "D7LhFQJt24gVM1QTKGS25tSrgXgsZAq57StpkZdupump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 766067,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8SxVsvd3CS8GheiCWDQgg9oK8jPimufvy8PMjpcbpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 721428,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7TGno7LGF4mJHT1mvBMsthaEmavcKM5H8ojXCVcJpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 697405,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "AxFT1YGrrf4NKb7eg99iW3vMhWQMEamk2DJLKGYnpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 684771,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8pGvyeMVv9kwGN265xrmUiJ5bFRTbyxPDfP3ELnJpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 677288,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "68zfuMUEqq4A7mdDqoQQvTsUn6zLvYQkafw787K2FBze",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 674906,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "FLp9ohj7Lye6JpoB5FLdoETAKHdHDZm5Vk7ZAxYRpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 673326,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "9ULnHREJdBvzYjesUhm46A6EfwmMj1yMPuoEJYVDBpkZ",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 668669,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "5RKCoUbp5HKPJR49svNs53emqU2ffWmvA53ceWs6pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 663297,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "6sCLdjJp1BGy5DmMLkFYCv6Aeu82Y9iqSNhNwfWKpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 653683,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CnanqtomBVJnT1MXAhoQLE1NuAdhpFqyd9r2DyDzpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 628132,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "2GeLRyHhF7pWHQZVMrrB8RQJ6skNbkNxToh1ipzKpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 621510,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "B6FgnQMU4VZKrC3fxVJfQ9MbaUBBn6XCsXg4mRUFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 614015,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "EZ1CJhJA7HVqbV3nLDsuB2pk9X5fjjLieBySe6fcSuYj",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 566764,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4UeoZ7ufmdLv5ZNpoYCX4Cnud9LuLpHJyyvZwRbpgGSW",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 564138,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "Dx1qqmSFoJ8Fko2xcUpYbQ95eYfzkKhqGxcrZVoFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 564121,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4ddtVZbrQ1JivaA9rT9YxafyXwRbjYkXq7gfhPs8DQ4V",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 528787,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "89RSsU93dKCLW2rnvexmzzVwwo8xkF41nT7VA1VWpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 514921,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "65ZfvDHPXnZxUpGYxruAaMWRjus4i4eo6dGPd9Rppump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 509695,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7GysKgQyT6nr4KhNM4J9cVQreTie45rLf9SKuxXSeDF7",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 478471,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "B5CrrbdHp2rTxycmbwAy4tdLwxk2FeUFzsSoPer5pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 454501,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "H4oVAFf8Uor3G3rwuHMmACqaY1HMRVSeDg4zk8nzpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 452203,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ADWtiF1roQR2LXkV7UB3pBRXuh5hCWfp6zF8tRvLStxo",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 448471,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "24ciaAuJ9gYHFiBGo9umfXTLcnZv2DGZ29qW2uZWpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 443884,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "8YBBhovjGX1EpZ6jJqKHamhqn3c6SBc2dmmGwX43pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 443810,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4YQchgMod9WqHCVJmbduGr4vG5QrLXJqfrsTTmkapump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 441054,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "99Eqt9f1pDiBfaRQJUpxMcbLMHgyGtSLj5Nbgmj7HSzo",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 432839,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "3z1aun6tqmGGD75w23DLcQawy655xMgPJTgmRy2cpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 427350,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "GN8cnxehow6suzvczfM2ZzangFMRSxFQUL4Yt36gpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 425904,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "J3BLJyPNMV1YHtqn81wUjTq4KsB3mFD8WKez44EJpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 419209,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "FYocWZxfrGyqAXmLAatXws6zb56pbY2gZUa3KqVpQEk2",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 413022,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "3NDr1uLVdeNQKpdHasDC3SpQb1A2w3QEQ9x9fwSNpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 402593,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ETMYJeCNgm3HW63Z6fSz7Ks6U7KzVcrMWPdE1822pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 395685,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "HpQ7g272RNeDbeCfKEZrBdPJG6bTSHtBtsQddaoipump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 395660,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "F1VET93pHMiaQbDQEefDfcAkGCQk3yTq7ihg5diCpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 395614,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "388MmbRP3mvHyiiNtL5mGcEN3cGrKibj8jUjvRo1yK9W",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 392248,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "3cRRwsW47pxYF2pbLKjGJhp1u2nBajfJLgTqeCaBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 384238,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4eo7RywxSifvBaorqKhr7JE5qYH4Ufc3BAX7NJEwoEuS",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 377968,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "kRSYfJiDDjbA5B6VtwweBG4RA8moGyTam6fGW5HvDja",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 373248,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "oou2cQqU3kpWJ23BGMm4BuBbJ72nnEbrfHHioDzanxs",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 371793,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4T1KogxQcpvNKRwr2zbsMbg6hxUp1XNCgPTZGTrBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 369229,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "DnsP5EFLTVbFDhRpodTXXrHrW7Hz1LyQfNMgyHCFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 343383,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "Be3xxfigaYz4hVNzZ3KUyu26BhnQ6ABeGtx3YYLfrkSL",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 340628,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "GyHaKaX8qYapyeXmUWYySnY3LZjuPe9B962VPbCipump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 340613,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "AcRtEv1cj7HeegGqXo4AGkruMVaHgFbnTK1Ao8t6pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 338621,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "468eVWi964Jy1SAFq1HJixr7erdTzTp9NKnKzKPYpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 309073,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "B9D5uDCxJmr9reRMoUdzvrS8sefwCDyQXGoTNNg3fgYw",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 318047,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "2baicCwq8XaXZsni2jt9ofaBiNsCtFsjT5vHZUscpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 407565,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "J4AUPKtYEqt5VHe8zWN72o7QzWt1wjVRyZxEbUDepump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 427727,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "HNKCC9MRbADQZeud31YvyDapjjD1JENkwvEKSvvgpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 262999,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "77oUtJndaiELNWWn7PD2cRtW4EMo3dsFFPmye75apump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 260566,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "CEnCFYxux8H6gKUh6QMduyzAYxaPy3TQBZKy3hCVhoCQ",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 253640,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "61a3gXbmshsQFwBPpJZoe6SNzV4qm35ZCJxFtK4Jpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 245663,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "8aM5uquSuunJFo25zafzHr72AF4BTbWiz78rwYqpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 244025,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "3S27EpFcXVMghvMxsBNKYsZ4sKug1pUsmY1fBXrBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 241933,
+          "last_reason": "WAITING_FOR_TRADABLE_DATA",
+          "mint": "FW4v33A3x7GTTDZBQxozWfPkxnJ3eowM3cye7uLNpump",
+          "reached_states": [
+            "DISCOVERED"
+          ],
+          "transition_sequence": []
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 241719,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "Di1EMmx93SbFcWymKJAiW3h8PfSss7XbzDrH6Epgpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 535065,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7VPDdPcjYp3h49sqMHtMtCppxqDhg8dDB1n5XLdppump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 808071,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "34x9M7rcmv9ycDA8LdcX8cfmR7THWKPxX1zUxXX1pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 221566,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "7G5QwVrFkRu4QmDB3nAkqjxJFsBx9WYwm1eGBGmMpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 842134,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "Au9ZAJ7nR3xtB9MXiUy57X4Z1x9RnyJGK5jkXMropump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 308570,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "EoD9acf25KrHhJb7ime8nr3NyqDnf1stUMk3pyDZEmtS",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 316280,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "AssE3k56q7kSPZSSnrtxXpnDvDn4n5MuwCAhARVopump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 447760,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "BW7SPidghGfjYSCkVEGXTm2stHAhPLgm3sv9kVtBpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 198703,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "BxaBbACnyDobzDzAGSDx6AwzoCexk4vx1SdpK6C5pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 193341,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "2wmaWULyFCsfSuBreB2z6Rvqqqqj2CfyamaVJjV6pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 927540,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "7jJUtWKJziKAhF9WLmm8Sfni1Xcz82bsYiKPVEeqpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 372257,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "DTv3pz8peeZkZdvoHxHvJ1JUhty6ts9SGvfC4kGzDnn8",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 170169,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "FStDTDuGtYYBwVRZ18S6TYcoDiiEqVMiorrK89fqpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 167603,
+          "last_reason": "WAITING_FOR_IMPULSE",
+          "mint": "SndJGLp57MtRWUrDDhZGT2p4mxmMsV7eyDoQkgMpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 192990,
+          "last_reason": "WAITING_FOR_IMPULSE",
+          "mint": "CDhGbKqXPEgh9PvwwwsVaPTJ7XwFh8Jpo7XzY6Zdpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 161754,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "4guznapky4xswi8Qoc16HGf3k3hoFD7yEbKxEZyGpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 158893,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "HCnZgsFH45ZGR9irM6D5R2dTdFF2hcHBc9XeRXDcpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 303578,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "ByCuLLJYnaBXgDiQ7tpir9MDpNMtvDzjrQdf3JX1pump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED"
+          ],
+          "transition_sequence": [
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 479568,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "V8pwrntDFeYXVDDSS3H5NygoudcHbToB8Q37mQFpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 138466,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "HQ9bG7FeTWVbFvKEvXonjHc5CJVjVFNXG8tveE9icyvZ",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 819320,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CpxmLWH1bN8Mddbj1WX583BoJrwAQTucvDFe6eBhpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 127704,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "5MHeqv63kDyREwMxGSbxG6w1tNR4jePekNMbP1NfNmca",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 303805,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "GtVFV7BQzhUtEeBW3Qr7pzw4hgw6xBhUGnKDPbWXpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 517042,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "PeBVYRsRQZAiUoSnBXXhX5E9HUgBZyDURWrerYcYgiz",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 317888,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "BrtFjxbryd56QRziBsN18qAcd9iRtrMuDZQF8DVH2ix4",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 447738,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "BXrAJKpAcGJt2NACiXdt5wHwEi2KukWTAbgmjeKUpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 711726,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "EZG1FtAVKbvK7bFcUcvekGbx5MQyjzWQraEqJJeapump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 72200,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "9caYv4QJPXPNBG8ghnbLdXowyuVzfVkB8Y4a4umpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 310534,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "HYcZNR8fUdUFSAW2PmgivxuQU2avfUwX6XmeQKPepump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "IMPULSE_CONFIRMED",
+            "WAITING_FOR_IMPULSE",
+            "WAITING_FOR_PULLBACK"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "IMPULSE_CONFIRMED",
+            "WAITING_FOR_PULLBACK",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 55776,
+          "last_reason": "WAITING_FOR_TRADABLE_DATA",
+          "mint": "7De9qBYKGiqnJA3dU6Pv9sjZyvXecdZNfRK8dNtpump",
+          "reached_states": [
+            "DISCOVERED"
+          ],
+          "transition_sequence": []
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 717434,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "CXt2iDWiovFYk4fTMnx5wEve98fQGfBgiqmfvVxHpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 49568,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "AXF1HmVmXa2d7WJzANJpERtdTSegsw9kBHdgK3H1pump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 314136,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "6pMDSx3dC9gAFgFyb19DgaBpdP2q1mv3w4Gj4sRn5n4X",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 324163,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "4tDwumTUKbNMskmbYy31fTJ16a1Aeb9KszNWxsiNpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 37706,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "gRrXUqdki1PQ5UC7EP64v6wjUvEfftEN98VDHexpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        },
+        {
+          "final_classification": "EXPIRED",
+          "last_age_ms": 328801,
+          "last_reason": "ENTRY_WINDOW_EXPIRED",
+          "mint": "43dbNPdxKfU3ZkJteR9U84dGGc4SkGcVDLjEzU3gpump",
+          "reached_states": [
+            "DISCOVERED",
+            "EXPIRED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE",
+            "EXPIRED"
+          ]
+        },
+        {
+          "final_classification": "OPEN_AT_DATA_END",
+          "last_age_ms": 30813,
+          "last_reason": "STRATEGY_ARMED",
+          "mint": "8P3CGNvDiKnS2AeVq8UsYoKyNLRUg2Ym3RgZESpgpump",
+          "reached_states": [
+            "DISCOVERED",
+            "WAITING_FOR_IMPULSE"
+          ],
+          "transition_sequence": [
+            "WAITING_FOR_IMPULSE"
+          ]
+        }
+      ]
+    }
+  ],
+  "raw_market_summary": {
+    "metrics": {
+      "events_available": {
+        "max": 189,
+        "min": 1,
+        "n": 100,
+        "p10": 1,
+        "p25": 1,
+        "p50": 2,
+        "p75": 8,
+        "p90": 12,
+        "p95": 27
+      },
+      "first_trade_observation_delay_ms": {
+        "max": 870760,
+        "min": 0,
+        "n": 100,
+        "p10": 58197,
+        "p25": 167573,
+        "p50": 340613,
+        "p75": 509695,
+        "p90": 684771,
+        "p95": 789358
+      },
+      "max_10s_trades": {
+        "max": 0,
+        "min": 0,
+        "n": 47,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "p90": 0,
+        "p95": 0
+      },
+      "max_10s_volume_lamports": {
+        "max": 0,
+        "min": 0,
+        "n": 47,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "p90": 0,
+        "p95": 0
+      },
+      "max_3s_buys": {
+        "max": 0,
+        "min": 0,
+        "n": 47,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "p90": 0,
+        "p95": 0
+      },
+      "max_3s_net_flow_lamports": {
+        "max": 0,
+        "min": 0,
+        "n": 47,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "p90": 0,
+        "p95": 0
+      },
+      "max_3s_price_change_bps": {
+        "max": null,
+        "min": null,
+        "n": 0,
+        "p10": null,
+        "p25": null,
+        "p50": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "max_3s_sells": {
+        "max": 0,
+        "min": 0,
+        "n": 47,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "p90": 0,
+        "p95": 0
+      },
+      "max_drawdown_depth_bps": {
+        "max": 4076,
+        "min": 0,
+        "n": 47,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 5,
+        "p90": 1732,
+        "p95": 3753
+      },
+      "max_return_from_t0_bps": {
+        "max": 10125,
+        "min": 0,
+        "n": 44,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "p90": 427,
+        "p95": 1083
+      },
+      "max_total_volume_since_t0_lamports": {
+        "max": 66184188296,
+        "min": 0,
+        "n": 47,
+        "p10": 196542,
+        "p25": 41593564,
+        "p50": 147407406,
+        "p75": 997928424,
+        "p90": 5333333329,
+        "p95": 15900336758
+      },
+      "max_trades_since_t0": {
+        "max": 43,
+        "min": 0,
+        "n": 47,
+        "p10": 1,
+        "p25": 1,
+        "p50": 1,
+        "p75": 4,
+        "p90": 6,
+        "p95": 14
+      },
+      "max_unique_buyers_since_t0": {
+        "max": 17,
+        "min": 0,
+        "n": 47,
+        "p10": 0,
+        "p25": 0,
+        "p50": 1,
+        "p75": 2,
+        "p90": 4,
+        "p95": 6
+      },
+      "states_in_entry_window": {
+        "max": 43,
+        "min": 0,
+        "n": 100,
+        "p10": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 1,
+        "p90": 4,
+        "p95": 6
+      }
+    },
+    "quantile_method": "nearest-rank",
+    "tokens": 100,
+    "tokens_with_gap_events": 0,
+    "tokens_with_no_observable_state_inside_entry_window": 53,
+    "tokens_with_post_window_observation": 77
+  },
+  "research_scope": "SETUP_FUNNEL_AND_RAW_DISTRIBUTIONS_ONLY",
+  "schema_version": "P2RR-0.1",
+  "source_rows": 903
+}

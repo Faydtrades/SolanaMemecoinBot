@@ -1,0 +1,27 @@
+{
+  "deterministic_design_sha256": "3e34aaade272ba59ba98acb5cd16769e7a29199bfb42fce91e2288ffae834c79",
+  "entry_regimes": "locked EXP-0005 full-entry control + ROBUST_1/2/3",
+  "exit_path_replay_schema": "phase3_exit_path_replay_v0.1",
+  "experiment_id": "EXP-0007",
+  "mainline_exit_threshold_optimization_allowed": false,
+  "next_operational_step": "Keep the production collector running continuously. Use the readiness policy to decide when a fresh immutable development freeze is worth creating; duration alone is not the gate.",
+  "non_objectives": [
+    "choosing SL",
+    "choosing TP",
+    "choosing trailing stop",
+    "choosing time stop",
+    "fees/slippage/latency",
+    "realistic net PnL",
+    "profitability claim"
+  ],
+  "objectives": [
+    "deterministic causal post-entry path construction",
+    "first observed passage semantics without interpolation",
+    "explicit gap/unknown/GAP_RECOVERY/continuity handling",
+    "evidence-based readiness gate for a fresh continuous development freeze"
+  ],
+  "role": "EXIT_PATH_REPLAY_FOUNDATION_AND_CONTINUOUS_DEV_READINESS",
+  "schema_version": "P3-EXP0007-FOUNDATION-DESIGN-0.1",
+  "source_experiment": "EXP-0006",
+  "status": "FOUNDATION_INITIALIZED_NOT_COMPLETE"
+}

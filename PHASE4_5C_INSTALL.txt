@@ -1,0 +1,29 @@
+PHASE 4.5C LIVE OBSERVABILITY BINDING — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Prerequisites already validated in the project:
+- Phase 4.4E RESULT: PASS
+- Phase 4.5A RESULT: PASS
+- Phase 4.5B self-test + schema integration RESULT: PASS
+
+Adds:
+- src\phase4\paper_live_observability_binding_v0_1.py
+- scripts\phase4_5c_live_observability_binding_selftest_v0_1.py
+- scripts\phase4_5c_live_observability_smoke_v0_1.py
+- docs\phase4\PHASE4_5C_LIVE_OBSERVABILITY_V0_1.md
+
+No other collector should be running.
+
+Run in order:
+
+python scripts\phase4_5c_live_observability_binding_selftest_v0_1.py
+
+if ($LASTEXITCODE -eq 0) {
+    python scripts\phase4_5c_live_observability_smoke_v0_1.py
+}
+
+LOCAL SELF-TEST BEFORE DELIVERY: PASS
+LIVE RUN: REQUIRES USER PROJECT/LIVE VALIDATION

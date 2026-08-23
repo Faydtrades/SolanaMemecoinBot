@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "design_locked_before_exit_results": true,
+    "exact_four_entry_regimes": true,
+    "five_minute_observability_gate_consistent": true,
+    "no_exit_thresholds_tested": true,
+    "no_profitability_claim": true
+  },
+  "experiment_id": "EXP-0006",
+  "hashes": {
+    "EXP-0006_exit_feasibility_by_regime_v0_1.csv": "42f62d93f31445786cc8772db05d7a13c1c3ce4f12470037e0020a99eaf6a6a6",
+    "EXP-0006_exit_feasibility_report_v0_1.json": "306d8778167227b0193c7140a2595f673a7d22a29f6bc09f0086154d988bb105",
+    "EXP-0006_exit_research_design_v0_1.json": "2f4900294a430c7831f9d3d19cc9dc422ca97861ae102bbc993b27c182d7006a",
+    "EXP-0006_manifest_v0_1.json": "a7f0b5d9457cb37515386c4d3e4ee4eef9032a6916c7446cebeed4da6c242344"
+  },
+  "result": "PASS",
+  "schema_version": "P3-EXP0006-POSTAUDIT-0.1"
+}

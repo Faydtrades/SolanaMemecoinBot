@@ -1,0 +1,159 @@
+{
+  "exit_threshold_optimization_performed": false,
+  "interpretation_rules": [
+    "Descriptive path geometry only.",
+    "No SL/TP/trailing/time-stop thresholds are selected or ranked.",
+    "Peak/trough quantiles are not exit recommendations.",
+    "No interpolation between market observations is used.",
+    "Only CLEAN 5m paths are characterized.",
+    "Entry A/B/C/D parameters remain fixed."
+  ],
+  "profitability_claim_allowed": false,
+  "robust_regimes": [
+    {
+      "candidate_count": 206,
+      "clean_5m_count": 203,
+      "clean_5m_rate": 0.9854368932038835,
+      "clean_path_fresh_point_count": {
+        "max": 1229,
+        "min": 7,
+        "n": 203,
+        "p10": 28,
+        "p25": 54,
+        "p50": 115,
+        "p75": 200,
+        "p90": 316
+      },
+      "clean_path_future_observation_count": {
+        "max": 1229,
+        "min": 7,
+        "n": 203,
+        "p10": 28,
+        "p25": 54,
+        "p50": 115,
+        "p75": 200,
+        "p90": 316
+      },
+      "clean_path_peak_bps": {
+        "max": 21109,
+        "min": 0,
+        "n": 203,
+        "p10": 146,
+        "p25": 1139,
+        "p50": 3159,
+        "p75": 6745,
+        "p90": 11537
+      },
+      "clean_path_trough_bps": {
+        "max": 0,
+        "min": -9702,
+        "n": 203,
+        "p10": -6420,
+        "p25": -4834,
+        "p50": -3388,
+        "p75": -1233,
+        "p90": 0
+      },
+      "parameter_set_id": "FP1-EXP0005-D-026-ROBUST_1-R1500-T5-U9-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_1"
+    },
+    {
+      "candidate_count": 232,
+      "clean_5m_count": 229,
+      "clean_5m_rate": 0.9870689655172413,
+      "clean_path_fresh_point_count": {
+        "max": 1229,
+        "min": 6,
+        "n": 229,
+        "p10": 25,
+        "p25": 44,
+        "p50": 102,
+        "p75": 187,
+        "p90": 312
+      },
+      "clean_path_future_observation_count": {
+        "max": 1229,
+        "min": 6,
+        "n": 229,
+        "p10": 25,
+        "p25": 44,
+        "p50": 102,
+        "p75": 187,
+        "p90": 312
+      },
+      "clean_path_peak_bps": {
+        "max": 21109,
+        "min": 0,
+        "n": 229,
+        "p10": 58,
+        "p25": 1050,
+        "p50": 3135,
+        "p75": 6745,
+        "p90": 11959
+      },
+      "clean_path_trough_bps": {
+        "max": 0,
+        "min": -9991,
+        "n": 229,
+        "p10": -6655,
+        "p25": -4852,
+        "p50": -3435,
+        "p75": -1415,
+        "p90": 0
+      },
+      "parameter_set_id": "FP1-EXP0005-D-050-ROBUST_2-R2000-T3-U5-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_2"
+    },
+    {
+      "candidate_count": 218,
+      "clean_5m_count": 211,
+      "clean_5m_rate": 0.9678899082568807,
+      "clean_path_fresh_point_count": {
+        "max": 1229,
+        "min": 6,
+        "n": 211,
+        "p10": 27,
+        "p25": 49,
+        "p50": 102,
+        "p75": 188,
+        "p90": 312
+      },
+      "clean_path_future_observation_count": {
+        "max": 1229,
+        "min": 6,
+        "n": 211,
+        "p10": 27,
+        "p25": 49,
+        "p50": 102,
+        "p75": 188,
+        "p90": 312
+      },
+      "clean_path_peak_bps": {
+        "max": 63858,
+        "min": 0,
+        "n": 211,
+        "p10": 146,
+        "p25": 1296,
+        "p50": 3494,
+        "p75": 7824,
+        "p90": 13456
+      },
+      "clean_path_trough_bps": {
+        "max": 0,
+        "min": -9991,
+        "n": 211,
+        "p10": -8354,
+        "p25": -6247,
+        "p50": -4107,
+        "p75": -1773,
+        "p90": 0
+      },
+      "parameter_set_id": "FP1-EXP0005-D-074-ROBUST_3-R5000-T3-U2-PD2500-6500-RB2300-BU2-FL6000-RC200-RW2500",
+      "role": "ROBUST_3"
+    }
+  ],
+  "role": "E1_EXIT_PATH_CHARACTERIZATION",
+  "schema_version": "P3-E1-PATH-CHAR-0.1",
+  "source_freeze_id": "DEV-FREEZE-0002",
+  "source_readiness_tier": "E2_COARSE_EXIT_SEARCH_READY"
+}

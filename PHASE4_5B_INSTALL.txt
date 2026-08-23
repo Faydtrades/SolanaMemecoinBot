@@ -1,0 +1,27 @@
+PHASE 4.5B CAUSAL MTM / MAE-MFE / TRADE-SKIP PERSISTENCE — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- src\phase4\paper_runtime_observability_v0_1.py
+- scripts\phase4_5b_runtime_observability_selftest_v0_1.py
+- scripts\phase4_5b_fixture_integration_smoke_v0_1.py
+- data\selftest\phase4_4e_live_exit_pipeline_fixture.sqlite3
+- docs\phase4\PHASE4_5B_RUNTIME_OBSERVABILITY_V0_1.md
+
+No collector should be running.
+
+Run:
+
+python scripts\phase4_5b_runtime_observability_selftest_v0_1.py
+if ($LASTEXITCODE -eq 0) {
+    python scripts\phase4_5b_fixture_integration_smoke_v0_1.py
+}
+
+LOCAL SELF-TEST BEFORE DELIVERY: PASS
+LOCAL EXACT-SCHEMA FIXTURE INTEGRATION SMOKE: PASS
+
+Do not enable continuous paper trading yet. The next step is controlled live
+binding/validation of these persisted streams.

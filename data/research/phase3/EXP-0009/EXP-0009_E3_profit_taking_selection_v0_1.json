@@ -1,0 +1,238 @@
+{
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "freeze_id": "DEV-FREEZE-0002",
+    "untouched_oos": false
+  },
+  "deferred_not_rejected": [
+    {
+      "reason": "Higher gross mean but lower median/positive rate and lower TP hit rate than TP10.",
+      "variant_id": "TP20_T15s"
+    },
+    {
+      "reason": "Highest T15s gross mean, but only about one-fifth of clean paths hit TP; more tail-dependent.",
+      "variant_id": "TP30_T15s"
+    },
+    {
+      "reason": "High T5s gross mean with very low TP hit rate and lower scoring coverage.",
+      "variant_id": "TP30_T5s"
+    },
+    {
+      "reason": "Very high positive rate and TP hit rate, but meaningfully lower gross mean; conservative boundary hypothesis.",
+      "variant_id": "TP03_T15s"
+    }
+  ],
+  "evidence": {
+    "TP03_T15s": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -937,
+        -1150,
+        -1163
+      ],
+      "role_p50_exit_bps": [
+        414,
+        411,
+        457
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "tp_hit_count_sum": 463,
+      "tp_hit_rate_clean_paths": 0.7200622083981337,
+      "weighted_mean_exit_bps": 175.41167192429023,
+      "weighted_positive_rate": 0.8028391167192429
+    },
+    "TP05_T15s": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1096,
+        -1355,
+        -1449
+      ],
+      "role_p50_exit_bps": [
+        572,
+        556,
+        624
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "tp_hit_count_sum": 409,
+      "tp_hit_rate_clean_paths": 0.6360808709175739,
+      "weighted_mean_exit_bps": 204.99211356466876,
+      "weighted_positive_rate": 0.7665615141955836
+    },
+    "TP10_T15s": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1146,
+        -1454,
+        -1554
+      ],
+      "role_p50_exit_bps": [
+        1012,
+        704,
+        1038
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "tp_hit_count_sum": 332,
+      "tp_hit_rate_clean_paths": 0.5163297045101088,
+      "weighted_mean_exit_bps": 336.108832807571,
+      "weighted_positive_rate": 0.7018927444794952
+    },
+    "TP15_T15s": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1449,
+        -1969,
+        -1969
+      ],
+      "role_p50_exit_bps": [
+        495,
+        362,
+        850
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "tp_hit_count_sum": 241,
+      "tp_hit_rate_clean_paths": 0.374805598755832,
+      "weighted_mean_exit_bps": 362.66719242902207,
+      "weighted_positive_rate": 0.6624605678233438
+    },
+    "TP20_T15s": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1554,
+        -2036,
+        -2205
+      ],
+      "role_p50_exit_bps": [
+        379,
+        339,
+        567
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "tp_hit_count_sum": 199,
+      "tp_hit_rate_clean_paths": 0.3094867807153966,
+      "weighted_mean_exit_bps": 396.4842271293375,
+      "weighted_positive_rate": 0.6498422712933754
+    },
+    "TP20_T5s": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -965,
+        -1077,
+        -1350
+      ],
+      "role_p50_exit_bps": [
+        522,
+        412,
+        523
+      ],
+      "scored_count_sum": 576,
+      "scored_coverage": 0.895800933125972,
+      "tp_hit_count_sum": 124,
+      "tp_hit_rate_clean_paths": 0.19284603421461896,
+      "weighted_mean_exit_bps": 489.3333333333333,
+      "weighted_positive_rate": 0.7534722222222222
+    },
+    "TP30_T15s": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1662,
+        -2083,
+        -2312
+      ],
+      "role_p50_exit_bps": [
+        361,
+        323,
+        422
+      ],
+      "scored_count_sum": 634,
+      "scored_coverage": 0.9860031104199067,
+      "tp_hit_count_sum": 132,
+      "tp_hit_rate_clean_paths": 0.2052877138413686,
+      "weighted_mean_exit_bps": 464.1167192429022,
+      "weighted_positive_rate": 0.6356466876971609
+    },
+    "TP30_T5s": {
+      "clean_path_count_sum": 643,
+      "robust_rows": 3,
+      "role_p10_exit_bps": [
+        -1037,
+        -1181,
+        -1368
+      ],
+      "role_p50_exit_bps": [
+        473,
+        406,
+        495
+      ],
+      "scored_count_sum": 576,
+      "scored_coverage": 0.895800933125972,
+      "tp_hit_count_sum": 63,
+      "tp_hit_rate_clean_paths": 0.09797822706065319,
+      "weighted_mean_exit_bps": 483.81944444444446,
+      "weighted_positive_rate": 0.7430555555555556
+    }
+  },
+  "experiment_id": "EXP-0009",
+  "guardrails": {
+    "entry_A_B_C_D_fixed": true,
+    "hard_stop_added": false,
+    "note": "This is a development-data research carry-forward, not a live rule. E4 trailing remains isolated; E5 handles a small interaction shortlist.",
+    "partial_or_multi_tp_added": false,
+    "profitability_claim_allowed": false,
+    "trailing_added": false
+  },
+  "mainline": {
+    "lower_neighbor": {
+      "fallback_time_stop_ms": 15000,
+      "reason": "Conservative neighboring threshold with high positive rate and high TP hit rate; retained to test neighborhood stability.",
+      "tp_threshold_bps": 500,
+      "variant_id": "TP05_T15s"
+    },
+    "primary_anchor": {
+      "fallback_time_stop_ms": 15000,
+      "reason": "Best balanced T15s result across ROBUST_1/2/3: strong cross-regime medians, materially improved positive rate and downside versus pure T15s, and TP hit rate near one-half of clean paths.",
+      "tp_threshold_bps": 1000,
+      "variant_id": "TP10_T15s"
+    },
+    "upper_neighbor": {
+      "fallback_time_stop_ms": 15000,
+      "reason": "Upper neighboring threshold remains positive across all robust regimes and preserves the predeclared plateau check around TP10.",
+      "tp_threshold_bps": 1500,
+      "variant_id": "TP15_T15s"
+    }
+  },
+  "not_promoted": {
+    "T30s_or_longer_time_stop": "Not promoted to mainline.",
+    "hard_stop": "No hard-stop mainline winner from EXP-0008.",
+    "historical_SL30": "Not promoted."
+  },
+  "schema_version": "P3-E3-PROFIT-TAKING-SELECTION-0.1",
+  "selection_id": "EXP-0009-E3-SELECTION-001",
+  "sensitivity_only": {
+    "fallback_time_stop_ms": 5000,
+    "reason": "Central high-mean T5s sensitivity region, but T5s scoring coverage is materially lower than T15s; must remain separate from mainline.",
+    "tp_threshold_bps": 2000,
+    "variant_id": "TP20_T5s"
+  },
+  "source_binding": {
+    "design_file": "EXP-0009_E3_profit_taking_design_v0_1.json",
+    "design_sha256": "0dedf0c413e593ea82b3f1c74b28d242939ae572e450e5d3ec4f22442db48bc5",
+    "postrun_audit_file": "EXP-0009_E3_profit_taking_postrun_audit_v0_1.json",
+    "postrun_audit_sha256": "5d89d7d797d83b75e06f37bb896bb79d503274f01e53394b7414953c75e9579e",
+    "results_file": "EXP-0009_E3_profit_taking_results_v0_1.json",
+    "results_sha256": "e9ca42a360b005a99ec5afaa378667bfc8040b7cc4d30a6eecf1e29854c7432f"
+  },
+  "status": "POSTRUN_RESEARCH_CARRY_FORWARD"
+}

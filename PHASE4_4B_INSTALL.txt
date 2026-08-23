@@ -1,0 +1,19 @@
+PHASE 4.4B EXIT LIFECYCLE BRIDGE v0.1 — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Adds:
+- src\phase4\paper_exit_lifecycle_bridge_v0_1.py
+- scripts\phase4_4b_exit_lifecycle_bridge_selftest_v0_1.py
+- docs\phase4\PHASE4_4B_EXIT_LIFECYCLE_BRIDGE_V0_1.md
+
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_4b_exit_lifecycle_bridge_selftest_v0_1.py
+
+This is an isolated local self-test only. It does not touch production DB,
+network/RPC, wallet, live orders, or create an exit fill/PnL.

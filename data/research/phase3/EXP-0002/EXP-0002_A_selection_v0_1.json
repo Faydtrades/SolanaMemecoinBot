@@ -1,0 +1,93 @@
+{
+  "carry_forward": [
+    {
+      "candidate_count": 230,
+      "h15_observable_n": 127,
+      "h15_p50_bps": 181,
+      "h30_observable_n": 67,
+      "h30_p50_bps": 44,
+      "min_return_bps": 500,
+      "min_trades_since_t0": 2,
+      "min_unique_buyers_since_t0": 1,
+      "parameter_set_id": "FP1-EXP0002-A-001-R500-T2-B1",
+      "role": "CONTROL"
+    },
+    {
+      "candidate_count": 92,
+      "h15_observable_n": 60,
+      "h15_p50_bps": 241,
+      "h30_observable_n": 29,
+      "h30_p50_bps": 331,
+      "min_return_bps": 1500,
+      "min_trades_since_t0": 5,
+      "min_unique_buyers_since_t0": 9,
+      "parameter_set_id": "FP1-EXP0002-A-040-R1500-T5-B9",
+      "role": "ROBUST_1"
+    },
+    {
+      "candidate_count": 114,
+      "h15_observable_n": 68,
+      "h15_p50_bps": 201,
+      "h30_observable_n": 33,
+      "h30_p50_bps": 331,
+      "min_return_bps": 2000,
+      "min_trades_since_t0": 3,
+      "min_unique_buyers_since_t0": 5,
+      "parameter_set_id": "FP1-EXP0002-A-059-R2000-T3-B5",
+      "role": "ROBUST_2"
+    },
+    {
+      "candidate_count": 96,
+      "h15_observable_n": 50,
+      "h15_p50_bps": 238,
+      "h30_observable_n": 25,
+      "h30_p50_bps": 331,
+      "min_return_bps": 5000,
+      "min_trades_since_t0": 3,
+      "min_unique_buyers_since_t0": 2,
+      "parameter_set_id": "FP1-EXP0002-A-107-R5000-T3-B2",
+      "role": "ROBUST_3"
+    },
+    {
+      "candidate_count": 58,
+      "h15_observable_n": 36,
+      "h15_p50_bps": 238,
+      "h30_observable_n": 19,
+      "h30_p50_bps": 390,
+      "min_return_bps": 5000,
+      "min_trades_since_t0": 5,
+      "min_unique_buyers_since_t0": 9,
+      "parameter_set_id": "FP1-EXP0002-A-115-R5000-T5-B9",
+      "role": "ROBUST_4"
+    }
+  ],
+  "dataset": {
+    "freeze_id": "DEV-FREEZE-0001",
+    "role": "DEVELOPMENT_DISCOVERY",
+    "untouched_oos": false
+  },
+  "experiment_id": "EXP-0002",
+  "next_block": {
+    "C_D_fixed": true,
+    "a_configuration_count": 5,
+    "block": "B_PULLBACK",
+    "experiment_id": "EXP-0003",
+    "planned_combination_count": 105,
+    "valid_pullback_pair_count": 21
+  },
+  "notes": "Research shortlist only; not final trading parameters and not a profitability claim. Control is retained explicitly for comparison.",
+  "preanalysis_methodology": {
+    "five_minute_mfe_mae_role": "SUPPORTING_DESCRIPTIVE_ONLY",
+    "locked_before_results": true,
+    "primary_outcome_horizons": [
+      "15s",
+      "30s"
+    ],
+    "selection_rule": "retain a permissive control plus robust regions with sample support and neighborhood stability; do not select by highest median alone",
+    "single_winner_selected": false
+  },
+  "schema_version": "P3-EXP0002-A-SELECTION-0.1",
+  "source_postrun_audit": "EXP-0002_A_postrun_audit_v0_1_1.json",
+  "source_run": "phase3_exp0002_impulse_harness_v0_1_1.py",
+  "status": "LOCKED_FOR_EXP0003_BLOCK_B"
+}

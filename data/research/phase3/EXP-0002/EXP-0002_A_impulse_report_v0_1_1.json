@@ -1,0 +1,109 @@
+{
+  "artifacts": {
+    "candidate_outcomes_csv": "EXP-0002_A_impulse_candidate_outcomes_v0_1_1.csv",
+    "frontier_csv": "EXP-0002_A_impulse_frontier_v0_1_1.csv",
+    "summary_csv": "EXP-0002_A_impulse_summary_v0_1_1.csv"
+  },
+  "block": "A_IMPULSE",
+  "dataset": {
+    "dataset_role": "DEVELOPMENT_DISCOVERY",
+    "eligible_tokens": 3901,
+    "freeze_id": "DEV-FREEZE-0001",
+    "frozen_rows": 50760,
+    "locked_search_sha256": "65cd4aa6ebc84929504b2fa4224bbc64dc149737b3f3e344d9e172d72b2e586f",
+    "snapshot_sqlite_sha256": "44e3457b81a16d4e5e2670e24d758756a147867e1d81d627622157ad4bd5813f",
+    "untouched_oos": false
+  },
+  "determinism": {
+    "pass": true,
+    "sentinel_candidate_signatures": {
+      "1": "89a796cd21bee373bccf86ebba02b39bcf8d374b519172e5efa89eae92fcc476",
+      "175": "6dbdfec97fe05ea81167f1b275e560c5fb0f9f601b70bf33fc614aeb2443a22a",
+      "88": "2011690221a68ecd45fc706a8db2cae82a0c51f147e628dbddb501f38178130c"
+    },
+    "sentinel_combo_indices": [
+      1,
+      88,
+      175
+    ]
+  },
+  "deterministic_report_core_sha256": "7b09753f93b71efd40dd13074dd88e92bbd9ec10cbd23175bf013144ce7a6a40",
+  "experiment_design": {
+    "buyer_response_window": "3s",
+    "combination_count": 175,
+    "diagnostic_frontier_only": true,
+    "fixed_downstream_foundation_anchors": {
+      "buyer_response": {
+        "min_buys": 1,
+        "min_net_flow_reserve_ppm": 0,
+        "min_rebound_bps": 200,
+        "window_id": "3s"
+      },
+      "pullback": {
+        "max_depth_bps": 9000,
+        "min_depth_bps": 1000
+      },
+      "reclaim": {
+        "min_extension_from_response_bps": 200
+      },
+      "runaway": {
+        "max_extension_from_response_bps": 10000
+      }
+    },
+    "full_cartesian_13_23m_run": false,
+    "max_entry_age_ms": 300000,
+    "pareto_eligibility": "at least one clean OBSERVABLE 15s and 30s return",
+    "pareto_metrics_maximized": [
+      "candidate_count",
+      "h15_observable_n",
+      "h15_p50_bps",
+      "h30_observable_n",
+      "h30_p50_bps"
+    ],
+    "reason": "isolate Block A while preserving signal-support dimensions; do not silently promote a tiny high-return sample to winner",
+    "single_winner_selected": false,
+    "varied_block": "A_IMPULSE",
+    "varied_parameters": [
+      "min_return_bps",
+      "min_trades_since_t0",
+      "min_unique_buyers_since_t0"
+    ]
+  },
+  "experiment_id": "EXP-0002",
+  "harness_correction": {
+    "checkpoint_directory": "_work_v0_1_1",
+    "failure_reason": "v0.1 terminal-accounting assertion omitted legitimate FirstPullback REJECT state",
+    "freshly_computed_combinations": 175,
+    "per_combination_atomic_checkpointing": true,
+    "phase2_outcome_adapter": "phase2_outcome_adapter_v0.1.2",
+    "preexisting_checkpoints": 0,
+    "reject_state_counted": true,
+    "resume_supported": true,
+    "resumed_combinations": 0,
+    "supersedes_failed_harness": "phase3_exp0002_impulse_harness_v0_1.py"
+  },
+  "performance_claims": {
+    "exit_optimization_performed": false,
+    "fees_modeled": false,
+    "latency_modeled": false,
+    "profitability_claim_allowed": false,
+    "realistic_net_pnl_available": false,
+    "slippage_modeled": false,
+    "tp_sl_tuning_performed": false
+  },
+  "registry_precondition": {
+    "exp0001_registered_complete": true,
+    "next_experiment_id": "EXP-0002"
+  },
+  "result_counts": {
+    "candidate_outcome_rows": 17388,
+    "diagnostic_frontier_rows": 28,
+    "summary_rows": 175
+  },
+  "schema_version": "P3-EXP0002-A-0.1.1",
+  "strategy": {
+    "name": "FirstPullback",
+    "strategy_clock": "SCLOCK-0.2",
+    "version": "v1.1"
+  }
+}

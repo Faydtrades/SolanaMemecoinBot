@@ -1,0 +1,14 @@
+PHASE 4.3B1D2 LIFECYCLE API REPLAY PROBE — ROOT READY
+
+Extract directly into:
+
+D:\Tradingbot\solana_memecoin_bot_phase1_v0_1
+
+Do NOT re-run the live B1D2 smoke.
+No collector should be running.
+
+With (.venv) active:
+
+python scripts\phase4_3b1d2_lifecycle_api_replay_probe_v0_1.py
+
+This reads only the latest B1D2 paper DB/audit and the local Phase-4 source.

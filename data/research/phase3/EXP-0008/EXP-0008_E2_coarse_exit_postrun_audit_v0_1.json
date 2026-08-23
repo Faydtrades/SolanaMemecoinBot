@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "design_locked_before_results": true,
+    "entry_fixed": true,
+    "exact_48_rows": true,
+    "family_factor_isolation": true,
+    "gross_only": true,
+    "no_profitability_claim": true,
+    "no_tp_or_trailing": true
+  },
+  "hashes": {
+    "EXP-0008_E2_coarse_exit_by_regime_v0_1.csv": "067ad28f091b7594d30194e6171e09be6fec576e74d74ec74f770f0ffebce3c2",
+    "EXP-0008_E2_coarse_exit_design_v0_1.json": "ac418c48ecb34fb538be4b331a2c85e0b03319b5c27b2c981f4a6b274fa11653",
+    "EXP-0008_E2_coarse_exit_results_v0_1.json": "fc78fdf56272025c2dd3e99fb067e7f4e43a2fbc48273c0a7158172768f26637"
+  },
+  "result": "PASS",
+  "schema_version": "P3-E2-COARSE-EXIT-AUDIT-0.1"
+}

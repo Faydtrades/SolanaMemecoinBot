@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.secret
+credentials.*
+secrets.*
+wallet*.json
+keypair*.json
+id_rsa*
+id_ed25519*
+
+# Runtime data
+logs/*
+!logs/.gitkeep
+data/raw/*
+!data/raw/.gitkeep
+data/db/*
+!data/db/.gitkeep
+data/decoded/*
+!data/decoded/.gitkeep
+data/enriched/*
+!data/enriched/.gitkeep
+data/audit/*
+!data/audit/.gitkeep
+data/paper/live_smoke/
+data/paper/smoke/
+
+# SQLite/runtime database files. Keep the small deterministic Phase-4.4E
+# fixture used by current regression scripts; ignore generated DBs elsewhere.
+*.sqlite
+*.sqlite3
+*.db
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3-wal
+*.sqlite3-shm
+*-wal
+*-shm
+!data/selftest/phase4_4e_live_exit_pipeline_fixture.sqlite3
+
+# Generated research workspaces; retain finalized manifests, hashes, selections,
+# reports, CSV evidence, and registry history outside these work directories.
+data/research/**/_work*/
+
+# Generated streams, outputs, packages, and temporary files
+*.log
+*.jsonl
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.tmp
+*.temp
+*.bak
+*.pid
+selftest_output.txt
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
