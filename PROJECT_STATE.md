@@ -96,8 +96,11 @@ No entry or exit tuning is authorized.
 - MEME-TAKEOVER-001: PASS / ACCEPTED
 - MEME-TAKEOVER-002: PASS / ACCEPTED
 - MEME-TAKEOVER-003: PASS / ACCEPTED
-- MEME-TAKEOVER-004: CHECKPOINT_PENDING
+- MEME-TAKEOVER-004: PASS / ACCEPTED / CHECKPOINTED
+- MEME-TAKEOVER-005: PASS / ACCEPTED / CHECKPOINTED
+- MEME-TAKEOVER-006: CHECKPOINT_PENDING
 
-## Last Git checkpoint
+## Previous canonical technical baseline
 
-INITIAL CANONICAL BASELINE PENDING
+- Commit: `321675b53d678e4734c99a3905ba10dd5862f764`
+- Checkpoint message: `checkpoint: establish memecoin canonical baseline through phase4.5c`
