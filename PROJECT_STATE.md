@@ -71,12 +71,25 @@ These are alternative exit tracks and must not be summed as one portfolio.
 - Phase-3 cached-path deterministic SHA-256:
   `cabb205e255d7085a168ce5a97aac4231579bff1f0eace1f39112487a9cb757c`
 
-## Current next technical task
+## Current technical task
 
-NOT STARTED.
+Continuous Paper Runner Foundation v0.1:
 
-The intended next technical area is a controlled continuous-paper runner
-foundation using the already validated:
+PASS / ACCEPTED
+
+Continuous Paper Runner model:
+`P4-CONTINUOUS-PAPER-RUNNER-0001`
+
+Runner fingerprint:
+`8dcab9d17f2ec71f4920a199b5745dae92dc3464a466860593231424e0a24dea`
+
+Canonical runner digest:
+`54b6a15f55635cc78145f147b9148d5ec12a7a47de380ba25e2c54392299752d`
+
+Observability regression digest:
+`88b6023737010f8e50395bcd1002af14a4f1c83e53347d23598facb80b91cde7`
+
+The foundation uses the already validated:
 
 - live CandidateSignal pipeline;
 - causal entry fills;
@@ -91,6 +104,14 @@ foundation using the already validated:
 
 No entry or exit tuning is authorized.
 
+LIVE CONTINUOUS PAPER RUN:
+NOT YET VALIDATED / NOT YET ACCEPTED
+
+Next technical area:
+production read-only continuous source adapter / live binding foundation
+
+No entry/exit tuning or reselection is authorized.
+
 ## Codex takeover state
 
 - MEME-TAKEOVER-001: PASS / ACCEPTED
@@ -100,7 +121,12 @@ No entry or exit tuning is authorized.
 - MEME-TAKEOVER-005: PASS / ACCEPTED / CHECKPOINTED
 - MEME-TAKEOVER-006: PASS / ACCEPTED / CHECKPOINTED
 - MEME-TAKEOVER-007: PASS / ACCEPTED / CHECKPOINTED
-- MEME-TAKEOVER-008: CHECKPOINT_PENDING
+- MEME-TAKEOVER-008: PASS / ACCEPTED / CHECKPOINTED
+- CODEX TAKEOVER: COMPLETE
+- MEME-P4-T001: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T001-C1: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T001-C2: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T002: CHECKPOINT_PENDING
 
 ## Canonical Codex test runtime
 
