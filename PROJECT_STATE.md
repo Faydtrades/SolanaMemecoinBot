@@ -98,7 +98,16 @@ No entry or exit tuning is authorized.
 - MEME-TAKEOVER-003: PASS / ACCEPTED
 - MEME-TAKEOVER-004: PASS / ACCEPTED / CHECKPOINTED
 - MEME-TAKEOVER-005: PASS / ACCEPTED / CHECKPOINTED
-- MEME-TAKEOVER-006: CHECKPOINT_PENDING
+- MEME-TAKEOVER-006: PASS / ACCEPTED / CHECKPOINTED
+- MEME-TAKEOVER-007: PASS / ACCEPTED / CHECKPOINTED
+- MEME-TAKEOVER-008: CHECKPOINT_PENDING
+
+## Canonical Codex test runtime
+
+`.codex_venv\Scripts\python.exe`
+
+This is the default Codex test interpreter for future bounded tasks unless a
+future task explicitly changes it.
 
 ## Previous canonical technical baseline
 
