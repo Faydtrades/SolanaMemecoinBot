@@ -29,7 +29,7 @@ from phase4.paper_continuous_market_source_v0_1 import (  # noqa: E402
 
 EXPECTED_MODEL_ID = "P4-CONTINUOUS-MARKET-SOURCE-0001"
 EXPECTED_MODEL_FINGERPRINT = (
-    "47cdd010c76c3530f0d3d181e6545d9e50ce40508005a37eda850efe290dceda"
+    "242b84a26ddc9e80fc428b1f02202e30aab6f4009677b38b72861bad432881fb"
 )
 SOURCE_IDENTITY = "SELFTEST:PUMP-EVENTS-FIXTURE-V0.1"
 ANCHOR = 2
@@ -416,11 +416,15 @@ def main() -> int:
             schema_failed_closed = True
         checks["V_required_schema_missing_fails_closed"] = schema_failed_closed
 
-        checks["W_unsupported_gap_launch_cannot_activate"] = (
+        checks["W_v034_gap_launch_cannot_activate"] = (
             all(r.mint != "MINT-F" for r in repeat_a.records)
             and any(
                 s.production_p1_rowid == 14
-                and s.reason == "UNSUPPORTED_NON_BOT_TRUTH_SOURCE"
+                and s.reason
+                == "GAP_RECOVERY_LAUNCH_NOT_SESSION_ELIGIBLE"
+                and s.raw_source_decoded_file
+                == "GAP_RECONCILIATION_V0_3_4"
+                and s.source_compatibility_applied
                 for s in repeat_a.skips
             )
             and any(

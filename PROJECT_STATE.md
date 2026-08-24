@@ -140,12 +140,60 @@ No entry/exit tuning or reselection is authorized.
 
 ## Known follow-up requirements
 
-1. The current Phase-2 adapter does not recognize
-   `GAP_RECONCILIATION_V0_3_4` as `GAP_RECOVERY`. A separate compatibility
-   task is required before FirstPullback live binding.
+1. A Phase-4-local exact compatibility layer for
+   `GAP_RECONCILIATION_V0_3_4` is implemented pending project review. The
+   accepted Phase-2 adapter remains unchanged.
 2. `_eligible_launches_through()` rescans the growing post-anchor launch prefix
    during repeated polling. This accepted foundation limitation must be
    considered before long-running continuous live operation.
+
+## Current compatibility task
+
+Collector v0.3.4 Gap-Reconciliation Compatibility
+
+PASS / ACCEPTED
+
+Compatibility model:
+`P4-PHASE1-GAP-SOURCE-COMPAT-0001`
+
+Compatibility fingerprint:
+`aabb765f81a29b2dd119607cdea92a2949dd3acec10aa204d246e6aa7a28a78c`
+
+Exact alias:
+`GAP_RECONCILIATION_V0_3_4` -> `GAP_RECONCILIATION_V0_3_3` ->
+`IngestionSource.GAP_RECOVERY`
+
+Post-compatibility market-source model:
+`P4-CONTINUOUS-MARKET-SOURCE-0001`
+
+Post-compatibility market-source fingerprint:
+`242b84a26ddc9e80fc428b1f02202e30aab6f4009677b38b72861bad432881fb`
+
+Compatibility self-test source identity:
+`e86d96ec4a832844c6cf7d16bc367f1a799bb5eff4395c49eaefd98416cf1bc2`
+
+Compatibility canonical digest:
+`5f93f561bbef004f3acf8c42d5a38fea6fc731b7ce44318f89bd83379fcee028`
+
+Market-source self-test source identity:
+`0c65453be772a88bd015aaa2088e0095e66694348f60a749a724d1bc4a39a734`
+
+Market-source canonical digest:
+`1a574d84cc2cfa037daceda8af6f4e799ff09217fdb0caddc763873409a8a39d`
+
+Accepted Phase-2 adapter:
+UNCHANGED
+
+Collector:
+UNCHANGED
+
+FIRSTPULLBACK LIVE BINDING:
+NOT YET IMPLEMENTED
+
+CONTINUOUS LIVE PAPER:
+NOT YET VALIDATED / NOT YET ACCEPTED
+
+No strategy or exit tuning is authorized.
 
 ## Codex takeover state
 
@@ -164,7 +212,9 @@ No entry/exit tuning or reselection is authorized.
 - MEME-P4-T002: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T003: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T003-C1: PASS / ACCEPTED / CHECKPOINTED
-- MEME-P4-T004: CHECKPOINT_PENDING
+- MEME-P4-T004: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T005: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T006: CHECKPOINT_PENDING
 
 ## Canonical Codex test runtime
 

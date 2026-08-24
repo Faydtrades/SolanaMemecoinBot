@@ -17,6 +17,13 @@ from phase2.quote_aware_price_v0_1 import (
     QuoteAwarePriceEngineV01,
 )
 
+from .phase1_gap_source_compat_v0_1 import (
+    MODEL_FINGERPRINT as GAP_COMPAT_FINGERPRINT,
+    MODEL_ID as GAP_COMPAT_MODEL_ID,
+    Phase1GapSourceCompatibilityV01,
+    V034_GAP_SOURCE,
+)
+
 
 MODEL_ID = "P4-CONTINUOUS-MARKET-SOURCE-0001"
 SCHEMA_VERSION = "phase4_continuous_market_source_v0.1"
@@ -32,6 +39,8 @@ _SPEC = {
     "phase1_adapter": Phase1ReadOnlyAdapterV01.schema_version,
     "phase1_quote_adapter": Phase1QuoteAwareAdapterV01.schema_version,
     "quote_price_engine": QuoteAwarePriceEngineV01.schema_version,
+    "gap_source_compat_model_id": GAP_COMPAT_MODEL_ID,
+    "gap_source_compat_fingerprint": GAP_COMPAT_FINGERPRINT,
     "connection": "SQLITE_URI_MODE_RO_AND_QUERY_ONLY",
     "polling": "ROWID_GT_CURSOR_ASCENDING_BOUNDED_NO_INTERNAL_COMMIT",
     "session": "EXPLICIT_START_AFTER_ROWID_POST_ANCHOR_LAUNCH_ONLY",
@@ -64,6 +73,8 @@ class MarketSourceSkipV01:
     event_key: str | None
     mint: str | None
     reason: str
+    raw_source_decoded_file: str | None = None
+    source_compatibility_applied: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,6 +98,8 @@ class ContinuousMarketSourceRecordV01:
     current_virtual_token_reserve_raw: int
     is_gap_recovery: bool
     ingestion_source: str
+    raw_source_decoded_file: str
+    source_compatibility_applied: bool
 
     def __post_init__(self) -> None:
         if self.schema_version != SCHEMA_VERSION:
@@ -111,6 +124,11 @@ class ContinuousMarketSourceRecordV01:
             raise ValueError("market-source reserve identities must be positive")
         if self.current_virtual_token_reserve_raw != self.price_denominator_raw:
             raise ValueError("current virtual token reserve must bind price denominator")
+        if self.source_compatibility_applied:
+            if self.raw_source_decoded_file != V034_GAP_SOURCE:
+                raise ValueError("gap compatibility provenance label mismatch")
+            if not self.is_gap_recovery:
+                raise ValueError("gap compatibility cannot produce fresh/live ingestion")
         object.__setattr__(self, "event_at", _utc(self.event_at))
         object.__setattr__(self, "observed_at", _utc(self.observed_at))
 
@@ -291,7 +309,8 @@ class ContinuousMarketSourceV01:
         ).fetchall()
         launches: dict[str, int] = {}
         for row in rows:
-            quote_event, _reason = Phase1QuoteAwareAdapterV01.row_to_event(row)
+            compat = Phase1GapSourceCompatibilityV01.row_to_event(row)
+            quote_event = compat.event
             if quote_event is not None and self._is_qualifying_launch(quote_event):
                 launches.setdefault(
                     str(quote_event.base.mint), int(row["p1_rowid"])
@@ -320,13 +339,26 @@ class ContinuousMarketSourceV01:
             mint = str(raw_mint) if raw_mint else None
             raw_event_key = row["event_key"]
             event_key = str(raw_event_key) if raw_event_key is not None else None
+            raw_source_value = row["source_decoded_file"]
+            raw_source = (
+                None if raw_source_value is None else str(raw_source_value)
+            )
             if mint is None:
                 self._add_skip(
-                    skips, counts, rowid, event_key, None, "MISSING_MINT"
+                    skips,
+                    counts,
+                    rowid,
+                    event_key,
+                    None,
+                    "MISSING_MINT",
+                    raw_source_decoded_file=raw_source,
+                    source_compatibility_applied=raw_source == V034_GAP_SOURCE,
                 )
                 continue
 
-            quote_event, reason = Phase1QuoteAwareAdapterV01.row_to_event(row)
+            compat = Phase1GapSourceCompatibilityV01.row_to_event(row)
+            quote_event = compat.event
+            reason = compat.skip_reason
             if quote_event is None:
                 self._add_skip(
                     skips,
@@ -335,6 +367,8 @@ class ContinuousMarketSourceV01:
                     event_key,
                     mint,
                     reason or "UNKNOWN_NORMALIZATION_SKIP",
+                    raw_source_decoded_file=compat.raw_source_decoded_file,
+                    source_compatibility_applied=compat.compatibility_applied,
                 )
                 continue
 
@@ -359,6 +393,8 @@ class ContinuousMarketSourceV01:
                     str(base.event_key),
                     normalized_mint,
                     eligibility_reason,
+                    raw_source_decoded_file=compat.raw_source_decoded_file,
+                    source_compatibility_applied=compat.compatibility_applied,
                 )
                 continue
 
@@ -377,6 +413,8 @@ class ContinuousMarketSourceV01:
                     event_key,
                     mint,
                     "PRICE_POINT_UNAVAILABLE:" + str(point.identity.label),
+                    raw_source_decoded_file=compat.raw_source_decoded_file,
+                    source_compatibility_applied=compat.compatibility_applied,
                 )
                 continue
 
@@ -403,6 +441,10 @@ class ContinuousMarketSourceV01:
                     current_virtual_token_reserve_raw=int(point.token_reserve_raw),
                     is_gap_recovery=base.source == IngestionSource.GAP_RECOVERY,
                     ingestion_source=str(base.source.value),
+                    raw_source_decoded_file=(
+                        compat.raw_source_decoded_file or ""
+                    ),
+                    source_compatibility_applied=compat.compatibility_applied,
                 )
             )
 
@@ -427,8 +469,20 @@ class ContinuousMarketSourceV01:
         event_key: str | None,
         mint: str | None,
         reason: str,
+        *,
+        raw_source_decoded_file: str | None = None,
+        source_compatibility_applied: bool = False,
     ) -> None:
-        skips.append(MarketSourceSkipV01(rowid, event_key, mint, reason))
+        skips.append(
+            MarketSourceSkipV01(
+                rowid,
+                event_key,
+                mint,
+                reason,
+                raw_source_decoded_file,
+                source_compatibility_applied,
+            )
+        )
         counts[reason] = counts.get(reason, 0) + 1
 
     @staticmethod

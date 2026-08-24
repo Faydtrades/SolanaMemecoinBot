@@ -17,12 +17,16 @@ CONTINUOUS LIVE PAPER:
 - Model ID: `P4-CONTINUOUS-MARKET-SOURCE-0001`
 - Schema: `phase4_continuous_market_source_v0.1`
 - Model fingerprint:
-  `47cdd010c76c3530f0d3d181e6545d9e50ce40508005a37eda850efe290dceda`
+  `242b84a26ddc9e80fc428b1f02202e30aab6f4009677b38b72861bad432881fb`
+- Gap compatibility model: `P4-PHASE1-GAP-SOURCE-COMPAT-0001`
+- Gap compatibility fingerprint:
+  `aabb765f81a29b2dd119607cdea92a2949dd3acec10aa204d246e6aa7a28a78c`
 
 The model fingerprint binds the accepted Phase-2 read-only adapter,
 quote-aware adapter, quote-aware price engine, rowid polling contract, explicit
 launch anchor, Phase-2-normalized fresh-launch qualification, gap behavior,
-unavailable-price skips, and batch bounds.
+the exact v0.3.4 compatibility contract, unavailable-price skips, and batch
+bounds.
 
 Each adapter instance exposes a deterministic `source_identity` derived from
 the model fingerprint, a stable database identity, and
@@ -123,6 +127,25 @@ token-reserve denominator, the row is skipped as
 Other accepted Phase-2 normalization failures retain their deterministic reason
 codes in the batch skip details and counters.
 
+## Exact Phase-4-local gap compatibility
+
+Accepted Phase-2 code remains unchanged. The Phase-4-local
+`Phase1GapSourceCompatibilityV01` recognizes exactly:
+
+```text
+GAP_RECONCILIATION_V0_3_4 -> GAP_RECONCILIATION_V0_3_3
+```
+
+The wrapper copies the row into memory solely for accepted Phase-2
+normalization and substitutes the v0.3.3 label in that copy. It never mutates
+the SQLite row. The result must normalize as `IngestionSource.GAP_RECOVERY`.
+The original v0.3.4 label and whether compatibility was applied remain bound to
+the emitted market record or deterministic skip audit.
+
+The mapping is exact. There is no prefix, wildcard, or regex acceptance of
+future versions; for example, `GAP_RECONCILIATION_V0_3_5` remains
+`UNSUPPORTED_NON_BOT_TRUTH_SOURCE`.
+
 ## Gap behavior
 
 Rows normalized by Phase-2 as `GAP_RECOVERY` remain explicitly labeled. The
@@ -133,12 +156,12 @@ establish session eligibility. Gap-recovery observations after an already
 qualified fresh launch retain their explicit provenance and may be emitted for
 downstream fail-closed handling.
 
-The locked Phase-2 `BOT_TRUTH_SOURCE_PREFIXES` currently accepts
-`GAP_RECONCILIATION_V0_3_3`, while the current v0.3.4 collector writes newly
-recovered rows as `GAP_RECONCILIATION_V0_3_4`. Because this task may not modify
-the accepted Phase-2 adapter, v0.3.4-labeled recovery rows are deterministically
-skipped as `UNSUPPORTED_NON_BOT_TRUTH_SOURCE`. Project review must decide a
-separate accepted compatibility change before those rows can be admitted.
+Both accepted v0.3.3 gap rows and exactly aliased v0.3.4 gap rows therefore
+have the same `GAP_RECOVERY` semantic. Neither class of gap `LAUNCH` can
+establish session eligibility. After a genuine fresh live launch, a compatible
+v0.3.4 BUY/SELL may be emitted for causal/audit handling with
+`is_gap_recovery=true`; it must remain excluded from fresh short-window flow by
+the later binding.
 
 ## Validation
 
@@ -148,10 +171,16 @@ SQLite only. It proves the A-U task contract, missing-schema rejection,
 integer price identities, restart replay, content-fingerprint sensitivity,
 SQLite `quick_check=ok`, and repeated canonical digest equality.
 
-The C1 regressions additionally prove that neither unsupported v0.3.4 recovery
-launches nor accepted `GAP_RECOVERY` launches activate a mint, that a genuine
+The C1 regressions additionally prove that neither compatible v0.3.4 recovery
+launches nor accepted v0.3.3 `GAP_RECOVERY` launches activate a mint, that a genuine
 fresh live launch still activates its mint, and that restart reconstruction
 neither loses a genuine launch nor resurrects either rejected launch class.
+
+`scripts/phase4_gap_source_compat_selftest_v0_1.py` proves exact v0.3.3/v0.3.4
+semantic equivalence, immutable raw provenance, gap-launch exclusion, fresh
+launch followed by compatible gap flow, restart behavior, unknown future-label
+rejection, unchanged live-row behavior, exact reserve identities, stable
+fingerprints/digests, and SQLite `quick_check=ok`.
 
 A bounded production read probe also validated the required schema and read a
 20-row recent range using the same read-only path. It did not start a collector,
