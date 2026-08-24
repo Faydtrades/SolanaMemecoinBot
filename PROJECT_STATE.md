@@ -438,6 +438,88 @@ NOT YET EXECUTED
 UNBOUNDED CONTINUOUS LIVE PAPER:
 NOT YET VALIDATED / NOT YET ACCEPTED
 
+## Current track-safe late-entry correction task
+
+MEME-P4-T012:
+PASS / ACCEPTED / CHECKPOINTED
+
+FAILED BOUNDED V0.1 LIVE RUN:
+FAIL / RETAINED AS REGRESSION EVIDENCE
+
+Reason: `InvalidTransition` caused by an approximately 36.512-second late
+entry after the signal-anchored exit deadlines. Its relevant causal ordering
+was:
+
+- CandidateSignal: `2026-08-24T20:28:07.275108Z`
+- late paper entry fill/open: `2026-08-24T20:28:43.787124Z`
+- delay: approximately 36.512 seconds
+- failure: lifecycle correctly rejected an exit transition whose effective
+  time preceded the position OPEN transition
+
+The failed v0.1 SQLite/JSON/log artifacts remain unchanged.
+
+Corrected V0.2 behavior: the late entry becomes deterministic execution expiry
+rather than a backward lifecycle transition.
+
+Entry execution deadline model:
+`P4-PAPER-ENTRY-EXECUTION-DEADLINE-0001`
+
+Entry execution deadline fingerprint:
+`6e2ae931d7270012dc025ef9a509ec30a240a850ea0d1c2666560a5e5506c9a7`
+
+Locked entry viability derived from the CandidateSignal-anchored exit contract:
+
+- FINAL-A: last eligible entry fill = CandidateSignal +15s inclusive;
+  expiry = +15s +1us
+- FINAL-B: last eligible entry fill = CandidateSignal +15s inclusive;
+  expiry = +15s +1us
+- SENS-C: last eligible entry fill = CandidateSignal +5s inclusive;
+  expiry = +5s +1us; SENSITIVITY ONLY
+
+Execution expiry reason:
+`ENTRY_EXECUTION_DEADLINE_EXPIRED`
+
+All-track route reason:
+`ALL_TRACK_ENTRY_EXECUTION_DEADLINES_EXPIRED`
+
+Continuous runner v0.2 model:
+`P4-CONTINUOUS-PAPER-RUNNER-0002`
+
+Continuous runner v0.2 fingerprint:
+`66725275f7e01e510b369df08281be9769d057113896f60f2ac652c2efe072fb`
+
+Continuous FirstPullback binding v0.2 model:
+`P4-CONTINUOUS-FIRSTPULLBACK-BINDING-0002`
+
+Continuous FirstPullback binding v0.2 fingerprint:
+`c2f90d610ab774831af6a52b4a24e948b4bf0727d69457fee63311b5a159feca`
+
+Corrected multi-hour model:
+`P4-CONTINUOUS-FIRSTPULLBACK-MULTIHOUR-RUN-0002`
+
+Corrected multi-hour fingerprint:
+`9002ed30ecd74722af5a37efec437143a17c4865f94ae37a60863fbc2320a7d7`
+
+The locked exit fallback clocks remain anchored to CandidateSignal and were
+not moved to entry fill. The late-entry deadline is execution viability, not
+strategy tuning. Tracks expire independently, partial-track candidate
+execution is supported, silent-market expiry is deterministic, deadline state
+is restart/replay safe, and exact-boundary fills remain eligible. The runtime
+fabricates no observations or fills; execution-expired tracks receive no entry
+cost; cross-track PnL aggregation remains prohibited; and accepted V01
+implementations remain immutable. Phase-2 strategy semantics, Phase-3
+finalists/exits, costs, impact, accounting, observability, source, and collector
+behavior remain unchanged. There was no parameter tuning or reselection.
+
+FOUR-HOUR V0.2 PRODUCTION PAPER RUN:
+NOT YET EXECUTED
+
+UNBOUNDED CONTINUOUS LIVE PAPER:
+NOT YET VALIDATED / NOT YET ACCEPTED
+
+No profitability claim is made. No production/live validation was performed
+for MEME-P4-T012.
+
 ## Codex takeover state
 
 - MEME-TAKEOVER-001: PASS / ACCEPTED
@@ -469,6 +551,7 @@ NOT YET VALIDATED / NOT YET ACCEPTED
 - MEME-P4-T011-H1-C1: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T011-H1-C2: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T011-H1-C3: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T012: PASS / ACCEPTED / CHECKPOINTED
 
 ## Canonical Codex test runtime
 
