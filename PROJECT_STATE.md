@@ -284,7 +284,7 @@ MEME-P4-T009:
 PASS / ACCEPTED / CHECKPOINTED
 
 MEME-P4-T010:
-CHECKPOINT_PENDING
+PASS / ACCEPTED / CHECKPOINTED
 
 Smoke model:
 `P4-CONTINUOUS-FIRSTPULLBACK-PRODUCTION-SMOKE-0001`
@@ -339,6 +339,105 @@ paper operation.
 UNBOUNDED CONTINUOUS LIVE PAPER:
 NOT YET VALIDATED / NOT YET ACCEPTED
 
+## Current bounded multi-hour harness task
+
+MEME-P4-T011:
+BLOCKED_MULTI_HOUR_HARNESS_REQUIRED
+
+This was the expected safe stop because the accepted T009 harness has a
+20-minute maximum, candidate-based early stop, and a 500-event managed
+collector target. It was not a failure of the accepted runtime.
+
+MEME-P4-T011-H1:
+PASS / ACCEPTED / CHECKPOINTED
+
+MEME-P4-T011-H1-C1:
+PASS / ACCEPTED / CHECKPOINTED
+
+MEME-P4-T011-H1-C2:
+PASS / ACCEPTED / CHECKPOINTED
+
+MEME-P4-T011-H1-C3:
+PASS / ACCEPTED / CHECKPOINTED
+
+Multi-hour model:
+`P4-CONTINUOUS-FIRSTPULLBACK-MULTIHOUR-RUN-0001`
+
+Multi-hour fingerprint:
+`e7cfb5049d93728391decf633a245585b49d7c4ea8e256bca8c98b53ccb5da47`
+
+Pre-correction fingerprint:
+`b211c563d3b66de6a947d76f5630a6798a6c85629a5d7d678967553526d4a5a1`
+
+Pre-correction fingerprint status:
+PRE-ACCEPTANCE / SUPERSEDED / NOT CHECKPOINTED
+
+Run-control contract:
+
+- default duration: 14,400 seconds (four hours)
+- accepted range: 3,600 through 21,600 seconds
+- requested duration bound into exact runtime session identity
+- no candidate-based early stop
+- multiple natural candidates and trades are allowed through the full
+  requested duration
+- `FINAL-A`, `FINAL-B`, and `SENS-C` remain separate alternatives
+- `SENS-C` remains `SENSITIVITY ONLY`
+
+Production-source continuity contract:
+
+- `SOURCE_STALL_FAIL_SECONDS = 300.0` monotonic seconds
+- only latest production `p1_rowid` advancement resets source activity
+- collector process liveness alone is insufficient
+- timers and binding cursor movement do not reset source activity
+- both existing and managed collector modes use the same watchdog
+- `PRODUCTION_SOURCE_STALLED` stops processing fail-closed before duration
+- `PASS_MULTI_HOUR` requires continuity through the duration boundary
+- maximum stall and final source staleness must remain below 300 seconds
+- the `>=300` threshold is enforced before a newly advanced row can mutate
+  watchdog state
+- a late row cannot increment advance evidence, reset the activity clock, or
+  restore terminal continuity
+- source-stall shutdown preserves the already durable cursor without
+  re-reading and admitting a rejected late row
+- a terminal source stall cannot recover
+
+Runtime artifact ignore policy:
+
+- tracked root `.gitignore` owns `data/paper/multihour/`
+- runtime creates no nested `.gitignore` or other Git metadata
+
+Duration-boundary contract:
+
+- the duration branch captures one boundary UTC instant and immediately
+  prepares the final timer
+- the prepared timer's persisted source watermark is the sole authoritative
+  end watermark
+- no separate source pre-read is compared with or redefines that watermark
+- final draining remains fenced through the prepared watermark
+- later production rows are not admitted and do not alter bounded evidence or
+  restart state
+- the final durable cursor must equal the prepared watermark and pending
+  semantic outbox work must be zero
+- postrun integrity and exact-state restart checks are required
+
+Managed collector lifecycle:
+
+- accepted v0.3.4 unlimited mode (`max_pump_events=None`)
+- harness-owned child process group and PID only
+- graceful owned-process interrupt and accepted queue drain
+- 180-second cleanup allowance before owned-child-only forced fallback
+- exact known post-cleanup summary-label `KeyError` handling only
+- child absence verified through the owned process handle
+
+This task implemented and isolated-self-tested the harness only. The four-hour
+production run has not occurred. No profitability claim is made.
+
+FOUR-HOUR PRODUCTION PAPER RUN:
+NOT YET EXECUTED
+
+UNBOUNDED CONTINUOUS LIVE PAPER:
+NOT YET VALIDATED / NOT YET ACCEPTED
+
 ## Codex takeover state
 
 - MEME-TAKEOVER-001: PASS / ACCEPTED
@@ -364,7 +463,12 @@ NOT YET VALIDATED / NOT YET ACCEPTED
 - MEME-P4-T007-C2: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T008: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T009: PASS / ACCEPTED / CHECKPOINTED
-- MEME-P4-T010: CHECKPOINT_PENDING
+- MEME-P4-T010: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T011: BLOCKED_MULTI_HOUR_HARNESS_REQUIRED
+- MEME-P4-T011-H1: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T011-H1-C1: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T011-H1-C2: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T011-H1-C3: PASS / ACCEPTED / CHECKPOINTED
 
 ## Canonical Codex test runtime
 

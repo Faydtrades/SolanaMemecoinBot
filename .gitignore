@@ -43,6 +43,7 @@ data/enriched/*
 data/audit/*
 !data/audit/.gitkeep
 data/paper/live_smoke/
+data/paper/multihour/
 data/paper/smoke/
 
 # SQLite/runtime database files. Keep the small deterministic Phase-4.4E
