@@ -127,11 +127,12 @@ Self-test source identity:
 Canonical source digest:
 `1302846d698410a49edcf65bc7134749f1a6508425db23f230aeb2299d70a84e`
 
-This task is market source only. FirstPullback live binding and continuous live
-paper remain unimplemented and unaccepted.
+The accepted market-source task remains unchanged. The bounded FirstPullback
+binding foundation below is implemented pending project review; production and
+continuous live paper remain unvalidated and unaccepted.
 
 FIRSTPULLBACK LIVE BINDING:
-NOT YET IMPLEMENTED
+BOUNDED FOUNDATION IMPLEMENTED_PENDING_PROJECT_REVIEW
 
 LIVE CONTINUOUS PAPER RUN:
 NOT YET VALIDATED / NOT YET ACCEPTED
@@ -187,8 +188,87 @@ UNCHANGED
 Collector:
 UNCHANGED
 
+## Current FirstPullback continuous binding task
+
+FirstPullback to Continuous Paper Runner Binding Foundation v0.1:
+
+PASS / ACCEPTED
+
+Binding model:
+`P4-CONTINUOUS-FIRSTPULLBACK-BINDING-0001`
+
+Binding fingerprint:
+`318e15b104c691821f5715b090c934e5b1cb3d9a8357fe0930d8825ef66d0daa`
+
+Bound market-source fingerprint:
+`242b84a26ddc9e80fc428b1f02202e30aab6f4009677b38b72861bad432881fb`
+
+Bound gap-compatibility fingerprint:
+`aabb765f81a29b2dd119607cdea92a2949dd3acec10aa204d246e6aa7a28a78c`
+
+Bound continuous-runner fingerprint:
+`8dcab9d17f2ec71f4920a199b5745dae92dc3464a466860593231424e0a24dea`
+
+Locked EXP-0005 selection SHA-256:
+`408657c1d6dc39435b61e01b368dac69796481864b7462efd150a2d4e1b0daa1`
+
+Reported canonical binding digest:
+`04641f83147b005d8822b7e3df500d6cfd581b2151243cdb921b4c4d09f5e549`
+
+Reported timer-fence digest:
+`12f92e1d1b64e0097f6b1f4fa466bc766e35833ecf0a65464e32e57b0fd47724`
+
+Full strategy-evaluation audit contract:
+EVERY ACTUAL MARKET-ROW / STRATEGY-CLOCK EVALUATION IS DURABLY RECORDED
+EXACTLY ONCE THROUGH THE ACCEPTED `paper_strategy_evaluations` STORE
+
+Source-watermarked timer contract:
+PREPARE WITH BINDING-CAPTURED PRODUCTION `p1_rowid` WATERMARK; DRAIN THROUGH
+THE FROZEN WATERMARK BEFORE STRATEGY OR EXIT CLOCK EFFECTS
+
+Prepared-timer production-consumption fence:
+THE EARLIEST `PREPARED` / `PLANNED` TIMER WATERMARK CAPS PRODUCTION PROCESSING;
+ALL TIMERS AT THAT FENCE MUST COMPLETE BEFORE ANY LATER ROW IS CONSUMED
+
+Accepted binding semantics:
+
+- full FirstPullback strategy-evaluation audit exactly once;
+- durable production cursor owned by the binding;
+- deterministic skip-only advancement;
+- replay-stable semantic outbox;
+- immutable prepared strategy and exit timers;
+- binding-captured production watermark;
+- `PREPARED` / `PLANNED` timers fence production consumption;
+- rows above the earliest timer fence cannot be processed;
+- every timer at the same fence must be `COMPLETE` before release;
+- restart restores the persisted active timer fence; and
+- historical durable cursor greater than an incomplete timer watermark fails closed.
+
+Known performance limitations:
+
+- `_eligible_launches_through()` rescans the growing post-anchor launch prefix.
+- Binding hydration performs one exact read-only row query per normalized
+  production record.
+
+Phase-2:
+UNCHANGED
+
+Collector:
+UNCHANGED
+
+Entry/exit parameters:
+UNCHANGED / LOCKED
+
+Production FirstPullback paper trading:
+NOT YET VALIDATED
+
+Continuous live paper:
+NOT YET VALIDATED / NOT YET ACCEPTED
+
+No new phase acceptance is claimed.
+
 FIRSTPULLBACK LIVE BINDING:
-NOT YET IMPLEMENTED
+BOUNDED FOUNDATION PASS / ACCEPTED
 
 CONTINUOUS LIVE PAPER:
 NOT YET VALIDATED / NOT YET ACCEPTED
@@ -214,7 +294,11 @@ No strategy or exit tuning is authorized.
 - MEME-P4-T003-C1: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T004: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T005: PASS / ACCEPTED / CHECKPOINTED
-- MEME-P4-T006: CHECKPOINT_PENDING
+- MEME-P4-T006: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T007: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T007-C1: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T007-C2: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T008: CHECKPOINT_PENDING
 
 ## Canonical Codex test runtime
 
