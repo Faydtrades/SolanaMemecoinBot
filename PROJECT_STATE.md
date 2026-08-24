@@ -71,7 +71,7 @@ These are alternative exit tracks and must not be summed as one portfolio.
 - Phase-3 cached-path deterministic SHA-256:
   `cabb205e255d7085a168ce5a97aac4231579bff1f0eace1f39112487a9cb757c`
 
-## Current technical task
+## Latest accepted technical foundation
 
 Continuous Paper Runner Foundation v0.1:
 
@@ -107,10 +107,45 @@ No entry or exit tuning is authorized.
 LIVE CONTINUOUS PAPER RUN:
 NOT YET VALIDATED / NOT YET ACCEPTED
 
-Next technical area:
-production read-only continuous source adapter / live binding foundation
+No entry/exit tuning or reselection is authorized.
+
+## Current technical state
+
+Production Read-Only Market Source Adapter Foundation v0.1:
+
+PASS / ACCEPTED
+
+Model:
+`P4-CONTINUOUS-MARKET-SOURCE-0001`
+
+Fingerprint:
+`47cdd010c76c3530f0d3d181e6545d9e50ce40508005a37eda850efe290dceda`
+
+Self-test source identity:
+`7b390d2cd1aa57cc1d3001875337c1072c0292ad9500e3078ed1a65fa9c4215f`
+
+Canonical source digest:
+`1302846d698410a49edcf65bc7134749f1a6508425db23f230aeb2299d70a84e`
+
+This task is market source only. FirstPullback live binding and continuous live
+paper remain unimplemented and unaccepted.
+
+FIRSTPULLBACK LIVE BINDING:
+NOT YET IMPLEMENTED
+
+LIVE CONTINUOUS PAPER RUN:
+NOT YET VALIDATED / NOT YET ACCEPTED
 
 No entry/exit tuning or reselection is authorized.
+
+## Known follow-up requirements
+
+1. The current Phase-2 adapter does not recognize
+   `GAP_RECONCILIATION_V0_3_4` as `GAP_RECOVERY`. A separate compatibility
+   task is required before FirstPullback live binding.
+2. `_eligible_launches_through()` rescans the growing post-anchor launch prefix
+   during repeated polling. This accepted foundation limitation must be
+   considered before long-running continuous live operation.
 
 ## Codex takeover state
 
@@ -126,7 +161,10 @@ No entry/exit tuning or reselection is authorized.
 - MEME-P4-T001: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T001-C1: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T001-C2: PASS / ACCEPTED / CHECKPOINTED
-- MEME-P4-T002: CHECKPOINT_PENDING
+- MEME-P4-T002: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T003: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T003-C1: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T004: CHECKPOINT_PENDING
 
 ## Canonical Codex test runtime
 
