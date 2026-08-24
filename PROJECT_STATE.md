@@ -260,7 +260,10 @@ Entry/exit parameters:
 UNCHANGED / LOCKED
 
 Production FirstPullback paper trading:
-NOT YET VALIDATED
+CONTROLLED BOUNDED SMOKE PASS / ACCEPTED
+
+PRODUCTION FIRSTPULLBACK PAPER SMOKE:
+PASS / ACCEPTED
 
 Continuous live paper:
 NOT YET VALIDATED / NOT YET ACCEPTED
@@ -274,6 +277,67 @@ CONTINUOUS LIVE PAPER:
 NOT YET VALIDATED / NOT YET ACCEPTED
 
 No strategy or exit tuning is authorized.
+
+## Current controlled production FirstPullback paper smoke
+
+MEME-P4-T009:
+PASS / ACCEPTED / CHECKPOINTED
+
+MEME-P4-T010:
+CHECKPOINT_PENDING
+
+Smoke model:
+`P4-CONTINUOUS-FIRSTPULLBACK-PRODUCTION-SMOKE-0001`
+
+Smoke fingerprint:
+`0ad1cd2eff06399b93736d452859bab4ea081ee84d8ac287435e4e4b35c6311b`
+
+Run start UTC:
+`2026-08-24T13:53:52.299461+00:00`
+
+Run end UTC:
+`2026-08-24T13:58:53.876997+00:00`
+
+Session anchor / final durable production cursor:
+`576100` / `576600`
+
+Result class:
+`PASS_FULL_TRADE`
+
+Accepted production evidence:
+
+- 500 raw production rows
+- 76 normalized records
+- 424 deterministic skips
+- 3 fresh launches
+- 225 strategy evaluations
+- 1 genuine `CONTROL` candidate
+- 3 alternative paper tracks `CLOSED`
+- 0 conflicts
+- 0 retries
+- 0 SQLite busy/locked errors
+
+Paper database:
+`data\paper\live_smoke\phase4_firstpullback_production_smoke_20260824T135352_299461Z.sqlite3`
+
+Paper database SHA-256:
+`9353f633fec770a11ba0d601865f424a9a19c1e320e9380c7a4c0b2a25b8ce89`
+
+JSON summary:
+`data\paper\live_smoke\phase4_firstpullback_production_smoke_20260824T135352_299461Z.json`
+
+JSON summary SHA-256:
+`3256ac0d8d60208ebfa00527594550ac11e031bf985e3ad716c7de1201d9a81a`
+
+Collector log SHA-256:
+`3a07d1e4cbc94e8fbfb37a82b5db6111b844d22be3fb7ea34505814b428bfae0`
+
+This is a five-minute bounded causal/runtime smoke only. It makes no
+profitability claim and does not validate or accept unbounded continuous live
+paper operation.
+
+UNBOUNDED CONTINUOUS LIVE PAPER:
+NOT YET VALIDATED / NOT YET ACCEPTED
 
 ## Codex takeover state
 
@@ -298,7 +362,9 @@ No strategy or exit tuning is authorized.
 - MEME-P4-T007: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T007-C1: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T007-C2: PASS / ACCEPTED / CHECKPOINTED
-- MEME-P4-T008: CHECKPOINT_PENDING
+- MEME-P4-T008: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T009: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T010: CHECKPOINT_PENDING
 
 ## Canonical Codex test runtime
 
