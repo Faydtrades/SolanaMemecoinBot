@@ -582,6 +582,68 @@ No strategy, entry/exit, cost, latency, impact, trade-size, accounting,
 observability, finalist, or collector behavior was changed. No parameter
 tuning or reselection occurred. No profitability claim is made.
 
+## Current timer-fence throughput hardening task
+
+MEME-P4-T015:
+IMPLEMENTED_PENDING_PROJECT_REVIEW
+
+Accepted predecessor:
+MEME-P4-T014 PASS / ACCEPTED / CHECKPOINTED
+
+V0.3 FAILED BOUNDED RUN:
+
+- requested: 14,400 seconds
+- actual: 1,421.637045 seconds
+- stop: `RUNNER_SOURCE_POLL_STARVED`
+- production source: HEALTHY
+- maximum actual source gap: 26.012124 seconds
+- maximum runner probe interval: 950.25 seconds
+- timer-fence interval: 1,367.2016976 seconds
+- V0.3 integrity/restart: PASS
+
+The accepted Market Source V0.2 launch cache remained healthy and is retained
+unchanged. Controlled profiling proved that V0.3's timer-fence metric mostly
+contained active per-row strategy/audit/outbox/cursor processing inside one
+monolithic drain call. V0.4 makes the fixed-watermark drain binding-owned,
+probes accepted T014 health evidence at batch progress boundaries, reports
+active work separately from passive/source-unavailable waits, and batches
+semantic-equivalent evaluation delivery per source input.
+
+Continuous FirstPullback Binding V0.4 model:
+`P4-CONTINUOUS-FIRSTPULLBACK-BINDING-0004`
+
+Binding V0.4 fingerprint:
+`e2c35ce63fe419ac4a934913dd26249d72411884cb115e0701f601b276b0f7d6`
+
+Continuous FirstPullback Multi-Hour Run V0.4 model:
+`P4-CONTINUOUS-FIRSTPULLBACK-MULTIHOUR-RUN-0004`
+
+Multi-Hour V0.4 fingerprint:
+`ce690a8fa864516fcb6fe7c834e4a4342655a9c01c80f522dc0ba9ba3673e0ad`
+
+Isolated 20,000-row synthetic throughput:
+
+- 131.81 raw rows/second
+- 32.95 normalized rows/second
+- five fixed-watermark timers
+- zero passive fence wait
+- maximum cursor lag returned to zero
+- no runner or production-source starvation
+
+V0.4:
+NOT YET LIVE VALIDATED
+
+FOUR-HOUR V0.4 PRODUCTION PAPER RUN:
+NOT YET EXECUTED
+
+UNBOUNDED CONTINUOUS LIVE PAPER:
+NOT YET VALIDATED / NOT YET ACCEPTED
+
+No strategy, deadline, entry/exit, cost, latency, impact, trade-size,
+accounting, observability-PnL, source, finalist, or collector semantics were
+changed. No parameter tuning or reselection occurred. No profitability claim
+is made.
+
 ## Codex takeover state
 
 - MEME-TAKEOVER-001: PASS / ACCEPTED
@@ -615,6 +677,7 @@ tuning or reselection occurred. No profitability claim is made.
 - MEME-P4-T011-H1-C3: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T012: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T014: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T015: IMPLEMENTED_PENDING_PROJECT_REVIEW
 
 ## Canonical Codex test runtime
 
