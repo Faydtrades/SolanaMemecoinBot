@@ -585,7 +585,7 @@ tuning or reselection occurred. No profitability claim is made.
 ## Current timer-fence throughput hardening task
 
 MEME-P4-T015:
-IMPLEMENTED_PENDING_PROJECT_REVIEW
+PASS / ACCEPTED / CHECKPOINTED
 
 Accepted predecessor:
 MEME-P4-T014 PASS / ACCEPTED / CHECKPOINTED
@@ -644,6 +644,77 @@ accounting, observability-PnL, source, finalist, or collector semantics were
 changed. No parameter tuning or reselection occurred. No profitability claim
 is made.
 
+## Current production fence-drain throughput correction task
+
+MEME-P4-T016:
+IMPLEMENTED_PENDING_PROJECT_REVIEW
+
+V0.4 FAILED ONE-HOUR PRODUCTION PAPER RUN:
+FAIL / MANUALLY INTERRUPTED / RETAINED AS IMMUTABLE EVIDENCE
+
+Observed V0.4 final drain:
+
+- previous complete timer watermark: `625704`
+- frozen final watermark: `635181`
+- durable cursor sample A: `628586`
+- durable cursor after 60 seconds: `628711`
+- measured live drain: approximately 2.08 P1 rowids/second
+- projected remaining drain: approximately 51.8 minutes
+
+Read-only profiling of a copied preserved runtime slice identified repeated
+FULL-synchronous SQLite transaction finalization as the dominant production-
+shaped hot path. The 125-row copied batch took 8.9082245 seconds at 14.03198
+raw rows/second; SQLite connection-context finalization consumed 7.573 seconds
+(85.0%), while source fetch consumed 0.0347168 seconds and hydration consumed
+0.4313847 seconds.
+
+Continuous FirstPullback Binding V0.5 model:
+`P4-CONTINUOUS-FIRSTPULLBACK-BINDING-0005`
+
+Binding V0.5 fingerprint:
+`f66acb5926f3dd77d68c086d74e1bc07b43fad4307071c1ec8c3b7d1111660b7`
+
+Continuous FirstPullback Multi-Hour Run V0.5 model:
+`P4-CONTINUOUS-FIRSTPULLBACK-MULTIHOUR-RUN-0005`
+
+Multi-Hour V0.5 fingerprint:
+`7e439eb90ca0d44467501ae15008ecc4c733582dc14a04afae9a94ac9ab9f3ca`
+
+V0.5 retains WAL plus `synchronous=FULL` and commits each fetched source batch
+as one atomic paper transaction. A failed batch rolls back its semantic work
+and cursor together to the prior durable position; the failed instance becomes
+terminal and restart deterministically replays from SQLite.
+
+Deterministic production-shaped regression:
+
+- 250 raw source rows
+- 700 V0.4 physical commit boundaries
+- 13.08649 V0.4 raw rows/second under deterministic commit latency
+- one V0.5 source-batch commit
+- six V0.5 total boundaries including timer finalization
+- 530.12049 V0.5 raw rows/second
+- locked minimum: 15 raw rows/second
+- exact frozen watermark / final durable cursor: `250` / `250`
+- no lost, duplicated, reordered, or pre-timer `W+1` rows
+- semantic rows equivalent to accepted V0.4
+- exact reopen bytes unchanged
+- first-/later-batch rollback, restart, and commit-failure replay: PASS
+- SQLite quick check: `ok`
+
+V0.5:
+NOT YET LIVE VALIDATED
+
+FOUR-HOUR V0.5 PRODUCTION PAPER RUN:
+NOT YET EXECUTED
+
+UNBOUNDED CONTINUOUS LIVE PAPER:
+NOT YET VALIDATED / NOT YET ACCEPTED
+
+No strategy, deadline, entry/exit, cost, latency, impact, trade-size,
+accounting, observability-PnL, source, finalist, or collector semantics were
+changed. No parameter tuning or reselection occurred. No profitability claim
+is made. No new production/live run was performed by T016.
+
 ## Codex takeover state
 
 - MEME-TAKEOVER-001: PASS / ACCEPTED
@@ -677,7 +748,8 @@ is made.
 - MEME-P4-T011-H1-C3: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T012: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T014: PASS / ACCEPTED / CHECKPOINTED
-- MEME-P4-T015: IMPLEMENTED_PENDING_PROJECT_REVIEW
+- MEME-P4-T015: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T016: IMPLEMENTED_PENDING_PROJECT_REVIEW
 
 ## Canonical Codex test runtime
 
