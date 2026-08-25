@@ -520,6 +520,68 @@ NOT YET VALIDATED / NOT YET ACCEPTED
 No profitability claim is made. No production/live validation was performed
 for MEME-P4-T012.
 
+## Current incremental source and continuity correction task
+
+MEME-P4-T014:
+PASS / ACCEPTED / CHECKPOINTED
+
+Market Source V0.2 model:
+`P4-CONTINUOUS-MARKET-SOURCE-0002`
+
+Market Source V0.2 fingerprint:
+`9cb094f52bf4b4fe28dc4828b1d9a52a3350cde664c7da5a489fa84e9a4085a9`
+
+Continuous FirstPullback Binding V0.3 model:
+`P4-CONTINUOUS-FIRSTPULLBACK-BINDING-0003`
+
+Continuous FirstPullback Binding V0.3 fingerprint:
+`45521225ccbe6c3b98a48b7e92523deea16d6ff9b91fdd37a415a1a45958babf`
+
+Corrected Multi-Hour V0.3 model:
+`P4-CONTINUOUS-FIRSTPULLBACK-MULTIHOUR-RUN-0003`
+
+Corrected Multi-Hour V0.3 fingerprint:
+`6fb400b77606cd1ef3fce32037c95f4ea1cd7299a71ee6c902e43eb2114917bb`
+
+V0.2 FAILED BOUNDED RUN:
+FAIL / RETAINED IMMUTABLE FAILURE EVIDENCE
+
+Reported reason:
+`PRODUCTION_SOURCE_STALLED`
+
+Postmortem:
+FALSE SOURCE-STALL CLASSIFICATION
+
+Production evidence:
+row 602267 to row 602268 advanced in approximately 3.516 seconds while
+production and WebSocket observations continued. The actual operational issue
+was runner/source-probe starvation, not production-source inactivity. All
+V0.2 paper integrity and exact-state restart checks remained healthy. The old
+runtime artifacts are unchanged.
+
+V0.3 separates incremental `inserted_at_utc` source evidence from monotonic
+runner probe intervals. Both use the locked `>=300.0s` fail-closed boundary;
+actual `PRODUCTION_SOURCE_STALLED` evidence has precedence over
+`RUNNER_SOURCE_POLL_STARVED`. Market Source V0.2 replaces repeated growing
+launch-prefix reconstruction with a non-authoritative, failure-atomic,
+rebuildable in-memory cache. The durable binding cursor remains authoritative.
+
+T012 late-entry fix:
+REMAINS ACCEPTED / CHECKPOINTED
+
+V0.3 multi-hour:
+NOT YET LIVE VALIDATED
+
+FOUR-HOUR V0.3 PRODUCTION PAPER RUN:
+NOT YET EXECUTED
+
+UNBOUNDED CONTINUOUS LIVE PAPER:
+NOT YET VALIDATED / NOT YET ACCEPTED
+
+No strategy, entry/exit, cost, latency, impact, trade-size, accounting,
+observability, finalist, or collector behavior was changed. No parameter
+tuning or reselection occurred. No profitability claim is made.
+
 ## Codex takeover state
 
 - MEME-TAKEOVER-001: PASS / ACCEPTED
@@ -552,6 +614,7 @@ for MEME-P4-T012.
 - MEME-P4-T011-H1-C2: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T011-H1-C3: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T012: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T014: PASS / ACCEPTED / CHECKPOINTED
 
 ## Canonical Codex test runtime
 
