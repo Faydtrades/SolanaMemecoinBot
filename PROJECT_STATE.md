@@ -718,7 +718,7 @@ is made. No new production/live run was performed by T016.
 ## Current external read-only live observability task
 
 MEME-P4-T017:
-IMPLEMENTED_PENDING_PROJECT_REVIEW
+PASS / ACCEPTED / CHECKPOINTED
 
 External live observability contract model:
 `P4-EXTERNAL-LIVE-OBSERVABILITY-0001`
@@ -760,6 +760,38 @@ UNCHANGED
 
 NO PRODUCTION/LIVE VALIDATION PERFORMED
 
+## Current non-monotonic source-activity robustness task
+
+MEME-P4-T019:
+IMPLEMENTED_PENDING_PROJECT_REVIEW
+
+The formal V0.5 plus T017 run failed closed after `95.225099` seconds because
+the inherited continuity watchdog treated `inserted_at_utc` as a strict order
+key. Read-only evidence proved increasing P1 rowids `704294` and `704295` had
+ordinary live WebSocket timestamps that regressed by `0.158253` seconds.
+
+Corrected V0.5 multi-hour model:
+`P4-CONTINUOUS-FIRSTPULLBACK-MULTIHOUR-RUN-0005`
+
+Corrected V0.5 fingerprint:
+`0308899e0a2306c921603f3beff4a957e01832ce180a397b88841ba498fab5e4`
+
+Canonical durable source ordering remains strictly increasing P1 SQLite
+rowid. `inserted_at_utc` remains validated UTC-aware metadata, while source
+health uses the maximum observed activity timestamp so a newer row cannot move
+health time backward.
+
+External observability contract fingerprint remains:
+`058135c958bbddff241d50cfa50ac5e6b9fe85655f4beabe2b9c033aed9267ac`
+
+Candidate refreshed passive integration fingerprint:
+`f9d782a26a278779cd97c1b405555817fd7169ab6fb1729135d5226ca52bdfbd`
+
+No strategy, entry/exit, cost, latency, impact, accounting, portfolio, source
+database access, collector, or T017 control-plane semantics changed. No
+production/live validation was performed by T019; only the known two rows were
+reopened read-only for bounded reproduction evidence.
+
 ## Codex takeover state
 
 - MEME-TAKEOVER-001: PASS / ACCEPTED
@@ -795,7 +827,8 @@ NO PRODUCTION/LIVE VALIDATION PERFORMED
 - MEME-P4-T014: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T015: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T016: IMPLEMENTED_PENDING_PROJECT_REVIEW
-- MEME-P4-T017: IMPLEMENTED_PENDING_PROJECT_REVIEW
+- MEME-P4-T017: PASS / ACCEPTED / CHECKPOINTED
+- MEME-P4-T019: IMPLEMENTED_PENDING_PROJECT_REVIEW
 
 ## Canonical Codex test runtime
 

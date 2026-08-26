@@ -27,7 +27,7 @@ from phase4.paper_continuous_market_source_v0_2 import (  # noqa: E402
 
 BASE = fixtures.BASE
 EXPECTED_HARNESS_FINGERPRINT = (
-    "7e439eb90ca0d44467501ae15008ecc4c733582dc14a04afae9a94ac9ab9f3ca"
+    "0308899e0a2306c921603f3beff4a957e01832ce180a397b88841ba498fab5e4"
 )
 EXPECTED_BINDING_FINGERPRINT = (
     "f66acb5926f3dd77d68c086d74e1bc07b43fad4307071c1ec8c3b7d1111660b7"
@@ -44,6 +44,9 @@ def main() -> int:
     original_run = harness.accepted_v04.accepted_v03.run_multihour
     original_binding = (
         harness.accepted_v04.accepted_v03.ContinuousFirstPullbackBindingV03
+    )
+    original_watchdog = (
+        harness.accepted_v04.accepted_v03.EvidenceBasedSourceContinuityWatchdogV03
     )
     original_connector = harness.accepted.connect_entry_router_db
     original_v04_model_id = harness.accepted_v04.MODEL_ID
@@ -156,6 +159,10 @@ def main() -> int:
             "VERSIONED_ATOMIC_BINDING_WIRING",
             code == 0
             and isinstance(binding, ContinuousFirstPullbackBindingV05)
+            and isinstance(
+                observed["watchdog"],
+                harness.EvidenceBasedSourceContinuityWatchdogV05,
+            )
             and isinstance(connection, AtomicSourceBatchConnection)
             and observed["durable_p1_rowid"] == 40
             and observed["watermark"] == 40
@@ -177,6 +184,8 @@ def main() -> int:
             "ACCEPTED_GLOBALS_RESTORED",
             harness.accepted_v04.accepted_v03.
             ContinuousFirstPullbackBindingV03 is original_binding
+            and harness.accepted_v04.accepted_v03.
+            EvidenceBasedSourceContinuityWatchdogV03 is original_watchdog
             and harness.accepted.connect_entry_router_db is original_connector
             and harness.accepted_v04.MODEL_ID == original_v04_model_id,
             checks,

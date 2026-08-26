@@ -42,6 +42,11 @@ MULTIHOUR_SPEC.update({
         "rollback": "WHOLE_BATCH_TO_PREVIOUS_DURABLE_CURSOR",
         "replay": "DETERMINISTIC_FROM_PREVIOUS_DURABLE_CURSOR",
     },
+    "source_continuity_ordering": {
+        "durable_order": "STRICTLY_INCREASING_P1_SQLITE_ROWID",
+        "inserted_at_utc": "VALIDATED_UTC_METADATA_NOT_AN_ORDERING_KEY",
+        "health_activity": "MAX_OBSERVED_INSERTED_AT_NOT_EARLIER_THAN_SESSION_START",
+    },
 })
 MODEL_FINGERPRINT = hashlib.sha256(
     json.dumps(MULTIHOUR_SPEC, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -55,6 +60,110 @@ RUNTIME_DIR = accepted_v04.RUNTIME_DIR
 parse_duration_seconds = accepted_v04.parse_duration_seconds
 run_control_reason = accepted_v04.run_control_reason
 _ORIGINAL_APPLY_V04 = accepted_v04._apply_v04_summary_fields
+
+
+class EvidenceBasedSourceContinuityWatchdogV05(
+    accepted_v04.accepted_v03.EvidenceBasedSourceContinuityWatchdogV03
+):
+    """Use P1 rowid for order and a monotonic maximum for source health time."""
+
+    def observe(self, latest_p1_rowid: int, now_monotonic: float) -> None:
+        if self.failure_reason is not None:
+            raise accepted_v04.accepted_v03.ProductionSourceStalled(
+                self.failure_reason
+            )
+        latest = int(latest_p1_rowid)
+        now_mono = float(now_monotonic)
+        assert self.last_health_p1_rowid is not None
+        assert self.last_actual_source_activity_utc is not None
+        assert self.last_probe_monotonic is not None
+        if latest < self.last_health_p1_rowid:
+            raise accepted.BindingConflict(
+                "non-monotonic production latest p1_rowid: "
+                f"{latest} < {self.last_health_p1_rowid}"
+            )
+        runner_interval = max(0.0, now_mono - self.last_probe_monotonic)
+        runner_starved = (
+            runner_interval
+            >= accepted_v04.accepted_v03.RUNNER_SOURCE_POLL_STARVATION_FAIL_SECONDS
+        )
+        probe_at = accepted_v04.accepted_v03._utc(self.wall_clock())
+        new_rows = self.source.continuity_rows_after(
+            self.last_health_p1_rowid,
+            through_p1_rowid=latest,
+        )
+        if latest > self.last_health_p1_rowid and not new_rows:
+            raise accepted.BindingConflict(
+                "production latest p1_rowid advanced but bounded health rows are missing"
+            )
+        if new_rows and int(new_rows[-1][0]) != latest:
+            raise accepted.BindingConflict(
+                "bounded health interval does not reach production latest p1_rowid"
+            )
+
+        # Validate and calculate on local state. P1 rowid is the sole durable
+        # order. inserted_at_utc remains validated source-health metadata, and
+        # its effective activity value is the maximum seen so a newer row with
+        # an older timestamp cannot move health state backwards.
+        prior_activity = self.last_actual_source_activity_utc
+        maximum_actual_gap = self.maximum_actual_source_gap_seconds
+        actual_source_stalled = self.actual_source_stalled
+        previous_rowid = self.last_health_p1_rowid
+        for rowid, inserted_at in new_rows:
+            if int(rowid) <= previous_rowid:
+                raise accepted.BindingConflict(
+                    "source health rows are not strictly increasing"
+                )
+            raw_activity_at = accepted_v04.accepted_v03._utc(inserted_at)
+            if raw_activity_at > probe_at:
+                raise accepted.BindingConflict(
+                    "source inserted_at_utc is later than the continuity probe: "
+                    f"p1 rowid {rowid}"
+                )
+            activity_at = max(raw_activity_at, self.session_started_at_utc)
+            effective_activity_at = max(prior_activity, activity_at)
+            gap = (effective_activity_at - prior_activity).total_seconds()
+            maximum_actual_gap = max(maximum_actual_gap, gap)
+            if gap >= accepted_v04.accepted_v03.SOURCE_STALL_FAIL_SECONDS:
+                actual_source_stalled = True
+            prior_activity = effective_activity_at
+            previous_rowid = int(rowid)
+
+        final_staleness = max(
+            0.0,
+            (probe_at - prior_activity).total_seconds(),
+        )
+        maximum_actual_gap = max(maximum_actual_gap, final_staleness)
+        if final_staleness >= accepted_v04.accepted_v03.SOURCE_STALL_FAIL_SECONDS:
+            actual_source_stalled = True
+
+        self.maximum_runner_probe_interval_seconds = max(
+            self.maximum_runner_probe_interval_seconds,
+            runner_interval,
+        )
+        if runner_starved:
+            self.runner_source_poll_starved = True
+            self.runner_starvation_count += 1
+        self.maximum_actual_source_gap_seconds = maximum_actual_gap
+        self.actual_source_stalled = actual_source_stalled
+
+        if new_rows:
+            self.source_advance_count += 1
+            self.actual_source_advance_count += len(new_rows)
+            self.last_observed_source_p1_rowid = latest
+            self.last_source_advance_monotonic = now_mono
+            self.last_actual_source_activity_utc = prior_activity
+        self.last_health_p1_rowid = latest
+        self.last_probe_monotonic = now_mono
+
+        if self.actual_source_stalled:
+            self.failure_reason = "PRODUCTION_SOURCE_STALLED"
+        elif self.runner_source_poll_starved:
+            self.failure_reason = "RUNNER_SOURCE_POLL_STARVED"
+        if self.failure_reason is not None:
+            raise accepted_v04.accepted_v03.ProductionSourceStalled(
+                self.failure_reason
+            )
 
 
 def _validate_locked_contracts_v05() -> None:
@@ -91,6 +200,9 @@ def _apply_v05_summary_fields(
 def run_multihour(*, duration_seconds: int, launch_collector: bool):
     _validate_locked_contracts_v05()
     original_binding_class = accepted_v04.ContinuousFirstPullbackBindingV04
+    original_watchdog_class = (
+        accepted_v04.accepted_v03.EvidenceBasedSourceContinuityWatchdogV03
+    )
     original_validate = accepted_v04._validate_locked_contracts_v04
     original_model_id = accepted_v04.MODEL_ID
     original_model_fingerprint = accepted_v04.MODEL_FINGERPRINT
@@ -102,6 +214,9 @@ def run_multihour(*, duration_seconds: int, launch_collector: bool):
     try:
         accepted_v04.ContinuousFirstPullbackBindingV04 = (
             ContinuousFirstPullbackBindingV05
+        )
+        accepted_v04.accepted_v03.EvidenceBasedSourceContinuityWatchdogV03 = (
+            EvidenceBasedSourceContinuityWatchdogV05
         )
         accepted_v04._validate_locked_contracts_v04 = lambda: None
         accepted_v04.MODEL_ID = MODEL_ID
@@ -124,6 +239,9 @@ def run_multihour(*, duration_seconds: int, launch_collector: bool):
         accepted_v04.MODEL_FINGERPRINT = original_model_fingerprint
         accepted_v04.MODEL_ID = original_model_id
         accepted_v04._validate_locked_contracts_v04 = original_validate
+        accepted_v04.accepted_v03.EvidenceBasedSourceContinuityWatchdogV03 = (
+            original_watchdog_class
+        )
         accepted_v04.ContinuousFirstPullbackBindingV04 = original_binding_class
 
 

@@ -18,15 +18,16 @@ remains the acceptance authority.
 - Passive integration model:
   `P4-CONTINUOUS-FIRSTPULLBACK-EXTERNAL-OBSERVABILITY-0001`
 - Passive integration fingerprint:
-  `d4f1d5d3277ffdd156a1da323c12f58c9522349431552d3c435de8d179a9a5f4`
+  `f9d782a26a278779cd97c1b405555817fd7169ab6fb1729135d5226ca52bdfbd`
 - Bound accepted runtime model:
   `P4-CONTINUOUS-FIRSTPULLBACK-MULTIHOUR-RUN-0005`
 - Bound accepted runtime fingerprint:
-  `7e439eb90ca0d44467501ae15008ecc4c733582dc14a04afae9a94ac9ab9f3ca`
+  `0308899e0a2306c921603f3beff4a957e01832ce180a397b88841ba498fab5e4`
 
-The contract and integration identities are new. No accepted V0.5 strategy,
-binding, runner, source, entry, exit, cost, accounting, or timer fingerprint is
-rewritten.
+T019 refreshes only the passive integration's locked V0.5 runtime identity for
+the corrected source-health timestamp semantics. The external contract model,
+schema, fingerprint, publication behavior, isolation, and all trading semantics
+remain unchanged.
 
 ## Representation and fixed locator
 

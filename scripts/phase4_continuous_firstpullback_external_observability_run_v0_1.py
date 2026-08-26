@@ -45,7 +45,7 @@ from phase4.paper_external_live_observability_v0_1 import (  # noqa: E402
 
 MODEL_ID = "P4-CONTINUOUS-FIRSTPULLBACK-EXTERNAL-OBSERVABILITY-0001"
 ACCEPTED_V05_HARNESS_SHA256 = (
-    "995c80451b3f57f5a147840ef459ccc739f50d36dedb7cfd05b66b1126eccbbb"
+    "22d4c0fa40e53e62fb305c75a832f6a633b496a8f10382d75353444e1392db37"
 )
 DEFAULT_REGISTRY_PATH = (
     accepted_v05.RUNTIME_DIR / "phase4_external_live_observability_v0_1.sqlite3"
@@ -88,7 +88,7 @@ def _validate_locked_contracts() -> None:
         OBSERVABILITY_FINGERPRINT,
     )
     actual = (
-        "7e439eb90ca0d44467501ae15008ecc4c733582dc14a04afae9a94ac9ab9f3ca",
+        "0308899e0a2306c921603f3beff4a957e01832ce180a397b88841ba498fab5e4",
         "9cb094f52bf4b4fe28dc4828b1d9a52a3350cde664c7da5a489fa84e9a4085a9",
         OBSERVABILITY_FINGERPRINT,
     )
