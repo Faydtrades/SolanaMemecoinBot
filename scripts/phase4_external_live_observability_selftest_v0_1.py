@@ -212,7 +212,9 @@ def run_integration_equivalence(
 
     lower = integration.accepted_v05.accepted_v04.accepted_v03
     original_run = lower.run_multihour
-    original_publish_terminal = integration.LiveRunPublisherV01.publish_terminal
+    original_finalize_existing = (
+        integration.LiveRunPublisherV01.__dict__["finalize_existing"]
+    )
     registry = root / "observable registry.sqlite3"
     clock = FakeClock()
     captured: dict[str, Any] = {}
@@ -254,7 +256,7 @@ def run_integration_equivalence(
             )
         finally:
             conn.close()
-        return 0, {
+        summary = {
             "result_class": "PASS_MULTI_HOUR",
             "duration_bound_reached": True,
             "production_source": {
@@ -262,14 +264,24 @@ def run_integration_equivalence(
                 "end_watermark_p1_rowid": workload_rows,
             },
             "errors": [],
+            "artifact_paths": {
+                "json": str((root / "observable-summary.json").resolve()),
+            },
         }
+        Path(summary["artifact_paths"]["json"]).write_text(
+            json.dumps(summary, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        return 0, summary
 
     lower.run_multihour = fake_run
     if terminal_publication_failure:
-        def fail_terminal(*_args, **_kwargs):
+        def fail_terminal(_cls, *_args, **_kwargs):
             raise RuntimeError("INJECTED_TERMINAL_PUBLICATION_FAILURE")
 
-        integration.LiveRunPublisherV01.publish_terminal = fail_terminal
+        integration.LiveRunPublisherV01.finalize_existing = classmethod(
+            fail_terminal
+        )
     try:
         enabled_started = time.perf_counter()
         code, summary = integration.run_multihour(
@@ -283,7 +295,13 @@ def run_integration_equivalence(
         enabled_seconds = time.perf_counter() - enabled_started
     finally:
         lower.run_multihour = original_run
-        integration.LiveRunPublisherV01.publish_terminal = original_publish_terminal
+        integration.LiveRunPublisherV01.finalize_existing = (
+            original_finalize_existing
+        )
+
+    persisted_summary = json.loads(
+        (root / "observable-summary.json").read_text(encoding="utf-8")
+    )
 
     with ReadOnlyLiveObservabilityV01(registry) as reader:
         records = reader.records()
@@ -318,6 +336,9 @@ def run_integration_equivalence(
             )
         },
         "summary_contract": summary["external_observability"],
+        "persisted_external_observability": persisted_summary.get(
+            "external_observability"
+        ),
         "record_count": len(records),
         "record_state": records[0].runtime_state if records else None,
         "record_source_path": records[0].source_sqlite_path if records else None,
@@ -750,6 +771,8 @@ def main(argv: list[str] | None = None) -> int:
             and integration_evidence["record_count"] == 1
             and integration_evidence["record_state"] == RunState.COMPLETED.value
             and not integration_evidence["summary_contract"]["publication_errors"]
+            and integration_evidence["summary_contract"]
+            == integration_evidence["persisted_external_observability"]
             and integration_evidence["baseline_digest"]
             == replay_evidence["baseline_digest"]
             and integration_evidence["observability_digest"]
@@ -775,6 +798,16 @@ def main(argv: list[str] | None = None) -> int:
                     "publication_errors"
                 ]
             )
+            and publication_failure_evidence["summary_contract"]
+            == publication_failure_evidence["persisted_external_observability"]
+            and publication_failure_evidence["summary_contract"][
+                "terminal_publication_outcome"
+            ]
+            == "FAILED"
+            and publication_failure_evidence["summary_contract"][
+                "forensic_json_outcome"
+            ]
+            == "SUCCEEDED"
         )
 
         cadence = measure_cadence_overhead(root / "performance")

@@ -6,8 +6,10 @@
 the accepted continuous FirstPullback paper runtime. It does not provide a
 dashboard, a control API, an execution API, or a trading input.
 
-Implementation status is `IMPLEMENTED_PENDING_PROJECT_REVIEW`. Project review
-remains the acceptance authority.
+The T017 contract is `PASS / ACCEPTED / CHECKPOINTED`. T021 refreshes only its
+passive producer integration and remains
+`IMPLEMENTED_PENDING_PROJECT_REVIEW`; project review remains the acceptance
+authority.
 
 ## Identities
 
@@ -18,16 +20,17 @@ remains the acceptance authority.
 - Passive integration model:
   `P4-CONTINUOUS-FIRSTPULLBACK-EXTERNAL-OBSERVABILITY-0001`
 - Passive integration fingerprint:
-  `f9d782a26a278779cd97c1b405555817fd7169ab6fb1729135d5226ca52bdfbd`
+  `6ac56972dd192e58f1c042768303fecb7a7e5d20d146ee3b7271190459d8fda4`
 - Bound accepted runtime model:
   `P4-CONTINUOUS-FIRSTPULLBACK-MULTIHOUR-RUN-0005`
 - Bound accepted runtime fingerprint:
   `0308899e0a2306c921603f3beff4a957e01832ce180a397b88841ba498fab5e4`
 
-T019 refreshes only the passive integration's locked V0.5 runtime identity for
-the corrected source-health timestamp semantics. The external contract model,
-schema, fingerprint, publication behavior, isolation, and all trading semantics
-remain unchanged.
+T019 refreshed the passive integration's locked V0.5 runtime identity for the
+corrected source-health timestamp semantics. T021 refreshes the passive
+integration identity again because terminal finalization and durable JSON
+forensics changed. The external contract model, schema, consumer behavior, and
+fingerprint remain unchanged, as do all trading semantics.
 
 ## Representation and fixed locator
 
@@ -107,16 +110,37 @@ States are:
 
 Normal completion publishes `COMPLETED`. A classified unsuccessful return
 publishes `FAILED`. An escaping interrupt/system exit publishes `ABORTED` when
-the producer can still publish. Terminal rows contain `ended_at_utc`, close
-their liveness interval, and cannot return to RUNNING.
+a run record exists, then preserves the interruption. Terminal rows contain
+`ended_at_utc`, close their liveness interval, and cannot return to RUNNING.
+
+Terminalization uses a fresh producer-owned connection and the exact canonical
+`run_id`; it does not use newest-run selection. It validates registry metadata
+and schema, requires the persisted state to remain `RUNNING`, validates
+non-regressing cursor and watermark order, and commits the final state, time,
+cursor, watermark, and publication sequence atomically. It may terminalize a
+stale RUNNING row after its heartbeat TTL has expired. For a returned V0.5 run,
+the returned summary is authoritative for final cursor and watermark, so the
+original heartbeat publisher and paper binding may already be closed.
 
 If the producer crashes before a terminal update, its RUNNING row remains as
 historical evidence but becomes inactive after its producer-defined
-valid-until time. If observability publication itself fails, the passive hook
-records the diagnostic in its returned summary, disables further publication,
-and does not alter trading flow. The previous proof then expires. This can
-produce a conservative false-negative observer state, never a permanent false
-RUNNING or an execution-control decision.
+valid-until time. A heartbeat publication failure disables and closes the
+original heartbeat publisher without preventing the fresh terminal finalizer.
+If finalization itself fails, the passive hook leaves the registry
+conservatively stale, records the exact failure, and does not alter trading
+flow or classification.
+
+After finalization, the integration adds a versioned `external_observability`
+section to the same V0.5 JSON artifact via same-directory temporary file,
+flush, `fsync`, and atomic replace. Existing V0.5 fields remain semantically
+unchanged. JSON persistence failure is surfaced in the returned summary and
+CLI diagnostics but cannot change the V0.5 return code or result class.
+
+SQLite and JSON cannot share one transaction. A process crash after the
+registry commit but before JSON replacement can therefore leave a correct
+terminal registry with the older JSON lacking final wrapper evidence. A crash
+after replacement preserves the complete new JSON. This bounded residual is
+fail-safe for liveness and is not an execution or trading-data risk.
 
 ## Restart and multiple-run semantics
 
@@ -220,14 +244,17 @@ not recreate a per-row persistence bottleneck.
 
 ## Deterministic validation
 
-The focused self-test covers current and expired RUNNING proofs, exact TTL
+The focused self-tests cover current and expired RUNNING proofs, exact TTL
 boundary order, crash/stale behavior, all terminal states, terminal
 irreversibility, new run identities, old/new coexistence, multiple active-run
 ambiguity, concurrent reads during publication, corrupt publication fail-
 closed behavior, Windows source paths with spaces, wrong nearby/newest source
 databases, query-only source reads, source non-mutation, cursor/watermark
 validation-before-update, deterministic replay, no-secret fields, no control
-path, and performance.
+path, performance, an already closed publisher and binding, TTL-expired fresh
+terminalization, injected heartbeat and finalizer failures, exact-run-ID
+selection among stale rows, SQLite busy retry, atomic JSON preservation, and
+restart/reopen terminal evidence.
 
 The same 250-row deterministic V0.5 fixture is executed with observability
 disabled and enabled. Canonical paper-runtime digest and semantic counts must

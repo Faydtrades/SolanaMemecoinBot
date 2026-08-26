@@ -792,6 +792,53 @@ database access, collector, or T017 control-plane semantics changed. No
 production/live validation was performed by T019; only the known two rows were
 reopened read-only for bounded reproduction evidence.
 
+## Current external observability terminal-finalization correction
+
+MEME-P4-T021:
+IMPLEMENTED_PENDING_PROJECT_REVIEW
+
+The project-accepted formal six-hour V0.5 paper run on canonical commit
+`b0b158ce2355280eed0ad28ccb2616da0a2212d3` remains:
+
+PHASE-4 TRADING RUNTIME:
+PASS / ACCEPTED / FROZEN
+
+FORMAL SIX-HOUR V0.5 PAPER RUN:
+PASS / `PASS_MULTI_HOUR`
+
+- requested duration: `21600` seconds
+- actual duration: `21643.959842` seconds
+- anchor: `704295`
+- final durable cursor / watermark: `766687 / 766687`
+- raw source rows: `62392`
+- candidates: `81`
+- graceful shutdown: `true`
+- errors: `[]`
+- integrity / source continuity: `true / true`
+- conflicts / retries / SQLite busy: `0 / 0 / 0`
+
+The run's external-observability row
+`95aebf92-3353-4404-bb03-82e776218740` expired safely by TTL but remained
+persisted as `RUNNING` with `ended_at_utc = NULL`. T021 adds a fresh,
+producer-owned exact-run-ID terminal finalizer that is independent of the
+closed heartbeat publisher and paper binding. Returned V0.5 summary positions
+are authoritative, and final wrapper evidence is atomically added to the same
+V0.5 JSON artifact.
+
+External live observability contract fingerprint remains:
+`058135c958bbddff241d50cfa50ac5e6b9fe85655f4beabe2b9c033aed9267ac`
+
+Refreshed passive integration fingerprint:
+`6ac56972dd192e58f1c042768303fecb7a7e5d20d146ee3b7271190459d8fda4`
+
+The registry and JSON are separate durability domains; a process crash after
+the registry terminal commit but before JSON replacement can leave terminal
+registry evidence with the older JSON. This cannot create active liveness or
+change the trading result. No trading, source-ordering, strategy, entry/exit,
+cost, impact, accounting, collector, wallet, or execution semantics changed.
+
+NO PRODUCTION/LIVE VALIDATION PERFORMED BY T021
+
 ## Codex takeover state
 
 - MEME-TAKEOVER-001: PASS / ACCEPTED
@@ -829,6 +876,7 @@ reopened read-only for bounded reproduction evidence.
 - MEME-P4-T016: IMPLEMENTED_PENDING_PROJECT_REVIEW
 - MEME-P4-T017: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T019: IMPLEMENTED_PENDING_PROJECT_REVIEW
+- MEME-P4-T021: IMPLEMENTED_PENDING_PROJECT_REVIEW
 
 ## Canonical Codex test runtime
 

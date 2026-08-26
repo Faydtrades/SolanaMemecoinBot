@@ -608,6 +608,148 @@ class LiveRunPublisherV01:
         self.publication_count += 1
         self.terminal_publication_count += 1
 
+    @classmethod
+    def finalize_existing(
+        cls,
+        registry_path: str | Path,
+        *,
+        run_id: str,
+        state: RunState,
+        durable_source_cursor_p1_rowid: int,
+        source_watermark_p1_rowid: int,
+        source_watermark_kind: str,
+        ended_at_utc: datetime,
+    ) -> LiveRunRecordV01:
+        """Terminalize one exact RUNNING record using a fresh producer connection."""
+
+        identity = canonical_run_id(str(run_id))
+        terminal_state = RunState(state)
+        if terminal_state is RunState.RUNNING:
+            raise ValueError("terminal publication requires a terminal state")
+        cursor = int(durable_source_cursor_p1_rowid)
+        watermark = int(source_watermark_p1_rowid)
+        if watermark < cursor:
+            raise ObservabilityPublicationError(
+                "source watermark precedes durable cursor"
+            )
+        if source_watermark_kind not in {"CURRENT", "FROZEN"}:
+            raise ObservabilityPublicationError("invalid source watermark kind")
+        ended = _utc(ended_at_utc)
+        resolved_registry = _resolved_file(registry_path, "observability registry")
+        conn = sqlite3.connect(resolved_registry, timeout=5.0)
+        conn.row_factory = sqlite3.Row
+        try:
+            conn.execute("PRAGMA busy_timeout=5000")
+            mode = str(conn.execute("PRAGMA journal_mode").fetchone()[0]).lower()
+            conn.execute("PRAGMA synchronous=FULL")
+            if mode != "wal" or int(conn.execute("PRAGMA synchronous").fetchone()[0]) != 2:
+                raise ObservabilityPublicationError(
+                    "observability registry requires WAL with synchronous=FULL"
+                )
+            try:
+                meta = conn.execute(
+                    f"SELECT model_id,schema_version,model_fingerprint "
+                    f"FROM {META_TABLE} WHERE singleton=1"
+                ).fetchone()
+                columns = {
+                    str(row["name"])
+                    for row in conn.execute(
+                        f"PRAGMA table_info({RUNS_TABLE})"
+                    ).fetchall()
+                }
+            except sqlite3.DatabaseError as exc:
+                raise ObservabilityPublicationError(
+                    f"invalid observability registry: {exc}"
+                ) from exc
+            expected_meta = (MODEL_ID, SCHEMA_VERSION, MODEL_FINGERPRINT)
+            actual_meta = None if meta is None else tuple(meta)
+            expected_columns = set(LiveRunRecordV01.__dataclass_fields__)
+            if actual_meta != expected_meta or columns != expected_columns:
+                raise ObservabilityPublicationError(
+                    "observability registry contract mismatch"
+                )
+
+            try:
+                with conn:
+                    # Reserve the writer before reading the current position so a
+                    # concurrent heartbeat cannot advance between validation and
+                    # the terminal update and then be overwritten.
+                    conn.execute("BEGIN IMMEDIATE")
+                    row = conn.execute(
+                        f"SELECT * FROM {RUNS_TABLE} WHERE run_id=?",
+                        (identity,),
+                    ).fetchone()
+                    if row is None:
+                        raise ObservabilityPublicationError(
+                            "exact run record does not exist"
+                        )
+                    current = LiveRunRecordV01.from_row(row)
+                    current.validate()
+                    if current.runtime_state != RunState.RUNNING.value:
+                        raise ObservabilityPublicationError(
+                            "terminal run cannot transition again"
+                        )
+                    started = _dt_parse(current.started_at_utc)
+                    heartbeat = _dt_parse(current.heartbeat_at_utc)
+                    if ended < started:
+                        raise ObservabilityPublicationError(
+                            "termination predates run start"
+                        )
+                    if ended < heartbeat:
+                        raise ObservabilityPublicationError(
+                            "termination predates heartbeat"
+                        )
+                    if cursor < current.durable_source_cursor_p1_rowid:
+                        raise ObservabilityPublicationError(
+                            "terminal durable cursor regressed"
+                        )
+                    updated = conn.execute(
+                        f"UPDATE {RUNS_TABLE} SET runtime_state=?,"
+                        "heartbeat_sequence=?,heartbeat_at_utc=?,"
+                        "heartbeat_valid_until_utc=?,ended_at_utc=?,"
+                        "durable_source_cursor_p1_rowid=?,"
+                        "source_watermark_p1_rowid=?,source_watermark_kind=?,"
+                        "published_at_utc=? WHERE run_id=? AND runtime_state='RUNNING'",
+                        (
+                            terminal_state.value,
+                            current.heartbeat_sequence + 1,
+                            _dt_text(ended),
+                            _dt_text(ended),
+                            _dt_text(ended),
+                            cursor,
+                            watermark,
+                            source_watermark_kind,
+                            _dt_text(ended),
+                            identity,
+                        ),
+                    )
+                    if updated.rowcount != 1:
+                        raise ObservabilityPublicationError(
+                            "atomic terminal update failed"
+                        )
+            except sqlite3.DatabaseError as exc:
+                raise ObservabilityPublicationError(
+                    f"independent terminal finalization failed: {exc}"
+                ) from exc
+
+            finalized_row = conn.execute(
+                f"SELECT * FROM {RUNS_TABLE} WHERE run_id=?",
+                (identity,),
+            ).fetchone()
+            if finalized_row is None:
+                raise ObservabilityPublicationError(
+                    "terminal record disappeared after finalization"
+                )
+            finalized = LiveRunRecordV01.from_row(finalized_row)
+            finalized.validate()
+            if finalized.runtime_state != terminal_state.value:
+                raise ObservabilityPublicationError(
+                    "terminal state did not persist"
+                )
+            return finalized
+        finally:
+            conn.close()
+
     def close(self) -> None:
         if not self._closed:
             self._conn.close()
