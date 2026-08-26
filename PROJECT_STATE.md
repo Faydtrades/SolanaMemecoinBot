@@ -715,6 +715,51 @@ accounting, observability-PnL, source, finalist, or collector semantics were
 changed. No parameter tuning or reselection occurred. No profitability claim
 is made. No new production/live run was performed by T016.
 
+## Current external read-only live observability task
+
+MEME-P4-T017:
+IMPLEMENTED_PENDING_PROJECT_REVIEW
+
+External live observability contract model:
+`P4-EXTERNAL-LIVE-OBSERVABILITY-0001`
+
+External live observability contract version:
+`phase4_external_live_observability_v0.1`
+
+External live observability contract fingerprint:
+`058135c958bbddff241d50cfa50ac5e6b9fe85655f4beabe2b9c033aed9267ac`
+
+Passive V0.5 integration model:
+`P4-CONTINUOUS-FIRSTPULLBACK-EXTERNAL-OBSERVABILITY-0001`
+
+Passive V0.5 integration fingerprint:
+`d4f1d5d3277ffdd156a1da323c12f58c9522349431552d3c435de8d179a9a5f4`
+
+The producer-owned SQLite registry publishes one complete atomic row per
+unique run ID. RUNNING is valid only while the explicit producer heartbeat
+interval remains valid; stale RUNNING rows are inactive. The same row binds
+the actual read-only source SQLite locator, source identity, anchor, durable
+cursor, current/frozen watermark, stable P1 rowid/ingest identity, and price
+representation version.
+
+The external consumer is read-only/query-only and receives no execution or
+control path. Publication is cadence-bounded and passive; a publication fault
+does not change accepted V0.5 trading behavior and the prior liveness proof
+expires conservatively.
+
+The deterministic T017 gate proves exact enabled/disabled V0.5 paper-runtime
+digest equivalence, restart/replay consistency, terminal irreversibility,
+source non-mutation, no-secret fields, concurrent atomic reads, explicit
+multiple-active ambiguity, and bounded publication overhead.
+
+EXTERNAL READ-ONLY LIVE OBSERVABILITY CONTRACT V0.1:
+IMPLEMENTED_PENDING_PROJECT_REVIEW
+
+V0.5 TRADING / STRATEGY / ACCOUNTING SEMANTICS:
+UNCHANGED
+
+NO PRODUCTION/LIVE VALIDATION PERFORMED
+
 ## Codex takeover state
 
 - MEME-TAKEOVER-001: PASS / ACCEPTED
@@ -750,6 +795,7 @@ is made. No new production/live run was performed by T016.
 - MEME-P4-T014: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T015: PASS / ACCEPTED / CHECKPOINTED
 - MEME-P4-T016: IMPLEMENTED_PENDING_PROJECT_REVIEW
+- MEME-P4-T017: IMPLEMENTED_PENDING_PROJECT_REVIEW
 
 ## Canonical Codex test runtime
 
