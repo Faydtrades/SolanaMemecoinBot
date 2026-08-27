@@ -889,3 +889,21 @@ future task explicitly changes it.
 
 - Commit: `321675b53d678e4734c99a3905ba10dd5862f764`
 - Checkpoint message: `checkpoint: establish memecoin canonical baseline through phase4.5c`
+
+
+## MEME-P4-T022 ? Extended Bounded Paper Run
+
+Status: IMPLEMENTATION PASS / CHECKPOINT READY / REAL 24H ACCEPTANCE PENDING
+
+- Canonical parent before T022: `436b8a3ce20fc17f4479e0119ff97d51e98e05f5`
+- New V0.6 bounded runtime supports 1h..168h without modifying frozen V0.5.
+- Convenience `--duration-hours` supports intended 12h / 24h / 48h runs.
+- 24h resolves exactly to 86,400 seconds.
+- V0.5 and T021 protected files remained byte-identical.
+- T022 deterministic selftest: 14/14 PASS.
+- Full deep delegation probe: 8/8 PASS.
+- T021 regression: 14/14 PASS.
+- T017 regression: 28/28 PASS.
+- First real extended acceptance run is locked as 24 hours.
+- T022 does not add unbounded/manual-stop continuous mode.
+- No strategy, entry, exit, cost, sizing, accounting, or source semantics changed.
