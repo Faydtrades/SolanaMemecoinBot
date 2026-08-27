@@ -907,3 +907,31 @@ Status: IMPLEMENTATION PASS / CHECKPOINT READY / REAL 24H ACCEPTANCE PENDING
 - First real extended acceptance run is locked as 24 hours.
 - T022 does not add unbounded/manual-stop continuous mode.
 - No strategy, entry, exit, cost, sizing, accounting, or source semantics changed.
+
+## Current Phase-5 shadow-domain foundation task
+
+MEME-P5-T001:
+IMPLEMENTED_PENDING_PROJECT_REVIEW
+
+Contract model:
+`P5-SHADOW-DOMAIN-CAPABILITY-FIREWALL-0001`
+
+Contract fingerprint:
+`506312a81b6d8acc724cb27d6d450086bc3fc4986dcdea4831b998a3a8ec91e3`
+
+T001 introduces an isolated immutable `ExecutionIntentV01`, an explicit
+append-only shadow lifecycle, separate `data\shadow` SQLite ownership, and an
+executable structural capability firewall. Canonical Phase-2
+`CandidateSignal.signal_id` is retained. Exactly one shared ENTRY intent is
+allowed per canonical candidate, while independently identified partial EXIT
+decisions retain parent-entry, position, track, and lifecycle lineage.
+
+The Phase-5 production package contains no Phase-4 runtime dependency, wallet,
+key-material, signing, transaction-submission, broadcast, or live-enable API.
+It is not integrated into continuous Phase-4 operation. The focused isolated
+self-test is `43/43 PASS`, SQLite quick check is `ok`, foreign keys are enabled
+and clean, and all protected active T022 Phase-4 hashes remain exact.
+
+No production database, active-run artifact, observability registry,
+collector, runtime, dependency, strategy, entry, exit, cost, slippage,
+candidate, or paper semantic was changed.
