@@ -935,3 +935,46 @@ and clean, and all protected active T022 Phase-4 hashes remain exact.
 No production database, active-run artifact, observability registry,
 collector, runtime, dependency, strategy, entry, exit, cost, slippage,
 candidate, or paper semantic was changed.
+
+## Current Phase-5 venue-state / route / executable-quote task
+
+MEME-P5-T002:
+PASS / ACCEPTED / CHECKPOINTED
+
+Contract model:
+`P5-SHADOW-VENUE-ROUTE-QUOTE-0001`
+
+Contract fingerprint:
+`3b0219e1b30bceb7c77bde4674ada8069a1cbf8aaf8669844dc03b09c53d59d0`
+
+Supported venues are a verified active Pump bonding curve and the verified
+canonical index-0 PumpSwap migrated pool for SOL-paired coins. Completed Pump
+curves remain non-executable until canonical PumpSwap pool identity and state
+are proven; an absent pool is `NO_ROUTE_MIGRATION_PENDING`.
+
+Venue evidence preserves honest Solana context-slot spans, per-account
+pubkey/owner/data fingerprints, current appended account state, token-program
+identity, global state, and dynamic Pump Fees configuration. PumpSwap quotes
+use raw quote-vault reserves plus signed `i128` virtual quote reserves.
+Executable BUY/SELL quotes use current official integer rounding and preserve
+LP, protocol, and creator fee components as applicable. Quotes are immutable
+and bind the exact intent, state, route, policy, fee evidence, and slot span.
+
+T002 persistence uses separate append-only versioned tables in the accepted
+T001 `data\shadow` database, with intent foreign keys, WAL/FULL durability,
+exact replay, conflict detection, full reopen audit, and deterministic digest.
+Lifecycle integration stops at `QUOTE_BOUND`; no plan, simulation, blockhash,
+wallet, signing, submission, broadcast, or live enablement exists.
+
+T002 deterministic offline self-test:
+`95/95 PASS`
+
+T001 recursive capability-firewall regression:
+`43/43 PASS`
+
+Protected active Phase-4 hashes:
+EXACT / UNCHANGED
+
+No production/live validation was performed. The active T022 paper run,
+collector, production/source database, paper database, external-observability
+registry, and runtime artifacts were not accessed or changed.
