@@ -978,3 +978,61 @@ EXACT / UNCHANGED
 No production/live validation was performed. The active T022 paper run,
 collector, production/source database, paper database, external-observability
 registry, and runtime artifacts were not accessed or changed.
+
+## Current Phase-5 unsigned-plan / non-broadcast-simulation task
+
+MEME-P5-T003:
+PASS / ACCEPTED / CHECKPOINTED
+
+Contract model:
+`P5-SHADOW-UNSIGNED-PLAN-SIMULATION-0001`
+
+Contract fingerprint:
+`a7b619bb3e85a6a2310969437080c125c821ffaeb8ae8abd40de9b08cca84a2a`
+
+T003 extends the accepted immutable Shadow chain from exact T002 executable
+quotes through deterministic blockhash-free unsigned plans, immutable
+blockhash leases, zero-placeholder non-broadcast simulation envelopes, and
+auditable simulation results. Pump `buy_exact_quote_in_v2` / `sell_v2` and
+PumpSwap `buy_exact_quote_in` / `sell` account orders, flags, discriminators,
+and arguments are pinned to current official IDL/SDK references. PumpSwap BUY
+preserves the immutable quote-input budget and minimum base output. Actor WSOL
+accounts are closed only when absent in the prerequisite snapshot and created
+by that exact plan; pre-existing actor WSOL accounts are never closed. T002
+remains the economic source of truth.
+
+Project-review C2 correction: every supported PumpSwap BUY exact quote-in and
+SELL plan includes exactly one readonly, non-authority pool-v2 PDA derived
+from `["pool-v2", base_mint]`, independent of whether `coin_creator` is
+populated or default. The exact non-cashback and cashback trailing layouts are
+contract-fingerprint-bound and validated fail-closed before plan construction.
+
+The runtime surface is structurally read-only: a public actor key only, no
+private material, no signing object or method, no transaction submission, no
+generic RPC passthrough, and no live-enable switch. Simulation uses base64,
+`sigVerify=false`, `replaceRecentBlockhash=false`, confirmed commitment, exact
+causal `minContextSlot`, and all-zero/default signature placeholders.
+
+T003 evidence persists in separate append-only versioned `data/shadow` tables
+with exact T001/T002 lineage, WAL/FULL durability, foreign keys, canonical
+reopen audit, deterministic digest, exact replay, and fail-closed conflict
+detection. Lifecycle integration is bounded to accepted T001 transitions from
+`QUOTE_BOUND` through `PLAN_BUILT` and `SIMULATED` to the appropriate terminal
+state.
+
+T003 deterministic offline self-test:
+`116/116 PASS`
+
+T001 recursive capability-firewall regression:
+`43/43 PASS`
+
+T002 venue/route/quote regression:
+`100/100 PASS`
+
+Protected Phase-4 hashes:
+EXACT / UNCHANGED
+
+No production/live validation was performed. No production/source/paper
+database, collector, Phase-4 runtime, observability registry, active or recent
+T022 artifact, dependency, environment, strategy, entry, exit, cost, or
+slippage semantic was accessed or changed.
