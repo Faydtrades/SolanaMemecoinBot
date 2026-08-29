@@ -1,0 +1,46 @@
+{
+  "accepted_cohort_sha256_reproduced": true,
+  "accepted_entry_cohort_sha256_exact_match": true,
+  "analysis_id": "POST24H-T001",
+  "computed_accepted_entry_cohort_sha256": "167dd087ab516996b8cc174a5a55cc1b7b3d9f7b86970ac01f598cd82c121f52",
+  "cost_model_fingerprint": "9652aeffc792eb48d62348360c6ae804f660e43329195d1f169219b80ccab67c",
+  "deterministic_rerun": "EXACT",
+  "entry_cohort_count": 635,
+  "exit_impact_fingerprint": "e1f1fd1c786cc679cf54f45c16b5d9a0c6aff37ed4132ac63c8abc5506aea59d",
+  "exit_impact_model_id": "P4-RUNTIME-EXIT-PRICE-IMPACT-0001",
+  "exit_latency_us": 500000,
+  "exit_slippage_cap_bps": 2000,
+  "expected_accepted_entry_cohort_sha256": "167dd087ab516996b8cc174a5a55cc1b7b3d9f7b86970ac01f598cd82c121f52",
+  "frozen_policies": {
+    "FINAL-A": "E3_TP10_T15",
+    "FINAL-B": "E4_ACT10_GB03_T15",
+    "SENS-C": "SENS_TP20_T5"
+  },
+  "frozen_watermark": 1163003,
+  "git_head": "1b23ed6583e04d8711f3ee0ebec7d4c0176daa8c",
+  "intent_digest": "50d88c1573bebed79a0815f8f1822d7cf3c92238b479736d78d3f7a1d966da98",
+  "model_fingerprint": "9ca0932c03c0a1a662f552c93273bcd69a46b035bdd068f8e6214b0a5d2d5607",
+  "model_id": "P4-POST24H-FROZEN-REPLAY-FOUNDATION-0001",
+  "network_rpc_wallet_signing": false,
+  "output_sha256": {
+    "POST24H_T001_REPORT.md": "2ae5c299a24b6aec86860ad80b0378178048ac81fedcee24fbaa52020029752b",
+    "POST24H_T001_baseline_reproduction.csv": "fd67aa92bf44a8e6fdbcdcbc75e87910cc9fcaf9d2eed189042ada1caeef2e07",
+    "POST24H_T001_baseline_reproduction.json": "06e9103e2577edfe1a0f1ba5ad099c548ef79ad5ed0a85710e52510f3143e719"
+  },
+  "paper_db": {
+    "expected_sha256": "af1449aac08522fcfafad7faf5efa11ee0c1e21c09130e82e049758091d53932",
+    "path": "data/paper/multihour/phase4_firstpullback_multihour_20260827T123022_384349Z.sqlite3",
+    "readonly": true,
+    "sha256": "af1449aac08522fcfafad7faf5efa11ee0c1e21c09130e82e049758091d53932"
+  },
+  "replay_digest": "3ee403382569ac1f041da4798e3e15818ec5b4c1d60c0c4a42b3c24e9c96b61a",
+  "run_id": "15f8b07e-1b9b-464f-a822-01e3fbb8333e",
+  "source_anchor": 766710,
+  "source_db": {
+    "path": "data/db/tradingbot.sqlite3",
+    "readonly": true,
+    "sha256": "6d47437b92ab1083bec7153206700026860209cd6e7c3a7186067346af32d5ba"
+  },
+  "transparent_projection_sha256": "95655ca886f209015d41e9cc724fb3d6cacfc379c4d51ce598e1da796b47e583",
+  "watermark_kind": "FROZEN"
+}
