@@ -1,0 +1,177 @@
+{
+  "actual_exit_market_baseline": "RAW_SOURCE_MARKET_AT_ACTUAL_FILL_ROW",
+  "analysis_id": "POST-24H-ANALYSIS-001",
+  "cohort": {
+    "count": 635,
+    "distinct_mints": 635,
+    "sha256": "167dd087ab516996b8cc174a5a55cc1b7b3d9f7b86970ac01f598cd82c121f52"
+  },
+  "deterministic_analysis_digest": "bf53efc7700c3902c2edec7d1cf153f273ca4d9aed3fdaf6f85bbdbba82f1874",
+  "deterministic_full_analysis_rerun": "EXACT",
+  "equity_label": "REALIZED_CLOSED_EQUITY",
+  "frozen_digests": {
+    "t001_replay": "3ee403382569ac1f041da4798e3e15818ec5b4c1d60c0c4a42b3c24e9c96b61a",
+    "t002a_deterministic": "48d20d23b1249bf8d743efd6847ddc4f66ef2c6a5251f0fadbc08542f47594e6"
+  },
+  "git_head": "2db33689d6ea4b506189f1654f6191b3df0f584c",
+  "inputs": {
+    "accepted_t001_csv": {
+      "path": "D:/Tradingbot/solana_memecoin_bot_phase1_v0_1/data/research/post24h/POST-24H-ANALYSIS-001/POST24H_T001_baseline_reproduction.csv",
+      "sha256": "fd67aa92bf44a8e6fdbcdcbc75e87910cc9fcaf9d2eed189042ada1caeef2e07"
+    },
+    "accepted_t002a_evidence": {
+      "path": "D:/Tradingbot/solana_memecoin_bot_phase1_v0_1/data/research/post24h/POST-24H-ANALYSIS-001/POST24H_T002A_foundation_evidence.json",
+      "sha256": "e4d39ba55a4997e86168d440b498e91c2eba2f7f4733de2d6d84e843a7ff2e56"
+    },
+    "paper_db": {
+      "path": "D:/Tradingbot/solana_memecoin_bot_phase1_v0_1/data/paper/multihour/phase4_firstpullback_multihour_20260827T123022_384349Z.sqlite3",
+      "readonly": true,
+      "sha256": "af1449aac08522fcfafad7faf5efa11ee0c1e21c09130e82e049758091d53932"
+    },
+    "source_db": {
+      "path": "D:/Tradingbot/solana_memecoin_bot_phase1_v0_1/data/db/tradingbot.sqlite3",
+      "readonly": true,
+      "sha256": "6d47437b92ab1083bec7153206700026860209cd6e7c3a7186067346af32d5ba"
+    }
+  },
+  "model_fingerprint": "e4dd31d45769cb4968dde2c9ee08f9f75ffb43e75d3f8bba183f8b5631ac0138",
+  "model_id": "P4-POST24H-OUTCOME-ANALYSIS-0001",
+  "models": {
+    "cost_model_fingerprint": "9652aeffc792eb48d62348360c6ae804f660e43329195d1f169219b80ccab67c",
+    "exit_impact_fingerprint": "e1f1fd1c786cc679cf54f45c16b5d9a0c6aff37ed4132ac63c8abc5506aea59d",
+    "exit_impact_model_id": "P4-RUNTIME-EXIT-PRICE-IMPACT-0001",
+    "t001": {
+      "fingerprint": "9ca0932c03c0a1a662f552c93273bcd69a46b035bdd068f8e6214b0a5d2d5607",
+      "model_id": "P4-POST24H-FROZEN-REPLAY-FOUNDATION-0001"
+    },
+    "t002a": {
+      "fingerprint": "0143ab9fed1e622d8818c976c7cf22352234c246e7375bceca0cad48d5aca583",
+      "model_id": "P4-POST24H-COUNTERFACTUAL-EXIT-REPLAY-0001"
+    }
+  },
+  "network_rpc_wallet_signing": false,
+  "new_policy_timeout_origin": "ENTRY_FILL_CLOCK",
+  "output_row_counts": {
+    "POST-24H-ANALYSIS-001_REPORT.md": 1,
+    "actual_baseline_summary.csv": 3,
+    "analysis_summary.json": 1,
+    "baseline_vs_replay.csv": 16,
+    "candidate_shortlist.csv": 10,
+    "entry_aligned_horizon_summary.csv": 11,
+    "entry_aligned_horizons.csv": 6985,
+    "entry_cohort.csv": 635,
+    "entry_cohort.json": 635,
+    "entry_mfe_mae.csv": 6985,
+    "entry_mfe_mae_summary.csv": 11,
+    "post_actual_exit_outcomes.csv": 9648,
+    "replay_policy_registry.csv": 275,
+    "replay_policy_summary.csv": 275,
+    "replay_trade_results.csv": 174625,
+    "segment_summary.csv": 156,
+    "sold_too_early_summary.csv": 252
+  },
+  "output_sha256": {
+    "POST-24H-ANALYSIS-001_REPORT.md": "70d9f4be7f55929a7c1f9ba6fc4a7d0a5b8a817335c2144bdce21ff49078fdc7",
+    "actual_baseline_summary.csv": "aed902ac63935168639c44b176bd9c8564c23e96b0d9b35857cfe3cf10ceed34",
+    "analysis_summary.json": "567d77312401489e6d59b517f746f3d19575d994e2d0b670c992b847fb467f21",
+    "baseline_vs_replay.csv": "1ec72beeeafd9e2f9041fa84e61b6be98138bd6ca20cff9557522ebe060a4a89",
+    "candidate_shortlist.csv": "21398a1d4296b505f51bebb33b8dab5872dac1d1f7e9af00c812b648b14a4c88",
+    "entry_aligned_horizon_summary.csv": "194638803a5b570f23295f297fc1e93920b40075c00869024c7c331823691a09",
+    "entry_aligned_horizons.csv": "6134cbeb756fd7f3973a01a8c2539c078cac95ec80b3f544306018ece1d55a96",
+    "entry_cohort.csv": "a613669b2b58b57a128f7b1f9bd847b6fc8fe206af3009f36ab4b409b471b91f",
+    "entry_cohort.json": "ba52ee532eb74d521a608ee8e654f5b9c27d99a4a173b4e8cec9aa48a05f0a2e",
+    "entry_mfe_mae.csv": "bacd1dcbc30a9d8c6b3427ae6e91294f6df2ac32c953a30e9a064fda15d47ecc",
+    "entry_mfe_mae_summary.csv": "2b3012f6c04f22f6aaaff4010e5354438ffac7aec715d651f440f25d9c84da9b",
+    "post_actual_exit_outcomes.csv": "91a22a1c5df0079a1a96fbdaec889763d8e4c62447d41e6e272ae27ebc83683c",
+    "replay_policy_registry.csv": "b283100c5baec3d4ca1179a7f6a0d8bd8979b284b64d5756c3b5a85be29314c3",
+    "replay_policy_summary.csv": "ca7025dc4ff34c4a17ceb9d6d762abc855ea5ea6cfb1df56013898153bac9234",
+    "replay_trade_results.csv": "69f4b3ed3e5ee1a18c7cbbbee39bfc05a01c0fd47991c00f96bc531b9d8f6182",
+    "segment_summary.csv": "1e0053a78333d081077f8dcac2d7e9b22687cc4bbee0450f9ed6a1ffb1c2f96c",
+    "sold_too_early_summary.csv": "d11dcd75fd0a3f2d4f0678dcdb78298d084d52fd822e68736ffbbd462eea2b85"
+  },
+  "percentile_method": "NEAREST_RANK_CEILING_1_INDEXED",
+  "policy_arrays": {
+    "matrix_timeouts_seconds": [
+      15,
+      30,
+      60,
+      120
+    ],
+    "sl_percent": [
+      10,
+      15,
+      20,
+      25,
+      30,
+      40
+    ],
+    "timeouts_seconds": [
+      15,
+      20,
+      30,
+      45,
+      60,
+      90,
+      120
+    ],
+    "tp_percent": [
+      10,
+      15,
+      20,
+      25,
+      30,
+      40,
+      50
+    ],
+    "trail_activation_percent": [
+      10,
+      15,
+      20,
+      25
+    ],
+    "trail_giveback_percent": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "trail_timeouts_seconds": [
+      15,
+      30,
+      60
+    ]
+  },
+  "policy_count": 275,
+  "policy_family_counts": {
+    "SL_TIMEOUT": 24,
+    "TIMEOUT_ONLY": 7,
+    "TP_SL_TIMEOUT": 168,
+    "TP_TIMEOUT": 28,
+    "TRAILING_TIMEOUT": 48
+  },
+  "replay_trade_results_canonical_sha256": "46b1bad8801d80535fb94813d86f267e28d7d3c9cff970ff3143b3bbfdda6ace",
+  "segmentation_quartile_boundaries": {
+    "entry_adverse_slippage_bps": {
+      "p25": 0,
+      "p50": 61,
+      "p75": 585
+    },
+    "entry_price_impact_bps": {
+      "p25": 23,
+      "p50": 26,
+      "p75": 31
+    }
+  },
+  "small_cell_n": 50,
+  "source": {
+    "anchor": 766710,
+    "cohort_normalized_rows": 97986,
+    "gap_rows": 0,
+    "normalized_rows": 196986,
+    "raw_rows": 396293,
+    "source_model_fingerprint": "9cb094f52bf4b4fe28dc4828b1d9a52a3350cde664c7da5a489fa84e9a4085a9",
+    "source_model_id": "P4-CONTINUOUS-MARKET-SOURCE-0002",
+    "watermark": 1163003
+  },
+  "threshold_reference": "FROZEN_PHASE4_RULE_REFERENCE"
+}
