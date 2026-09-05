@@ -1,0 +1,62 @@
+{
+  "task_id": "MEME-P5-T004B",
+  "implementation_status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "model_id": "P5-SHADOW-LIFECYCLE-BRIDGE-0001",
+  "model_fingerprint": "9d7d67786439d6fa3534a18c05ae3c78b701dadbdee3b07c3407830d0b68b645",
+  "focused_selftest": {
+    "command": ".codex_venv\\Scripts\\python.exe scripts\\phase5_shadow_lifecycle_bridge_selftest_v0_1.py",
+    "checks": "37/37",
+    "exit_code": 0,
+    "result": "PASS"
+  },
+  "required_regressions": [
+    {
+      "script": "scripts/phase5_shadow_continuous_source_bridge_selftest_v0_1.py",
+      "checks": "32/32",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "script": "scripts/phase5_shadow_domain_capability_firewall_selftest_v0_1.py",
+      "checks": "43/43",
+      "exit_code": 0,
+      "result": "PASS"
+    }
+  ],
+  "proofs": {
+    "expected_inventory_classification": "EXPECTED_SIMULATED_ONLY",
+    "inventory_requires_completed_successful_entry_chain": true,
+    "one_shared_entry_three_independent_exit_lanes": true,
+    "full_expected_inventory_per_exit_lane": true,
+    "shared_inventory_not_decremented": true,
+    "paper_outcome_not_shadow_outcome": true,
+    "negative_parent_classification": "NO_SHADOW_ENTRY_POSITION",
+    "exit_order": [
+      "requested_at",
+      "exit_intent_id"
+    ],
+    "nonterminal_parent_waits_without_cursor_advance": true,
+    "completed_parent_without_inventory_fails_closed": true,
+    "intent_registration_crash_safe": true,
+    "exit_evidence_crash_safe": true,
+    "no_position_evidence_crash_safe": true,
+    "phase4_sqlite_uri_mode": "ro",
+    "phase4_query_only": true,
+    "phase4_database_byte_identical": true,
+    "shadow_database_must_preexist_and_be_t004a_bound": true,
+    "sqlite_quick_check": "ok",
+    "restart_digest_deterministic": true
+  },
+  "adversarial_review": {
+    "additional_bugs_found_and_fixed": [
+      "malformed exit-side signal lineage could disappear behind an inner join",
+      "large expected token amounts could overflow signed SQLite INTEGER storage",
+      "T004B could create a second Shadow database before source-binding failure",
+      "inventory reload did not compare canonical JSON back to all persisted columns",
+      "T002 audit connection could leak if T003 audit opening failed"
+    ],
+    "remaining_blockers": []
+  },
+  "production_or_network_access_performed": false,
+  "commit_performed": false
+}
