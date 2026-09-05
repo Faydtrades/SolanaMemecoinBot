@@ -35,6 +35,7 @@ CONTRACT_SPEC: Mapping[str, Any] = {
     "source_access": "SQLITE_URI_MODE_RO_AND_QUERY_ONLY",
     "ordering": ["source_cursor", "signal_key"],
     "cardinality": "ONE_SHARED_SHADOW_ENTRY_PER_PHASE4_SIGNAL_ROUTE",
+    "entry_input_asset_unit": "SOL_LAMPORTS",
     "write_order": ["execution_intent", "immutable_lineage", "cursor"],
     "source_identity": [
         "resolved_database_path",
@@ -171,7 +172,7 @@ class Phase4EntrySourceV01:
             mint=self.mint,
             role=IntentRole.ENTRY,
             side=IntentSide.BUY,
-            input_asset="SOL",
+            input_asset="SOL_LAMPORTS",
             input_amount_base_units=self.requested_size_lamports,
             position_id=None,
             parent_entry_intent_id=None,

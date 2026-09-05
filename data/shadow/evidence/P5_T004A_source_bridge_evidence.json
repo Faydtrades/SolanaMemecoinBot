@@ -1,8 +1,9 @@
 {
   "task_id": "MEME-P5-T004A",
+  "correction_task_id": "MEME-P5-T004C0",
   "implementation_status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
   "model_id": "P5-SHADOW-CONTINUOUS-SOURCE-BRIDGE-0001",
-  "model_fingerprint": "4d663e239041236de6a446191635150cc5a288048f14c14f0790d5106ceed6a4",
+  "model_fingerprint": "085e3d1c3aad2eb03705d45df1327715cdd6d2a81795450faa8a9b977eb81cef",
   "focused_selftest": {
     "command": ".codex_venv\\Scripts\\python.exe scripts\\phase5_shadow_continuous_source_bridge_selftest_v0_1.py",
     "checks": "32/32",
@@ -31,6 +32,11 @@
     }
   ],
   "proofs": {
+    "entry_role": "ENTRY",
+    "entry_side": "BUY",
+    "entry_input_asset_unit": "SOL_LAMPORTS",
+    "entry_amount_source": "requested_size_lamports",
+    "real_entry_t002_quote_compatible": true,
     "phase4_sqlite_uri_mode": "ro",
     "phase4_query_only": true,
     "phase4_database_byte_identical": true,

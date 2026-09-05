@@ -8,7 +8,6 @@ import shutil
 import sqlite3
 import sys
 import tempfile
-from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -21,6 +20,7 @@ if str(SRC_ROOT) not in sys.path:
 
 import phase5_shadow_unsigned_plan_simulation_selftest_v0_1 as fx  # noqa: E402
 from phase5.shadow_continuous_source_bridge_v0_1 import (  # noqa: E402
+    CONTRACT_SPEC as T004A_CONTRACT_SPEC,
     MODEL_FINGERPRINT as T004A_FINGERPRINT,
     open_continuous_source_bridge,
 )
@@ -32,6 +32,7 @@ from phase5.shadow_domain_v0_1 import (  # noqa: E402
     ShadowState,
 )
 from phase5.shadow_lifecycle_bridge_v0_1 import (  # noqa: E402
+    CONTRACT_SPEC,
     EXPECTED_CLASSIFICATION,
     MODEL_FINGERPRINT,
     MODEL_ID,
@@ -61,7 +62,7 @@ BASE_US = fx.BASE_US
 BASE_AT = datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=BASE_US)
 MINT = fx.fx.MINT
 EXPECTED_T001 = "506312a81b6d8acc724cb27d6d450086bc3fc4986dcdea4831b998a3a8ec91e3"
-EXPECTED_T004A = "4d663e239041236de6a446191635150cc5a288048f14c14f0790d5106ceed6a4"
+EXPECTED_T004A = "085e3d1c3aad2eb03705d45df1327715cdd6d2a81795450faa8a9b977eb81cef"
 
 
 def text_at(offset_us: int) -> str:
@@ -299,26 +300,10 @@ def complete_entry_chain(shadow_path: Path, parent_id: str) -> tuple[Any, Any, A
     shadow = open_shadow_repository(shadow_path)
     parent = shadow.get_intent(parent_id)
     assert parent is not None
-    # T004A's locked source mapping names the input asset "SOL", while the
-    # accepted T002 quote factory names the same base-unit budget
-    # "SOL_LAMPORTS". Build the accepted economics with the T002 spelling,
-    # then rebind the immutable evidence objects to the exact T004A intent.
-    proxy = replace(parent, input_asset="SOL_LAMPORTS")
-    proxy_state, global_account = fx.make_pump_state(proxy)
-    state = replace(proxy_state, intent_id=parent.intent_id)
+    state, global_account = fx.make_pump_state(parent)
     route = fx.decide_route(parent, state, None)
-    proxy_route = fx.decide_route(proxy, proxy_state, None)
-    proxy_quote = fx.create_executable_quote(
-        proxy, proxy_state, proxy_route, QuotePolicyV01(100)
-    )
-    quote = replace(
-        proxy_quote,
-        intent_id=parent.intent_id,
-        intent_fingerprint=parent.fingerprint,
-        venue_state_id=state.state_id,
-        venue_state_fingerprint=state.fingerprint,
-        route_id=route.route_id,
-        route_fingerprint=route.fingerprint,
+    quote = fx.create_executable_quote(
+        parent, state, route, QuotePolicyV01(100)
     )
     actor = fx.PublicShadowActorV01(fx.ACTOR)
     policy = fx.TransactionPlanPolicyV01()
@@ -454,6 +439,15 @@ def main() -> int:
         )
         parent_id = bridge_entries(paper_a, shadow_a)[0]
         parent, quote, simulation_result = complete_entry_chain(shadow_a, parent_id)
+        check(
+            "A00_REAL_T004A_ENTRY_T002_QUOTE_COMPATIBLE",
+            parent.role is IntentRole.ENTRY
+            and parent.side is IntentSide.BUY
+            and parent.input_asset == "SOL_LAMPORTS"
+            and quote.intent_id == parent.intent_id
+            and quote.intent_fingerprint == parent.fingerprint,
+            checks,
+        )
         paper_hash_before = sha256(paper_a)
         with open_shadow_lifecycle_bridge(
             paper_a, shadow_a, candidate_run_id=RUN_ID
@@ -483,6 +477,27 @@ def main() -> int:
             buys = [item for item in intents if item["role"] == "ENTRY"]
             sells = [item for item in intents if item["role"] == "EXIT"]
             check("A05_ONE_SHARED_BUY_THREE_EXIT_INTENTS", len(buys) == 1 and len(sells) == 3, checks)
+            exit_quotes = []
+            for item in sells:
+                exit_intent = bridge._shadow.get_intent(item["intent_id"])
+                assert exit_intent is not None
+                exit_state, _ = fx.make_pump_state(exit_intent)
+                exit_route = fx.decide_route(exit_intent, exit_state, None)
+                exit_quotes.append(
+                    fx.create_executable_quote(
+                        exit_intent,
+                        exit_state,
+                        exit_route,
+                        QuotePolicyV01(100),
+                    )
+                )
+            check(
+                "A05B_REAL_T004B_EXITS_T002_QUOTE_COMPATIBLE",
+                len(exit_quotes) == 3
+                and all(item["input_asset"] == "MEME_BASE_UNITS" for item in sells)
+                and all(quote.intent_id == item["intent_id"] for quote, item in zip(exit_quotes, sells, strict=True)),
+                checks,
+            )
             check("A06_ALL_EXITS_SHARE_EXACT_PARENT", {item["parent_entry_intent_id"] for item in sells} == {parent.intent_id}, checks)
             check("A07_EACH_EXIT_USES_FULL_EXPECTED_AMOUNT", {item["input_amount_base_units"] for item in sells} == {inventory.expected_base_amount}, checks)
             states = {
@@ -737,11 +752,28 @@ def main() -> int:
         check("G01_NO_NETWORK_SIGNER_BROADCAST_CAPABILITY", not ({"requests", "httpx", "websockets", "solana"} & imports) and not any(item in flattened_text for item in prohibited), checks)
         exit_sql = raw_text.split("_exit_sql =", 1)[1].split('"""', 2)[1]
         check("G02_PHASE4_SQL_READ_ONLY", all(token not in exit_sql for token in ("insert ", "update ", "delete ", "create ", "drop ", "alter ")), checks)
-        check("G03_ACCEPTED_FINGERPRINTS_EXACT", T001_FINGERPRINT == EXPECTED_T001 and T004A_FINGERPRINT == EXPECTED_T004A and len(MODEL_FINGERPRINT) == 64, checks)
+        check("G03_ACCEPTED_FINGERPRINTS_EXACT", T001_FINGERPRINT == EXPECTED_T001 and T004A_FINGERPRINT == EXPECTED_T004A and T004A_CONTRACT_SPEC.get("entry_input_asset_unit") == "SOL_LAMPORTS" and CONTRACT_SPEC.get("exit_input_asset_unit") == "MEME_BASE_UNITS" and len(MODEL_FINGERPRINT) == 64, checks)
         nonexistent_shadow = root / "must_not_be_created.sqlite3"
         check("G04_NO_SECOND_SHADOW_DATABASE_CREATED", expect(Exception, lambda: open_shadow_lifecycle_bridge(paper_a, nonexistent_shadow, candidate_run_id=RUN_ID)) and not nonexistent_shadow.exists(), checks)
         protected_after = {str(path): sha256(path) for path in protected}
         check("G05_ACCEPTED_MODULES_UNCHANGED", protected_after == protected_before, checks)
+        test_tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+        check(
+            "G06_NO_RECONSTRUCTED_INTENT_WORKAROUND",
+            not any(
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Name)
+                and node.func.id == "replace"
+                for node in ast.walk(test_tree)
+            )
+            and not any(
+                isinstance(node, ast.ImportFrom)
+                and node.module == "dataclasses"
+                and any(alias.name == "replace" for alias in node.names)
+                for node in ast.walk(test_tree)
+            ),
+            checks,
+        )
     finally:
         shutil.rmtree(root)
 

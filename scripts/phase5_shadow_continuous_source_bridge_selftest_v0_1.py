@@ -19,6 +19,7 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from phase5.shadow_continuous_source_bridge_v0_1 import (  # noqa: E402
+    CONTRACT_SPEC,
     MODEL_FINGERPRINT,
     MODEL_ID,
     SourceBridgeError,
@@ -270,7 +271,7 @@ def main() -> int:
                 intent["mint"] == "mint-signal-a",
                 intent["role"] == IntentRole.ENTRY.value,
                 intent["side"] == IntentSide.BUY.value,
-                intent["input_asset"] == "SOL",
+                intent["input_asset"] == "SOL_LAMPORTS",
                 intent["input_amount_base_units"] == 100_000_000,
                 all(intent[name] is None for name in (
                     "position_id", "parent_entry_intent_id", "exit_decision_id",
@@ -504,7 +505,7 @@ def main() -> int:
         source_sql = (PROJECT_ROOT / "src" / "phase5" / "shadow_continuous_source_bridge_v0_1.py").read_text(encoding="utf-8")
         check("H02_NO_NETWORK_SIGNER_BROADCAST_CAPABILITY", not ({"requests", "post", "send_transaction", "sendrawtransaction", "keypair", "sign"} & call_names), checks)
         check("H03_PHASE4_SQL_SELECT_ONLY", all(token not in source_sql.upper().split("_SOURCE_SQL =", 1)[1].split('"""', 2)[1] for token in ("INSERT ", "UPDATE ", "DELETE ", "CREATE ", "DROP ", "ALTER ")), checks)
-        check("H04_MODEL_ID_AND_FINGERPRINT", MODEL_ID == "P5-SHADOW-CONTINUOUS-SOURCE-BRIDGE-0001" and len(MODEL_FINGERPRINT) == 64 and T001_FINGERPRINT == EXPECTED_T001_FINGERPRINT, checks)
+        check("H04_MODEL_ID_AND_FINGERPRINT", MODEL_ID == "P5-SHADOW-CONTINUOUS-SOURCE-BRIDGE-0001" and len(MODEL_FINGERPRINT) == 64 and CONTRACT_SPEC.get("entry_input_asset_unit") == "SOL_LAMPORTS" and T001_FINGERPRINT == EXPECTED_T001_FINGERPRINT, checks)
         check("H05_SOURCE_SHADOW_SAME_FILE_REJECTED", expect(SourceBridgeError, lambda: open_continuous_source_bridge(paper_h, paper_h, candidate_run_id=RUN_ID)), checks)
         check("H06_SHADOW_OUTSIDE_DATA_SHADOW_REJECTED", expect(SourceBridgeError, lambda: open_continuous_source_bridge(paper_h, PROJECT_ROOT / "forbidden_t004a.sqlite3", candidate_run_id=RUN_ID)), checks)
 

@@ -69,6 +69,7 @@ CONTRACT_SPEC: Mapping[str, Any] = {
     ),
     "exit_order": ["requested_at", "exit_intent_id"],
     "exit_lanes": ["FINAL-A", "FINAL-B", "SENS-C"],
+    "exit_input_asset_unit": "MEME_BASE_UNITS",
     "exit_amount": "FULL_EXPECTED_INVENTORY_PER_HYPOTHETICAL_TRACK",
     "no_position_classification": NO_POSITION_CLASSIFICATION,
     "shadow_database": "EXISTING_T004A_BOUND_DATABASE_ONLY",
@@ -942,7 +943,7 @@ class ShadowLifecycleBridgeV01:
             mint=source.mint,
             role=IntentRole.EXIT,
             side=IntentSide.SELL,
-            input_asset=source.mint,
+            input_asset="MEME_BASE_UNITS",
             input_amount_base_units=inventory.expected_base_amount,
             position_id=deterministic_track_position_id(
                 parent.intent_id, source.track_id

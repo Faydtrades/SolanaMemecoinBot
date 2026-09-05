@@ -1,11 +1,12 @@
 {
   "task_id": "MEME-P5-T004B",
+  "correction_task_id": "MEME-P5-T004C0",
   "implementation_status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
   "model_id": "P5-SHADOW-LIFECYCLE-BRIDGE-0001",
-  "model_fingerprint": "9d7d67786439d6fa3534a18c05ae3c78b701dadbdee3b07c3407830d0b68b645",
+  "model_fingerprint": "9300fb7d39a16997be5c6a401483b86bd3c490a7d86b623dc6d12bfa379aef6d",
   "focused_selftest": {
     "command": ".codex_venv\\Scripts\\python.exe scripts\\phase5_shadow_lifecycle_bridge_selftest_v0_1.py",
-    "checks": "37/37",
+    "checks": "40/40",
     "exit_code": 0,
     "result": "PASS"
   },
@@ -21,9 +22,29 @@
       "checks": "43/43",
       "exit_code": 0,
       "result": "PASS"
+    },
+    {
+      "script": "scripts/phase5_shadow_venue_route_quote_selftest_v0_1.py",
+      "checks": "100/100",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "script": "scripts/phase5_shadow_unsigned_plan_simulation_selftest_v0_1.py",
+      "checks": "116/116",
+      "exit_code": 0,
+      "result": "PASS"
     }
   ],
   "proofs": {
+    "real_t004a_entry_t002_quote_compatible": true,
+    "entry_input_asset_unit": "SOL_LAMPORTS",
+    "exit_role": "EXIT",
+    "exit_side": "SELL",
+    "exit_input_asset_unit": "MEME_BASE_UNITS",
+    "exit_amount_source": "expected_inventory_base_token_units",
+    "real_t004b_exit_t002_quote_compatible": true,
+    "proxy_or_reconstructed_intent_workaround": false,
     "expected_inventory_classification": "EXPECTED_SIMULATED_ONLY",
     "inventory_requires_completed_successful_entry_chain": true,
     "one_shared_entry_three_independent_exit_lanes": true,
