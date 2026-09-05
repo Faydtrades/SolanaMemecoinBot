@@ -1,0 +1,58 @@
+{
+  "task_id": "MEME-P5-T004C1",
+  "implementation_status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "model_id": "P5-STRICT-READONLY-SOLANA-JSON-RPC-0001",
+  "model_fingerprint": "2560bd15e362c5c133f21845734455ee74b8684827cca1a882f0d8b08eb710c5",
+  "supported_rpc_methods": [
+    "getMultipleAccounts",
+    "getLatestBlockhash",
+    "getBlockHeight",
+    "isBlockhashValid",
+    "simulateTransaction"
+  ],
+  "transport": {
+    "library": "httpx",
+    "version": "0.28.1",
+    "synchronous_client": true,
+    "content_type": "application/json",
+    "connect_timeout_seconds": 10,
+    "read_timeout_seconds": 20,
+    "automatic_retries": 0,
+    "real_network_used_in_tests": false
+  },
+  "validation_proofs": {
+    "json_rpc_version_and_response_id": true,
+    "error_and_missing_result_fail_closed": true,
+    "strict_utf8_json_and_unique_keys": true,
+    "bool_not_accepted_as_integer": true,
+    "account_order_and_nulls_preserved": true,
+    "base64_validated_without_json_parsed": true,
+    "simulation_config_exact": true,
+    "downstream_simulation_failure_payload_preserved": true,
+    "rpc_url_omitted_from_typed_error_messages": true
+  },
+  "capability_fence": {
+    "public_rpc_method_count": 5,
+    "arbitrary_rpc_method_api": false,
+    "signer_or_secret_material": false,
+    "transaction_submission_capability": false,
+    "websocket_capability": false
+  },
+  "tests": [
+    {"script": "scripts/phase5_shadow_readonly_rpc_selftest_v0_1.py", "checks": "59/59", "exit_code": 0, "result": "PASS"},
+    {"script": "scripts/phase5_shadow_venue_route_quote_selftest_v0_1.py", "checks": "100/100", "exit_code": 0, "result": "PASS"},
+    {"script": "scripts/phase5_shadow_unsigned_plan_simulation_selftest_v0_1.py", "checks": "116/116", "exit_code": 0, "result": "PASS"},
+    {"script": "scripts/phase5_shadow_domain_capability_firewall_selftest_v0_1.py", "checks": "43/43", "exit_code": 0, "result": "PASS"}
+  ],
+  "adversarial_review": {
+    "additional_hardening": [
+      "duplicate JSON object keys rejected",
+      "non-standard JSON numeric constants rejected",
+      "standard optional apiVersion context retained",
+      "typed errors suppress credential-bearing transport details"
+    ],
+    "remaining_blockers": []
+  },
+  "git_diff_check": "PASS",
+  "commit_performed": false
+}
