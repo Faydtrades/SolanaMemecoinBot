@@ -1,0 +1,267 @@
+{
+  "accepted_cohort": {
+    "computed_sha256": "167dd087ab516996b8cc174a5a55cc1b7b3d9f7b86970ac01f598cd82c121f52",
+    "count": 635,
+    "exact_match": true,
+    "expected_sha256": "167dd087ab516996b8cc174a5a55cc1b7b3d9f7b86970ac01f598cd82c121f52"
+  },
+  "actual_exit_route_required_for_counterfactual_execution": false,
+  "deterministic_rerun": "EXACT",
+  "execution_models": {
+    "cost_model_fingerprint": "9652aeffc792eb48d62348360c6ae804f660e43329195d1f169219b80ccab67c",
+    "exit_impact_fingerprint": "e1f1fd1c786cc679cf54f45c16b5d9a0c6aff37ed4132ac63c8abc5506aea59d",
+    "exit_impact_model_id": "P4-RUNTIME-EXIT-PRICE-IMPACT-0001",
+    "exit_latency_ms": 500,
+    "slippage_cap_bps": 2000,
+    "t001_model_fingerprint": "9ca0932c03c0a1a662f552c93273bcd69a46b035bdd068f8e6214b0a5d2d5607"
+  },
+  "frozen_baseline": {
+    "comparison_fields": [
+      "track_id",
+      "exit_variant",
+      "signal_key",
+      "mint",
+      "paper_position_id",
+      "replay_exit_state",
+      "exit_reason",
+      "exit_requested_at",
+      "trigger_source_row",
+      "fill_source_row",
+      "trigger_observed_at",
+      "fill_observed_at",
+      "execution_rejection_state",
+      "execution_attempt_count",
+      "entry_principal_lamports",
+      "entry_explicit_cost_lamports",
+      "gross_exit_proceeds_lamports",
+      "exit_explicit_cost_lamports",
+      "gross_execution_pnl_lamports",
+      "net_pnl_lamports",
+      "holding_time_us",
+      "reference_source",
+      "exit_price_numerator_raw",
+      "exit_price_denominator_raw"
+    ],
+    "exact_comparison": true,
+    "fills": 1608,
+    "policies": {
+      "FINAL-A": {
+        "family": "TP_TIMEOUT",
+        "fingerprint": "e255a3047ad32f11b633fdc36f4c8812cce639167b4897dc4e6753866c133749",
+        "policy_id": "FINAL-A",
+        "sl_bps": null,
+        "timeout_ms": 15000,
+        "timeout_origin": "PHASE4_SIGNAL_CLOCK",
+        "tp_bps": 1000,
+        "trailing_activation_bps": null,
+        "trailing_giveback_bps": null
+      },
+      "FINAL-B": {
+        "family": "TRAILING_TIMEOUT",
+        "fingerprint": "ae44971c0926291bad252957db07be9a9f906e94c1c15d59a77b03b7b3d2c8da",
+        "policy_id": "FINAL-B",
+        "sl_bps": null,
+        "timeout_ms": 15000,
+        "timeout_origin": "PHASE4_SIGNAL_CLOCK",
+        "tp_bps": null,
+        "trailing_activation_bps": 1000,
+        "trailing_giveback_bps": 300
+      },
+      "SENS-C": {
+        "family": "TP_TIMEOUT",
+        "fingerprint": "a2dae8295f5d1ae99fa20edacb0f12d27828d39d0781811f1c0b96c2bd0ba13b",
+        "policy_id": "SENS-C",
+        "sl_bps": null,
+        "timeout_ms": 5000,
+        "timeout_origin": "PHASE4_SIGNAL_CLOCK",
+        "tp_bps": 2000,
+        "trailing_activation_bps": null,
+        "trailing_giveback_bps": null
+      }
+    },
+    "positions": 1693,
+    "summary": {
+      "FINAL-A": {
+        "FALLBACK": 437,
+        "TAKE_PROFIT": 170,
+        "completed": 607,
+        "entry_explicit_cost_lamports": 1429485000,
+        "execution_attempts": 2431,
+        "exit_explicit_cost_lamports": 1440326321,
+        "gross_execution_pnl_lamports": 867281418,
+        "net_pnl_lamports": -2002529903,
+        "no_causal_fill": 8,
+        "pending": 28,
+        "positions": 635,
+        "slippage_unresolved": 20
+      },
+      "FINAL-B": {
+        "FALLBACK": 523,
+        "TRAIL": 83,
+        "completed": 606,
+        "entry_explicit_cost_lamports": 1427130000,
+        "execution_attempts": 3192,
+        "exit_explicit_cost_lamports": 1438576448,
+        "gross_execution_pnl_lamports": 915692495,
+        "net_pnl_lamports": -1950013953,
+        "no_causal_fill": 8,
+        "pending": 29,
+        "positions": 635,
+        "slippage_unresolved": 21
+      },
+      "SENS-C": {
+        "FALLBACK": 371,
+        "TAKE_PROFIT": 24,
+        "completed": 395,
+        "entry_explicit_cost_lamports": 930225000,
+        "execution_attempts": 1437,
+        "exit_explicit_cost_lamports": 944324621,
+        "gross_execution_pnl_lamports": 1127954477,
+        "net_pnl_lamports": -746595144,
+        "no_causal_fill": 5,
+        "pending": 28,
+        "positions": 423,
+        "slippage_unresolved": 23
+      }
+    },
+    "unresolved": 85
+  },
+  "generic_baseline_digest": "3ee403382569ac1f041da4798e3e15818ec5b4c1d60c0c4a42b3c24e9c96b61a",
+  "head": "d89df67f91b46400fcef1232f4741c328b9f9dfe",
+  "model_fingerprint": "0143ab9fed1e622d8818c976c7cf22352234c246e7375bceca0cad48d5aca583",
+  "model_id": "P4-POST24H-COUNTERFACTUAL-EXIT-REPLAY-0001",
+  "passed": 24,
+  "result": "PASS",
+  "t001_replay_digest": "3ee403382569ac1f041da4798e3e15818ec5b4c1d60c0c4a42b3c24e9c96b61a",
+  "t002a_deterministic_digest": "48d20d23b1249bf8d743efd6847ddc4f66ef2c6a5251f0fadbc08542f47594e6",
+  "task_id": "POST24H-T002A",
+  "test_count": 24,
+  "test_results": [
+    {
+      "detail": "exact",
+      "name": "timeout-only policy",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "TP-only plus timeout",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "SL-only plus timeout",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "TP+SL first causal crossing",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "exact-deadline market observation beats timeout",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "post-deadline observation loses to timeout",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "trailing activation peak giveback",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "pre-entry observation ignored",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "gap recovery cannot trigger",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "wrong price identity cannot trigger",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "cross-mint observation cannot trigger",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "500ms latency and exact-ready eligibility",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "rejected slippage later fills",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "repeated slippage remains unresolved",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "no post-ready price is no causal fill",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "invalid policy configurations fail closed",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "timeout origins are distinct",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "threshold uses frozen rule reference",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "frozen watermark enforced",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "conflicting duplicate identity fails closed",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "execution validates watermark beyond terminal fill",
+      "passed": true
+    },
+    {
+      "detail": "exact",
+      "name": "deterministic rerun",
+      "passed": true
+    },
+    {
+      "detail": "1693 positions / 1608 fills / 85 unresolved / exact field comparison",
+      "name": "frozen FINAL-A FINAL-B SENS-C exact baseline",
+      "passed": true
+    },
+    {
+      "detail": "d89df67f91b46400fcef1232f4741c328b9f9dfe",
+      "name": "required Git HEAD",
+      "passed": true
+    }
+  ],
+  "timeout_origin_semantics": {
+    "ENTRY_FILL_CLOCK": "entry_observed_at + timeout_ms",
+    "PHASE4_SIGNAL_CLOCK": "signal_observed_at + timeout_ms",
+    "exact_deadline_market_eligible": true,
+    "timeout_fire_offset_us": 1
+  }
+}

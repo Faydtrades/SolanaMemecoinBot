@@ -380,12 +380,191 @@ def _reference(intent: Any, track: Any) -> tuple[str, datetime, int, int, int]:
             int(track.rule_reference_price_numerator_raw), int(track.rule_reference_price_denominator_raw))
 
 
+@dataclass(frozen=True, slots=True)
+class ReplayExecutionInputV01:
+    signal_key: str
+    mint: str
+    price_identity: str
+    entry_observed_at: datetime
+    entry_ingest_seq: int
+    open_at: datetime
+    entry_principal_lamports: int
+    entry_price_numerator_raw: int
+    entry_price_denominator_raw: int
+    entry_explicit_cost_lamports: int
+    exit_reason: str
+    requested_at: datetime
+    reference_source: str
+    reference_observed_at: datetime
+    reference_ingest_seq: int
+    reference_price_numerator_raw: int
+    reference_price_denominator_raw: int
+
+
+@dataclass(frozen=True, slots=True)
+class ReplayExecutionOutcomeV01:
+    exit_state: str
+    rejection_state: str | None
+    attempt_count: int
+    fill_source_row: int | None
+    fill_source_event_key: str | None
+    fill_observed_at: datetime | None
+    exit_price_numerator_raw: int | None
+    exit_price_denominator_raw: int | None
+    gross_exit_proceeds_lamports: int | None
+    exit_explicit_cost_lamports: int | None
+    gross_execution_pnl_lamports: int | None
+    net_pnl_lamports: int | None
+    holding_time_us: int | None
+
+
+def execute_exit_intent_v0_1(
+    execution: ReplayExecutionInputV01,
+    path: Iterable[ContinuousMarketSourceRecordV02],
+    *,
+    frozen_watermark: int = FROZEN_WATERMARK,
+) -> ReplayExecutionOutcomeV01:
+    """Execute one explicit exit intent with the accepted Phase-4 economics.
+
+    This pure research helper has no dependency on ACTUAL exit intent/route
+    tables. The T001 verification layer remains responsible for comparing its
+    result to persisted ACTUAL truth.
+    """
+    cost_model = PaperCostModelV02(P4_COST_BASELINE_0001)
+    ready = cost_model.execution_ready_at(execution.requested_at, CostSide.EXIT)
+    attempts = 0
+    selected: dict[str, Any] | None = None
+    last_attempt_key: tuple[datetime, int] | None = None
+    unique_path: list[ContinuousMarketSourceRecordV02] = []
+    seen_source_keys: dict[tuple[datetime, int], ContinuousMarketSourceRecordV02] = {}
+    for obs in path:
+        if obs.ingest_seq > frozen_watermark:
+            raise ReplayMismatch(f"execution source row exceeds frozen watermark: {obs.ingest_seq}")
+        source_key = (obs.observed_at, obs.ingest_seq)
+        prior = seen_source_keys.get(source_key)
+        if prior is not None:
+            if prior != obs:
+                raise ReplayMismatch(
+                    "same execution observed_at + ingest_seq has conflicting source content"
+                )
+            continue
+        seen_source_keys[source_key] = obs
+        unique_path.append(obs)
+    ordered_path = sorted(unique_path, key=lambda obs: (obs.observed_at, obs.ingest_seq))
+    for obs in ordered_path:
+        if obs.mint != execution.mint:
+            continue
+        if obs.is_gap_recovery or obs.price_identity != execution.price_identity:
+            continue
+        if obs.ingest_seq <= execution.entry_ingest_seq:
+            continue
+        if (obs.observed_at, obs.ingest_seq) <= (
+            execution.entry_observed_at,
+            execution.entry_ingest_seq,
+        ):
+            continue
+        if obs.observed_at < ready or (obs.observed_at, obs.ingest_seq) <= (
+            execution.reference_observed_at,
+            execution.reference_ingest_seq,
+        ):
+            continue
+        observation_key = (obs.observed_at, obs.ingest_seq)
+        if last_attempt_key is not None and observation_key < last_attempt_key:
+            continue
+        impact = RuntimeExitPriceImpactV01.for_position(
+            price_identity=execution.price_identity,
+            filled_size_lamports=execution.entry_principal_lamports,
+            entry_price_numerator_raw=execution.entry_price_numerator_raw,
+            entry_price_denominator_raw=execution.entry_price_denominator_raw,
+            current_virtual_token_reserve_raw=obs.current_virtual_token_reserve_raw,
+        )
+        if not impact.available:
+            continue
+        fill = cost_model.evaluate_fill(
+            side=CostSide.EXIT,
+            signal_reference_price=RationalPrice(
+                execution.price_identity,
+                execution.reference_price_numerator_raw,
+                execution.reference_price_denominator_raw,
+            ),
+            market_price_at_ready=RationalPrice(
+                execution.price_identity,
+                obs.price_numerator_raw,
+                obs.price_denominator_raw,
+            ),
+            price_impact_bps=int(impact.router_price_impact_bps),
+            signal_observed_at=execution.requested_at,
+            market_observed_at=obs.observed_at,
+        )
+        attempts += 1
+        last_attempt_key = observation_key
+        if fill.decision is FillDecision.REJECTED_SLIPPAGE:
+            continue
+        gross = (
+            int(impact.derived_token_input_raw)
+            * fill.simulated_execution_price.numerator_raw
+        ) // fill.simulated_execution_price.denominator_raw
+        costs = cost_model.explicit_costs(side=CostSide.EXIT, notional_lamports=gross)
+        selected = {
+            "fill_source_row": obs.ingest_seq,
+            "fill_source_event_key": f"{obs.event_key}:MARKET",
+            "fill_observed_at": obs.observed_at,
+            "exit_price_numerator_raw": fill.simulated_execution_price.numerator_raw,
+            "exit_price_denominator_raw": fill.simulated_execution_price.denominator_raw,
+            "gross_exit_proceeds_lamports": gross,
+            "exit_explicit_cost_lamports": costs.total_explicit_cost_lamports,
+        }
+        break
+
+    if selected is None:
+        return ReplayExecutionOutcomeV01(
+            exit_state="UNRESOLVED",
+            rejection_state="REJECTED_SLIPPAGE" if attempts else "NO_CAUSAL_FILL",
+            attempt_count=attempts,
+            fill_source_row=None,
+            fill_source_event_key=None,
+            fill_observed_at=None,
+            exit_price_numerator_raw=None,
+            exit_price_denominator_raw=None,
+            gross_exit_proceeds_lamports=None,
+            exit_explicit_cost_lamports=None,
+            gross_execution_pnl_lamports=None,
+            net_pnl_lamports=None,
+            holding_time_us=None,
+        )
+
+    gross_exit = int(selected["gross_exit_proceeds_lamports"])
+    exit_cost = int(selected["exit_explicit_cost_lamports"])
+    fill_at = selected["fill_observed_at"]
+    if not isinstance(fill_at, datetime):
+        raise ReplayMismatch("selected fill has no datetime observation")
+    return ReplayExecutionOutcomeV01(
+        exit_state="FILLED",
+        rejection_state="REJECTED_THEN_FILLED" if attempts > 1 else None,
+        attempt_count=attempts,
+        fill_source_row=int(selected["fill_source_row"]),
+        fill_source_event_key=str(selected["fill_source_event_key"]),
+        fill_observed_at=fill_at,
+        exit_price_numerator_raw=int(selected["exit_price_numerator_raw"]),
+        exit_price_denominator_raw=int(selected["exit_price_denominator_raw"]),
+        gross_exit_proceeds_lamports=gross_exit,
+        exit_explicit_cost_lamports=exit_cost,
+        gross_execution_pnl_lamports=gross_exit - execution.entry_principal_lamports,
+        net_pnl_lamports=(
+            gross_exit
+            - execution.entry_principal_lamports
+            - execution.entry_explicit_cost_lamports
+            - exit_cost
+        ),
+        holding_time_us=int((fill_at - execution.open_at).total_seconds() * 1_000_000),
+    )
+
+
 def replay_executions(
     paper_db: str | Path,
     replay: dict[str, Any],
     paths: dict[str, tuple[ContinuousMarketSourceRecordV02, ...]],
 ) -> tuple[list[dict[str, Any]], dict[str, Any], str]:
-    cost_model = PaperCostModelV02(P4_COST_BASELINE_0001)
     with _ro(paper_db) as conn:
         actual_routes = {r["paper_position_id"]: dict(r) for r in conn.execute("SELECT * FROM paper_exit_execution_routes")}
         actual_attempts = Counter(r["paper_position_id"] for r in conn.execute("SELECT paper_position_id FROM paper_exit_execution_attempts"))
@@ -401,98 +580,70 @@ def replay_executions(
     mismatches: list[str] = []
     for position_id, (ref, intent, track) in replay.items():
         source, ref_at, ref_seq, ref_num, ref_den = _reference(intent, track)
-        ready = cost_model.execution_ready_at(intent.requested_at, CostSide.EXIT)
-        attempts = 0
-        selected: dict[str, Any] | None = None
-        last_attempt_key: tuple[datetime, int] | None = None
         principal, e_cost = entry_economics[ref.signal_key]
-        for obs in paths.get(ref.mint, ()):
-            if obs.is_gap_recovery or obs.price_identity != ref.price_identity:
-                continue
-            if not is_post_entry_source_row(ref, obs.ingest_seq):
-                continue
-            if obs.observed_at < ready or (obs.observed_at, obs.ingest_seq) <= (ref_at, ref_seq):
-                continue
-            observation_key = (obs.observed_at, obs.ingest_seq)
-            if last_attempt_key is not None and observation_key < last_attempt_key:
-                continue
-            impact = RuntimeExitPriceImpactV01.for_position(
-                price_identity=ref.price_identity, filled_size_lamports=principal,
+        outcome = execute_exit_intent_v0_1(
+            ReplayExecutionInputV01(
+                signal_key=ref.signal_key,
+                mint=ref.mint,
+                price_identity=ref.price_identity,
+                entry_observed_at=ref.entry_market_observed_at,
+                entry_ingest_seq=ref.entry_market_ingest_seq,
+                open_at=ref.open_at,
+                entry_principal_lamports=principal,
                 entry_price_numerator_raw=ref.entry_price_numerator_raw,
                 entry_price_denominator_raw=ref.entry_price_denominator_raw,
-                current_virtual_token_reserve_raw=obs.current_virtual_token_reserve_raw,
-            )
-            if not impact.available:
-                continue
-            fill = cost_model.evaluate_fill(
-                side=CostSide.EXIT,
-                signal_reference_price=RationalPrice(ref.price_identity, ref_num, ref_den),
-                market_price_at_ready=RationalPrice(ref.price_identity, obs.price_numerator_raw, obs.price_denominator_raw),
-                price_impact_bps=int(impact.router_price_impact_bps),
-                signal_observed_at=intent.requested_at, market_observed_at=obs.observed_at,
-            )
-            attempts += 1
-            last_attempt_key = observation_key
-            if fill.decision is FillDecision.REJECTED_SLIPPAGE:
-                continue
-            gross = (int(impact.derived_token_input_raw) * fill.simulated_execution_price.numerator_raw) // fill.simulated_execution_price.denominator_raw
-            costs = cost_model.explicit_costs(side=CostSide.EXIT, notional_lamports=gross)
-            selected = {
-                "fill_source_row": obs.ingest_seq, "fill_source_event_key": f"{obs.event_key}:MARKET",
-                "fill_observed_at": obs.observed_at.isoformat(timespec="microseconds"),
-                "exit_price_numerator_raw": fill.simulated_execution_price.numerator_raw,
-                "exit_price_denominator_raw": fill.simulated_execution_price.denominator_raw,
-                "gross_exit_proceeds_lamports": gross,
-                "exit_explicit_cost_lamports": costs.total_explicit_cost_lamports,
-            }
-            break
+                entry_explicit_cost_lamports=e_cost,
+                exit_reason=intent.reason.value,
+                requested_at=intent.requested_at,
+                reference_source=source,
+                reference_observed_at=ref_at,
+                reference_ingest_seq=ref_seq,
+                reference_price_numerator_raw=ref_num,
+                reference_price_denominator_raw=ref_den,
+            ),
+            paths.get(ref.mint, ()),
+        )
 
         actual = actual_routes.get(position_id)
         if actual is None:
             mismatches.append(f"{position_id}:missing actual route")
             continue
         actual_filled = actual["state"] == "FILLED"
-        if actual_filled != (selected is not None):
-            mismatches.append(f"{position_id}:fill-state replay={selected is not None} actual={actual['state']}")
-        if attempts != actual_attempts[position_id]:
-            mismatches.append(f"{position_id}:attempts replay={attempts} actual={actual_attempts[position_id]}")
-        if selected is not None:
+        if actual_filled != (outcome.exit_state == "FILLED"):
+            mismatches.append(f"{position_id}:fill-state replay={outcome.exit_state} actual={actual['state']}")
+        if outcome.attempt_count != actual_attempts[position_id]:
+            mismatches.append(f"{position_id}:attempts replay={outcome.attempt_count} actual={actual_attempts[position_id]}")
+        if outcome.exit_state == "FILLED":
             pairs = {
-                "fill_source_row": (selected["fill_source_row"], actual["selected_market_ingest_seq"]),
-                "gross": (selected["gross_exit_proceeds_lamports"], actual["gross_exit_proceeds_lamports"]),
-                "exit_cost": (selected["exit_explicit_cost_lamports"], actual["total_exit_explicit_cost_lamports"]),
-                "price_num": (selected["exit_price_numerator_raw"], int(actual["simulated_exit_price_numerator_raw"])),
-                "price_den": (selected["exit_price_denominator_raw"], int(actual["simulated_exit_price_denominator_raw"])),
+                "fill_source_row": (outcome.fill_source_row, actual["selected_market_ingest_seq"]),
+                "gross": (outcome.gross_exit_proceeds_lamports, actual["gross_exit_proceeds_lamports"]),
+                "exit_cost": (outcome.exit_explicit_cost_lamports, actual["total_exit_explicit_cost_lamports"]),
+                "price_num": (outcome.exit_price_numerator_raw, int(actual["simulated_exit_price_numerator_raw"])),
+                "price_den": (outcome.exit_price_denominator_raw, int(actual["simulated_exit_price_denominator_raw"])),
             }
             for label, pair in pairs.items():
                 if pair[0] != pair[1]:
                     mismatches.append(f"{position_id}:{label}:{pair[0]}!={pair[1]}")
 
-        gross_exit = 0 if selected is None else selected["gross_exit_proceeds_lamports"]
-        x_cost = 0 if selected is None else selected["exit_explicit_cost_lamports"]
         row = {
             "track_id": ref.track_id, "exit_variant": ref.exit_variant,
             "signal_key": ref.signal_key, "mint": ref.mint, "paper_position_id": position_id,
-            "replay_exit_state": "FILLED" if selected else "UNRESOLVED",
+            "replay_exit_state": outcome.exit_state,
             "exit_reason": intent.reason.value,
             "exit_requested_at": intent.requested_at.isoformat(timespec="microseconds"),
             "trigger_source_row": intent.trigger_ingest_seq,
-            "fill_source_row": None if selected is None else selected["fill_source_row"],
+            "fill_source_row": outcome.fill_source_row,
             "trigger_observed_at": None if intent.trigger_observed_at is None else intent.trigger_observed_at.isoformat(timespec="microseconds"),
-            "fill_observed_at": None if selected is None else selected["fill_observed_at"],
-            "execution_rejection_state": (
-                "REJECTED_THEN_FILLED" if selected is not None and attempts > 1
-                else None if selected is not None
-                else "REJECTED_SLIPPAGE" if attempts else "NO_CAUSAL_FILL"
-            ),
-            "execution_attempt_count": attempts,
+            "fill_observed_at": None if outcome.fill_observed_at is None else outcome.fill_observed_at.isoformat(timespec="microseconds"),
+            "execution_rejection_state": outcome.rejection_state,
+            "execution_attempt_count": outcome.attempt_count,
             "entry_principal_lamports": principal,
             "entry_explicit_cost_lamports": e_cost,
-            "gross_exit_proceeds_lamports": None if selected is None else gross_exit,
-            "exit_explicit_cost_lamports": None if selected is None else x_cost,
-            "gross_execution_pnl_lamports": None if selected is None else gross_exit - principal,
-            "net_pnl_lamports": None if selected is None else gross_exit - principal - e_cost - x_cost,
-            "holding_time_us": None if selected is None else int((_dt(selected["fill_observed_at"]) - ref.open_at).total_seconds() * 1_000_000),
+            "gross_exit_proceeds_lamports": outcome.gross_exit_proceeds_lamports,
+            "exit_explicit_cost_lamports": outcome.exit_explicit_cost_lamports,
+            "gross_execution_pnl_lamports": outcome.gross_execution_pnl_lamports,
+            "net_pnl_lamports": outcome.net_pnl_lamports,
+            "holding_time_us": outcome.holding_time_us,
             "reference_source": source,
         }
         output.append(row)
