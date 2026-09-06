@@ -40,6 +40,37 @@ from .shadow_unsigned_plan_simulation_v0_1 import (
 
 _OPEN_TOKEN = object()
 
+# Persistence has its own contract: the accepted economic/model identities above
+# and the state transition helpers below are deliberately unchanged.
+LEGACY_PERSISTENCE_SCHEMA_VERSION = "phase5_shadow_simulation_persistence_v0.1"
+PERSISTENCE_SCHEMA_VERSION = "phase5_shadow_simulation_persistence_v0.2"
+LEGACY_PERSISTENCE_CONTRACT = {
+    "schema_version": LEGACY_PERSISTENCE_SCHEMA_VERSION,
+    "instruction_occurrence_uniqueness": [["plan_id", "sequence"], ["instruction_id"]],
+    "instruction_identity": "P5IX_CONTENT_FINGERPRINT_UNCHANGED",
+    "evidence": "APPEND_ONLY_EXACT_REPLAY",
+}
+LEGACY_PERSISTENCE_FINGERPRINT = content_fingerprint(LEGACY_PERSISTENCE_CONTRACT)
+PERSISTENCE_CONTRACT = {
+    **LEGACY_PERSISTENCE_CONTRACT,
+    "schema_version": PERSISTENCE_SCHEMA_VERSION,
+    "instruction_occurrence_uniqueness": [["plan_id", "sequence"], ["plan_id", "instruction_id"]],
+    "legacy_migration": "ATOMIC_EXACT_ROWS_AUDIT_AND_FOREIGN_KEYS_OR_ROLLBACK",
+}
+PERSISTENCE_FINGERPRINT = content_fingerprint(PERSISTENCE_CONTRACT)
+
+
+def _execute_schema_sql(conn: sqlite3.Connection, script: str) -> None:
+    """Unlike executescript(), never implicitly commits the initialization txn."""
+    statement = ""
+    for line in script.splitlines(keepends=True):
+        statement += line
+        if sqlite3.complete_statement(statement):
+            conn.execute(statement)
+            statement = ""
+    if statement.strip():
+        raise ShadowDeterminismConflict("incomplete repository schema statement")
+
 
 def _is_within(path: Path, root: Path) -> bool:
     try:
@@ -72,7 +103,7 @@ def _append_only_triggers(table: str) -> str:
 
 
 def _create_schema(conn: sqlite3.Connection) -> None:
-    conn.executescript(
+    _execute_schema_sql(conn,
         """
         CREATE TABLE IF NOT EXISTS shadow_t003_contract (
             singleton INTEGER PRIMARY KEY CHECK(singleton=1),
@@ -92,10 +123,11 @@ def _create_schema(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS shadow_t003_plan_instructions (
             plan_id TEXT NOT NULL REFERENCES shadow_t003_plans(plan_id),
             sequence INTEGER NOT NULL,
-            instruction_id TEXT NOT NULL UNIQUE,
+            instruction_id TEXT NOT NULL,
             content_fingerprint TEXT NOT NULL,
             instruction_json TEXT NOT NULL,
-            PRIMARY KEY(plan_id,sequence)
+            PRIMARY KEY(plan_id,sequence),
+            UNIQUE(plan_id,instruction_id)
         );
         CREATE TABLE IF NOT EXISTS shadow_t003_blockhash_leases (
             lease_id TEXT PRIMARY KEY,
@@ -154,7 +186,7 @@ def _create_schema(conn: sqlite3.Connection) -> None:
         "shadow_t003_attempts",
         "shadow_t003_results",
     ):
-        conn.executescript(_append_only_triggers(table))
+        _execute_schema_sql(conn, _append_only_triggers(table))
     row = conn.execute(
         "SELECT model_id,schema_version,model_fingerprint FROM shadow_t003_contract WHERE singleton=1"
     ).fetchone()
@@ -165,7 +197,71 @@ def _create_schema(conn: sqlite3.Connection) -> None:
         )
     elif tuple(str(value) for value in row) != expected:
         raise ShadowDeterminismConflict("T003 repository contract mismatch")
-    conn.commit()
+
+
+def _instruction_layout(conn: sqlite3.Connection) -> str:
+    table = "shadow_t003_plan_instructions"
+    columns = [(r[1], r[2], r[3], r[4], r[5]) for r in conn.execute(f"PRAGMA table_info({table})")]
+    if columns != [("plan_id", "TEXT", 1, None, 1), ("sequence", "INTEGER", 1, None, 2),
+                   ("instruction_id", "TEXT", 1, None, 0), ("content_fingerprint", "TEXT", 1, None, 0),
+                   ("instruction_json", "TEXT", 1, None, 0)]:
+        raise ShadowDeterminismConflict("unsupported instruction relation columns")
+    keys = set()
+    for row in conn.execute(f"PRAGMA index_list({table})"):
+        if not row[2] or row[4] or row[3] not in ("pk", "u"):
+            raise ShadowDeterminismConflict("unsupported instruction relation index")
+        name = str(row[1]).replace('"', '""')
+        keys.add(tuple(r[2] for r in conn.execute(f'PRAGMA index_info("{name}")')))
+    foreign_keys = [tuple(row)[2:] for row in conn.execute(f"PRAGMA foreign_key_list({table})")]
+    if foreign_keys != [("shadow_t003_plans", "plan_id", "plan_id", "NO ACTION", "NO ACTION", "NONE")]:
+        raise ShadowDeterminismConflict("unsupported instruction relation foreign key")
+    if keys == {("plan_id", "sequence"), ("instruction_id",)}:
+        return "legacy"
+    if keys == {("plan_id", "sequence"), ("plan_id", "instruction_id")}:
+        return "corrected"
+    raise ShadowDeterminismConflict("unsupported instruction relation uniqueness")
+
+
+def _initialize_persistence(repository: ShadowSimulationRepositoryV01) -> None:
+    conn = repository._conn
+    layout = _instruction_layout(conn)
+    if layout == "legacy" and conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='shadow_t003_persistence_contract'").fetchone():
+        raise ShadowDeterminismConflict("legacy relation conflicts with corrected persistence marker")
+    # Audit the legacy evidence BEFORE any row/table replacement. The caller's
+    # single transaction includes creation, copying, validation and contract bind.
+    repository.audit()
+    if layout == "legacy":
+        table = "shadow_t003_plan_instructions"
+        triggers = {row[0] for row in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='trigger' AND tbl_name=?", (table,))}
+        if triggers != {table + "_immutable_update", table + "_immutable_delete"}:
+            raise ShadowDeterminismConflict("unsupported legacy instruction triggers")
+        before = [tuple(row) for row in conn.execute(f"SELECT * FROM {table} ORDER BY plan_id,sequence")]
+        conn.execute("""CREATE TABLE shadow_t003_plan_instructions_migrating (
+            plan_id TEXT NOT NULL REFERENCES shadow_t003_plans(plan_id),
+            sequence INTEGER NOT NULL, instruction_id TEXT NOT NULL,
+            content_fingerprint TEXT NOT NULL, instruction_json TEXT NOT NULL,
+            PRIMARY KEY(plan_id,sequence), UNIQUE(plan_id,instruction_id))""")
+        conn.execute(f"INSERT INTO shadow_t003_plan_instructions_migrating SELECT * FROM {table}")
+        after = [tuple(row) for row in conn.execute(
+            "SELECT * FROM shadow_t003_plan_instructions_migrating ORDER BY plan_id,sequence")]
+        if len(before) != len(after) or before != after:
+            raise ShadowDeterminismConflict("legacy instruction migration changed evidence")
+        conn.execute(f"DROP TABLE {table}")
+        conn.execute(f"ALTER TABLE shadow_t003_plan_instructions_migrating RENAME TO {table}")
+        _execute_schema_sql(conn, _append_only_triggers(table))
+        if _instruction_layout(conn) != "corrected":
+            raise ShadowDeterminismConflict("instruction migration did not establish corrected relation")
+    conn.execute("""CREATE TABLE IF NOT EXISTS shadow_t003_persistence_contract (
+        singleton INTEGER PRIMARY KEY CHECK(singleton=1), schema_version TEXT NOT NULL,
+        persistence_fingerprint TEXT NOT NULL, contract_json TEXT NOT NULL)""")
+    expected = (PERSISTENCE_SCHEMA_VERSION, PERSISTENCE_FINGERPRINT, canonical_json(PERSISTENCE_CONTRACT))
+    row = conn.execute("SELECT schema_version,persistence_fingerprint,contract_json FROM shadow_t003_persistence_contract WHERE singleton=1").fetchone()
+    if row is not None and tuple(row) != expected:
+        raise ShadowDeterminismConflict("T003 persistence contract mismatch")
+    conn.execute("INSERT OR IGNORE INTO shadow_t003_persistence_contract VALUES(1,?,?,?)", expected)
+    _execute_schema_sql(conn, _append_only_triggers("shadow_t003_persistence_contract"))
+    repository.audit()
 
 
 def open_simulation_repository(
@@ -187,9 +283,14 @@ def open_simulation_repository(
             or int(conn.execute("PRAGMA foreign_keys").fetchone()[0]) != 1
         ):
             raise RuntimeError("T003 repository requires WAL/FULL/foreign keys")
+        conn.execute("BEGIN IMMEDIATE")
         _create_schema(conn)
-        return ShadowSimulationRepositoryV01(conn, resolved, _open_token=_OPEN_TOKEN)
+        repository = ShadowSimulationRepositoryV01(conn, resolved, _open_token=_OPEN_TOKEN)
+        _initialize_persistence(repository)
+        conn.commit()
+        return repository
     except BaseException:
+        conn.rollback()
         conn.close()
         raise
 
@@ -290,6 +391,12 @@ class ShadowSimulationRepositoryV01:
                 ),
             )
             for item in plan.instructions:
+                shared = self._conn.execute(
+                    "SELECT content_fingerprint,instruction_json FROM shadow_t003_plan_instructions WHERE instruction_id=? LIMIT 1",
+                    (item.instruction_id,),
+                ).fetchone()
+                if shared is not None and tuple(shared) != (item.fingerprint, canonical_json(item.payload())):
+                    raise ShadowDeterminismConflict("shared instruction identity has conflicting evidence")
                 self._conn.execute(
                     "INSERT INTO shadow_t003_plan_instructions VALUES(?,?,?,?,?)",
                     (
@@ -567,8 +674,13 @@ class ShadowSimulationRepositoryV01:
 
     def audit(self) -> bool:
         self._require_open()
+        _instruction_layout(self._conn)
         if self.quick_check() != "ok" or self._conn.execute("PRAGMA foreign_key_check").fetchall():
             raise ShadowDeterminismConflict("T003 SQLite integrity check failed")
+        if self._conn.execute("""SELECT instruction_id FROM shadow_t003_plan_instructions
+            GROUP BY instruction_id HAVING COUNT(DISTINCT content_fingerprint)>1
+            OR COUNT(DISTINCT instruction_json)>1 LIMIT 1""").fetchone():
+            raise ShadowDeterminismConflict("shared instruction identity conflicts across plans")
         specifications = (
             ("shadow_t003_plans", "plan_id", "plan_json", "content_fingerprint", "P5PL", PLAN_SCHEMA_VERSION),
             ("shadow_t003_plan_instructions", "instruction_id", "instruction_json", "content_fingerprint", "P5IX", "v0.1"),
@@ -598,13 +710,17 @@ class ShadowSimulationRepositoryV01:
                 raise ShadowDeterminismConflict("persisted validity evidence conflict")
         for row in self._conn.execute("SELECT plan_id,plan_json FROM shadow_t003_plans"):
             plan = json.loads(str(row[1]))
-            instructions = [
-                json.loads(str(item[0])) for item in self._conn.execute(
-                    "SELECT instruction_json FROM shadow_t003_plan_instructions "
+            rows = self._conn.execute(
+                    "SELECT sequence,instruction_id,content_fingerprint,instruction_json FROM shadow_t003_plan_instructions "
                     "WHERE plan_id=? ORDER BY sequence", (str(row[0]),)
-                )
-            ]
-            if instructions != plan.get("instructions"):
+                ).fetchall()
+            instructions = plan.get("instructions")
+            if not isinstance(instructions, list):
+                raise ShadowDeterminismConflict("plan instructions malformed")
+            expected = [(index, deterministic_id("P5IX", "v0.1", content_fingerprint(item)),
+                         content_fingerprint(item), canonical_json(item)) for index, item in enumerate(instructions)]
+            if ([tuple(item) for item in rows] != expected
+                    or any(item.get("sequence") != index for index, item in enumerate(instructions))):
                 raise ShadowDeterminismConflict("plan instruction table diverges from plan")
         return True
 

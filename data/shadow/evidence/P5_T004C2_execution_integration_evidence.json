@@ -1,0 +1,502 @@
+{
+  "task": "MEME-P5-T004C2",
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "baseline": {
+    "branch": "master",
+    "head": "944b3578973cb2354e9dc2386592ad896e5d405d",
+    "unchanged": true
+  },
+  "model_id": "P5-CONTINUOUS-SHADOW-EXECUTION-0001",
+  "model_fingerprint": "f50d24e07049a3f2b2bc3283e266c8925145de76bb7e5a91c9dea9ccbe0c7be6",
+  "accepted_component_fingerprints": {
+    "T001": "506312a81b6d8acc724cb27d6d450086bc3fc4986dcdea4831b998a3a8ec91e3",
+    "T002": "3b0219e1b30bceb7c77bde4674ada8069a1cbf8aaf8669844dc03b09c53d59d0",
+    "T003": "a7b619bb3e85a6a2310969437080c125c821ffaeb8ae8abd40de9b08cca84a2a",
+    "T003_persistence": "ae1f0722c25c6cc206cc0351cd806f58bbc3791fb8d88b28199a9dea25ccd2b1",
+    "T004A": "085e3d1c3aad2eb03705d45df1327715cdd6d2a81795450faa8a9b977eb81cef",
+    "T004B": "9300fb7d39a16997be5c6a401483b86bd3c490a7d86b623dc6d12bfa379aef6d",
+    "T004C1": "2560bd15e362c5c133f21845734455ee74b8684827cca1a882f0d8b08eb710c5"
+  },
+  "pipeline": {
+    "order": [
+      "bounded_T004A_ENTRY_poll",
+      "pending_ENTRY_execution",
+      "expected_inventory_materialization",
+      "bounded_T004B_EXIT_poll",
+      "pending_EXIT_execution",
+      "comparison_observation_persistence"
+    ],
+    "quote_slippage_bps": 2000,
+    "maximum_blockhash_refreshes": 1,
+    "source_access": "SQLite mode=ro and query_only; no Phase4 callbacks",
+    "rpc": "Accepted StrictReadOnlySolanaRpcV01; only synthetic httpx.MockTransport used in tests",
+    "terminal_states": {
+      "SIMULATION_SUCCESS": "COMPLETED",
+      "PROGRAM_REJECTED": "FAILED",
+      "final_bounded_blockhash_expiry": "EXPIRED",
+      "deterministic_pre_simulation_rejection": "REJECTED",
+      "rpc_malformed_or_integrity_failure": "FAILED"
+    },
+    "program_error_evidence": {
+      "outcome": "PROGRAM_REJECTED",
+      "reason": "SIMULATION_PROGRAM_REJECTED",
+      "error": {
+        "InstructionError": [
+          0,
+          {
+            "Custom": 6001
+          }
+        ]
+      }
+    },
+    "exit_expected_only": "Quote persists; no plan and no simulation when real actor base account absent; REJECTED + EXPECTED_INVENTORY_ONLY_NO_ACTUAL_BASE_ACCOUNT.",
+    "exit_with_verified_base": "Both Pump and PumpSwap verified-base fixtures reach accepted unsigned SELL plan and successful simulation.",
+    "tracks": [
+      "FINAL-A",
+      "FINAL-B",
+      "SENS-C"
+    ],
+    "track_amounts": "Each alternative EXIT uses the same full parent expected inventory. Never decremented or aggregated.",
+    "signature_evidence": "Mock transport verifies every simulation envelope contains only zero placeholder signatures."
+  },
+  "persistence_correction": {
+    "old_version": "phase5_shadow_simulation_persistence_v0.1",
+    "new_version": "phase5_shadow_simulation_persistence_v0.2",
+    "old_fingerprint": "15c92d1015226104ba714155e9a75b478fb97e92f7d0ec0f46a413bbee2a816f",
+    "old_fingerprint_note": "Retrospective descriptor of the formerly implicit global-uniqueness persistence contract; this was not a previously stored fingerprint.",
+    "new_fingerprint": "ae1f0722c25c6cc206cc0351cd806f58bbc3791fb8d88b28199a9dea25ccd2b1",
+    "constraints": [
+      "PRIMARY KEY(plan_id,sequence)",
+      "UNIQUE(plan_id,instruction_id)"
+    ],
+    "instruction_id": "Unchanged content identity; identical content may occur in multiple plans.",
+    "migration": "One BEGIN IMMEDIATE transaction: recognize exact supported schema; audit old evidence; copy/recreate relation; compare row counts and complete rows; restore append-only triggers; bind separate persistence contract; foreign-key check, quick_check and audit; commit or rollback.",
+    "tests": {
+      "passed": 36,
+      "coverage": [
+        "cross-plan shared identical IDs",
+        "same-plan exact replay",
+        "same-plan conflicting evidence rejected",
+        "plan-scoped sequence and identity uniqueness",
+        "independent ordering",
+        "legacy exact-row migration",
+        "repeat-open no changes",
+        "malformed payload rollback",
+        "malformed sequence rollback",
+        "foreign-key failure rollback",
+        "copy failure rollback",
+        "post-copy audit failure rollback",
+        "quick_check",
+        "foreign_key_check",
+        "deterministic audit/digest"
+      ]
+    },
+    "economic_repository_digest_unchanged": "8532bc043145ac6584c2faf4464a0baa93978904bda1a2314fe6ef6db659a42c",
+    "transition_source_sha256_equal_to_HEAD": {
+      "record_plan_state": "eecdf269a7502d6f121f3814d1826206ea6932835ae44af89617501b6209b506",
+      "record_simulation_state": "25da58aaa92918e2e5808366ef0cbdcf5a56e4d0d295779a3d8beec802664299"
+    }
+  },
+  "restart_evidence": {
+    "durable_stage_crash_cases": 18,
+    "policy": "Immutable RPC journal replays exact responses and accepted object identities; no refresh of already-bound economic evidence.",
+    "terminal_failure_restart": [
+      "PROGRAM_REJECTED",
+      "BLOCKHASH_EXPIRED",
+      "transport failure"
+    ],
+    "terminal_resurrection": false,
+    "duplicate_terminal_evidence": false,
+    "backpressure": "Drain post-crash terminal ENTRY inventory backlog before executing new ENTRY work.",
+    "comparison_idempotent": true
+  },
+  "context_fence_evidence": {
+    "stale_response_cases": [
+      "dependent venue",
+      "primary verification",
+      "actor accounts",
+      "latest blockhash",
+      "blockhash validity",
+      "simulation"
+    ],
+    "all_fail_closed": true
+  },
+  "comparison": {
+    "persistence": "Immutable fingerprinted observations with current per-intent pointers; current Paper state may advance between cycles.",
+    "fields": [
+      "intent/source lineage",
+      "paper route/position identity",
+      "paper current state/reason",
+      "parent ENTRY",
+      "track",
+      "shadow terminal state/reason/evidence",
+      "venue/route outcome",
+      "quote availability and price_impact_ppm",
+      "exact simulation outcome/reason/error",
+      "decision-to-shadow timing"
+    ],
+    "summary_dimensions": [
+      "ENTRY/EXIT",
+      "track",
+      "paper state",
+      "shadow state",
+      "simulation outcome",
+      "venue",
+      "classification"
+    ],
+    "tested_entry_categories": [
+      "PAPER_FILLED+SHADOW_SIM_SUCCESS",
+      "PAPER_REJECTED+SHADOW_SIM_SUCCESS",
+      "PAPER_FILLED+SHADOW_NON_SUCCESS"
+    ],
+    "snapshot_differences_are_model_correctness_claims": false
+  },
+  "validation": {
+    "python": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.codex_venv\\Scripts\\python.exe",
+    "python_version": "3.12.14",
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "commands": [
+      {
+        "command": "& 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.codex_venv\\Scripts\\python.exe' 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\scripts\\phase5_shadow_continuous_execution_selftest_v0_1.py'",
+        "exit_code": 0,
+        "result": "RESULT: PASS",
+        "checks_passed": 180,
+        "checks_total": 180
+      },
+      {
+        "command": "& 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.codex_venv\\Scripts\\python.exe' 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\scripts\\phase5_shadow_instruction_persistence_selftest_v0_2.py'",
+        "exit_code": 0,
+        "result": "RESULT: PASS",
+        "checks_passed": 36,
+        "checks_total": 36
+      },
+      {
+        "command": "& 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.codex_venv\\Scripts\\python.exe' 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\scripts\\phase5_shadow_continuous_source_bridge_selftest_v0_1.py'",
+        "exit_code": 0,
+        "result": "RESULT: PASS",
+        "checks_passed": 32,
+        "checks_total": 32
+      },
+      {
+        "command": "& 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.codex_venv\\Scripts\\python.exe' 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\scripts\\phase5_shadow_lifecycle_bridge_selftest_v0_1.py'",
+        "exit_code": 0,
+        "result": "RESULT: PASS",
+        "checks_passed": 40,
+        "checks_total": 40
+      },
+      {
+        "command": "& 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.codex_venv\\Scripts\\python.exe' 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\scripts\\phase5_shadow_readonly_rpc_selftest_v0_1.py'",
+        "exit_code": 0,
+        "result": "RESULT: PASS",
+        "checks_passed": 59,
+        "checks_total": 59
+      },
+      {
+        "command": "& 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.codex_venv\\Scripts\\python.exe' 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\scripts\\phase5_shadow_venue_route_quote_selftest_v0_1.py'",
+        "exit_code": 0,
+        "result": "RESULT: PASS",
+        "checks_passed": 100,
+        "checks_total": 100
+      },
+      {
+        "command": "& 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.codex_venv\\Scripts\\python.exe' 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\scripts\\phase5_shadow_unsigned_plan_simulation_selftest_v0_1.py'",
+        "exit_code": 0,
+        "result": "RESULT: PASS",
+        "checks_passed": 116,
+        "checks_total": 116
+      },
+      {
+        "command": "& 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.codex_venv\\Scripts\\python.exe' 'D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\scripts\\phase5_shadow_domain_capability_firewall_selftest_v0_1.py'",
+        "exit_code": 0,
+        "result": "RESULT: PASS",
+        "checks_passed": 43,
+        "checks_total": 43
+      }
+    ],
+    "focused_checks": 180,
+    "persistence_checks": 36,
+    "accepted_regression_checks": 390,
+    "total": 606,
+    "focused_check_results": {
+      "accepted evidence audits": true,
+      "ambiguous paper immutable": true,
+      "ambiguous terminal outcome ('REJECTED', None)": true,
+      "backlog eventually drains entries after exits": true,
+      "bounded work per cycle": true,
+      "comparison conflict fail closed": true,
+      "comparison replay idempotent": true,
+      "comparison source corruption fails closed": true,
+      "conflict fixture crash": true,
+      "corrupt start quarantined per intent": true,
+      "crash reached comparison": true,
+      "crash reached entry_done": true,
+      "crash reached finished": true,
+      "crash reached inventory": true,
+      "crash reached journal:rpc:0": true,
+      "crash reached journal:rpc:3": true,
+      "crash reached journal:rpc:7": true,
+      "crash reached plan": true,
+      "crash reached quote": true,
+      "crash reached route": true,
+      "crash reached simulated": true,
+      "crash reached simulation": true,
+      "crash reached state": true,
+      "crash reached transition:ELIGIBILITY_CHECKED": true,
+      "crash reached transition:PLAN_BUILT": true,
+      "crash reached transition:QUOTE_BOUND": true,
+      "crash reached transition:ROUTE_BOUND": true,
+      "crash reached transition:SIMULATION_TERMINAL": true,
+      "duration bound False": true,
+      "duration bound True": true,
+      "entry completed": true,
+      "entry expected inventory": true,
+      "expired exact failure replay": true,
+      "expired no resurrection": true,
+      "expired terminal crash": true,
+      "expiry paper immutable": true,
+      "expiry terminal outcome ('EXPIRED', 'BLOCKHASH_EXPIRED')": true,
+      "failed intent does not block next entry": true,
+      "failure isolation paper unchanged": true,
+      "inventory backlog crash": true,
+      "inventory backlog no false missing-inventory error": true,
+      "malformed actor FAILED not deterministic REJECTED": true,
+      "malformed paper immutable": true,
+      "malformed terminal outcome ('FAILED', 'MALFORMED_RESPONSE')": true,
+      "none paper immutable": true,
+      "none terminal outcome ('REJECTED', None)": true,
+      "onchain swap selected": true,
+      "one terminal comparison": true,
+      "one terminal entry_done": true,
+      "one terminal finished": true,
+      "one terminal inventory": true,
+      "one terminal journal:rpc:0": true,
+      "one terminal journal:rpc:3": true,
+      "one terminal journal:rpc:7": true,
+      "one terminal plan": true,
+      "one terminal quote": true,
+      "one terminal route": true,
+      "one terminal simulated": true,
+      "one terminal simulation": true,
+      "one terminal state": true,
+      "one terminal transition:ELIGIBILITY_CHECKED": true,
+      "one terminal transition:PLAN_BUILT": true,
+      "one terminal transition:QUOTE_BOUND": true,
+      "one terminal transition:ROUTE_BOUND": true,
+      "one terminal transition:SIMULATION_TERMINAL": true,
+      "paper advancement creates observation": true,
+      "paper byte unchanged": true,
+      "paper filled comparison": true,
+      "paper rejected shadow success": true,
+      "paper_rejected paper immutable": true,
+      "paper_rejected terminal outcome ('COMPLETED', 'SIMULATION_SUCCESS')": true,
+      "parent integrity cannot produce successful exits": true,
+      "program exact failure replay": true,
+      "program exact original error": true,
+      "program no resurrection": true,
+      "program paper immutable": true,
+      "program terminal crash": true,
+      "program terminal outcome ('FAILED', 'PROGRAM_REJECTED')": true,
+      "pump_exit_False FINAL-A": true,
+      "pump_exit_False FINAL-B": true,
+      "pump_exit_False SENS-C": true,
+      "pump_exit_False independent full inventory": true,
+      "pump_exit_False inventory never decremented": true,
+      "pump_exit_False paper immutable": true,
+      "pump_exit_False summary distinct": true,
+      "pump_exit_False three exits": true,
+      "pump_exit_True FINAL-A": true,
+      "pump_exit_True FINAL-B": true,
+      "pump_exit_True SENS-C": true,
+      "pump_exit_True independent full inventory": true,
+      "pump_exit_True inventory never decremented": true,
+      "pump_exit_True paper immutable": true,
+      "pump_exit_True summary distinct": true,
+      "pump_exit_True three exits": true,
+      "read only source connections": true,
+      "replay no RPC/economic writes comparison": true,
+      "replay no RPC/economic writes entry_done": true,
+      "replay no RPC/economic writes finished": true,
+      "replay no RPC/economic writes inventory": true,
+      "replay no RPC/economic writes journal:rpc:0": true,
+      "replay no RPC/economic writes journal:rpc:3": true,
+      "replay no RPC/economic writes journal:rpc:7": true,
+      "replay no RPC/economic writes plan": true,
+      "replay no RPC/economic writes quote": true,
+      "replay no RPC/economic writes route": true,
+      "replay no RPC/economic writes simulated": true,
+      "replay no RPC/economic writes simulation": true,
+      "replay no RPC/economic writes state": true,
+      "replay no RPC/economic writes transition:ELIGIBILITY_CHECKED": true,
+      "replay no RPC/economic writes transition:PLAN_BUILT": true,
+      "replay no RPC/economic writes transition:QUOTE_BOUND": true,
+      "replay no RPC/economic writes transition:ROUTE_BOUND": true,
+      "replay no RPC/economic writes transition:SIMULATION_TERMINAL": true,
+      "restart complete comparison": true,
+      "restart complete entry_done": true,
+      "restart complete finished": true,
+      "restart complete inventory": true,
+      "restart complete journal:rpc:0": true,
+      "restart complete journal:rpc:3": true,
+      "restart complete journal:rpc:7": true,
+      "restart complete plan": true,
+      "restart complete quote": true,
+      "restart complete route": true,
+      "restart complete simulated": true,
+      "restart complete simulation": true,
+      "restart complete state": true,
+      "restart complete transition:ELIGIBILITY_CHECKED": true,
+      "restart complete transition:PLAN_BUILT": true,
+      "restart complete transition:QUOTE_BOUND": true,
+      "restart complete transition:ROUTE_BOUND": true,
+      "restart complete transition:SIMULATION_TERMINAL": true,
+      "restart exact evidence comparison": true,
+      "restart exact evidence entry_done": true,
+      "restart exact evidence finished": true,
+      "restart exact evidence inventory": true,
+      "restart exact evidence journal:rpc:0": true,
+      "restart exact evidence journal:rpc:3": true,
+      "restart exact evidence journal:rpc:7": true,
+      "restart exact evidence plan": true,
+      "restart exact evidence quote": true,
+      "restart exact evidence route": true,
+      "restart exact evidence simulated": true,
+      "restart exact evidence simulation": true,
+      "restart exact evidence state": true,
+      "restart exact evidence transition:ELIGIBILITY_CHECKED": true,
+      "restart exact evidence transition:PLAN_BUILT": true,
+      "restart exact evidence transition:QUOTE_BOUND": true,
+      "restart exact evidence transition:ROUTE_BOUND": true,
+      "restart exact evidence transition:SIMULATION_TERMINAL": true,
+      "runner False": true,
+      "runner True": true,
+      "slot fence actor": true,
+      "slot fence dependent": true,
+      "slot fence getLatestBlockhash": true,
+      "slot fence isBlockhashValid": true,
+      "slot fence primary": true,
+      "slot fence simulateTransaction": true,
+      "swap paper immutable": true,
+      "swap terminal outcome ('COMPLETED', 'SIMULATION_SUCCESS')": true,
+      "swap_exit_False FINAL-A": true,
+      "swap_exit_False FINAL-B": true,
+      "swap_exit_False SENS-C": true,
+      "swap_exit_False independent full inventory": true,
+      "swap_exit_False inventory never decremented": true,
+      "swap_exit_False paper immutable": true,
+      "swap_exit_False summary distinct": true,
+      "swap_exit_False three exits": true,
+      "swap_exit_True FINAL-A": true,
+      "swap_exit_True FINAL-B": true,
+      "swap_exit_True SENS-C": true,
+      "swap_exit_True independent full inventory": true,
+      "swap_exit_True inventory never decremented": true,
+      "swap_exit_True paper immutable": true,
+      "swap_exit_True summary distinct": true,
+      "swap_exit_True three exits": true,
+      "transport exact failure replay": true,
+      "transport no resurrection": true,
+      "transport paper immutable": true,
+      "transport terminal crash": true,
+      "transport terminal outcome ('FAILED', None)": true
+    },
+    "git_diff_check": {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    "protected_modules": {
+      "src/phase5/shadow_domain_v0_1.py": {
+        "head_lf_normalized_sha256": "05294696ffc9325649958503d427146ea3097dedc63caa7017eb3624bece81fe",
+        "working_lf_normalized_sha256": "05294696ffc9325649958503d427146ea3097dedc63caa7017eb3624bece81fe",
+        "equal": true
+      },
+      "src/phase5/shadow_repository_v0_1.py": {
+        "head_lf_normalized_sha256": "c2cfa4f7575e31d0c38a248296baa8ce1280104ce108d0006711b0168d32fc26",
+        "working_lf_normalized_sha256": "c2cfa4f7575e31d0c38a248296baa8ce1280104ce108d0006711b0168d32fc26",
+        "equal": true
+      },
+      "src/phase5/shadow_venue_route_quote_v0_1.py": {
+        "head_lf_normalized_sha256": "ca190dd21ab54dc612c8bb0a90c1bed239fcfcf60506b3932ee721260ae81505",
+        "working_lf_normalized_sha256": "ca190dd21ab54dc612c8bb0a90c1bed239fcfcf60506b3932ee721260ae81505",
+        "equal": true
+      },
+      "src/phase5/shadow_venue_repository_v0_1.py": {
+        "head_lf_normalized_sha256": "c9b9f8b4c61014a8ec30c0a9ffc10977fa136c268035bea72195e703e6b3503c",
+        "working_lf_normalized_sha256": "c9b9f8b4c61014a8ec30c0a9ffc10977fa136c268035bea72195e703e6b3503c",
+        "equal": true
+      },
+      "src/phase5/shadow_unsigned_plan_simulation_v0_1.py": {
+        "head_lf_normalized_sha256": "d825793249355fdd38892c0a2bd492cd034114acb0a71751ce742725913d3b2b",
+        "working_lf_normalized_sha256": "d825793249355fdd38892c0a2bd492cd034114acb0a71751ce742725913d3b2b",
+        "equal": true
+      },
+      "src/phase5/shadow_continuous_source_bridge_v0_1.py": {
+        "head_lf_normalized_sha256": "1ab4411ab4ce21d3f5762874086fd497e42580f86201ed377ed6fa4048c95404",
+        "working_lf_normalized_sha256": "1ab4411ab4ce21d3f5762874086fd497e42580f86201ed377ed6fa4048c95404",
+        "equal": true
+      },
+      "src/phase5/shadow_lifecycle_bridge_v0_1.py": {
+        "head_lf_normalized_sha256": "a56730de2ca1bab8ca2c5fab72ac2748e87236776ca0eafad97e4f8f9c9ebde1",
+        "working_lf_normalized_sha256": "a56730de2ca1bab8ca2c5fab72ac2748e87236776ca0eafad97e4f8f9c9ebde1",
+        "equal": true
+      },
+      "src/phase5/shadow_readonly_rpc_v0_1.py": {
+        "head_lf_normalized_sha256": "1f34aad1f338cdc402a14293816bd5cd652efcf35d958d5a066a45b616d9193c",
+        "working_lf_normalized_sha256": "1f34aad1f338cdc402a14293816bd5cd652efcf35d958d5a066a45b616d9193c",
+        "equal": true
+      }
+    }
+  },
+  "pre_delivery_adversarial_review": {
+    "examined": [
+      "every durable transition/replay ordering",
+      "context-slot boundaries",
+      "malformed actor evidence",
+      "comparison observation races and corruption",
+      "false success classifications",
+      "terminal failure recovery/resurrection",
+      "parent integrity failure propagation",
+      "inventory backlog at restart",
+      "duplicate cross-plan instruction content",
+      "legacy migration rollback before/after copy",
+      "owned resource closure"
+    ],
+    "additional_fixes": [
+      "Plan-scoped instruction uniqueness with atomic audited legacy migration",
+      "One-capture comparison observations avoid false conflict when Paper advances",
+      "Comparison verifies source evidence hashes",
+      "Malformed actor/recipient evidence classified FAILED",
+      "Corrupt execution-start evidence quarantined per intent",
+      "Terminal ENTRY inventory backlog drains before new execution",
+      "Quarantined parent cannot produce successful EXIT execution",
+      "Terminal COMPLETED is required alongside simulation success for success comparison"
+    ],
+    "additional_tests": "Included in the 180 C2 and 36 persistence checks.",
+    "remaining_known_risks": [
+      "No production/live/RPC validation performed.",
+      "Duration stop finishes the current bounded cycle; it does not interrupt an in-flight RPC.",
+      "Single-sidecar operation is intended; multi-process throughput is not validated.",
+      "Existing accepted full repository audits may cost time as evidence accumulates; no production performance claim.",
+      "Custom/malformed legacy schema layouts fail closed rather than being silently rewritten."
+    ]
+  },
+  "files": [
+    "src/phase5/shadow_simulation_repository_v0_1.py",
+    "src/phase5/shadow_continuous_execution_v0_1.py",
+    "scripts/phase5_shadow_continuous_execution_v0_1.py",
+    "scripts/phase5_shadow_continuous_execution_selftest_v0_1.py",
+    "scripts/phase5_shadow_instruction_persistence_selftest_v0_2.py",
+    "data/shadow/evidence/P5_T004C2_execution_integration_evidence.json"
+  ],
+  "no_production_live_validation_performed": true,
+  "no_commit_performed": true,
+  "no_staging_performed": true,
+  "project_state_modified": false,
+  "preserved_unrelated_untracked_paths": [
+    "data/research/post24h/POST-24H-ANALYSIS-001/POST24H_COHORT_AUDIT.txt",
+    "data/research/post24h/POST-24H-ANALYSIS-001/POST24H_EXIT_BASELINE_AUDIT.txt",
+    "data/research/post24h/POST-24H-ANALYSIS-001/POST24H_PENDING_AND_HORIZON_COVERAGE_AUDIT.txt",
+    "data/research/post24h/POST-24H-ANALYSIS-001/POST24H_PREFLIGHT.txt"
+  ]
+}
