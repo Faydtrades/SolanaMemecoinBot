@@ -17,9 +17,10 @@ and testing agent.
 - Phase 1: COMPLETE
 - Phase 2: COMPLETE
 - Phase 3: COMPLETE
-- Phase 4: through Phase 4.5C COMPLETE / PASS / ACCEPTED
+- Phase 4: COMPLETE / PASS / ACCEPTED / CHECKPOINTED
+- Phase 5: COMPLETE / PASS / ACCEPTED / CHECKPOINTED
 
-No acceptance beyond Phase 4.5C is recorded here.
+Phase 6 remains unaccepted.
 
 ## Latest accepted live evidence
 
@@ -1040,7 +1041,7 @@ slippage semantic was accessed or changed.
 ## Current Phase-5 late-arriving exit source coverage correction
 
 MEME-P5-T004D1:
-IMPLEMENTED_PENDING_PROJECT_REVIEW
+PASS / ACCEPTED / CHECKPOINTED
 
 T004B source discovery now advances by the bound Phase-4 SQLite physical
 append `rowid`, not by causal `requested_at` plus lexicographic exit ID. The
@@ -1066,3 +1067,15 @@ comparison gap closes naturally, and bounded restart/replay is idempotent.
 No Phase-4 semantics, T004A behavior, track definitions, signer, submission,
 or broadcast capability changed. No commit was created. Project review remains
 the acceptance authority.
+
+## Canonical Phase-5 completion checkpoint
+
+PHASE 5 -- SHADOW EXECUTION: COMPLETE / PASS / ACCEPTED / CHECKPOINTED
+
+Final accepted Phase-5 correction commit: 2c75f98ad13732f369a67c322d831ffb0913ff0e.
+The six-hour real-mainnet Shadow acceptance and T004B v0.3 reconciliation are accepted.
+All 389 paper exit intents were reconciled; the four late-arriving FINAL-B exits were recovered.
+ENTRY intents remained 198, expected inventories remained 59, and restart/idempotency converged with zero further changes.
+No signer, private-key, send, or broadcast capability was introduced.
+
+NEXT AUTHORIZED PHASE: Phase 6 frozen out-of-sample strategy validation.
