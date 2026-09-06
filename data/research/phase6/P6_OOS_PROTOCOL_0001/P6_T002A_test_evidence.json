@@ -1,0 +1,73 @@
+{
+  "arming_contract": {
+    "explicit_timezone_aware_start_required": true,
+    "historical_backdating_allowed": false,
+    "maximum_arming_lead_seconds": 7200,
+    "prestart_poll_seconds": {
+      "maximum": "1.0",
+      "minimum": "0.05"
+    },
+    "source_anchor": "PHYSICAL_ROWID_CAPTURED_AT_ARMING"
+  },
+  "adversarial_review": {
+    "additional_bug_fixed": "Pre-boundary status now preserves terminal INVALID instead of masking it as ARMED_STOPPED.",
+    "terminal_failure_masking_regression": true
+  },
+  "exact_boundary": {
+    "complete_utc_days_under_accepted_p6_t001": [
+      "2026-09-07",
+      "2026-09-08",
+      "2026-09-09"
+    ],
+    "duration_seconds": 259200,
+    "end_at_utc": "2026-09-10T00:00:00.000000+00:00",
+    "half_open": true,
+    "start_at_utc": "2026-09-07T00:00:00.000000+00:00"
+  },
+  "focused_boundary_selftest": {
+    "checks_passed": 19,
+    "checks_total": 19,
+    "result": "PASS"
+  },
+  "lifecycle_model_fingerprint": "1d74b5daadefc791e81a5d2a2e93d5f80da4ef9ca85142f573e29ec765ce7a36",
+  "lifecycle_model_id": "P6-FROZEN-OOS-COLLECTION-LIFECYCLE-0001",
+  "no_commit": true,
+  "no_production_or_live_validation_performed": true,
+  "p6_t001_regression": {
+    "checks_passed": 43,
+    "checks_total": 43,
+    "result": "PASS"
+  },
+  "phase5_capability_firewall_regression": {
+    "checks_passed": 43,
+    "checks_total": 43,
+    "result": "PASS"
+  },
+  "pre_arm_source_coverage": {
+    "arming_anchor_p1_rowid": 1,
+    "coverage_before_first_poststart_activity": "2026-09-07T00:00:00.000000+00:00",
+    "prewindow_candidate_excluded_by_p6_t001": true,
+    "restarted_consumed_p1_rowids": [
+      2,
+      3
+    ],
+    "rows_between_arm_and_start_lost": false,
+    "uninterrupted_consumed_p1_rowids": [
+      2,
+      3
+    ]
+  },
+  "production_source_accessed": false,
+  "repository_base": "3038e63f08bdb8511ac3935fb80acbd2ef00d9fd",
+  "restart_before_boundary": {
+    "content_fingerprints_exact_match": true,
+    "durable_cursor_exact_match": true,
+    "run_identity_and_bounds_preserved": true
+  },
+  "staged_equivalent_diff_whitespace_check": "PASS",
+  "t002_regression": {
+    "checks_passed": 47,
+    "checks_total": 47,
+    "result": "PASS"
+  }
+}

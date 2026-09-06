@@ -60,6 +60,15 @@ def build_parser() -> argparse.ArgumentParser:
     start.add_argument("--runtime-root", type=Path, default=DEFAULT_RUNTIME_ROOT)
     start.add_argument("--run-id")
     start.add_argument("--paper-db", type=Path)
+    start.add_argument(
+        "--start-at",
+        type=_utc,
+        required=True,
+        help=(
+            "Exact timezone-aware scientific boundary (for example "
+            "2026-09-07T00:00:00Z); no implicit wall-clock start is allowed."
+        ),
+    )
 
     for name, help_text in (
         ("status", "Show the no-peek operational status."),
@@ -111,8 +120,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "REPOSITORY_RUNTIME_MISMATCH",
                     "real OOS START requires a clean working tree",
                 )
-            start = datetime.now(timezone.utc)
             anchor = source_anchor(args.source_db)
+            start = args.start_at
             run_id = args.run_id or _run_id(start, anchor)
             manifest = manager.start(StartRequest(
                 source_db_path=args.source_db,

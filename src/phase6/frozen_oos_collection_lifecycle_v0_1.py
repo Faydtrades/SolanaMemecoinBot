@@ -32,8 +32,11 @@ ACCEPTED_PARENT_COMMIT = "dc051a4bb0dfc172e0f82cac688da24fd86be6c9"
 MINIMUM_DURATION_SECONDS = 72 * 60 * 60
 EXTENSION_SECONDS = 24 * 60 * 60
 MAXIMUM_DURATION_SECONDS = 7 * 24 * 60 * 60
+MAXIMUM_ARMING_LEAD_SECONDS = 2 * 60 * 60
 H1_MINIMUM_ELIGIBLE_ENTRIES = 150
 SOURCE_STALL_FAIL_SECONDS = 30.0
+MINIMUM_PRESTART_POLL_SECONDS = 0.05
+MAXIMUM_PRESTART_POLL_SECONDS = 1.0
 DEFAULT_RUNTIME_ROOT = Path(r"D:\Tradingbot\runtime_oos")
 DEFAULT_SOURCE_DB = Path(r"D:\Tradingbot\solana_memecoin_bot_phase1_v0_1\data\db\tradingbot.sqlite3")
 
@@ -104,6 +107,14 @@ SPEC: dict[str, Any] = {
     "minimum_duration_seconds": MINIMUM_DURATION_SECONDS,
     "extension_seconds": EXTENSION_SECONDS,
     "maximum_duration_seconds": MAXIMUM_DURATION_SECONDS,
+    "exact_boundary_arming": {
+        "explicit_start_required": True,
+        "past_start_allowed": False,
+        "maximum_lead_seconds": MAXIMUM_ARMING_LEAD_SECONDS,
+        "source_anchor": "PHYSICAL_ROWID_CAPTURED_AT_ARMING",
+        "prestart_worker": "DURABLE_ARMED_WAIT_WITH_ZERO_SCIENTIFIC_ELAPSED_TIME",
+        "prewindow_rows": "CONSUMED_FOR_CAUSAL_CONTEXT_BUT_EXCLUDED_FROM_P6_T001_WINDOW",
+    },
     "extension_reasons": ["H1_SAMPLE_INSUFFICIENT", "TECHNICAL_COMPLETENESS"],
     "identity": "ONE_IMMUTABLE_RUN_ACROSS_RUNTIME_SEGMENTS",
     "resume": "SAME_SOURCE_SCOPE_SAME_PAPER_DB_SAME_DURABLE_CURSOR",
@@ -431,6 +442,18 @@ class FrozenOOSLifecycleV01:
 
     def start(self, request: StartRequest) -> dict[str, Any]:
         start = _utc(request.start_at)
+        armed_at = _utc(self.clock())
+        arming_lead = start - armed_at
+        if arming_lead < timedelta(0):
+            raise LifecycleError(
+                "INVALID_START_BOUNDARY",
+                "requested start must not precede the durable arming instant",
+            )
+        if arming_lead > timedelta(seconds=MAXIMUM_ARMING_LEAD_SECONDS):
+            raise LifecycleError(
+                "INVALID_START_BOUNDARY",
+                f"requested start exceeds {MAXIMUM_ARMING_LEAD_SECONDS}-second arming lead",
+            )
         source = _resolved(request.source_db_path)
         if not source.is_file():
             raise FileNotFoundError(source)
@@ -489,7 +512,14 @@ class FrozenOOSLifecycleV01:
             "paper_db_path": paper.as_posix(),
             "paper_database_identity": paper_identity,
             "paper_file_object_token": paper_file_token,
+            "requested_start_at_utc": dt_text(start),
             "start_at_utc": dt_text(start),
+            "armed_at_utc": dt_text(armed_at),
+            "arming_lead_microseconds": (
+                arming_lead.days * 86_400_000_000
+                + arming_lead.seconds * 1_000_000
+                + arming_lead.microseconds
+            ),
             "minimum_end_at_utc": dt_text(minimum_end),
             "initial_target_end_at_utc": dt_text(minimum_end),
             "duration_requirement_seconds": MINIMUM_DURATION_SECONDS,
@@ -501,7 +531,7 @@ class FrozenOOSLifecycleV01:
                 "performance_based_extension": False,
             },
             "runtime_contract": contract,
-            "created_at_utc": dt_text(self.clock()),
+            "created_at_utc": dt_text(armed_at),
         }
         state = {
             "run_id": request.run_id,
@@ -521,7 +551,7 @@ class FrozenOOSLifecycleV01:
             "segments": [],
             "active_process": None,
             "extension_history": [],
-            "last_durable_progress_at_utc": dt_text(self.clock()),
+            "last_durable_progress_at_utc": dt_text(armed_at),
             "last_error": None,
             "frozen_handoff_sha256": None,
         }
@@ -586,6 +616,22 @@ class FrozenOOSLifecycleV01:
         manifest: Mapping[str, Any], state: Mapping[str, Any]
     ) -> None:
         start = dt_parse(str(manifest["start_at_utc"]))
+        requested_start = dt_parse(str(manifest["requested_start_at_utc"]))
+        armed_at = dt_parse(str(manifest["armed_at_utc"]))
+        if requested_start != start:
+            raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "requested start drift")
+        arming_lead = start - armed_at
+        expected_lead_microseconds = (
+            arming_lead.days * 86_400_000_000
+            + arming_lead.seconds * 1_000_000
+            + arming_lead.microseconds
+        )
+        if arming_lead < timedelta(0) or arming_lead > timedelta(
+            seconds=MAXIMUM_ARMING_LEAD_SECONDS
+        ):
+            raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "arming lead out of bounds")
+        if int(manifest["arming_lead_microseconds"]) != expected_lead_microseconds:
+            raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "arming lead drift")
         minimum_end = dt_parse(str(manifest["minimum_end_at_utc"]))
         initial_end = dt_parse(str(manifest["initial_target_end_at_utc"]))
         if minimum_end != start + timedelta(seconds=MINIMUM_DURATION_SECONDS):
@@ -802,13 +848,18 @@ class FrozenOOSLifecycleV01:
             if active and process_matches(active.get("pid"), active.get("birth_token"))
             else "NOT_RUNNING"
         )
+        reported_state = state["lifecycle_state"]
+        if instant < start and state["lifecycle_state"] == "ACTIVE":
+            reported_state = "ARMED_WAITING_FOR_START"
+        elif instant < start and state["lifecycle_state"] == "STOPPED":
+            reported_state = "ARMED_STOPPED"
         result = {
             "run_id": run_id,
             "start_at_utc": dt_text(start),
             "end_at_utc": dt_text(end),
             "elapsed_seconds": max(0, min(int((instant - start).total_seconds()), int((end - start).total_seconds()))),
             "remaining_seconds": max(0, int((end - instant).total_seconds())),
-            "lifecycle_state": state["lifecycle_state"],
+            "lifecycle_state": reported_state,
             "segment_count": len(state["segments"]),
             "process_health": process_health,
             "source_cursor": state["source_cursor"],
@@ -1171,7 +1222,10 @@ def source_coverage_probe(
                 (int(source_start_cursor),),
             ).fetchall()
         })
-        latest = start if not activity else activity[-1]
+        # Rows captured after the arming anchor but before the scientific
+        # boundary remain available as causal context.  They must never move
+        # reported scientific coverage behind the frozen start.
+        latest = start if not activity else max(start, activity[-1])
         tables = {str(item[0]) for item in conn.execute(
             "SELECT name FROM sqlite_master WHERE type='table'"
         ).fetchall()}
@@ -1220,6 +1274,21 @@ def source_coverage_probe(
         return min(latest, target), gaps
     finally:
         conn.close()
+
+
+def prestart_wait_seconds(
+    *, now: datetime, start: datetime, poll_seconds: float
+) -> float:
+    """Return one bounded, non-busy wait without changing frozen bounds."""
+    instant = _utc(now)
+    boundary = _utc(start)
+    if instant >= boundary:
+        return 0.0
+    requested = min(
+        MAXIMUM_PRESTART_POLL_SECONDS,
+        max(MINIMUM_PRESTART_POLL_SECONDS, float(poll_seconds)),
+    )
+    return min(requested, (boundary - instant).total_seconds())
 
 
 def graceful_timer_drain(binding: Any, *, instant: datetime, timer_id: str) -> int:
@@ -1290,11 +1359,22 @@ def run_worker(
         while True:
             state = manager._state(run_id)
             now = _utc(manager.clock())
+            start = dt_parse(manifest["start_at_utc"])
             target = dt_parse(state["target_end_at_utc"])
             stop_requested = stop_path.exists()
+            if now < start:
+                if stop_requested:
+                    termination = "STOP_REQUESTED_WHILE_ARMED"
+                    break
+                time.sleep(
+                    prestart_wait_seconds(
+                        now=now, start=start, poll_seconds=poll_seconds
+                    )
+                )
+                continue
             coverage, gaps = source_coverage_probe(
                 source_path,
-                start=dt_parse(manifest["start_at_utc"]),
+                start=start,
                 target=target,
                 source_start_cursor=int(manifest["source_start_cursor"]),
             )
