@@ -1,0 +1,97 @@
+{
+  "adversarial_review": {
+    "additional_regressions_added": [
+      "source normalization never inspects a row above the frozen watermark",
+      "unresolved exits retain incurred entry costs without becoming zero-PnL fills",
+      "paper entry and normalized source lineage must match exactly",
+      "arbitrary candidate strategy/parameter sets fail closed",
+      "artifact publication uses an owned staging directory",
+      "caller ordering cannot change canonical artifacts",
+      "orphan CandidateSignal or entry-route rows fail closed",
+      "frozen policy registry is immutable and protocol-digest bound"
+    ],
+    "bugs_found_and_fixed": [
+      "A source batch limit based only on cursor distance could inspect a post-watermark row when SQLite rowids had gaps.",
+      "An unresolved exit initially hid the already-incurred physical entry cost from aggregate cost evidence.",
+      "The initial input binding did not independently prove filled-entry lineage across the paper and source databases.",
+      "An inner join could silently omit an orphan CandidateSignal or entry route instead of rejecting a corrupt cohort."
+    ],
+    "result": "NO_REMAINING_ACCEPTANCE_BLOCKER_FOUND"
+  },
+  "capability_boundary": {
+    "collector_started": false,
+    "live_or_oos_run_started": false,
+    "network_or_rpc_accessed": false,
+    "sign_send_broadcast_custody_capability": false
+  },
+  "model_fingerprint": "0cd06a3269c997aaa01a0e1a796e9a15088e9af7b3a4137930a5cc7beb9cdb87",
+  "model_id": "P6-FROZEN-OOS-HYPOTHESIS-EVALUATION-0001",
+  "policy_fingerprints": {
+    "CTRL_ALL_TP10_T30": "2fd4d377df8f8e5460dae85d5eae6260f9a95b182ef39085f63734f1b259bc07",
+    "CTRL_ALL_TP20_T30": "6a7ea1760db9e60b5dc97f133f73b69833b44bd251f526b1e5d120bf37ae10bc",
+    "CTRL_Q4_TP20_T30": "db7ef0a5beae5706378d7e9016caffbd8788086ec085912a0f4a4142ee5f1e61",
+    "FINAL-A": "f8a82c3aba80a982b9516962a84a2b3c10ac5e0fd2fcb6d8a5a501c475974787",
+    "FINAL-B": "b353e4121f95fc9a52d24f975a653bf2f8131b7f812d2cd6f45509d95bdb6257",
+    "H1_SIMPLE_TIME_TP10_T30": "68aa83fcd7baa8dc923ee80b9a27e9b24b94c49802036c02847634cd4b36f043",
+    "H2_TIME_OR_Q4_TP20_T30": "c9e7b0fd3b064d2b830ad6d1004bfb8d83f7b1a727514fbed4e8b6f60a8da8e8",
+    "H3_EXCLUSION_TRAIL10_GB3_T30": "88e72133400bb16c9a58d72aee59814c76bfda5bb0fc9e7e8336e5996d9a787d"
+  },
+  "policy_set_sha256": "c4a2a277af1d1c7e1e8316e258b2a6da2abd302cd31d2498e4e7a45d08b2582c",
+  "protected_trees": {
+    "phase4_git_tree": "4750603281db4c8d090310062d668499c0555a81",
+    "phase4_worktree_diff": "NONE",
+    "phase5_git_tree": "c60900bbedfcf90315c2511b246489d88fcded12",
+    "phase5_worktree_diff": "NONE"
+  },
+  "protocol_id": "P6-OOS-PROTOCOL-0001",
+  "result": "PASS",
+  "source_read_only_evidence": {
+    "connection": "SQLite URI mode=ro plus PRAGMA query_only=ON",
+    "production_database_accessed": false,
+    "synthetic_source_hash_before_after_equal": true,
+    "write_attempt_rejected": true
+  },
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "tests": [
+    {
+      "command": ".codex_venv\\Scripts\\python.exe scripts\\phase6_frozen_oos_hypothesis_evaluation_selftest_v0_1.py",
+      "evidence": "43/43 focused checks",
+      "result": "PASS"
+    },
+    {
+      "command": ".codex_venv\\Scripts\\python.exe scripts\\phase4_continuous_market_source_selftest_v0_2.py",
+      "evidence": "all reported checks PASS; synthetic fixture only",
+      "result": "PASS"
+    },
+    {
+      "command": ".codex_venv\\Scripts\\python.exe scripts\\phase4_paper_cost_baseline_selftest_v0_1.py",
+      "evidence": "RESULT: PASS; production DB touched: NO",
+      "result": "PASS"
+    },
+    {
+      "command": ".codex_venv\\Scripts\\python.exe scripts\\post24h_t002b_outcome_analysis_selftest_v0_1.py",
+      "evidence": "19/19 checks",
+      "result": "PASS"
+    },
+    {
+      "command": "import post24h_t002a_counterfactual_replay_selftest_v0_1 and execute SYNTHETIC_TESTS only",
+      "evidence": "22/22 synthetic counterfactual replay checks; frozen databases not opened",
+      "result": "PASS"
+    },
+    {
+      "command": ".codex_venv\\Scripts\\python.exe -m compileall -q -f src\\phase6 scripts\\phase6_frozen_oos_hypothesis_evaluation_v0_1.py scripts\\phase6_frozen_oos_hypothesis_evaluation_selftest_v0_1.py",
+      "evidence": "exit 0",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "evidence": "exit 0",
+      "result": "PASS"
+    }
+  ],
+  "window_execution": {
+    "actual_OOS_artifacts_produced": false,
+    "minimum_planned_duration_seconds": 259200,
+    "seventy_two_hour_run_started": false
+  }
+}

@@ -1,0 +1,138 @@
+[
+  {
+    "classification": "MATCHED_CAUSAL_CONTROL",
+    "eligibility_rule": "ALL_FROZEN_FIRSTPULLBACK_CANDIDATES",
+    "exit": {
+      "family": "TP_TIMEOUT",
+      "policy_id": "CTRL_ALL_TP10_T30",
+      "sl_bps": null,
+      "timeout_ms": 30000,
+      "timeout_origin": "ENTRY_FILL_CLOCK",
+      "tp_bps": 1000,
+      "trailing_activation_bps": null,
+      "trailing_giveback_bps": null
+    },
+    "fingerprint": "2fd4d377df8f8e5460dae85d5eae6260f9a95b182ef39085f63734f1b259bc07",
+    "policy_id": "CTRL_ALL_TP10_T30",
+    "promotion_eligible": false
+  },
+  {
+    "classification": "FROZEN_REFERENCE_ONLY",
+    "eligibility_rule": "ALL_FROZEN_FIRSTPULLBACK_CANDIDATES",
+    "exit": {
+      "family": "TP_TIMEOUT",
+      "policy_id": "CTRL_ALL_TP20_T30",
+      "sl_bps": null,
+      "timeout_ms": 30000,
+      "timeout_origin": "ENTRY_FILL_CLOCK",
+      "tp_bps": 2000,
+      "trailing_activation_bps": null,
+      "trailing_giveback_bps": null
+    },
+    "fingerprint": "6a7ea1760db9e60b5dc97f133f73b69833b44bd251f526b1e5d120bf37ae10bc",
+    "policy_id": "CTRL_ALL_TP20_T30",
+    "promotion_eligible": false
+  },
+  {
+    "classification": "DIAGNOSTIC_ONLY_NON_CAUSAL_ENTRY_FILTER",
+    "eligibility_rule": "ENTRY_ADVERSE_SLIPPAGE_Q4",
+    "exit": {
+      "family": "TP_TIMEOUT",
+      "policy_id": "CTRL_Q4_TP20_T30",
+      "sl_bps": null,
+      "timeout_ms": 30000,
+      "timeout_origin": "ENTRY_FILL_CLOCK",
+      "tp_bps": 2000,
+      "trailing_activation_bps": null,
+      "trailing_giveback_bps": null
+    },
+    "fingerprint": "db7ef0a5beae5706378d7e9016caffbd8788086ec085912a0f4a4142ee5f1e61",
+    "policy_id": "CTRL_Q4_TP20_T30",
+    "promotion_eligible": false
+  },
+  {
+    "classification": "FROZEN_REFERENCE_ONLY",
+    "eligibility_rule": "ALL_FROZEN_FIRSTPULLBACK_CANDIDATES",
+    "exit": {
+      "family": "TP_TIMEOUT",
+      "policy_id": "FINAL-A",
+      "sl_bps": null,
+      "timeout_ms": 15000,
+      "timeout_origin": "PHASE4_SIGNAL_CLOCK",
+      "tp_bps": 1000,
+      "trailing_activation_bps": null,
+      "trailing_giveback_bps": null
+    },
+    "fingerprint": "f8a82c3aba80a982b9516962a84a2b3c10ac5e0fd2fcb6d8a5a501c475974787",
+    "policy_id": "FINAL-A",
+    "promotion_eligible": false
+  },
+  {
+    "classification": "FROZEN_REFERENCE_ONLY",
+    "eligibility_rule": "ALL_FROZEN_FIRSTPULLBACK_CANDIDATES",
+    "exit": {
+      "family": "TRAILING_TIMEOUT",
+      "policy_id": "FINAL-B",
+      "sl_bps": null,
+      "timeout_ms": 15000,
+      "timeout_origin": "PHASE4_SIGNAL_CLOCK",
+      "tp_bps": null,
+      "trailing_activation_bps": 1000,
+      "trailing_giveback_bps": 300
+    },
+    "fingerprint": "b353e4121f95fc9a52d24f975a653bf2f8131b7f812d2cd6f45509d95bdb6257",
+    "policy_id": "FINAL-B",
+    "promotion_eligible": false
+  },
+  {
+    "classification": "PROMOTION_CANDIDATE_CAUSAL",
+    "eligibility_rule": "CANDIDATE_SIGNAL_UTC_00_00_INCLUSIVE_06_00_EXCLUSIVE",
+    "exit": {
+      "family": "TP_TIMEOUT",
+      "policy_id": "H1_SIMPLE_TIME_TP10_T30",
+      "sl_bps": null,
+      "timeout_ms": 30000,
+      "timeout_origin": "ENTRY_FILL_CLOCK",
+      "tp_bps": 1000,
+      "trailing_activation_bps": null,
+      "trailing_giveback_bps": null
+    },
+    "fingerprint": "68aa83fcd7baa8dc923ee80b9a27e9b24b94c49802036c02847634cd4b36f043",
+    "policy_id": "H1_SIMPLE_TIME_TP10_T30",
+    "promotion_eligible": true
+  },
+  {
+    "classification": "DIAGNOSTIC_ONLY_NON_CAUSAL_ENTRY_FILTER",
+    "eligibility_rule": "H1_TIME_OR_ENTRY_ADVERSE_SLIPPAGE_Q4",
+    "exit": {
+      "family": "TP_TIMEOUT",
+      "policy_id": "H2_TIME_OR_Q4_TP20_T30",
+      "sl_bps": null,
+      "timeout_ms": 30000,
+      "timeout_origin": "ENTRY_FILL_CLOCK",
+      "tp_bps": 2000,
+      "trailing_activation_bps": null,
+      "trailing_giveback_bps": null
+    },
+    "fingerprint": "c9e7b0fd3b064d2b830ad6d1004bfb8d83f7b1a727514fbed4e8b6f60a8da8e8",
+    "policy_id": "H2_TIME_OR_Q4_TP20_T30",
+    "promotion_eligible": false
+  },
+  {
+    "classification": "DIAGNOSTIC_ONLY_NON_CAUSAL_ENTRY_FILTER",
+    "eligibility_rule": "EXCLUDE_ENTRY_ADVERSE_SLIPPAGE_Q3",
+    "exit": {
+      "family": "TRAILING_TIMEOUT",
+      "policy_id": "H3_EXCLUSION_TRAIL10_GB3_T30",
+      "sl_bps": null,
+      "timeout_ms": 30000,
+      "timeout_origin": "ENTRY_FILL_CLOCK",
+      "tp_bps": null,
+      "trailing_activation_bps": 1000,
+      "trailing_giveback_bps": 300
+    },
+    "fingerprint": "88e72133400bb16c9a58d72aee59814c76bfda5bb0fc9e7e8336e5996d9a787d",
+    "policy_id": "H3_EXCLUSION_TRAIL10_GB3_T30",
+    "promotion_eligible": false
+  }
+]
