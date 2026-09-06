@@ -20,6 +20,9 @@ from .shadow_simulation_repository_v0_1 import (
 )
 
 MODEL_ID = "P5-CONTINUOUS-SHADOW-EXECUTION-0001"
+ACCEPTED_C2_T004B_V02_MODEL_FINGERPRINT = (
+    "a848a74533872e2e2d7f1cfc2e690df2f285932d2bf87fcf00f6bb83075cba56"
+)
 COMPONENT_FINGERPRINTS = {
     "T001": d.MODEL_FINGERPRINT, "T002": v.MODEL_FINGERPRINT,
     "T003": s.MODEL_FINGERPRINT, "T004A": a.MODEL_FINGERPRINT,
@@ -42,6 +45,7 @@ CONTRACT_SPEC = {
     "phase4_access": "SQLITE_MODE_RO_QUERY_ONLY", "inventory": "INDEPENDENT_TRACKS",
     "phase4_source_scope": "ONE_T004A_AND_ONE_T004B_PER_SQLITE_SOURCE",
     "candidate_run_id": "PER_INTENT_IMMUTABLE_LINEAGE_NOT_SOURCE_SELECTOR",
+    "accepted_database_compatibility": "EXACT_C2_BINDING_WITH_T004B_V02_ONLY",
 }
 MODEL_FINGERPRINT = d.content_fingerprint(CONTRACT_SPEC)
 
@@ -183,10 +187,19 @@ class ContinuousShadowExecutionV01:
                 self.conn.execute(f"CREATE TRIGGER IF NOT EXISTS {table}_{operation.lower()} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT,'immutable C2 evidence'); END")
         payload = d.canonical_json({"model_fingerprint": MODEL_FINGERPRINT, "source_id": self.source_id,
                                     "actor_public_key": self.actor.public_key})
+        legacy_payload = d.canonical_json({
+            "model_fingerprint": ACCEPTED_C2_T004B_V02_MODEL_FINGERPRINT,
+            "source_id": self.source_id,
+            "actor_public_key": self.actor.public_key,
+        })
         row = self.conn.execute("SELECT payload FROM shadow_c2_meta WHERE singleton=1").fetchone()
-        if row is not None and row[0] != payload:
+        if row is not None and row[0] not in (payload, legacy_payload):
             raise ReplayConflict("C2 actor/source/contract binding mismatch")
         self.conn.execute("INSERT OR IGNORE INTO shadow_c2_meta VALUES(1,?)", (payload,))
+        self.database_model_fingerprint = (
+            MODEL_FINGERPRINT if row is None or row[0] == payload
+            else ACCEPTED_C2_T004B_V02_MODEL_FINGERPRINT
+        )
         self.conn.commit()
 
     def _fault(self, stage: str, intent_id: str):
@@ -422,7 +435,7 @@ class ContinuousShadowExecutionV01:
         classification = ("INTEGRITY_FAILURE" if integrity else EXPECTED_ONLY if final.reason_code == EXPECTED_ONLY else
             f"PAPER_{paper_data['state']}+SHADOW_{'SIM_SUCCESS' if success else 'NON_SUCCESS' if final.to_state in d.TERMINAL_STATES else 'PENDING'}")
         finished = self._read(intent_id, "finished")
-        return {"model_fingerprint": MODEL_FINGERPRINT, "intent_id": intent_id, "intent_fingerprint": intent.fingerprint,
+        return {"model_fingerprint": self.database_model_fingerprint, "intent_id": intent_id, "intent_fingerprint": intent.fingerprint,
             "role": intent.role.value, "track_id": intent.exit_track_id, "parent_entry_intent_id": intent.parent_entry_intent_id,
             "paper": paper_data, "shadow_state": final.to_state.value, "shadow_reason_code": final.reason_code,
             "shadow_reason_evidence": json.loads(final.evidence_json), "route": route,

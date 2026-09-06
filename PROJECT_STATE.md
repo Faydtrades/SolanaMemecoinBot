@@ -1036,3 +1036,33 @@ No production/live validation was performed. No production/source/paper
 database, collector, Phase-4 runtime, observability registry, active or recent
 T022 artifact, dependency, environment, strategy, entry, exit, cost, or
 slippage semantic was accessed or changed.
+
+## Current Phase-5 late-arriving exit source coverage correction
+
+MEME-P5-T004D1:
+IMPLEMENTED_PENDING_PROJECT_REVIEW
+
+T004B source discovery now advances by the bound Phase-4 SQLite physical
+append `rowid`, not by causal `requested_at` plus lexicographic exit ID. The
+exact accepted v0.2 database is migrated by a restart-safe replay from rowid
+zero; all legacy evidence remains immutable and an append-progress ledger
+binds each full normalized source row to its evidence.
+
+Contract model:
+`P5-SHADOW-LIFECYCLE-BRIDGE-0003`
+
+Contract fingerprint:
+`a14d1a7b2d959ebcc75583f830f8d444313b694f947a2bebdfe2a59b27b0e7f0`
+
+C2 contract fingerprint:
+`c587e05e772b3f9e7de3ed9afaf7e8d83056a029aec5c5b19bffe71ba5c8e694`
+
+Real acceptance-copy reconciliation recovered all four missing FINAL-B source
+rows. Three created exact Shadow EXIT intents; one correctly produced
+`NO_SHADOW_ENTRY_POSITION` for an already terminal `FAILED` parent. Evidence
+coverage is `389/389`, existing evidence is unchanged, the pre-existing C2
+comparison gap closes naturally, and bounded restart/replay is idempotent.
+
+No Phase-4 semantics, T004A behavior, track definitions, signer, submission,
+or broadcast capability changed. No commit was created. Project review remains
+the acceptance authority.

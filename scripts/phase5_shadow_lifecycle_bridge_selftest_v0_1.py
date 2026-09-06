@@ -63,7 +63,7 @@ BASE_AT = datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=BAS
 MINT = fx.fx.MINT
 EXPECTED_T001 = "506312a81b6d8acc724cb27d6d450086bc3fc4986dcdea4831b998a3a8ec91e3"
 EXPECTED_T004A = "83ca764101a325ef9c0cd8c4287e23d80f8e69b1ad5ee34f099ccce3ef470edb"
-EXPECTED_MODEL_FINGERPRINT = "5f0198e3c7c0a46dead7e68e630cabde32c8565a0640b61785e15e7914ff20b1"
+EXPECTED_MODEL_FINGERPRINT = "a14d1a7b2d959ebcc75583f830f8d444313b694f947a2bebdfe2a59b27b0e7f0"
 
 
 def text_at(offset_us: int) -> str:
@@ -466,7 +466,7 @@ def main() -> int:
             check("A02_EXACT_INVENTORY_REPLAY_IDEMPOTENT", replayed == inventory and bridge._conn.execute("SELECT COUNT(*) FROM shadow_t004b_expected_inventory").fetchone()[0] == 1, checks)
             check("A03_CONFLICTING_INVENTORY_REPLAY_FAILS_CLOSED", expect(InventoryConflict, lambda: bridge.materialize_expected_inventory(parent, quote, simulation_result, evidence_at_us=BASE_US + 31)), checks)
             ordered = [bridge.poll_exit_once(limit=1) for _ in range(3)]
-            check("A04_EQUAL_REQUESTED_AT_ORDERED_BY_EXIT_ID", [item.last_exit_intent_id for item in ordered] == ["exit-a", "exit-b", "exit-c"], checks)
+            check("A04_EQUAL_REQUESTED_AT_ORDERED_BY_PHYSICAL_APPEND", [item.last_exit_intent_id for item in ordered] == ["exit-c", "exit-a", "exit-b"] and [item.last_source_rowid for item in ordered] == [1, 2, 3], checks)
             intent_rows = bridge._conn.execute(
                 "SELECT intent_json FROM shadow_execution_intents ORDER BY intent_id"
             ).fetchall()
@@ -548,7 +548,7 @@ def main() -> int:
         bridge_entries(paper_c1, shadow_c1)
         with open_shadow_lifecycle_bridge(paper_c1, shadow_c1) as bridge:
             waiting = bridge.poll_exit_once()
-            check("C01_NONTERMINAL_WAIT_CURSOR_UNCHANGED", waiting.status is ExitPollStatus.WAITING_FOR_ENTRY_TERMINAL and bridge.cursor() == ("", "", None, 0) and bridge._conn.execute("SELECT COUNT(*) FROM shadow_execution_intents WHERE role='EXIT'").fetchone()[0] == 0, checks)
+            check("C01_NONTERMINAL_WAIT_CURSOR_UNCHANGED", waiting.status is ExitPollStatus.WAITING_FOR_ENTRY_TERMINAL and bridge.cursor() == (0, "", "", None, 0) and bridge._conn.execute("SELECT COUNT(*) FROM shadow_execution_intents WHERE role='EXIT'").fetchone()[0] == 0, checks)
 
         failed_exit = exit_row("exit-failed", "FINAL-B", "TRAIL", 2_100, triggered=True)
         paper_c2 = root / "failed.paper.sqlite3"
@@ -562,7 +562,7 @@ def main() -> int:
                 "SELECT classification,terminal_parent_state,shadow_exit_intent_id "
                 "FROM shadow_t004b_exit_source_evidence"
             ).fetchone()
-            check("C02_FAILED_PARENT_NO_POSITION_SAFE_ADVANCE", result.processed_rows == 1 and result.no_position_rows == 1 and tuple(no_position) == (NO_POSITION_CLASSIFICATION, "FAILED", None) and bridge.cursor()[:2] == (failed_exit["requested_at"], "exit-failed"), checks)
+            check("C02_FAILED_PARENT_NO_POSITION_SAFE_ADVANCE", result.processed_rows == 1 and result.no_position_rows == 1 and tuple(no_position) == (NO_POSITION_CLASSIFICATION, "FAILED", None) and bridge.cursor()[:3] == (1, failed_exit["requested_at"], "exit-failed"), checks)
             check("C03_NO_POSITION_CREATES_NO_SELL", bridge._conn.execute("SELECT COUNT(*) FROM shadow_execution_intents WHERE role='EXIT'").fetchone()[0] == 0, checks)
 
         no_position_crash_exit = exit_row(
@@ -598,7 +598,7 @@ def main() -> int:
             check(
                 "C04_NO_POSITION_EVIDENCE_CRASH_SAFE_REPLAY",
                 crashed
-                and cursor_after_crash == ("", "", None, 0)
+                and cursor_after_crash == (0, "", "", None, 0)
                 and evidence_after_crash == 1
                 and recovered_result.processed_rows == 1
                 and recovered_result.no_position_rows == 1
@@ -617,7 +617,7 @@ def main() -> int:
         missing_parent = bridge_entries(paper_d, shadow_d)[0]
         transition_fake_completed(shadow_d, missing_parent)
         with open_shadow_lifecycle_bridge(paper_d, shadow_d) as bridge:
-            check("D01_COMPLETED_WITHOUT_INVENTORY_FAILS_CLOSED", expect(InventoryConflict, bridge.poll_exit_once) and bridge.cursor() == ("", "", None, 0), checks)
+            check("D01_COMPLETED_WITHOUT_INVENTORY_FAILS_CLOSED", expect(InventoryConflict, bridge.poll_exit_once) and bridge.cursor() == (0, "", "", None, 0), checks)
 
         # E. Join conflicts and failed-row blocking.
         for index, field in enumerate(("mint", "track", "signal")):
@@ -639,7 +639,7 @@ def main() -> int:
             writer.commit()
             writer.close()
             with open_shadow_lifecycle_bridge(paper, shadow) as bridge:
-                check(label, expect(ExitSourceConflict, bridge.poll_exit_once) and bridge.cursor() == ("", "", None, 0), checks)
+                check(label, expect(ExitSourceConflict, bridge.poll_exit_once) and bridge.cursor() == (0, "", "", None, 0), checks)
 
         first_bad = exit_row("exit-00-bad", "FINAL-A", "FALLBACK", 4_000, triggered=False)
         second_good = exit_row("exit-01-good", "FINAL-B", "TRAIL", 4_001, triggered=True)
@@ -652,7 +652,7 @@ def main() -> int:
         writer.commit()
         writer.close()
         with open_shadow_lifecycle_bridge(paper_e, shadow_e) as bridge:
-            check("E04_FAILED_ROW_CANNOT_BE_SKIPPED", expect(ExitSourceConflict, bridge.poll_exit_once) and bridge.cursor() == ("", "", None, 0) and bridge._conn.execute("SELECT COUNT(*) FROM shadow_t004b_exit_source_evidence").fetchone()[0] == 0, checks)
+            check("E04_FAILED_ROW_CANNOT_BE_SKIPPED", expect(ExitSourceConflict, bridge.poll_exit_once) and bridge.cursor() == (0, "", "", None, 0) and bridge._conn.execute("SELECT COUNT(*) FROM shadow_t004b_exit_source_evidence").fetchone()[0] == 0, checks)
 
         # F. Both EXIT durability boundaries recover without duplication.
         for index, phase in enumerate(
@@ -704,7 +704,7 @@ def main() -> int:
                 check(
                     f"F0{index + 1}_{phase}_SAFE_REPLAY",
                     crashed
-                    and cursor_after_crash == ("", "", None, 0)
+                    and cursor_after_crash == (0, "", "", None, 0)
                     and exits_after_crash == 1
                     and evidence_after_crash == index
                     and recovered_result.processed_rows == 1

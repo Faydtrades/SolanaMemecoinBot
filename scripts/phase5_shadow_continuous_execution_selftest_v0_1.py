@@ -20,7 +20,7 @@ import phase5_shadow_continuous_execution_v0_1 as runner
 from phase5 import shadow_continuous_execution_v0_1 as c
 
 
-EXPECTED_MODEL_FINGERPRINT = "a848a74533872e2e2d7f1cfc2e690df2f285932d2bf87fcf00f6bb83075cba56"
+EXPECTED_MODEL_FINGERPRINT = "c587e05e772b3f9e7de3ed9afaf7e8d83056a029aec5c5b19bffe71ba5c8e694"
 
 
 def paper_fixture(path, *, state="FILLED", exits=False, entries=1, run_ids=None):
@@ -344,6 +344,36 @@ def main():
             count = len(net.calls)
             app.cycle()
             check("parent integrity cannot produce successful exits", app.conn.execute("SELECT COUNT(*) FROM shadow_execution_intents i JOIN shadow_state_machines m USING(intent_id) WHERE i.role='EXIT' AND m.current_state='FAILED'").fetchone()[0] == 3 and len(net.calls) == count)
+        paper, shadow, net = case("accepted_t004b_v02_binding")
+        with net.rpc() as rpc, c.ContinuousShadowExecutionV01(
+            paper, shadow, fx.ACTOR, rpc, clock_us=lambda: fx.BASE_US + 100
+        ):
+            pass
+        with closing(sqlite3.connect(shadow)) as db, db:
+            payload = json.loads(
+                db.execute("SELECT payload FROM shadow_c2_meta WHERE singleton=1").fetchone()[0]
+            )
+            payload["model_fingerprint"] = c.ACCEPTED_C2_T004B_V02_MODEL_FINGERPRINT
+            db.execute("DROP TRIGGER shadow_c2_meta_update")
+            db.execute(
+                "UPDATE shadow_c2_meta SET payload=? WHERE singleton=1",
+                (c.d.canonical_json(payload),),
+            )
+        with net.rpc() as rpc, c.ContinuousShadowExecutionV01(
+            paper, shadow, fx.ACTOR, rpc, clock_us=lambda: fx.BASE_US + 100
+        ) as app:
+            app.cycle()
+            identity = app.conn.execute(
+                "SELECT intent_id FROM shadow_execution_intents"
+            ).fetchone()[0]
+            comparison = app.comparison(identity)
+            check(
+                "accepted T004B v0.2 C2 binding reopens exactly",
+                app.database_model_fingerprint
+                == c.ACCEPTED_C2_T004B_V02_MODEL_FINGERPRINT
+                and comparison["model_fingerprint"]
+                == c.ACCEPTED_C2_T004B_V02_MODEL_FINGERPRINT,
+            )
         for once in (True, False):
             paper, shadow, net = case("runner" + str(once))
             tick = [0.0]

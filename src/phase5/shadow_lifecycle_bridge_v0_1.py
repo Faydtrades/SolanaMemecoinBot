@@ -4,7 +4,7 @@ import hashlib
 import json
 import os
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from enum import StrEnum
 from pathlib import Path
 from typing import Any, Callable, Mapping
@@ -41,10 +41,17 @@ from .shadow_venue_route_quote_v0_1 import ExecutableQuoteV01
 
 
 LEGACY_MODEL_FINGERPRINT = "9300fb7d39a16997be5c6a401483b86bd3c490a7d86b623dc6d12bfa379aef6d"
-MODEL_ID = "P5-SHADOW-LIFECYCLE-BRIDGE-0002"
-SCHEMA_VERSION = "phase5_shadow_lifecycle_bridge_v0.2"
+LEGACY_V02_MODEL_ID = "P5-SHADOW-LIFECYCLE-BRIDGE-0002"
+LEGACY_V02_SCHEMA_VERSION = "phase5_shadow_lifecycle_bridge_v0.2"
+LEGACY_V02_MODEL_FINGERPRINT = (
+    "5f0198e3c7c0a46dead7e68e630cabde32c8565a0640b61785e15e7914ff20b1"
+)
+LEGACY_V02_EXIT_EVIDENCE_SCHEMA_VERSION = "phase5_shadow_exit_source_evidence_v0.2"
+MODEL_ID = "P5-SHADOW-LIFECYCLE-BRIDGE-0003"
+SCHEMA_VERSION = "phase5_shadow_lifecycle_bridge_v0.3"
 INVENTORY_SCHEMA_VERSION = "phase5_expected_inventory_v0.1"
-EXIT_EVIDENCE_SCHEMA_VERSION = "phase5_shadow_exit_source_evidence_v0.2"
+EXIT_EVIDENCE_SCHEMA_VERSION = "phase5_shadow_exit_source_evidence_v0.3"
+EXIT_PROGRESS_SCHEMA_VERSION = "phase5_shadow_exit_source_progress_v0.1"
 POSITION_SCHEMA_VERSION = "phase5_expected_track_position_v0.1"
 EXPECTED_CLASSIFICATION = "EXPECTED_SIMULATED_ONLY"
 NO_POSITION_CLASSIFICATION = "NO_SHADOW_ENTRY_POSITION"
@@ -71,8 +78,14 @@ CONTRACT_SPEC: Mapping[str, Any] = {
         "paper_exit_intents JOIN paper_exit_track_states "
         "JOIN paper_continuous_signal_contexts_v0_1"
     ),
-    "exit_order": ["requested_at", "exit_intent_id"],
+    "exit_order": ["sqlite_source_rowid"],
+    "causal_time_role": "DECISION_METADATA_ONLY_NOT_DISCOVERY_WATERMARK",
     "source_scope": "ONE_GLOBAL_PHASE4_SQLITE_SOURCE_CURSOR",
+    "legacy_v0.2_reconciliation": (
+        "RESET_APPEND_CURSOR_TO_ZERO_AND_REPLAY_EXACT_BOUND_SOURCE_WITHOUT_"
+        "MUTATING_EXISTING_EVIDENCE"
+    ),
+    "progress_binding": "FULL_NORMALIZED_SOURCE_ROW_AND_EVIDENCE_ID",
     "candidate_run_id": "PER_EXIT_ROW_FROM_MATCHED_CONTEXTS",
     "parent_resolution": ["source_id", "candidate_run_id", "signal_key"],
     "legacy_v0.1_scope": "FAIL_CLOSED_NO_CURSOR_MERGE",
@@ -88,6 +101,7 @@ MODEL_FINGERPRINT = content_fingerprint(CONTRACT_SPEC)
 
 _EXIT_SQL = """
 SELECT
+    e.rowid AS source_rowid,
     e.exit_intent_id AS exit_intent_id,
     e.paper_position_id AS exit_paper_position_id,
     e.paper_order_id AS exit_paper_order_id,
@@ -129,13 +143,13 @@ LEFT JOIN paper_continuous_signal_contexts_v0_1 AS ce
     ON ce.signal_key = e.signal_key
 LEFT JOIN paper_continuous_signal_contexts_v0_1 AS ct
     ON ct.signal_key = t.signal_key
-WHERE (
-      e.requested_at > ?
-      OR (e.requested_at = ? AND e.exit_intent_id > ?)
-  )
-ORDER BY e.requested_at, e.exit_intent_id
+WHERE e.rowid > ?
+ORDER BY e.rowid
 LIMIT ?
 """
+_EXIT_PREFIX_SQL = _EXIT_SQL.replace(
+    "WHERE e.rowid > ?", "WHERE e.rowid > ? AND e.rowid <= ?"
+)
 
 _REQUIRED_EXIT_COLUMNS = frozenset(
     {
@@ -265,6 +279,7 @@ class ExpectedInventoryV01:
 
 @dataclass(frozen=True, slots=True)
 class Phase4ExitSourceV01:
+    source_rowid: int
     exit_intent_id: str
     paper_position_id: str
     paper_order_id: str
@@ -289,8 +304,8 @@ class Phase4ExitSourceV01:
     candidate_run_id: str
 
     @property
-    def ordering_key(self) -> tuple[str, str]:
-        return (self.requested_at, self.exit_intent_id)
+    def ordering_key(self) -> int:
+        return self.source_rowid
 
 
 @dataclass(frozen=True, slots=True)
@@ -299,6 +314,7 @@ class ExitPollResultV01:
     processed_rows: int
     exit_intents: int
     no_position_rows: int
+    last_source_rowid: int
     last_requested_at: str
     last_exit_intent_id: str
 
@@ -359,25 +375,46 @@ def _verify_exit_schema(conn: sqlite3.Connection) -> None:
 
 
 def _create_schema(conn: sqlite3.Connection) -> None:
-    legacy = conn.execute(
+    existing = conn.execute(
         "SELECT 1 FROM sqlite_master WHERE type='table' "
         "AND name='shadow_t004b_schema_meta'"
     ).fetchone()
-    if legacy is not None:
+    existing_meta: tuple[str, str] | None = None
+    if existing is not None:
         try:
             meta = conn.execute(
-                "SELECT schema_version,model_fingerprint FROM shadow_t004b_schema_meta "
+                "SELECT model_id,schema_version,model_fingerprint,"
+                "inventory_schema_version,exit_evidence_schema_version "
+                "FROM shadow_t004b_schema_meta "
                 "WHERE singleton=1"
             ).fetchone()
         except sqlite3.OperationalError as exc:
             raise SourceIdentityConflict(
                 "legacy T004B cursor schema metadata is incompatible"
             ) from exc
-        if meta is None or tuple(meta) != (SCHEMA_VERSION, MODEL_FINGERPRINT):
+        if meta is None:
             raise SourceIdentityConflict(
-                "legacy T004B run-scoped cursor schema is incompatible; "
-                "global cursor cannot be merged safely"
+                "T004B cursor schema metadata is missing"
             )
+        meta_values = tuple(str(value) for value in meta)
+        existing_meta = (meta_values[1], meta_values[2])
+        accepted_legacy_meta = (
+            LEGACY_V02_MODEL_ID,
+            LEGACY_V02_SCHEMA_VERSION,
+            LEGACY_V02_MODEL_FINGERPRINT,
+            INVENTORY_SCHEMA_VERSION,
+            LEGACY_V02_EXIT_EVIDENCE_SCHEMA_VERSION,
+        )
+        if (
+            existing_meta == (LEGACY_V02_SCHEMA_VERSION, LEGACY_V02_MODEL_FINGERPRINT)
+            and meta_values != accepted_legacy_meta
+        ):
+            raise SourceIdentityConflict("legacy T004B metadata is not exact")
+        if existing_meta not in {
+            (SCHEMA_VERSION, MODEL_FINGERPRINT),
+            (LEGACY_V02_SCHEMA_VERSION, LEGACY_V02_MODEL_FINGERPRINT),
+        }:
+            raise SourceIdentityConflict("T004B cursor schema metadata is incompatible")
     conn.executescript(
         """
         CREATE TABLE IF NOT EXISTS shadow_t004b_schema_meta (
@@ -386,7 +423,8 @@ def _create_schema(conn: sqlite3.Connection) -> None:
             schema_version TEXT NOT NULL,
             model_fingerprint TEXT NOT NULL,
             inventory_schema_version TEXT NOT NULL,
-            exit_evidence_schema_version TEXT NOT NULL
+            exit_evidence_schema_version TEXT NOT NULL,
+            exit_progress_schema_version TEXT NOT NULL
         );
 
         CREATE TABLE IF NOT EXISTS shadow_t004b_expected_inventory (
@@ -445,6 +483,7 @@ def _create_schema(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS shadow_t004b_exit_cursors (
             source_id TEXT PRIMARY KEY REFERENCES shadow_t004a_sources(source_id),
             source_scope_version TEXT NOT NULL,
+            last_source_rowid INTEGER NOT NULL DEFAULT 0 CHECK(last_source_rowid >= 0),
             last_requested_at TEXT NOT NULL,
             last_exit_intent_id TEXT NOT NULL,
             last_evidence_id TEXT
@@ -457,6 +496,18 @@ def _create_schema(conn: sqlite3.Connection) -> None:
                 (revision>0 AND last_requested_at<>'' AND last_exit_intent_id<>''
                     AND last_evidence_id IS NOT NULL)
             )
+        );
+
+        CREATE TABLE IF NOT EXISTS shadow_t004b_exit_source_progress (
+            source_id TEXT NOT NULL REFERENCES shadow_t004a_sources(source_id),
+            source_rowid INTEGER NOT NULL CHECK(source_rowid > 0),
+            exit_intent_id TEXT NOT NULL,
+            evidence_id TEXT NOT NULL
+                REFERENCES shadow_t004b_exit_source_evidence(evidence_id),
+            content_fingerprint TEXT NOT NULL,
+            PRIMARY KEY(source_id,source_rowid),
+            UNIQUE(source_id,exit_intent_id),
+            UNIQUE(evidence_id)
         );
 
         CREATE TRIGGER IF NOT EXISTS shadow_t004b_inventory_no_update
@@ -474,23 +525,60 @@ def _create_schema(conn: sqlite3.Connection) -> None:
         CREATE TRIGGER IF NOT EXISTS shadow_t004b_exit_cursor_no_delete
         BEFORE DELETE ON shadow_t004b_exit_cursors
         BEGIN SELECT RAISE(ABORT, 'T004B exit cursor cannot be deleted'); END;
+        CREATE TRIGGER IF NOT EXISTS shadow_t004b_exit_progress_no_update
+        BEFORE UPDATE ON shadow_t004b_exit_source_progress
+        BEGIN SELECT RAISE(ABORT, 'T004B exit progress is immutable'); END;
+        CREATE TRIGGER IF NOT EXISTS shadow_t004b_exit_progress_no_delete
+        BEFORE DELETE ON shadow_t004b_exit_source_progress
+        BEGIN SELECT RAISE(ABORT, 'T004B exit progress is immutable'); END;
         """
     )
+    if existing_meta == (LEGACY_V02_SCHEMA_VERSION, LEGACY_V02_MODEL_FINGERPRINT):
+        with conn:
+            conn.execute("BEGIN IMMEDIATE")
+            cursor_columns = _table_columns(conn, "shadow_t004b_exit_cursors")
+            if "last_source_rowid" not in cursor_columns:
+                conn.execute(
+                    "ALTER TABLE shadow_t004b_exit_cursors ADD COLUMN "
+                    "last_source_rowid INTEGER NOT NULL DEFAULT 0 "
+                    "CHECK(last_source_rowid >= 0)"
+                )
+            meta_columns = _table_columns(conn, "shadow_t004b_schema_meta")
+            if "exit_progress_schema_version" not in meta_columns:
+                conn.execute(
+                    "ALTER TABLE shadow_t004b_schema_meta ADD COLUMN "
+                    "exit_progress_schema_version TEXT NOT NULL DEFAULT "
+                    f"'{EXIT_PROGRESS_SCHEMA_VERSION}'"
+                )
+            conn.execute(
+                "UPDATE shadow_t004b_schema_meta SET model_id=?,schema_version=?,"
+                "model_fingerprint=?,exit_evidence_schema_version=?,"
+                "exit_progress_schema_version=? WHERE singleton=1",
+                (
+                    MODEL_ID,
+                    SCHEMA_VERSION,
+                    MODEL_FINGERPRINT,
+                    EXIT_EVIDENCE_SCHEMA_VERSION,
+                    EXIT_PROGRESS_SCHEMA_VERSION,
+                ),
+            )
     expected = (
         MODEL_ID,
         SCHEMA_VERSION,
         MODEL_FINGERPRINT,
         INVENTORY_SCHEMA_VERSION,
         EXIT_EVIDENCE_SCHEMA_VERSION,
+        EXIT_PROGRESS_SCHEMA_VERSION,
     )
     row = conn.execute(
         "SELECT model_id,schema_version,model_fingerprint,"
-        "inventory_schema_version,exit_evidence_schema_version "
+        "inventory_schema_version,exit_evidence_schema_version,"
+        "exit_progress_schema_version "
         "FROM shadow_t004b_schema_meta WHERE singleton=1"
     ).fetchone()
     if row is None:
         conn.execute(
-            "INSERT INTO shadow_t004b_schema_meta VALUES(1,?,?,?,?,?)", expected
+            "INSERT INTO shadow_t004b_schema_meta VALUES(1,?,?,?,?,?,?)", expected
         )
     elif tuple(row) != expected:
         raise ShadowDeterminismConflict("T004B lifecycle contract mismatch")
@@ -531,7 +619,10 @@ class ShadowLifecycleBridgeV01:
             ).fetchone()
             if row is None:
                 self._conn.execute(
-                    "INSERT INTO shadow_t004b_exit_cursors VALUES(?,?,'','',NULL,0)",
+                    "INSERT INTO shadow_t004b_exit_cursors "
+                    "(source_id,source_scope_version,last_source_rowid,"
+                    "last_requested_at,last_exit_intent_id,last_evidence_id,revision) "
+                    "VALUES(?,?,0,'','',NULL,0)",
                     (identity.source_id, identity.source_scope_version),
                 )
             elif str(row[0]) != identity.source_scope_version:
@@ -548,16 +639,74 @@ class ShadowLifecycleBridgeV01:
         if int(self._paper_conn.execute("PRAGMA query_only").fetchone()[0]) != 1:
             raise SourceIdentityConflict("Phase4 connection lost query_only mode")
 
-    def cursor(self) -> tuple[str, str, str | None, int]:
+    def _verify_progress_still_bound(self, last_source_rowid: int) -> None:
+        if last_source_rowid == 0:
+            return
+        try:
+            source_rows = tuple(
+                self._construct_exit_source(row)
+                for row in self._paper_conn.execute(
+                    _EXIT_PREFIX_SQL,
+                    (0, last_source_rowid, last_source_rowid),
+                )
+            )
+        except ExitSourceConflict as exc:
+            raise SourceIdentityConflict(
+                "processed Phase4 append source no longer matches its evidence"
+            ) from exc
+        progress_rows = tuple(
+            tuple(row)
+            for row in self._conn.execute(
+                "SELECT source_rowid,exit_intent_id,evidence_id,content_fingerprint "
+                "FROM shadow_t004b_exit_source_progress "
+                "WHERE source_id=? AND source_rowid<=? ORDER BY source_rowid",
+                (self.source_identity.source_id, last_source_rowid),
+            )
+        )
+        expected_progress = tuple(
+            (
+                source.source_rowid,
+                source.exit_intent_id,
+                str(progress[2]),
+                self._progress_fingerprint(source, str(progress[2])),
+            )
+            for source, progress in zip(source_rows, progress_rows, strict=False)
+        )
+        if (
+            len(source_rows) != len(progress_rows)
+            or expected_progress != progress_rows
+            or not source_rows
+        ):
+            raise SourceIdentityConflict(
+                "T004B append cursor no longer matches the bound Phase4 source"
+            )
+        if source_rows[-1].source_rowid != last_source_rowid:
+            raise SourceIdentityConflict("T004B append cursor row is missing from source")
+
+    @staticmethod
+    def _progress_fingerprint(
+        source: Phase4ExitSourceV01,
+        evidence_id: str,
+    ) -> str:
+        return content_fingerprint(
+            {
+                "schema_version": EXIT_PROGRESS_SCHEMA_VERSION,
+                "source": asdict(source),
+                "evidence_id": evidence_id,
+            }
+        )
+
+    def cursor(self) -> tuple[int, str, str, str | None, int]:
         self._require_open()
         row = self._conn.execute(
-            "SELECT last_requested_at,last_exit_intent_id,last_evidence_id,revision "
+            "SELECT last_source_rowid,last_requested_at,last_exit_intent_id,"
+            "last_evidence_id,revision "
             "FROM shadow_t004b_exit_cursors WHERE source_id=?",
             (self.source_identity.source_id,),
         ).fetchone()
         if row is None:
             raise SourceIdentityConflict("T004B exit cursor is missing")
-        return (str(row[0]), str(row[1]), row[2], int(row[3]))
+        return (int(row[0]), str(row[1]), str(row[2]), row[3], int(row[4]))
 
     def materialize_expected_inventory(
         self,
@@ -776,24 +925,19 @@ class ShadowLifecycleBridgeV01:
 
     def _load_exit_rows(
         self,
-        last_requested_at: str,
-        last_exit_intent_id: str,
+        last_source_rowid: int,
         limit: int,
     ) -> tuple[sqlite3.Row, ...]:
         return tuple(
             self._paper_conn.execute(
                 _EXIT_SQL,
-                (
-                    last_requested_at,
-                    last_requested_at,
-                    last_exit_intent_id,
-                    limit,
-                ),
+                (last_source_rowid, limit),
             ).fetchall()
         )
 
     @staticmethod
     def _construct_exit_source(row: sqlite3.Row) -> Phase4ExitSourceV01:
+        source_rowid = _strict_int("source_rowid", row["source_rowid"], positive=True)
         exit_intent_id = _required_text("exit_intent_id", row["exit_intent_id"])
         paper_position_id = _required_text(
             "paper_position_id", row["exit_paper_position_id"]
@@ -840,6 +984,7 @@ class ShadowLifecycleBridgeV01:
         except SourceBridgeError as exc:
             raise ExitSourceConflict("paper exit requested_at is invalid UTC") from exc
         return Phase4ExitSourceV01(
+            source_rowid=source_rowid,
             exit_intent_id=exit_intent_id,
             paper_position_id=paper_position_id,
             paper_order_id=paper_order_id,
@@ -997,46 +1142,69 @@ class ShadowLifecycleBridgeV01:
         exit_intent: ExecutionIntentV01 | None,
         terminal_parent_state: ShadowState | None,
         inventory: ExpectedInventoryV01 | None,
+        legacy_v02: bool = False,
     ) -> tuple[str, str, str]:
-        evidence_id = deterministic_id(
-            "P5XEV",
-            EXIT_EVIDENCE_SCHEMA_VERSION,
-            self.source_identity.source_id,
-            source.candidate_run_id,
-            source.requested_at,
-            source.exit_intent_id,
+        schema_version = (
+            LEGACY_V02_EXIT_EVIDENCE_SCHEMA_VERSION
+            if legacy_v02
+            else EXIT_EVIDENCE_SCHEMA_VERSION
         )
+        model_id = LEGACY_V02_MODEL_ID if legacy_v02 else MODEL_ID
+        model_fingerprint = (
+            LEGACY_V02_MODEL_FINGERPRINT if legacy_v02 else MODEL_FINGERPRINT
+        )
+        identity_parts = (
+            (
+                schema_version,
+                self.source_identity.source_id,
+                source.candidate_run_id,
+                source.requested_at,
+                source.exit_intent_id,
+            )
+            if legacy_v02
+            else (
+                schema_version,
+                self.source_identity.source_id,
+                str(source.source_rowid),
+                source.candidate_run_id,
+                source.exit_intent_id,
+            )
+        )
+        evidence_id = deterministic_id("P5XEV", *identity_parts)
+        phase4_exit = {
+            "candidate_run_id": source.candidate_run_id,
+            "exit_intent_id": source.exit_intent_id,
+            "paper_position_id": source.paper_position_id,
+            "paper_order_id": source.paper_order_id,
+            "signal_key": source.signal_key,
+            "mint": source.mint,
+            "track_id": source.track_id,
+            "exit_variant": source.exit_variant,
+            "reason": source.reason,
+            "requested_at": source.requested_at,
+            "requested_at_us": source.requested_at_us,
+            "trigger_observed_at": source.trigger_observed_at,
+            "trigger_ingest_seq": source.trigger_ingest_seq,
+            "trigger_source_event_key": source.trigger_source_event_key,
+            "trigger_price_numerator_raw": source.trigger_price_numerator_raw,
+            "trigger_price_denominator_raw": source.trigger_price_denominator_raw,
+            "rule_return_bps": source.rule_return_bps,
+            "trail_peak_return_bps": source.trail_peak_return_bps,
+            "last_fresh_observed_at": source.last_fresh_observed_at,
+            "last_fresh_ingest_seq": source.last_fresh_ingest_seq,
+            "last_fresh_return_bps": source.last_fresh_return_bps,
+        }
+        if not legacy_v02:
+            phase4_exit["source_rowid"] = source.source_rowid
         payload = {
-            "schema_version": EXIT_EVIDENCE_SCHEMA_VERSION,
-            "model_id": MODEL_ID,
-            "model_fingerprint": MODEL_FINGERPRINT,
+            "schema_version": schema_version,
+            "model_id": model_id,
+            "model_fingerprint": model_fingerprint,
             "source_identity": {
                 "source_id": self.source_identity.source_id,
                 "source_scope_version": self.source_identity.source_scope_version,
             },
-            "phase4_exit": {
-                "candidate_run_id": source.candidate_run_id,
-                "exit_intent_id": source.exit_intent_id,
-                "paper_position_id": source.paper_position_id,
-                "paper_order_id": source.paper_order_id,
-                "signal_key": source.signal_key,
-                "mint": source.mint,
-                "track_id": source.track_id,
-                "exit_variant": source.exit_variant,
-                "reason": source.reason,
-                "requested_at": source.requested_at,
-                "requested_at_us": source.requested_at_us,
-                "trigger_observed_at": source.trigger_observed_at,
-                "trigger_ingest_seq": source.trigger_ingest_seq,
-                "trigger_source_event_key": source.trigger_source_event_key,
-                "trigger_price_numerator_raw": source.trigger_price_numerator_raw,
-                "trigger_price_denominator_raw": source.trigger_price_denominator_raw,
-                "rule_return_bps": source.rule_return_bps,
-                "trail_peak_return_bps": source.trail_peak_return_bps,
-                "last_fresh_observed_at": source.last_fresh_observed_at,
-                "last_fresh_ingest_seq": source.last_fresh_ingest_seq,
-                "last_fresh_return_bps": source.last_fresh_return_bps,
-            },
+            "phase4_exit": phase4_exit,
             "parent_entry_intent_id": parent.intent_id,
             "classification": classification,
             "expected_inventory_id": None if inventory is None else inventory.inventory_id,
@@ -1070,42 +1238,39 @@ class ShadowLifecycleBridgeV01:
         terminal_parent_state: ShadowState | None,
         inventory: ExpectedInventoryV01 | None,
     ) -> str:
-        evidence_id, evidence_json, fingerprint = self._evidence_record(
-            source,
-            parent,
-            classification=classification,
-            exit_intent=exit_intent,
-            terminal_parent_state=terminal_parent_state,
-            inventory=inventory,
-        )
-        expected = (
-            evidence_id,
-            self.source_identity.source_id,
-            source.candidate_run_id,
-            source.requested_at,
-            source.exit_intent_id,
-            source.paper_position_id,
-            source.signal_key,
-            source.track_id,
-            parent.intent_id,
-            classification,
-            None if exit_intent is None else exit_intent.intent_id,
-            None if terminal_parent_state is None else terminal_parent_state.value,
-            evidence_json,
-            fingerprint,
-        )
+        def expected_row(*, legacy_v02: bool) -> tuple[Any, ...]:
+            evidence_id, evidence_json, fingerprint = self._evidence_record(
+                source,
+                parent,
+                classification=classification,
+                exit_intent=exit_intent,
+                terminal_parent_state=terminal_parent_state,
+                inventory=inventory,
+                legacy_v02=legacy_v02,
+            )
+            return (
+                evidence_id,
+                self.source_identity.source_id,
+                source.candidate_run_id,
+                source.requested_at,
+                source.exit_intent_id,
+                source.paper_position_id,
+                source.signal_key,
+                source.track_id,
+                parent.intent_id,
+                classification,
+                None if exit_intent is None else exit_intent.intent_id,
+                None if terminal_parent_state is None else terminal_parent_state.value,
+                evidence_json,
+                fingerprint,
+            )
+
+        expected = expected_row(legacy_v02=False)
+        accepted_legacy = expected_row(legacy_v02=True)
         with self._conn:
             self._conn.execute("BEGIN IMMEDIATE")
             existing = self._conn.execute(
-                "SELECT * FROM shadow_t004b_exit_source_evidence WHERE evidence_id=?",
-                (evidence_id,),
-            ).fetchone()
-            if existing is not None:
-                if tuple(existing) != expected:
-                    raise ShadowDeterminismConflict("T004B exit-evidence replay conflict")
-                return evidence_id
-            collision = self._conn.execute(
-                "SELECT evidence_id FROM shadow_t004b_exit_source_evidence "
+                "SELECT * FROM shadow_t004b_exit_source_evidence "
                 "WHERE source_id=? AND candidate_run_id=? AND exit_intent_id=?",
                 (
                     self.source_identity.source_id,
@@ -1113,29 +1278,35 @@ class ShadowLifecycleBridgeV01:
                     source.exit_intent_id,
                 ),
             ).fetchone()
-            if collision is not None:
-                raise ShadowDeterminismConflict("T004B exit-evidence uniqueness conflict")
+            if existing is not None:
+                if tuple(existing) not in (expected, accepted_legacy):
+                    raise ShadowDeterminismConflict("T004B exit-evidence replay conflict")
+                return str(existing["evidence_id"])
             self._conn.execute(
                 "INSERT INTO shadow_t004b_exit_source_evidence "
                 "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 expected,
             )
-        return evidence_id
+        return str(expected[0])
 
     def _advance_cursor(
         self,
-        previous: tuple[str, str, str | None, int],
+        previous: tuple[int, str, str, str | None, int],
         source: Phase4ExitSourceV01,
         evidence_id: str,
-    ) -> tuple[str, str, str | None, int]:
+    ) -> tuple[int, str, str, str | None, int]:
         with self._conn:
             self._conn.execute("BEGIN IMMEDIATE")
             current = self.cursor()
-            if current[:2] == source.ordering_key:
-                if current[2] != evidence_id:
+            if current[0] == source.source_rowid:
+                if current[1:4] != (
+                    source.requested_at,
+                    source.exit_intent_id,
+                    evidence_id,
+                ):
                     raise ShadowDeterminismConflict("T004B cursor evidence conflict")
                 return current
-            if current[:2] > source.ordering_key:
+            if current[0] > source.source_rowid:
                 raise ShadowDeterminismConflict("T004B stale cursor advancement")
             if current != previous:
                 raise ShadowDeterminismConflict("T004B concurrent cursor advancement")
@@ -1154,24 +1325,50 @@ class ShadowLifecycleBridgeV01:
                 raise ShadowDeterminismConflict(
                     "T004B cursor cannot advance without exact evidence"
                 )
+            progress_fingerprint = self._progress_fingerprint(source, evidence_id)
+            progress_expected = (
+                self.source_identity.source_id,
+                source.source_rowid,
+                source.exit_intent_id,
+                evidence_id,
+                progress_fingerprint,
+            )
+            existing_progress = self._conn.execute(
+                "SELECT * FROM shadow_t004b_exit_source_progress "
+                "WHERE source_id=? AND source_rowid=?",
+                (self.source_identity.source_id, source.source_rowid),
+            ).fetchone()
+            if existing_progress is None:
+                self._conn.execute(
+                    "INSERT INTO shadow_t004b_exit_source_progress VALUES(?,?,?,?,?)",
+                    progress_expected,
+                )
+            elif tuple(existing_progress) != progress_expected:
+                raise ShadowDeterminismConflict("T004B append progress replay conflict")
             updated = self._conn.execute(
-                "UPDATE shadow_t004b_exit_cursors SET last_requested_at=?,"
+                "UPDATE shadow_t004b_exit_cursors SET last_source_rowid=?,"
+                "last_requested_at=?,"
                 "last_exit_intent_id=?,last_evidence_id=?,revision=revision+1 "
-                "WHERE source_id=? AND revision=? AND last_requested_at=? "
-                "AND last_exit_intent_id=?",
+                "WHERE source_id=? AND revision=? AND last_source_rowid=?",
                 (
+                    source.source_rowid,
                     source.requested_at,
                     source.exit_intent_id,
                     evidence_id,
                     self.source_identity.source_id,
-                    previous[3],
+                    previous[4],
                     previous[0],
-                    previous[1],
                 ),
             )
             if updated.rowcount != 1:
                 raise ShadowDeterminismConflict("T004B atomic cursor update failed")
-        return (source.requested_at, source.exit_intent_id, evidence_id, previous[3] + 1)
+        return (
+            source.source_rowid,
+            source.requested_at,
+            source.exit_intent_id,
+            evidence_id,
+            previous[4] + 1,
+        )
 
     def poll_exit_once(self, *, limit: int = 100) -> ExitPollResultV01:
         self._require_open()
@@ -1179,12 +1376,13 @@ class ShadowLifecycleBridgeV01:
             raise ValueError("limit must be a positive integer")
         self._verify_source_still_bound()
         cursor = self.cursor()
-        rows = self._load_exit_rows(cursor[0], cursor[1], limit)
+        self._verify_progress_still_bound(cursor[0])
+        rows = self._load_exit_rows(cursor[0], limit)
         processed = exits = no_positions = 0
         status = ExitPollStatus.IDLE
         for row in rows:
             source = self._construct_exit_source(row)
-            if source.ordering_key <= cursor[:2]:
+            if source.source_rowid <= cursor[0]:
                 raise ExitSourceConflict("exit source query returned non-advancing row")
             parent = self._parent_entry(source)
             parent_state = self._shadow.current_state(parent.intent_id)
@@ -1236,8 +1434,9 @@ class ShadowLifecycleBridgeV01:
             processed_rows=processed,
             exit_intents=exits,
             no_position_rows=no_positions,
-            last_requested_at=cursor[0],
-            last_exit_intent_id=cursor[1],
+            last_source_rowid=cursor[0],
+            last_requested_at=cursor[1],
+            last_exit_intent_id=cursor[2],
         )
 
     def quick_check(self) -> str:
@@ -1260,6 +1459,13 @@ class ShadowLifecycleBridgeV01:
                 dict(row)
                 for row in self._conn.execute(
                     "SELECT * FROM shadow_t004b_exit_source_evidence ORDER BY evidence_id"
+                )
+            ],
+            "exit_progress": [
+                dict(row)
+                for row in self._conn.execute(
+                    "SELECT * FROM shadow_t004b_exit_source_progress "
+                    "ORDER BY source_id,source_rowid"
                 )
             ],
             "cursors": [

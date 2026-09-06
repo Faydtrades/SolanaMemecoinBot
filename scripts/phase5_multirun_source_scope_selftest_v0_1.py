@@ -31,8 +31,8 @@ RUNS = ("candidate-run-a", "candidate-run-b", "candidate-run-c")
 TRACKS = ("FINAL-A", "FINAL-B", "SENS-C")
 OLD_C2_FINGERPRINT = "f50d24e07049a3f2b2bc3283e266c8925145de76bb7e5a91c9dea9ccbe0c7be6"
 EXPECTED_T004A_FINGERPRINT = "83ca764101a325ef9c0cd8c4287e23d80f8e69b1ad5ee34f099ccce3ef470edb"
-EXPECTED_T004B_FINGERPRINT = "5f0198e3c7c0a46dead7e68e630cabde32c8565a0640b61785e15e7914ff20b1"
-EXPECTED_C2_FINGERPRINT = "a848a74533872e2e2d7f1cfc2e690df2f285932d2bf87fcf00f6bb83075cba56"
+EXPECTED_T004B_FINGERPRINT = "a14d1a7b2d959ebcc75583f830f8d444313b694f947a2bebdfe2a59b27b0e7f0"
+EXPECTED_C2_FINGERPRINT = "c587e05e772b3f9e7de3ed9afaf7e8d83056a029aec5c5b19bffe71ba5c8e694"
 EVIDENCE = ROOT / "data" / "shadow" / "evidence" / "P5_T004D0_multirun_source_scope_evidence.json"
 
 
@@ -241,13 +241,13 @@ def main() -> int:
         exit_before = exit_paper.read_bytes()
         parent_ids = bfx.bridge_entries(exit_paper, exit_shadow)
         completed = [bfx.complete_entry_chain(exit_shadow, parent_id) for parent_id in parent_ids]
-        cursor_order: list[tuple[str, str]] = []
+        cursor_order: list[int] = []
         with b.open_shadow_lifecycle_bridge(exit_paper, exit_shadow) as bridge:
             for parent, quote, simulation in completed:
                 bridge.materialize_expected_inventory(
                     parent, quote, simulation, evidence_at_us=bfx.BASE_US + 30
                 )
-            source_rows = bridge._load_exit_rows("", "", 100)
+            source_rows = bridge._load_exit_rows(0, 100)
             first_source = bridge._construct_exit_source(source_rows[0])
             wrong_parent = replace(first_source, candidate_run_id="candidate-run-wrong")
             require("cross-run parent mismatch fails closed", capture(
@@ -257,7 +257,7 @@ def main() -> int:
                 result = bridge.poll_exit_once(limit=1)
                 if result.processed_rows == 0:
                     break
-                cursor_order.append((result.last_requested_at, result.last_exit_intent_id))
+                cursor_order.append(result.last_source_rowid)
             exit_intents = intent_rows(bridge._conn, "EXIT")
             entry_intents = intent_rows(bridge._conn, "ENTRY")
             entry_by_signal = {item["candidate_signal_id"]: item for item in entry_intents}
@@ -281,7 +281,7 @@ def main() -> int:
             require("one global exit cursor", bridge._conn.execute(
                 "SELECT COUNT(*) FROM shadow_t004b_exit_cursors"
             ).fetchone()[0] == 1, checks)
-            require("exit cursor deterministic", cursor_order == sorted(cursor_order), checks)
+            require("exit cursor deterministic", cursor_order == list(range(1, 10)), checks)
             require("exit repeat idempotent", bridge.poll_exit_once().processed_rows == 0, checks)
             require("exit quick check", bridge.quick_check() == "ok", checks)
         with b.open_shadow_lifecycle_bridge(exit_paper, exit_shadow) as bridge:
@@ -309,7 +309,7 @@ def main() -> int:
         with b.open_shadow_lifecycle_bridge(joined_paper, joined_shadow) as bridge:
             require("exit and track run disagreement fails closed", capture(
                 b.ExitSourceConflict, bridge.poll_exit_once
-            ) is not None and bridge.cursor() == ("", "", None, 0), checks)
+            ) is not None and bridge.cursor() == (0, "", "", None, 0), checks)
         proof["exit"] = {
             "intent_count": len(exit_intents),
             "candidate_run_ids": sorted(evidence_runs),
