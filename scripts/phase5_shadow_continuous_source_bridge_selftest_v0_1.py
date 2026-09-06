@@ -41,6 +41,9 @@ EXPECTED_DECISION_US = 1_787_579_632_299_461
 EXPECTED_T001_FINGERPRINT = (
     "506312a81b6d8acc724cb27d6d450086bc3fc4986dcdea4831b998a3a8ec91e3"
 )
+EXPECTED_MODEL_FINGERPRINT = (
+    "83ca764101a325ef9c0cd8c4287e23d80f8e69b1ad5ee34f099ccce3ef470edb"
+)
 
 
 def sha256(path: Path) -> str:
@@ -79,13 +82,14 @@ def row(
     route_parameters: str | None = None,
     timestamp: str = BASE_TIMESTAMP,
     size: int = 100_000_000,
+    run_id: str = RUN_ID,
 ) -> dict[str, Any]:
     mint = context_mint or f"mint-{signal_key}"
     return {
         "signal_key": signal_key,
         "route_id": route_id or f"route-{signal_key}",
         "source_evaluation_id": f"evaluation-{signal_key}",
-        "run_id": RUN_ID,
+        "run_id": run_id,
         "context_mint": mint,
         "route_mint": route_mint or mint,
         "context_strategy": context_strategy,
@@ -239,9 +243,7 @@ def main() -> int:
         shadow_a = root / "shadow_a.sqlite3"
         create_paper_database(paper_a, [row(10, "signal-a")])
         paper_hash = sha256(paper_a)
-        with open_continuous_source_bridge(
-            paper_a, shadow_a, candidate_run_id=RUN_ID
-        ) as bridge:
+        with open_continuous_source_bridge(paper_a, shadow_a) as bridge:
             first = bridge.poll_once()
             first_digest = bridge.canonical_digest()
             replay = bridge.poll_once()
@@ -282,7 +284,7 @@ def main() -> int:
             check("A05_PHASE4_CONNECTION_QUERY_ONLY", int(bridge._paper_conn.execute("PRAGMA query_only").fetchone()[0]) == 1 and expect(sqlite3.OperationalError, lambda: bridge._paper_conn.execute("DELETE FROM paper_entry_routes")), checks)
             check("A06_SHADOW_QUICK_CHECK", bridge.quick_check() == "ok", checks)
         check("A07_PHASE4_DB_BYTE_IDENTICAL", sha256(paper_a) == paper_hash, checks)
-        with open_continuous_source_bridge(paper_a, shadow_a, candidate_run_id=RUN_ID) as reopened:
+        with open_continuous_source_bridge(paper_a, shadow_a) as reopened:
             check("A08_RESTART_REOPEN_NO_DUPLICATE", reopened.poll_once().processed_rows == 0 and reopened.intent_count() == 1 and reopened.lineage_count() == 1, checks)
             check("A09_RESTART_DIGEST_DETERMINISTIC", reopened.canonical_digest() == first_digest, checks)
 
@@ -294,7 +296,7 @@ def main() -> int:
             [row(20, "signal-z"), row(20, "signal-a")],
             paper_tracks=3,
         )
-        with open_continuous_source_bridge(paper_b, shadow_b, candidate_run_id=RUN_ID) as bridge:
+        with open_continuous_source_bridge(paper_b, shadow_b) as bridge:
             first_equal = bridge.poll_once(limit=1)
             second_equal = bridge.poll_once(limit=1)
             check("B01_EQUAL_CURSOR_SIGNAL_KEY_ORDER", first_equal.last_signal_key == "signal-a" and second_equal.last_signal_key == "signal-z", checks)
@@ -311,7 +313,6 @@ def main() -> int:
             bridge = open_continuous_source_bridge(
                 paper,
                 shadow,
-                candidate_run_id=RUN_ID,
                 fault_hook=crash_once(phase),
             )
             crashed = expect(RuntimeError, bridge.poll_once)
@@ -319,7 +320,7 @@ def main() -> int:
             intent_after_crash = bridge.intent_count()
             lineage_after_crash = bridge.lineage_count()
             bridge.close()
-            with open_continuous_source_bridge(paper, shadow, candidate_run_id=RUN_ID) as recovered:
+            with open_continuous_source_bridge(paper, shadow) as recovered:
                 recovery = recovered.poll_once()
                 check(label, crashed and cursor_after_crash[:2] == (-1, "") and intent_after_crash == 1 and lineage_after_crash == expected_lineage and recovery.processed_rows == 1 and recovered.intent_count() == 1 and recovered.lineage_count() == 1, checks)
 
@@ -339,7 +340,6 @@ def main() -> int:
         interrupted = open_continuous_source_bridge(
             paper_state_drift,
             shadow_state_drift,
-            candidate_run_id=RUN_ID,
             fault_hook=crash_once("AFTER_LINEAGE_PERSISTENCE"),
         )
         expect(RuntimeError, interrupted.poll_once)
@@ -353,7 +353,6 @@ def main() -> int:
         with open_continuous_source_bridge(
             paper_state_drift,
             shadow_state_drift,
-            candidate_run_id=RUN_ID,
         ) as recovered:
             recovered_result = recovered.poll_once()
             observed = recovered._conn.execute(
@@ -376,7 +375,7 @@ def main() -> int:
             paper_d,
             [row(39, "good"), row(40, "bad", size=0), row(41, "later")],
         )
-        with open_continuous_source_bridge(paper_d, shadow_d, candidate_run_id=RUN_ID) as bridge:
+        with open_continuous_source_bridge(paper_d, shadow_d) as bridge:
             failed = expect(SourceRowConflict, bridge.poll_once)
             check("D01_CURSOR_NEVER_PASSES_FAILED_ROW", failed and bridge.cursor()[:2] == (39, "good") and bridge.intent_count() == 1 and bridge.lineage_count() == 1, checks)
 
@@ -386,7 +385,6 @@ def main() -> int:
         crashing = open_continuous_source_bridge(
             paper_conflict,
             shadow_conflict,
-            candidate_run_id=RUN_ID,
             fault_hook=crash_once("AFTER_INTENT_REGISTRATION"),
         )
         expect(RuntimeError, crashing.poll_once)
@@ -398,9 +396,7 @@ def main() -> int:
         )
         writer.commit()
         writer.close()
-        with open_continuous_source_bridge(
-            paper_conflict, shadow_conflict, candidate_run_id=RUN_ID
-        ) as bridge:
+        with open_continuous_source_bridge(paper_conflict, shadow_conflict) as bridge:
             check("D02_CONFLICTING_REPLAY_FAILS_CLOSED", expect(ShadowDeterminismConflict, bridge.poll_once) and bridge.cursor()[:2] == (-1, "") and bridge.lineage_count() == 0, checks)
 
         # E. Source validation matrix; no invalid row may create state or advance.
@@ -417,7 +413,7 @@ def main() -> int:
             shadow = root / f"invalid_{index}.shadow.sqlite3"
             cursor = int(overrides.pop("cursor", 60 + index))
             create_paper_database(paper, [row(cursor, f"invalid-{index}", **overrides)])
-            with open_continuous_source_bridge(paper, shadow, candidate_run_id=RUN_ID) as bridge:
+            with open_continuous_source_bridge(paper, shadow) as bridge:
                 check(label, expect(SourceRowConflict, bridge.poll_once) and bridge.cursor()[:2] == (-1, "") and bridge.intent_count() == 0 and bridge.lineage_count() == 0, checks)
 
         # F. FILLED and REJECTED are both physical candidates, not Shadow outcomes.
@@ -430,7 +426,7 @@ def main() -> int:
                 row(71, "rejected", state="REJECTED", reason="REJECTED_REASON"),
             ],
         )
-        with open_continuous_source_bridge(paper_f, shadow_f, candidate_run_id=RUN_ID) as bridge:
+        with open_continuous_source_bridge(paper_f, shadow_f) as bridge:
             result = bridge.poll_once()
             states = {
                 str(item[0])
@@ -451,12 +447,12 @@ def main() -> int:
         paper_g = root / "paper_g.sqlite3"
         shadow_g = root / "shadow_g.sqlite3"
         create_paper_database(paper_g, [row(80, "identity")])
-        with open_continuous_source_bridge(paper_g, shadow_g, candidate_run_id=RUN_ID) as bridge:
+        with open_continuous_source_bridge(paper_g, shadow_g) as bridge:
             bridge.poll_once()
         old_paper = root / "paper_g_old.sqlite3"
         os.replace(paper_g, old_paper)
         create_paper_database(paper_g, [row(81, "replacement")])
-        check("G01_REPLACED_SOURCE_IDENTITY_FAILS_CLOSED", expect(SourceIdentityConflict, lambda: open_continuous_source_bridge(paper_g, shadow_g, candidate_run_id=RUN_ID)), checks)
+        check("G01_REPLACED_SOURCE_IDENTITY_FAILS_CLOSED", expect(SourceIdentityConflict, lambda: open_continuous_source_bridge(paper_g, shadow_g)), checks)
 
         # H. Runner surface and structural capability/read-only checks.
         paper_h = root / "paper_h.sqlite3"
@@ -472,8 +468,6 @@ def main() -> int:
                 str(paper_h),
                 "--shadow-db",
                 str(shadow_h),
-                "--candidate-run-id",
-                RUN_ID,
                 "--once",
                 "--poll-ms",
                 "1",
@@ -505,9 +499,9 @@ def main() -> int:
         source_sql = (PROJECT_ROOT / "src" / "phase5" / "shadow_continuous_source_bridge_v0_1.py").read_text(encoding="utf-8")
         check("H02_NO_NETWORK_SIGNER_BROADCAST_CAPABILITY", not ({"requests", "post", "send_transaction", "sendrawtransaction", "keypair", "sign"} & call_names), checks)
         check("H03_PHASE4_SQL_SELECT_ONLY", all(token not in source_sql.upper().split("_SOURCE_SQL =", 1)[1].split('"""', 2)[1] for token in ("INSERT ", "UPDATE ", "DELETE ", "CREATE ", "DROP ", "ALTER ")), checks)
-        check("H04_MODEL_ID_AND_FINGERPRINT", MODEL_ID == "P5-SHADOW-CONTINUOUS-SOURCE-BRIDGE-0001" and len(MODEL_FINGERPRINT) == 64 and CONTRACT_SPEC.get("entry_input_asset_unit") == "SOL_LAMPORTS" and T001_FINGERPRINT == EXPECTED_T001_FINGERPRINT, checks)
-        check("H05_SOURCE_SHADOW_SAME_FILE_REJECTED", expect(SourceBridgeError, lambda: open_continuous_source_bridge(paper_h, paper_h, candidate_run_id=RUN_ID)), checks)
-        check("H06_SHADOW_OUTSIDE_DATA_SHADOW_REJECTED", expect(SourceBridgeError, lambda: open_continuous_source_bridge(paper_h, PROJECT_ROOT / "forbidden_t004a.sqlite3", candidate_run_id=RUN_ID)), checks)
+        check("H04_MODEL_ID_AND_FINGERPRINT", MODEL_ID == "P5-SHADOW-CONTINUOUS-SOURCE-BRIDGE-0002" and MODEL_FINGERPRINT == EXPECTED_MODEL_FINGERPRINT and CONTRACT_SPEC.get("entry_input_asset_unit") == "SOL_LAMPORTS" and T001_FINGERPRINT == EXPECTED_T001_FINGERPRINT, checks)
+        check("H05_SOURCE_SHADOW_SAME_FILE_REJECTED", expect(SourceBridgeError, lambda: open_continuous_source_bridge(paper_h, paper_h)), checks)
+        check("H06_SHADOW_OUTSIDE_DATA_SHADOW_REJECTED", expect(SourceBridgeError, lambda: open_continuous_source_bridge(paper_h, PROJECT_ROOT / "forbidden_t004a.sqlite3")), checks)
 
         protected_after = {str(path): sha256(path) for path in protected}
         check("H07_ACCEPTED_PHASE5_MODULES_UNCHANGED", protected_after == protected_before, checks)

@@ -62,7 +62,8 @@ BASE_US = fx.BASE_US
 BASE_AT = datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=BASE_US)
 MINT = fx.fx.MINT
 EXPECTED_T001 = "506312a81b6d8acc724cb27d6d450086bc3fc4986dcdea4831b998a3a8ec91e3"
-EXPECTED_T004A = "085e3d1c3aad2eb03705d45df1327715cdd6d2a81795450faa8a9b977eb81cef"
+EXPECTED_T004A = "83ca764101a325ef9c0cd8c4287e23d80f8e69b1ad5ee34f099ccce3ef470edb"
+EXPECTED_MODEL_FINGERPRINT = "5f0198e3c7c0a46dead7e68e630cabde32c8565a0640b61785e15e7914ff20b1"
 
 
 def text_at(offset_us: int) -> str:
@@ -218,7 +219,7 @@ def create_paper_database(
                     route_id,
                     f"evaluation-{signal}",
                     f"decision-{signal}",
-                    RUN_ID,
+                    candidate.get("run_id", RUN_ID),
                     "CONTROL",
                     mint,
                     "FIRSTPULLBACK-v0.1",
@@ -290,9 +291,7 @@ def create_paper_database(
 
 
 def bridge_entries(paper: Path, shadow: Path) -> tuple[str, ...]:
-    with open_continuous_source_bridge(
-        paper, shadow, candidate_run_id=RUN_ID
-    ) as bridge:
+    with open_continuous_source_bridge(paper, shadow) as bridge:
         return bridge.poll_once().created_or_matched_intent_ids
 
 
@@ -449,9 +448,7 @@ def main() -> int:
             checks,
         )
         paper_hash_before = sha256(paper_a)
-        with open_shadow_lifecycle_bridge(
-            paper_a, shadow_a, candidate_run_id=RUN_ID
-        ) as bridge:
+        with open_shadow_lifecycle_bridge(paper_a, shadow_a) as bridge:
             inventory = bridge.materialize_expected_inventory(
                 parent,
                 quote,
@@ -520,9 +517,7 @@ def main() -> int:
             digest = bridge.canonical_digest()
             check("A15_SHADOW_QUICK_CHECK_OK", bridge.quick_check() == "ok", checks)
         check("A16_PHASE4_DB_BYTE_FOR_BYTE_UNCHANGED", sha256(paper_a) == paper_hash_before, checks)
-        with open_shadow_lifecycle_bridge(
-            paper_a, shadow_a, candidate_run_id=RUN_ID
-        ) as reopened:
+        with open_shadow_lifecycle_bridge(paper_a, shadow_a) as reopened:
             check("A17_RESTART_REOPEN_NO_DUPLICATE", reopened.poll_exit_once().processed_rows == 0 and reopened._conn.execute("SELECT COUNT(*) FROM shadow_execution_intents WHERE role='EXIT'").fetchone()[0] == 3, checks)
             check("A18_RESTART_DIGEST_DETERMINISTIC", reopened.canonical_digest() == digest, checks)
 
@@ -542,9 +537,7 @@ def main() -> int:
             parent = repo.get_intent(parent_id)
             repo.close()
             assert parent is not None
-            with open_shadow_lifecycle_bridge(
-                paper, shadow, candidate_run_id=RUN_ID
-            ) as bridge:
+            with open_shadow_lifecycle_bridge(paper, shadow) as bridge:
                 check(f"B0{index + 1}_{terminal.value}_NO_INVENTORY", bridge.materialize_expected_inventory(parent, None, None, evidence_at_us=BASE_US + 2) is None and bridge._conn.execute("SELECT COUNT(*) FROM shadow_t004b_expected_inventory").fetchone()[0] == 0, checks)
 
         # C. Nonterminal waits; failed terminal records immutable no-position evidence.
@@ -553,7 +546,7 @@ def main() -> int:
         shadow_c1 = root / "waiting.shadow.sqlite3"
         create_paper_database(paper_c1, [{"signal_key": "waiting", "source_cursor": 300, "exits": [waiting_exit]}])
         bridge_entries(paper_c1, shadow_c1)
-        with open_shadow_lifecycle_bridge(paper_c1, shadow_c1, candidate_run_id=RUN_ID) as bridge:
+        with open_shadow_lifecycle_bridge(paper_c1, shadow_c1) as bridge:
             waiting = bridge.poll_exit_once()
             check("C01_NONTERMINAL_WAIT_CURSOR_UNCHANGED", waiting.status is ExitPollStatus.WAITING_FOR_ENTRY_TERMINAL and bridge.cursor() == ("", "", None, 0) and bridge._conn.execute("SELECT COUNT(*) FROM shadow_execution_intents WHERE role='EXIT'").fetchone()[0] == 0, checks)
 
@@ -563,7 +556,7 @@ def main() -> int:
         create_paper_database(paper_c2, [{"signal_key": "failed", "source_cursor": 301, "exits": [failed_exit]}])
         failed_parent = bridge_entries(paper_c2, shadow_c2)[0]
         transition_direct(shadow_c2, failed_parent, ShadowState.FAILED)
-        with open_shadow_lifecycle_bridge(paper_c2, shadow_c2, candidate_run_id=RUN_ID) as bridge:
+        with open_shadow_lifecycle_bridge(paper_c2, shadow_c2) as bridge:
             result = bridge.poll_exit_once()
             no_position = bridge._conn.execute(
                 "SELECT classification,terminal_parent_state,shadow_exit_intent_id "
@@ -592,7 +585,6 @@ def main() -> int:
         interrupted = open_shadow_lifecycle_bridge(
             paper_c3,
             shadow_c3,
-            candidate_run_id=RUN_ID,
             fault_hook=crash_once("AFTER_NO_POSITION_EVIDENCE_PERSISTENCE"),
         )
         crashed = expect(RuntimeError, interrupted.poll_exit_once)
@@ -601,9 +593,7 @@ def main() -> int:
             "SELECT COUNT(*) FROM shadow_t004b_exit_source_evidence"
         ).fetchone()[0]
         interrupted.close()
-        with open_shadow_lifecycle_bridge(
-            paper_c3, shadow_c3, candidate_run_id=RUN_ID
-        ) as recovered:
+        with open_shadow_lifecycle_bridge(paper_c3, shadow_c3) as recovered:
             recovered_result = recovered.poll_exit_once()
             check(
                 "C04_NO_POSITION_EVIDENCE_CRASH_SAFE_REPLAY",
@@ -626,7 +616,7 @@ def main() -> int:
         create_paper_database(paper_d, [{"signal_key": "missing", "source_cursor": 400, "exits": [missing_exit]}])
         missing_parent = bridge_entries(paper_d, shadow_d)[0]
         transition_fake_completed(shadow_d, missing_parent)
-        with open_shadow_lifecycle_bridge(paper_d, shadow_d, candidate_run_id=RUN_ID) as bridge:
+        with open_shadow_lifecycle_bridge(paper_d, shadow_d) as bridge:
             check("D01_COMPLETED_WITHOUT_INVENTORY_FAILS_CLOSED", expect(InventoryConflict, bridge.poll_exit_once) and bridge.cursor() == ("", "", None, 0), checks)
 
         # E. Join conflicts and failed-row blocking.
@@ -648,7 +638,7 @@ def main() -> int:
                 label = "E03_SIGNAL_CONFLICT_FAILS_CLOSED"
             writer.commit()
             writer.close()
-            with open_shadow_lifecycle_bridge(paper, shadow, candidate_run_id=RUN_ID) as bridge:
+            with open_shadow_lifecycle_bridge(paper, shadow) as bridge:
                 check(label, expect(ExitSourceConflict, bridge.poll_exit_once) and bridge.cursor() == ("", "", None, 0), checks)
 
         first_bad = exit_row("exit-00-bad", "FINAL-A", "FALLBACK", 4_000, triggered=False)
@@ -661,7 +651,7 @@ def main() -> int:
         writer.execute("UPDATE paper_exit_track_states SET mint='bad' WHERE exit_intent_id='exit-00-bad'")
         writer.commit()
         writer.close()
-        with open_shadow_lifecycle_bridge(paper_e, shadow_e, candidate_run_id=RUN_ID) as bridge:
+        with open_shadow_lifecycle_bridge(paper_e, shadow_e) as bridge:
             check("E04_FAILED_ROW_CANNOT_BE_SKIPPED", expect(ExitSourceConflict, bridge.poll_exit_once) and bridge.cursor() == ("", "", None, 0) and bridge._conn.execute("SELECT COUNT(*) FROM shadow_t004b_exit_source_evidence").fetchone()[0] == 0, checks)
 
         # F. Both EXIT durability boundaries recover without duplication.
@@ -692,7 +682,6 @@ def main() -> int:
             interrupted = open_shadow_lifecycle_bridge(
                 paper,
                 shadow,
-                candidate_run_id=RUN_ID,
                 fault_hook=crash_once(phase),
             )
             interrupted.materialize_expected_inventory(
@@ -710,9 +699,7 @@ def main() -> int:
                 "SELECT COUNT(*) FROM shadow_t004b_exit_source_evidence"
             ).fetchone()[0]
             interrupted.close()
-            with open_shadow_lifecycle_bridge(
-                paper, shadow, candidate_run_id=RUN_ID
-            ) as recovered:
+            with open_shadow_lifecycle_bridge(paper, shadow) as recovered:
                 recovered_result = recovered.poll_exit_once()
                 check(
                     f"F0{index + 1}_{phase}_SAFE_REPLAY",
@@ -752,9 +739,9 @@ def main() -> int:
         check("G01_NO_NETWORK_SIGNER_BROADCAST_CAPABILITY", not ({"requests", "httpx", "websockets", "solana"} & imports) and not any(item in flattened_text for item in prohibited), checks)
         exit_sql = raw_text.split("_exit_sql =", 1)[1].split('"""', 2)[1]
         check("G02_PHASE4_SQL_READ_ONLY", all(token not in exit_sql for token in ("insert ", "update ", "delete ", "create ", "drop ", "alter ")), checks)
-        check("G03_ACCEPTED_FINGERPRINTS_EXACT", T001_FINGERPRINT == EXPECTED_T001 and T004A_FINGERPRINT == EXPECTED_T004A and T004A_CONTRACT_SPEC.get("entry_input_asset_unit") == "SOL_LAMPORTS" and CONTRACT_SPEC.get("exit_input_asset_unit") == "MEME_BASE_UNITS" and len(MODEL_FINGERPRINT) == 64, checks)
+        check("G03_ACCEPTED_FINGERPRINTS_EXACT", T001_FINGERPRINT == EXPECTED_T001 and T004A_FINGERPRINT == EXPECTED_T004A and MODEL_FINGERPRINT == EXPECTED_MODEL_FINGERPRINT and T004A_CONTRACT_SPEC.get("entry_input_asset_unit") == "SOL_LAMPORTS" and CONTRACT_SPEC.get("exit_input_asset_unit") == "MEME_BASE_UNITS", checks)
         nonexistent_shadow = root / "must_not_be_created.sqlite3"
-        check("G04_NO_SECOND_SHADOW_DATABASE_CREATED", expect(Exception, lambda: open_shadow_lifecycle_bridge(paper_a, nonexistent_shadow, candidate_run_id=RUN_ID)) and not nonexistent_shadow.exists(), checks)
+        check("G04_NO_SECOND_SHADOW_DATABASE_CREATED", expect(Exception, lambda: open_shadow_lifecycle_bridge(paper_a, nonexistent_shadow)) and not nonexistent_shadow.exists(), checks)
         protected_after = {str(path): sha256(path) for path in protected}
         check("G05_ACCEPTED_MODULES_UNCHANGED", protected_after == protected_before, checks)
         test_tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))

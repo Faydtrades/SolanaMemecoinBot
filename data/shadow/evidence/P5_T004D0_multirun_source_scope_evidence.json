@@ -1,0 +1,187 @@
+{
+  "accepted_regressions": {
+    "T004C0_unit_tag_integration": "COVERED_BY_T004A_T004B_T002_T003",
+    "checks_passed": 571,
+    "checks_total": 571,
+    "scripts_passed": 7,
+    "scripts_total": 7
+  },
+  "commit_performed": false,
+  "dependent_contracts": {
+    "C2_new_fingerprint": "a848a74533872e2e2d7f1cfc2e690df2f285932d2bf87fcf00f6bb83075cba56",
+    "C2_old_fingerprint": "f50d24e07049a3f2b2bc3283e266c8925145de76bb7e5a91c9dea9ccbe0c7be6",
+    "T004B_new_fingerprint": "5f0198e3c7c0a46dead7e68e630cabde32c8565a0640b61785e15e7914ff20b1",
+    "T004B_old_fingerprint": "9300fb7d39a16997be5c6a401483b86bd3c490a7d86b623dc6d12bfa379aef6d"
+  },
+  "focused_selftest": {
+    "checks_passed": 44,
+    "checks_total": 44,
+    "result": "PASS"
+  },
+  "multi_run_synthetic_proof": {
+    "c2": {
+      "candidate_run_ids": [
+        "candidate-run-a",
+        "candidate-run-b",
+        "candidate-run-c"
+      ],
+      "comparison_candidate_run_id_preserved": true,
+      "one_cycle_entry_intents": 3,
+      "one_cycle_exit_intents": 9,
+      "one_t004a_and_one_t004b_source_identity": true,
+      "production_runner_candidate_selector_present": false,
+      "source_byte_for_byte_unchanged": true
+    },
+    "entry": {
+      "candidate_run_ids": {
+        "candidate-signal-a": "candidate-run-b",
+        "candidate-signal-b": "candidate-run-a",
+        "candidate-signal-c": "candidate-run-c",
+        "candidate-signal-d": "candidate-run-c"
+      },
+      "cursor_order": [
+        [
+          10,
+          "signal-a"
+        ],
+        [
+          10,
+          "signal-b"
+        ],
+        [
+          11,
+          "signal-c"
+        ],
+        [
+          12,
+          "signal-d"
+        ]
+      ],
+      "intent_count": 4,
+      "restart_digest_equal": true,
+      "source_byte_for_byte_unchanged": true,
+      "source_count": 1
+    },
+    "exit": {
+      "candidate_run_ids": [
+        "candidate-run-a",
+        "candidate-run-b",
+        "candidate-run-c"
+      ],
+      "cursor_order": [
+        [
+          "2026-08-30T14:26:40.020000+00:00",
+          "exit-exit-a-FINAL-A"
+        ],
+        [
+          "2026-08-30T14:26:40.020000+00:00",
+          "exit-exit-a-FINAL-B"
+        ],
+        [
+          "2026-08-30T14:26:40.020000+00:00",
+          "exit-exit-a-SENS-C"
+        ],
+        [
+          "2026-08-30T14:26:40.020000+00:00",
+          "exit-exit-b-FINAL-A"
+        ],
+        [
+          "2026-08-30T14:26:40.020000+00:00",
+          "exit-exit-b-FINAL-B"
+        ],
+        [
+          "2026-08-30T14:26:40.020000+00:00",
+          "exit-exit-b-SENS-C"
+        ],
+        [
+          "2026-08-30T14:26:40.020000+00:00",
+          "exit-exit-c-FINAL-A"
+        ],
+        [
+          "2026-08-30T14:26:40.020000+00:00",
+          "exit-exit-c-FINAL-B"
+        ],
+        [
+          "2026-08-30T14:26:40.020000+00:00",
+          "exit-exit-c-SENS-C"
+        ]
+      ],
+      "exact_parent_resolution": true,
+      "intent_count": 9,
+      "restart_digest_equal": true,
+      "source_byte_for_byte_unchanged": true,
+      "tracks": [
+        "FINAL-A",
+        "FINAL-B",
+        "SENS-C"
+      ]
+    },
+    "legacy": {
+      "behavior": "FAIL_CLOSED_NO_CURSOR_MERGE",
+      "error": "legacy T004A run-scoped source schema is incompatible; global cursor cannot be merged safely",
+      "processed_entries": 0
+    },
+    "restart": {
+      "crash_at_run_boundary_replayed": true,
+      "global_cursor_held_before_replay": [
+        1,
+        "crash-a"
+      ],
+      "intent_count_after_recovery": 3,
+      "lineage_count_after_recovery": 3
+    },
+    "run_id_drift": {
+      "cursor_after_failure": [
+        1,
+        "drift-a"
+      ],
+      "duplicate_intent_created": false,
+      "fails_closed": true
+    }
+  },
+  "pre_delivery_adversarial_review": {
+    "additional_fixes": [
+      "removed obsolete run selector from standalone T004A runner",
+      "made malformed legacy metadata fail with explicit source-scope errors",
+      "recomputed and validated exact T004A source identity in T004B",
+      "bound C2 to equal T004A/T004B source identities",
+      "replaced dynamic fingerprint self-checks with exact expected values"
+    ],
+    "examined": [
+      "equal ENTRY cursor ordering across run IDs",
+      "intent/lineage/cursor crash boundaries at a run transition",
+      "changed run ID after persisted physical lineage",
+      "equal EXIT timestamp ordering across run IDs",
+      "exit-context versus track-context run disagreement",
+      "cross-run parent lookup and exact parent intent validation",
+      "source and cursor schema identities without sentinel run IDs",
+      "legacy metadata/schema rejection before source processing",
+      "T004A/T004B source identity equality in C2",
+      "per-intent candidate run preservation in C2 comparisons",
+      "track separation and duplicate ENTRY prevention",
+      "Phase4 byte immutability and query-only connections",
+      "runner argument surfaces and absence of candidate selection",
+      "terminal PROGRAM_REJECTED semantics through accepted C2 regressions"
+    ],
+    "remaining_blockers": [],
+    "remaining_known_risks": [
+      "No production, live, network, RPC, signing, or broadcast validation was performed.",
+      "Legacy run-scoped T004A/T004B databases fail closed and require an explicit reviewed migration or fresh database.",
+      "The global cursor relies on the accepted Phase4 source_cursor/signal_key and requested_at/exit_intent_id ordering contracts.",
+      "Single-sidecar operation is intended; concurrent multi-process consumption was not added or validated."
+    ]
+  },
+  "production_or_network_access": false,
+  "project_state_modified": false,
+  "source_scope_contract": {
+    "new_fingerprint": "83ca764101a325ef9c0cd8c4287e23d80f8e69b1ad5ee34f099ccce3ef470edb",
+    "new_model_id": "P5-SHADOW-CONTINUOUS-SOURCE-BRIDGE-0002",
+    "new_schema_version": "phase5_shadow_continuous_source_bridge_v0.2",
+    "new_scope_version": "phase4_sqlite_source_scope_v0.2",
+    "old_fingerprint": "085e3d1c3aad2eb03705d45df1327715cdd6d2a81795450faa8a9b977eb81cef",
+    "old_model_id": "P5-SHADOW-CONTINUOUS-SOURCE-BRIDGE-0001",
+    "old_schema_version": "phase5_shadow_continuous_source_bridge_v0.1"
+  },
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "task": "MEME-P5-T004D0"
+}

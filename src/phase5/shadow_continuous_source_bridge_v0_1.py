@@ -21,8 +21,10 @@ from .shadow_domain_v0_1 import (
 from .shadow_repository_v0_1 import ShadowRepositoryV01, open_shadow_repository
 
 
-MODEL_ID = "P5-SHADOW-CONTINUOUS-SOURCE-BRIDGE-0001"
-SCHEMA_VERSION = "phase5_shadow_continuous_source_bridge_v0.1"
+LEGACY_MODEL_FINGERPRINT = "085e3d1c3aad2eb03705d45df1327715cdd6d2a81795450faa8a9b977eb81cef"
+MODEL_ID = "P5-SHADOW-CONTINUOUS-SOURCE-BRIDGE-0002"
+SCHEMA_VERSION = "phase5_shadow_continuous_source_bridge_v0.2"
+SOURCE_SCOPE_VERSION = "phase4_sqlite_source_scope_v0.2"
 
 CONTRACT_SPEC: Mapping[str, Any] = {
     "model_id": MODEL_ID,
@@ -41,8 +43,12 @@ CONTRACT_SPEC: Mapping[str, Any] = {
         "resolved_database_path",
         "filesystem_device",
         "filesystem_inode",
-        "candidate_run_id",
+        "source_scope_version",
     ],
+    "candidate_run_id": "PER_ROW_C_RUN_ID_IMMUTABLE_LINEAGE_ONLY",
+    "query_scope": "ALL_AUTHORIZED_JOINED_ROWS_NO_RUN_FILTER",
+    "cursor_scope": "ONE_GLOBAL_CURSOR_PER_PHASE4_SQLITE_SOURCE",
+    "legacy_v0.1_scope": "FAIL_CLOSED_NO_CURSOR_MERGE",
     "paper_outcome_semantics": "LINEAGE_EVIDENCE_ONLY",
     "shadow_persistence_root": "data/shadow",
     "source_shadow_file_alias": "REJECT",
@@ -76,8 +82,7 @@ SELECT
     r.state_reason AS paper_route_reason
 FROM paper_continuous_signal_contexts_v0_1 AS c
 JOIN paper_entry_routes AS r ON r.route_id = c.route_id
-WHERE c.run_id = ?
-  AND (
+WHERE (
       c.source_cursor > ?
       OR (c.source_cursor = ? AND c.signal_key > ?)
   )
@@ -132,7 +137,7 @@ class Phase4SourceIdentityV01:
     resolved_database_path: str
     filesystem_device: str
     filesystem_inode: str
-    candidate_run_id: str
+    source_scope_version: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -277,30 +282,10 @@ def open_phase4_read_only(
         raise
 
 
-def _resolve_candidate_run_id(
-    conn: sqlite3.Connection,
-    candidate_run_id: str | None,
-) -> str:
-    if candidate_run_id is not None:
-        return _required_text("candidate_run_id", candidate_run_id)
-    rows = conn.execute(
-        "SELECT DISTINCT c.run_id "
-        "FROM paper_continuous_signal_contexts_v0_1 AS c "
-        "JOIN paper_entry_routes AS r ON r.route_id=c.route_id "
-        "ORDER BY c.run_id LIMIT 2"
-    ).fetchall()
-    if len(rows) != 1:
-        raise SourceIdentityConflict(
-            "candidate_run_id must be explicit unless exactly one joined run exists"
-        )
-    return _required_text("candidate_run_id", rows[0][0])
-
-
 def _source_identity(
     resolved: Path,
     device: str,
     inode: str,
-    candidate_run_id: str,
 ) -> Phase4SourceIdentityV01:
     path_text = str(resolved)
     return Phase4SourceIdentityV01(
@@ -310,12 +295,12 @@ def _source_identity(
             path_text,
             device,
             inode,
-            candidate_run_id,
+            SOURCE_SCOPE_VERSION,
         ),
         resolved_database_path=path_text,
         filesystem_device=device,
         filesystem_inode=inode,
-        candidate_run_id=candidate_run_id,
+        source_scope_version=SOURCE_SCOPE_VERSION,
     )
 
 
@@ -334,6 +319,25 @@ def _validate_shadow_database_path(
 
 
 def _create_bridge_schema(conn: sqlite3.Connection) -> None:
+    legacy = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' "
+        "AND name='shadow_t004a_schema_meta'"
+    ).fetchone()
+    if legacy is not None:
+        try:
+            meta = conn.execute(
+                "SELECT schema_version,model_fingerprint FROM shadow_t004a_schema_meta "
+                "WHERE singleton=1"
+            ).fetchone()
+        except sqlite3.OperationalError as exc:
+            raise SourceIdentityConflict(
+                "legacy T004A source schema metadata is incompatible"
+            ) from exc
+        if meta is None or tuple(meta) != (SCHEMA_VERSION, MODEL_FINGERPRINT):
+            raise SourceIdentityConflict(
+                "legacy T004A run-scoped source schema is incompatible; "
+                "global cursor cannot be merged safely"
+            )
     conn.executescript(
         """
         CREATE TABLE IF NOT EXISTS shadow_t004a_schema_meta (
@@ -346,10 +350,10 @@ def _create_bridge_schema(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS shadow_t004a_sources (
             source_id TEXT PRIMARY KEY,
             resolved_paper_db_path TEXT NOT NULL,
-            candidate_run_id TEXT NOT NULL,
             filesystem_device TEXT NOT NULL CHECK(filesystem_device <> ''),
             filesystem_inode TEXT NOT NULL CHECK(filesystem_inode <> ''),
-            UNIQUE(resolved_paper_db_path, candidate_run_id)
+            source_scope_version TEXT NOT NULL CHECK(source_scope_version <> ''),
+            UNIQUE(resolved_paper_db_path)
         );
 
         CREATE TABLE IF NOT EXISTS shadow_t004a_entry_lineage (
@@ -364,14 +368,14 @@ def _create_bridge_schema(conn: sqlite3.Connection) -> None:
             paper_route_reason TEXT NOT NULL,
             lineage_json TEXT NOT NULL,
             content_fingerprint TEXT NOT NULL,
-            UNIQUE(source_id, candidate_run_id, source_cursor, signal_key),
-            UNIQUE(source_id, candidate_run_id, route_id),
+            UNIQUE(source_id, source_cursor, signal_key),
+            UNIQUE(source_id, route_id),
             UNIQUE(intent_id)
         );
 
         CREATE TABLE IF NOT EXISTS shadow_t004a_source_cursors (
             source_id TEXT PRIMARY KEY REFERENCES shadow_t004a_sources(source_id),
-            candidate_run_id TEXT NOT NULL,
+            source_scope_version TEXT NOT NULL,
             last_source_cursor INTEGER NOT NULL CHECK(last_source_cursor >= -1),
             last_signal_key TEXT NOT NULL,
             last_lineage_id TEXT REFERENCES shadow_t004a_entry_lineage(lineage_id),
@@ -452,15 +456,15 @@ class ShadowContinuousSourceBridgeV01:
             self._conn.execute("BEGIN IMMEDIATE")
             existing = self._conn.execute(
                 "SELECT * FROM shadow_t004a_sources "
-                "WHERE resolved_paper_db_path=? AND candidate_run_id=?",
-                (identity.resolved_database_path, identity.candidate_run_id),
+                "WHERE resolved_paper_db_path=?",
+                (identity.resolved_database_path,),
             ).fetchone()
             expected = (
                 identity.source_id,
                 identity.resolved_database_path,
-                identity.candidate_run_id,
                 identity.filesystem_device,
                 identity.filesystem_inode,
+                identity.source_scope_version,
             )
             if existing is None:
                 self._conn.execute(
@@ -469,7 +473,7 @@ class ShadowContinuousSourceBridgeV01:
                 )
             elif tuple(existing) != expected:
                 raise SourceIdentityConflict(
-                    "resolved Phase4 database/run is already bound to another file"
+                    "resolved Phase4 database is already bound to another source identity"
                 )
             by_id = self._conn.execute(
                 "SELECT * FROM shadow_t004a_sources WHERE source_id=?",
@@ -478,7 +482,7 @@ class ShadowContinuousSourceBridgeV01:
             if by_id is None or tuple(by_id) != expected:
                 raise SourceIdentityConflict("T004A source identity collision")
             cursor = self._conn.execute(
-                "SELECT candidate_run_id FROM shadow_t004a_source_cursors "
+                "SELECT source_scope_version FROM shadow_t004a_source_cursors "
                 "WHERE source_id=?",
                 (identity.source_id,),
             ).fetchone()
@@ -486,10 +490,10 @@ class ShadowContinuousSourceBridgeV01:
                 self._conn.execute(
                     "INSERT INTO shadow_t004a_source_cursors "
                     "VALUES(?,?,-1,'',NULL,0)",
-                    (identity.source_id, identity.candidate_run_id),
+                    (identity.source_id, identity.source_scope_version),
                 )
-            elif str(cursor[0]) != identity.candidate_run_id:
-                raise SourceIdentityConflict("T004A cursor run identity mismatch")
+            elif str(cursor[0]) != identity.source_scope_version:
+                raise SourceIdentityConflict("T004A cursor source-scope mismatch")
 
     def _verify_source_still_bound(self) -> None:
         identity = self.source_identity
@@ -520,7 +524,6 @@ class ShadowContinuousSourceBridgeV01:
             self._paper_conn.execute(
                 _SOURCE_SQL,
                 (
-                    self.source_identity.candidate_run_id,
                     after_cursor,
                     after_cursor,
                     after_signal_key,
@@ -616,7 +619,7 @@ class ShadowContinuousSourceBridgeV01:
                 "resolved_paper_db_path": identity.resolved_database_path,
                 "filesystem_device": identity.filesystem_device,
                 "filesystem_inode": identity.filesystem_inode,
-                "candidate_run_id": identity.candidate_run_id,
+                "source_scope_version": identity.source_scope_version,
             },
             "phase4_source": {
                 "signal_key": source.signal_key,
@@ -705,16 +708,13 @@ class ShadowContinuousSourceBridgeV01:
                 return lineage_id
             collision = self._conn.execute(
                 "SELECT lineage_id FROM shadow_t004a_entry_lineage "
-                "WHERE (source_id=? AND candidate_run_id=? AND source_cursor=? "
-                "AND signal_key=?) OR (source_id=? AND candidate_run_id=? "
-                "AND route_id=?) OR intent_id=?",
+                "WHERE (source_id=? AND source_cursor=? AND signal_key=?) "
+                "OR (source_id=? AND route_id=?) OR intent_id=?",
                 (
                     identity.source_id,
-                    source.run_id,
                     source.source_cursor,
                     source.signal_key,
                     identity.source_id,
-                    source.run_id,
                     source.route_id,
                     intent.intent_id,
                 ),
@@ -788,8 +788,6 @@ class ShadowContinuousSourceBridgeV01:
         intent_ids: list[str] = []
         for row in rows:
             source = self._construct_source(row)
-            if source.run_id != self.source_identity.candidate_run_id:
-                raise SourceRowConflict("source row candidate run mismatch")
             if source.ordering_key <= cursor[:2]:
                 raise SourceRowConflict("source query returned non-advancing row")
             intent = source.to_intent()
@@ -874,14 +872,12 @@ def open_continuous_source_bridge(
     paper_database_path: str | Path,
     shadow_database_path: str | Path,
     *,
-    candidate_run_id: str | None = None,
     fault_hook: FaultHook | None = None,
 ) -> ShadowContinuousSourceBridgeV01:
     paper_conn, resolved, device, inode = open_phase4_read_only(paper_database_path)
     shadow: ShadowRepositoryV01 | None = None
     try:
-        run_id = _resolve_candidate_run_id(paper_conn, candidate_run_id)
-        identity = _source_identity(resolved, device, inode, run_id)
+        identity = _source_identity(resolved, device, inode)
         shadow_path = _validate_shadow_database_path(resolved, shadow_database_path)
         shadow = open_shadow_repository(shadow_path)
         return ShadowContinuousSourceBridgeV01(

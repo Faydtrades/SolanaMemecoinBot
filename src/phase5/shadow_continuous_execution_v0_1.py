@@ -40,6 +40,8 @@ CONTRACT_SPEC = {
     "inventory_backpressure": "DRAIN_TERMINAL_ENTRY_BACKLOG_BEFORE_NEW_EXECUTION",
     "timing": "DURABLE_WALL_CLOCK_COMPLETION_OBSERVATION_NOT_CHAIN_ORDER",
     "phase4_access": "SQLITE_MODE_RO_QUERY_ONLY", "inventory": "INDEPENDENT_TRACKS",
+    "phase4_source_scope": "ONE_T004A_AND_ONE_T004B_PER_SQLITE_SOURCE",
+    "candidate_run_id": "PER_INTENT_IMMUTABLE_LINEAGE_NOT_SOURCE_SELECTOR",
 }
 MODEL_FINGERPRINT = d.content_fingerprint(CONTRACT_SPEC)
 
@@ -155,6 +157,8 @@ class ContinuousShadowExecutionV01:
             self.shadow = self.entries._shadow
             self.conn = self.entries._conn
             self.source_id = self.entries.source_identity.source_id
+            if self.exits.source_identity != self.entries.source_identity:
+                raise ReplayConflict("T004A/T004B Phase4 source identity mismatch")
             self._schema()
         except BaseException:
             self.stack.close()

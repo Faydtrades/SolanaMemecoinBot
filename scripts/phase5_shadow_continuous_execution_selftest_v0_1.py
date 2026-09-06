@@ -20,7 +20,10 @@ import phase5_shadow_continuous_execution_v0_1 as runner
 from phase5 import shadow_continuous_execution_v0_1 as c
 
 
-def paper_fixture(path, *, state="FILLED", exits=False, entries=1):
+EXPECTED_MODEL_FINGERPRINT = "a848a74533872e2e2d7f1cfc2e690df2f285932d2bf87fcf00f6bb83075cba56"
+
+
+def paper_fixture(path, *, state="FILLED", exits=False, entries=1, run_ids=None):
     stamp = datetime.fromtimestamp(fx.BASE_US / 1_000_000, timezone.utc).isoformat()
     with closing(sqlite3.connect(path)) as db, db:
         db.executescript("""
@@ -39,22 +42,27 @@ def paper_fixture(path, *, state="FILLED", exits=False, entries=1):
         CREATE TABLE paper_exit_track_states(paper_position_id TEXT, paper_order_id TEXT, signal_key TEXT,
           mint TEXT, track_id TEXT, exit_variant TEXT, signal_ingest_seq INTEGER, state TEXT, exit_intent_id TEXT);
         """)
+        run_ids = tuple(run_ids or ("synthetic-run",) * entries)
+        if len(run_ids) != entries:
+            raise ValueError("run_ids must match entries")
         for index in range(entries):
             db.execute("INSERT INTO paper_continuous_signal_contexts_v0_1 VALUES(?,?,?,?,?,?,?,?,?)",
-                (f"signal{index}", f"route{index}", f"eval{index}", "synthetic-run", fx.fx.MINT,
+                (f"signal{index}", f"route{index}", f"eval{index}", run_ids[index], fx.fx.MINT,
                  "strategy", "parameters", index + 1, f"event{index}"))
             db.execute("INSERT INTO paper_entry_routes VALUES(?,?,?,?,?,?,?,?,?,?)",
                 (f"route{index}", f"candidate{index}", fx.fx.MINT, "strategy", "parameters",
                  stamp, index + 1, 100_000_000, state, "SYNTHETIC_PAPER"))
         if exits:
-            for track in ("FINAL-A", "FINAL-B", "SENS-C"):
-                db.execute("INSERT INTO paper_exit_intents VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    ("exit"+track, "position"+track, "order"+track, "signal0", fx.fx.MINT,
-                     track, "variant"+track, "TAKE_PROFIT", stamp, stamp, 2, "exit-event", "2", "1",
-                     1000, None, stamp, 2, 1000))
-                db.execute("INSERT INTO paper_exit_track_states VALUES(?,?,?,?,?,?,?,?,?)",
-                    ("position"+track, "order"+track, "signal0", fx.fx.MINT, track, "variant"+track,
-                     1, "EXIT_INTENT", "exit"+track))
+            for index in range(entries):
+                for track in ("FINAL-A", "FINAL-B", "SENS-C"):
+                    suffix = f"{index}-{track}"
+                    db.execute("INSERT INTO paper_exit_intents VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        ("exit"+suffix, "position"+suffix, "order"+suffix, f"signal{index}", fx.fx.MINT,
+                         track, "variant"+track, "TAKE_PROFIT", stamp, stamp, index + 2,
+                         "exit-event"+str(index), "2", "1", 1000, None, stamp, index + 2, 1000))
+                    db.execute("INSERT INTO paper_exit_track_states VALUES(?,?,?,?,?,?,?,?,?)",
+                        ("position"+suffix, "order"+suffix, f"signal{index}", fx.fx.MINT, track,
+                         "variant"+track, index + 1, "EXIT_INTENT", "exit"+suffix))
 
 
 class Network:
@@ -129,6 +137,7 @@ def main():
         checks[name] = True
     root = ROOT / "data" / "shadow"
     root.mkdir(parents=True, exist_ok=True)
+    check("exact corrected contract fingerprint", c.MODEL_FINGERPRINT == EXPECTED_MODEL_FINGERPRINT)
     with tempfile.TemporaryDirectory(prefix="t004c2_", dir=root) as directory:
         temporary = Path(directory)
         def case(name, network=None, **paper_args):
@@ -287,12 +296,14 @@ def main():
         with net.rpc() as rpc, c.ContinuousShadowExecutionV01(paper, shadow, fx.ACTOR, rpc, cycle_limit=1, clock_us=lambda: fx.BASE_US+100, fault_hook=after_entry) as app:
             check("inventory backlog crash", fx.expect(c.InjectedCrash, app.cycle))
         with net.rpc() as rpc, c.ContinuousShadowExecutionV01(paper, shadow, fx.ACTOR, rpc, cycle_limit=1, clock_us=lambda: fx.BASE_US+100) as app:
-            for _ in range(8):
+            for _ in range(16):
                 count_before = app.conn.execute("SELECT COUNT(*) FROM shadow_c2_work WHERE done=1").fetchone()[0]
                 app.cycle()
                 count_after = app.conn.execute("SELECT COUNT(*) FROM shadow_c2_work WHERE done=1").fetchone()[0]
                 check("bounded work per cycle", count_after - count_before <= 2)
-            check("backlog eventually drains entries after exits", app.conn.execute("SELECT COUNT(*) FROM shadow_c2_work WHERE done=1").fetchone()[0] == 6)
+                if count_after == 12:
+                    break
+            check("backlog eventually drains entries after exits", app.conn.execute("SELECT COUNT(*) FROM shadow_c2_work WHERE done=1").fetchone()[0] == 12)
             check("inventory backlog no false missing-inventory error", app.conn.execute("SELECT COUNT(*) FROM shadow_t004b_expected_inventory").fetchone()[0] == 3)
         paper, shadow, net = case("invalid_actor", Network(base=True))
         key = c.s.derive_associated_token_address(fx.ACTOR, fx.fx.MINT, c.v.TOKEN_PROGRAM_ID)

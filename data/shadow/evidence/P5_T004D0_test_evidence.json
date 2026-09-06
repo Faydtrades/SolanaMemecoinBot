@@ -1,0 +1,89 @@
+{
+  "task": "MEME-P5-T004D0",
+  "result": "PASS",
+  "environment": {
+    "interpreter": ".codex_venv\\Scripts\\python.exe",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "production_or_network_access": false
+  },
+  "focused": {
+    "script": "scripts/phase5_multirun_source_scope_selftest_v0_1.py",
+    "exit_code": 0,
+    "checks": "44/44",
+    "result": "PASS"
+  },
+  "accepted_regressions": [
+    {
+      "task": "T004A",
+      "script": "scripts/phase5_shadow_continuous_source_bridge_selftest_v0_1.py",
+      "exit_code": 0,
+      "checks": "32/32",
+      "result": "PASS"
+    },
+    {
+      "task": "T004B",
+      "script": "scripts/phase5_shadow_lifecycle_bridge_selftest_v0_1.py",
+      "exit_code": 0,
+      "checks": "40/40",
+      "result": "PASS"
+    },
+    {
+      "task": "T004C1",
+      "script": "scripts/phase5_shadow_readonly_rpc_selftest_v0_1.py",
+      "exit_code": 0,
+      "checks": "59/59",
+      "result": "PASS"
+    },
+    {
+      "task": "C2",
+      "script": "scripts/phase5_shadow_continuous_execution_selftest_v0_1.py",
+      "exit_code": 0,
+      "checks": "181/181",
+      "result": "PASS"
+    },
+    {
+      "task": "T001",
+      "script": "scripts/phase5_shadow_domain_capability_firewall_selftest_v0_1.py",
+      "exit_code": 0,
+      "checks": "43/43",
+      "result": "PASS"
+    },
+    {
+      "task": "T002",
+      "script": "scripts/phase5_shadow_venue_route_quote_selftest_v0_1.py",
+      "exit_code": 0,
+      "checks": "100/100",
+      "result": "PASS"
+    },
+    {
+      "task": "T003",
+      "script": "scripts/phase5_shadow_unsigned_plan_simulation_selftest_v0_1.py",
+      "exit_code": 0,
+      "checks": "116/116",
+      "result": "PASS"
+    }
+  ],
+  "T004C0_relevant_unit_tag_integration": {
+    "covered_by": [
+      "T004A",
+      "T004B",
+      "T002",
+      "T003"
+    ],
+    "entry_unit": "SOL_LAMPORTS",
+    "exit_unit": "MEME_BASE_UNITS",
+    "result": "PASS"
+  },
+  "totals": {
+    "focused_checks": 44,
+    "accepted_regression_checks": 571,
+    "all_checks": 615,
+    "test_scripts": 8
+  },
+  "git_diff_check": {
+    "exit_code": 0,
+    "result": "PASS"
+  },
+  "commit_performed": false,
+  "staging_performed": false
+}

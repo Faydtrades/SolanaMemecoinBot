@@ -25,7 +25,6 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--paper-db", type=Path, required=True)
     parser.add_argument("--shadow-db", type=Path, required=True)
-    parser.add_argument("--candidate-run-id")
     parser.add_argument("--once", action="store_true")
     parser.add_argument("--poll-ms", type=int, default=1000)
     parser.add_argument("--max-polls", type=int)
@@ -48,7 +47,6 @@ def main() -> int:
     with open_continuous_source_bridge(
         args.paper_db,
         args.shadow_db,
-        candidate_run_id=args.candidate_run_id,
     ) as bridge:
         for poll_index in range(int(poll_bound)):
             result = bridge.poll_once(limit=args.batch_size)
@@ -60,7 +58,7 @@ def main() -> int:
             "model_id": MODEL_ID,
             "model_fingerprint": MODEL_FINGERPRINT,
             "source_id": bridge.source_identity.source_id,
-            "candidate_run_id": bridge.source_identity.candidate_run_id,
+            "source_scope_version": bridge.source_identity.source_scope_version,
             "polls": polls,
             "processed_rows": total,
             "entry_intents": bridge.intent_count(),
