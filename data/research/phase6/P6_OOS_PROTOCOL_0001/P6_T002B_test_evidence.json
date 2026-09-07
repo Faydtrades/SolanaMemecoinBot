@@ -1,0 +1,87 @@
+{
+  "task_id": "MEME-P6-T002B",
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "repository_base": "3c4a7d852a96d2e27262a43721f576ae46cee591",
+  "model": {
+    "id": "P6-FROZEN-OOS-COLLECTION-LIFECYCLE-0002",
+    "schema": "phase6_frozen_oos_collection_lifecycle_v0.2",
+    "fingerprint": "110a99650b8a909cfc7a71056a430042c35cc9339f5d42cbdc1475719b832bf9",
+    "predecessor_fingerprint": "1d74b5daadefc791e81a5d2a2e93d5f80da4ef9ca85142f573e29ec765ce7a36"
+  },
+  "root_cause": {
+    "failure": "Windows .venv launcher PID was registered as worker ownership, but a distinct Python process executed _worker and rejected the mismatch",
+    "secondary_liveness_defect": "GetProcessTimes accepted an exited launcher handle because GetExitCodeProcess/STILL_ACTIVE was not checked",
+    "durable_failure": "ACTIVE_WRITER_CONFLICT: worker is not the registered segment"
+  },
+  "correction": {
+    "ownership": "atomic actual-worker self-claim of exact segment_id with live PID and birth token",
+    "launcher_pid_authoritative": false,
+    "claim_token_persisted": false,
+    "pid_reuse_protected": true,
+    "exited_process_requires_still_active": true,
+    "migration_reason": "WINDOWS_WORKER_OWNERSHIP_CORRECTION"
+  },
+  "windows_preflight": {
+    "interpreter": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.venv\\Scripts\\python.exe",
+    "python_version": "3.12.10",
+    "launcher_pids": [36320, 33868],
+    "actual_worker_pids": [30752, 7180],
+    "launcher_worker_pid_differed": true,
+    "run_id_preserved_across_resume": true,
+    "segments": 2,
+    "initial_source_cursor": 0,
+    "final_source_cursor": 2,
+    "processed_rowids": [1, 2],
+    "duplicates": 0,
+    "paper_db_nonzero": true,
+    "paper_db_quick_check": "ok",
+    "graceful_stop_resume": true,
+    "temporary_synthetic_artifacts_only": true
+  },
+  "real_run_salvage_check": {
+    "checked_at_utc": "2026-09-07T10:59:24.709305+00:00",
+    "result": "SALVAGE_NOT_AUTHORIZED",
+    "run_id": "P6-OOS-20260907T000000Z-e4114796cf4b",
+    "start_at_utc": "2026-09-07T00:00:00.000000+00:00",
+    "end_at_utc": "2026-09-10T00:00:00.000000+00:00",
+    "source_start_cursor": 1255696,
+    "protocol_fingerprint": "0cd06a3269c997aaa01a0e1a796e9a15088e9af7b3a4137930a5cc7beb9cdb87",
+    "policy_set_sha256": "c4a2a277af1d1c7e1e8316e258b2a6da2abd302cd31d2498e4e7a45d08b2582c",
+    "pre_migration_state_payload_sha256": "73aa1d94f7d9930a3f3d78074b318cdb43ac4eb7bd2577461bc0b03f703e247d",
+    "source_maximum_rowid": 1479451,
+    "source_rows_after_anchor": 223755,
+    "coverage_target_utc": "2026-09-07T10:59:24.709305+00:00",
+    "coverage_complete_through_utc": "2026-09-07T10:59:23.670148+00:00",
+    "coverage_assessment": "UNRECOVERABLE_SOURCE_GAP",
+    "source_coverage_recovery_path_available": false,
+    "gap_status_counts": {"PENDING": 26},
+    "unresolved_coverage_gap_count": 28,
+    "unproven_source_interval_count": 2,
+    "paper_db_size_bytes": 0,
+    "scientific_progress": false,
+    "evaluation_performed": false,
+    "real_run_mutated": false
+  },
+  "tests": [
+    {"command": ".venv\\Scripts\\python.exe scripts\\phase6_windows_worker_ownership_selftest_v0_1.py --windows-preflight", "checks": "39/39", "exit": 0, "result": "PASS"},
+    {"command": ".codex_venv\\Scripts\\python.exe scripts\\phase6_exact_utc_boundary_arming_selftest_v0_1.py", "checks": "19/19", "exit": 0, "result": "PASS"},
+    {"command": ".codex_venv\\Scripts\\python.exe scripts\\phase6_frozen_oos_collection_lifecycle_selftest_v0_1.py", "checks": "47/47", "exit": 0, "result": "PASS"},
+    {"command": ".codex_venv\\Scripts\\python.exe scripts\\phase6_frozen_oos_hypothesis_evaluation_selftest_v0_1.py", "checks": "43", "exit": 0, "result": "PASS"},
+    {"command": ".codex_venv\\Scripts\\python.exe scripts\\phase5_shadow_domain_capability_firewall_selftest_v0_1.py", "checks": "43/43", "exit": 0, "result": "PASS"},
+    {"command": ".codex_venv\\Scripts\\python.exe scripts\\phase4_continuous_firstpullback_binding_selftest_v0_1.py", "exit": 0, "result": "PASS"},
+    {"command": ".codex_venv\\Scripts\\python.exe scripts\\phase4_continuous_firstpullback_multihour_run_selftest_v0_5.py", "exit": 0, "result": "PASS"},
+    {"command": ".codex_venv\\Scripts\\python.exe scripts\\phase4_continuous_paper_runner_selftest_v0_1.py", "exit": 0, "result": "PASS"},
+    {"command": ".codex_venv\\Scripts\\python.exe scripts\\phase4_production_fence_drain_throughput_selftest_v0_1.py", "exit": 0, "result": "PASS"}
+  ],
+  "safety": {
+    "production_database_opened_read_only": true,
+    "collector_touched": false,
+    "new_oos_run_started": false,
+    "real_salvage_executed": false,
+    "real_resume_executed": false,
+    "pnl_or_performance_inspected": false,
+    "project_state_modified": false,
+    "safety_stash_touched": false,
+    "commit_created": false
+  }
+}

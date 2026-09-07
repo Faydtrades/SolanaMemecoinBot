@@ -1,16 +1,19 @@
-# Frozen OOS Collection Lifecycle v0.1
+# Frozen OOS Collection Lifecycle v0.1 / Windows ownership correction v0.2
 
 ## Status and scope
 
-Model: `P6-FROZEN-OOS-COLLECTION-LIFECYCLE-0001`
+Model: `P6-FROZEN-OOS-COLLECTION-LIFECYCLE-0002`
 
-Schema: `phase6_frozen_oos_collection_lifecycle_v0.1`
+Schema: `phase6_frozen_oos_collection_lifecycle_v0.2`
 
-Model fingerprint: `1d74b5daadefc791e81a5d2a2e93d5f80da4ef9ca85142f573e29ec765ce7a36`
+Model fingerprint: `110a99650b8a909cfc7a71056a430042c35cc9339f5d42cbdc1475719b832bf9`
 
 This component is operational orchestration around the accepted Phase-4 continuous FirstPullback source, binding, and paper runner. It does not define a strategy, alter execution economics, evaluate OOS outcomes, or expose an outcome metric during collection. It is paper-only and introduces no wallet, signing, custody, send, or broadcast capability.
 
-The real 72-hour run was not started by MEME-P6-T002 or MEME-P6-T002A.
+MEME-P6-T002B did not start a new OOS experiment and did not mutate, resume, or
+evaluate the existing run. It inspected the failed run and production source
+read-only. The existing frozen run remains subject to a separate project-review
+decision before migration or resume.
 
 ## Architecture
 
@@ -26,7 +29,11 @@ One OOS run owns one external directory under `D:\Tradingbot\runtime_oos\<run_id
 
 The immutable run manifest binds the run ID, repository commit, accepted P6 protocol and policy set, source path/identity/scope/physical arming anchor, paper path/identity, exact requested start, durable arming instant, exact 72-hour minimum boundary, no-peek policy, and accepted Phase-4 file and model fingerprints. Resume revalidates every binding before a new segment is registered.
 
-Each process is identified by both PID and operating-system process creation token. A stale PID or reused PID cannot impersonate the prior worker. Abrupt termination closes the stale journal segment on the next status/resume operation; the following segment reopens the same paper database and the accepted binding resumes from `last_durable_p1_rowid`.
+Each process is identified by both PID and operating-system process creation token. A stale PID or reused PID cannot impersonate the prior worker. The parent first creates an atomic `CLAIM_PENDING` segment with a one-use hashed claim token. The actual Python worker then proves its live operating-system PID/birth-token pair and atomically claims that exact segment. An intermediate Windows virtual-environment launcher PID is diagnostic only and never grants ownership. A second claim, forged process identity, expired claim, or mismatched process fails closed. Abrupt termination closes the stale journal segment on the next status/resume operation; the following segment reopens the same paper database and the accepted binding resumes from `last_durable_p1_rowid`.
+
+Windows liveness checks require both a matching process-creation token and
+`GetExitCodeProcess == STILL_ACTIVE`. This prevents an exited launcher handle
+from being reported as a live owned worker.
 
 All lifecycle state writes use a write-flush-fsync-replace sequence. Manifest and handoff payload hashes are verified on every read. Cursors, watermarks, counts, coverage, boundaries, extension history, segment ordering, and terminal states are checked for backward or contradictory transitions.
 
@@ -35,7 +42,7 @@ All lifecycle state writes use a write-flush-fsync-replace sequence. Manifest an
 Use the reviewed repository checkpoint and its Python interpreter. These examples use the currently available Codex interpreter; a project-approved interpreter may be substituted without changing the lifecycle identity.
 
 ```powershell
-$python = 'C:\Users\Mari1\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+$python = 'D:\Tradingbot\solana_memecoin_bot_phase1_v0_1\.venv\Scripts\python.exe'
 $cli = 'D:\Tradingbot\solana_memecoin_bot_phase1_v0_1\scripts\phase6_frozen_oos_collection_lifecycle_v0_1.py'
 
 & $python $cli start --source-db 'D:\Tradingbot\solana_memecoin_bot_phase1_v0_1\data\db\tradingbot.sqlite3' --runtime-root 'D:\Tradingbot\runtime_oos' --start-at '2026-09-07T00:00:00Z'
@@ -44,6 +51,41 @@ $cli = 'D:\Tradingbot\solana_memecoin_bot_phase1_v0_1\scripts\phase6_frozen_oos_
 & $python $cli resume --run-id '<run_id>' --runtime-root 'D:\Tradingbot\runtime_oos'
 & $python $cli finalize --run-id '<run_id>' --runtime-root 'D:\Tradingbot\runtime_oos'
 ```
+
+## Existing-run salvage contract
+
+The only compatible predecessor migration is the exact failed run
+`P6-OOS-20260907T000000Z-e4114796cf4b`, originally bound to commit
+`3c4a7d852a96d2e27262a43721f576ae46cee591`, lifecycle model
+`P6-FROZEN-OOS-COLLECTION-LIFECYCLE-0001`, and fingerprint
+`1d74b5daadefc791e81a5d2a2e93d5f80da4ef9ca85142f573e29ec765ce7a36`.
+The read-only gate proves the exact failure signature, zero scientific
+progress, unused paper database, absence of evaluation/performance artifacts,
+source object and anchor continuity, accepted gap-reconciliation evidence, and
+unchanged Phase-4/protocol/policy bindings.
+
+The migration cannot execute from the predecessor checkout or a dirty tree.
+The only command appropriate before a separate project decision is the
+read-only eligibility check:
+
+```powershell
+$python = 'D:\Tradingbot\solana_memecoin_bot_phase1_v0_1\.venv\Scripts\python.exe'
+$cli = 'D:\Tradingbot\solana_memecoin_bot_phase1_v0_1\scripts\phase6_frozen_oos_collection_lifecycle_v0_1.py'
+$run = 'P6-OOS-20260907T000000Z-e4114796cf4b'
+$root = 'D:\Tradingbot\runtime_oos'
+
+& $python $cli salvage-check --run-id $run --runtime-root $root
+```
+
+`salvage-migrate` writes an immutable, digest-enveloped
+`lifecycle_migration_v0_2.json` before updating lifecycle state. It preserves
+the original and corrected Git/model identities, pre/post state digests,
+migration timestamp and reason, unchanged Phase-4 hashes, unchanged
+protocol/policy fingerprints, and identical run ID/start/end/source anchor.
+The record-first transition is restart-safe and repeated execution is exactly
+idempotent. The final real-run gate returned `SALVAGE_NOT_AUTHORIZED`, so no
+migration/resume command is proposed and neither mutating command was executed
+by MEME-P6-T002B.
 
 An allowed extension is explicit and exactly 24 hours:
 
@@ -109,3 +151,22 @@ The original focused synthetic matrix covers the 35 required cases plus twelve a
 The MEME-P6-T002A exact-boundary matrix adds 19/19 PASS checks. It proves exact midnight persistence, a 259,200-second half-open end, exactly three complete UTC calendar days under the unchanged P6-T001 function, zero elapsed time while armed, bounded sleeping, fail-closed arming limits, pre-window signal exclusion, coverage clamping, terminal-state visibility, and pre-start stop safety. Its ARM -> stale-process restart -> boundary -> collect execution consumed physical rowids `(2, 3)` after anchor `1`; the uninterrupted boundary execution consumed the same rowids with identical content fingerprints and candidate count.
 
 Both synthetic matrices used temporary external directories and left the real repository status byte-for-byte unchanged. They did not access the production database, start a collector, use the network, invoke a real evaluation, or start the real OOS window.
+
+The MEME-P6-T002B focused matrix adds 38/38 deterministic checks and a required
+39th real-Windows preflight check. Using the repository `.venv` (Python
+3.12.10), Windows returned launcher PIDs `36320` and `33868` while the actual
+workers self-registered distinct PIDs `30752` and `7180`. The two segments
+used one synthetic run ID, advanced the source cursor from 0 through 2,
+persisted source rowids `[1, 2]` exactly once, created a non-empty paper SQLite
+database with `PRAGMA quick_check = ok`, and stopped/resumed gracefully.
+
+The final real-run read-only gate at
+`2026-09-07T10:59:24.709305+00:00` returned `SALVAGE_NOT_AUTHORIZED`. It found
+the original anchor plus 223,755 subsequent rows (maximum rowid 1,479,451), 26
+pending gap jobs and 28 unresolved coverage entries. Two unproven source
+intervals were not covered by their own accepted pending recovery records;
+unrelated pending jobs therefore cannot establish recoverability. The
+fail-closed coverage assessment is `UNRECOVERABLE_SOURCE_GAP`. The real run was
+not mutated or durably invalidated in this implementation task. Its paper
+database remains zero bytes and all scientific counters remain zero. No PnL or
+evaluation was calculated or exposed.

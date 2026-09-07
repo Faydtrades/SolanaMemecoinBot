@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Sequence
@@ -72,6 +72,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     for name, help_text in (
         ("status", "Show the no-peek operational status."),
+        ("salvage-check", "Read-only eligibility proof for the known failed T002A run."),
+        ("salvage-migrate", "Persist the authorized immutable ownership migration."),
         ("stop", "Request graceful stop of the owned runtime segment."),
         ("resume", "Resume the exact persisted OOS run in a new segment."),
         ("finalize", "Freeze exact inputs for later P6-T001 evaluation."),
@@ -92,6 +94,8 @@ def build_parser() -> argparse.ArgumentParser:
     worker = subparsers.add_parser("_worker", help=argparse.SUPPRESS)
     worker.add_argument("--run-id", required=True)
     worker.add_argument("--runtime-root", type=Path, required=True)
+    worker.add_argument("--segment-id", required=True)
+    worker.add_argument("--claim-token", required=True)
     return parser
 
 
@@ -104,15 +108,31 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         manager = _manager(args)
         if args.command == "_worker":
-            deadline = time.monotonic() + 3.0
-            token = process_birth_token(__import__("os").getpid())
-            while time.monotonic() < deadline:
-                state = manager._state(args.run_id)
-                active = state.get("active_process")
-                if active and active.get("birth_token") == token:
-                    break
-                time.sleep(0.02)
-            return run_worker(manager, args.run_id)
+            pid = os.getpid()
+            token = process_birth_token(pid)
+            if token is None:
+                raise LifecycleError(
+                    "WORKER_STARTUP_FAILED", "actual worker birth token unavailable"
+                )
+            try:
+                manager.claim_segment(
+                    args.run_id,
+                    segment_id=args.segment_id,
+                    claim_token=args.claim_token,
+                    pid=pid,
+                    birth_token=token,
+                )
+                return run_worker(manager, args.run_id)
+            except BaseException as exc:
+                manager.fail_segment_startup(
+                    args.run_id,
+                    segment_id=args.segment_id,
+                    claim_token=args.claim_token,
+                    pid=pid,
+                    birth_token=token,
+                    reason=f"{type(exc).__name__}:{exc}",
+                )
+                raise
 
         if args.command == "start":
             if git_status(PROJECT_ROOT).strip():
@@ -140,6 +160,15 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         if args.command == "status":
             _print(manager.status(args.run_id))
+            return 0
+
+        if args.command == "salvage-check":
+            result = manager.salvage_check(args.run_id)
+            _print(result)
+            return 0 if result["result"] == "SALVAGE_AUTHORIZED" else 2
+
+        if args.command == "salvage-migrate":
+            _print(manager.migrate_salvage(args.run_id))
             return 0
 
         if args.command == "stop":

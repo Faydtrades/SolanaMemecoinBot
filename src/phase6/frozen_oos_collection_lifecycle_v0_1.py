@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import secrets
 import shutil
 import signal
 import sqlite3
@@ -18,8 +19,8 @@ from typing import Any, Callable, Iterator, Mapping, Sequence
 
 
 UTC = timezone.utc
-MODEL_ID = "P6-FROZEN-OOS-COLLECTION-LIFECYCLE-0001"
-SCHEMA_VERSION = "phase6_frozen_oos_collection_lifecycle_v0.1"
+MODEL_ID = "P6-FROZEN-OOS-COLLECTION-LIFECYCLE-0002"
+SCHEMA_VERSION = "phase6_frozen_oos_collection_lifecycle_v0.2"
 PROTOCOL_ID = "P6-OOS-PROTOCOL-0001"
 P6_PROTOCOL_FINGERPRINT = (
     "0cd06a3269c997aaa01a0e1a796e9a15088e9af7b3a4137930a5cc7beb9cdb87"
@@ -27,7 +28,19 @@ P6_PROTOCOL_FINGERPRINT = (
 P6_POLICY_SET_SHA256 = (
     "c4a2a277af1d1c7e1e8316e258b2a6da2abd302cd31d2498e4e7a45d08b2582c"
 )
-ACCEPTED_PARENT_COMMIT = "dc051a4bb0dfc172e0f82cac688da24fd86be6c9"
+ACCEPTED_PARENT_COMMIT = "3c4a7d852a96d2e27262a43721f576ae46cee591"
+PREDECESSOR_MODEL_ID = "P6-FROZEN-OOS-COLLECTION-LIFECYCLE-0001"
+PREDECESSOR_SCHEMA_VERSION = "phase6_frozen_oos_collection_lifecycle_v0.1"
+PREDECESSOR_MODEL_FINGERPRINT = (
+    "1d74b5daadefc791e81a5d2a2e93d5f80da4ef9ca85142f573e29ec765ce7a36"
+)
+MIGRATION_REASON = "WINDOWS_WORKER_OWNERSHIP_CORRECTION"
+MIGRATION_SCHEMA_VERSION = "phase6_lifecycle_migration_v0.1"
+WORKER_CLAIM_TIMEOUT_SECONDS = 10.0
+KNOWN_SALVAGE_RUN_ID = "P6-OOS-20260907T000000Z-e4114796cf4b"
+KNOWN_SALVAGE_START = "2026-09-07T00:00:00.000000+00:00"
+KNOWN_SALVAGE_END = "2026-09-10T00:00:00.000000+00:00"
+KNOWN_SALVAGE_SOURCE_ANCHOR = 1_255_696
 
 MINIMUM_DURATION_SECONDS = 72 * 60 * 60
 EXTENSION_SECONDS = 24 * 60 * 60
@@ -114,6 +127,20 @@ SPEC: dict[str, Any] = {
         "source_anchor": "PHYSICAL_ROWID_CAPTURED_AT_ARMING",
         "prestart_worker": "DURABLE_ARMED_WAIT_WITH_ZERO_SCIENTIFIC_ELAPSED_TIME",
         "prewindow_rows": "CONSUMED_FOR_CAUSAL_CONTEXT_BUT_EXCLUDED_FROM_P6_T001_WINDOW",
+    },
+    "worker_ownership": {
+        "registration": "ATOMIC_ACTUAL_WORKER_SELF_CLAIM",
+        "launcher_pid_is_authoritative": False,
+        "birth_token_required": True,
+        "claim_timeout_seconds": WORKER_CLAIM_TIMEOUT_SECONDS,
+        "single_claim": True,
+    },
+    "compatible_migration": {
+        "predecessor_commit": ACCEPTED_PARENT_COMMIT,
+        "predecessor_model_id": PREDECESSOR_MODEL_ID,
+        "predecessor_model_fingerprint": PREDECESSOR_MODEL_FINGERPRINT,
+        "reason": MIGRATION_REASON,
+        "scientific_identity_changes": False,
     },
     "extension_reasons": ["H1_SAMPLE_INSUFFICIENT", "TECHNICAL_COMPLETENESS"],
     "identity": "ONE_IMMUTABLE_RUN_ACROSS_RUNTIME_SEGMENTS",
@@ -352,6 +379,12 @@ def process_birth_token(pid: int) -> str | None:
             if not handle:
                 return None
             try:
+                exit_code = wintypes.DWORD()
+                exit_ok = ctypes.windll.kernel32.GetExitCodeProcess(
+                    handle, ctypes.byref(exit_code)
+                )
+                if not exit_ok or int(exit_code.value) != 259:  # STILL_ACTIVE
+                    return None
                 creation = wintypes.FILETIME()
                 exit_time = wintypes.FILETIME()
                 kernel = wintypes.FILETIME()
@@ -571,7 +604,41 @@ class FrozenOOSLifecycleV01:
         state = self._state(run_id)
         if manifest.get("run_id") != run_id or state.get("run_id") != run_id:
             raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "run ID mismatch")
-        if manifest.get("model_fingerprint") != MODEL_FINGERPRINT:
+        manifest_fingerprint = manifest.get("model_fingerprint")
+        if manifest_fingerprint == MODEL_FINGERPRINT:
+            if (
+                manifest.get("model_id") != MODEL_ID
+                or manifest.get("schema_version") != SCHEMA_VERSION
+            ):
+                raise LifecycleError("PROTOCOL_MISMATCH", "lifecycle model identity")
+            expected_commit = str(manifest["repository_commit"])
+        elif manifest_fingerprint == PREDECESSOR_MODEL_FINGERPRINT:
+            if (
+                manifest.get("model_id") != PREDECESSOR_MODEL_ID
+                or manifest.get("schema_version") != PREDECESSOR_SCHEMA_VERSION
+            ):
+                raise LifecycleError("PROTOCOL_MISMATCH", "predecessor model identity")
+            migration = _read_envelope(
+                self.run_dir(run_id) / "lifecycle_migration_v0_2.json"
+            )
+            if (
+                migration.get("migration_reason") != MIGRATION_REASON
+                or migration.get("original_repository_commit")
+                != manifest.get("repository_commit")
+                or migration.get("original_lifecycle_model_fingerprint")
+                != PREDECESSOR_MODEL_FINGERPRINT
+                or migration.get("corrected_lifecycle_model_fingerprint")
+                != MODEL_FINGERPRINT
+                or state.get("runtime_migration", {}).get("migration_id")
+                != migration.get("migration_id")
+                or canonical_sha256(migration.get("post_migration_state_payload"))
+                != migration.get("post_migration_state_payload_sha256")
+                or state.get("runtime_migration")
+                != migration.get("post_migration_state_payload", {}).get("runtime_migration")
+            ):
+                raise LifecycleError("PROTOCOL_MISMATCH", "lifecycle migration")
+            expected_commit = str(migration["corrected_runtime_commit"])
+        else:
             raise LifecycleError("PROTOCOL_MISMATCH", "lifecycle fingerprint")
         if manifest.get("protocol_fingerprint") != P6_PROTOCOL_FINGERPRINT:
             raise LifecycleError("PROTOCOL_MISMATCH", "P6 protocol")
@@ -579,7 +646,6 @@ class FrozenOOSLifecycleV01:
             raise LifecycleError("PROTOCOL_MISMATCH", "P6 policy set")
         self._validate_temporal_state(manifest, state)
         runtime_contract(self.repo_root, verify_files=self.verify_runtime_files)
-        expected_commit = str(manifest["repository_commit"])
         observed_commit = repository_commit or git_head(self.repo_root)
         if observed_commit != expected_commit:
             raise LifecycleError("REPOSITORY_RUNTIME_MISMATCH", "repository commit changed")
@@ -676,20 +742,44 @@ class FrozenOOSLifecycleV01:
         active = state.get("active_process")
         if state["lifecycle_state"] == "ACTIVE" and active is None:
             raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "ACTIVE state has no process")
-        if active is not None and not any(
-            item["segment_id"] == active.get("segment_id")
-            and item["ended_at_utc"] is None
-            for item in segments
-        ):
-            raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "active segment reference drift")
+        if active is not None:
+            matches = [
+                item for item in segments
+                if item["segment_id"] == active.get("segment_id")
+                and item["ended_at_utc"] is None
+            ]
+            if len(matches) != 1:
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "active segment reference drift")
+            ownership = active.get("ownership_state", "OWNED")
+            if ownership == "CLAIM_PENDING":
+                if (
+                    active.get("pid") is not None
+                    or active.get("birth_token") is not None
+                    or not active.get("claim_token_sha256")
+                    or not active.get("claim_deadline_at_utc")
+                ):
+                    raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "invalid pending claim")
+                dt_parse(str(active["claim_deadline_at_utc"]))
+            elif ownership == "OWNED":
+                if int(active.get("pid", 0)) <= 0 or not active.get("birth_token"):
+                    raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "invalid owned process")
+            else:
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "unknown ownership state")
 
     def begin_segment(self, run_id: str, *, pid: int, birth_token: str) -> dict[str, Any]:
+        """Directly register the calling process (used by deterministic tests)."""
         manifest, _ = self.verify_identity(run_id)
         del manifest
         run_dir = self.run_dir(run_id)
         with _exclusive_lock(run_dir):
             state = self._state(run_id)
+            if state["lifecycle_state"] in {"INVALID", "FROZEN_READY_FOR_EVALUATION"}:
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "run is terminal")
             active = state.get("active_process")
+            if active and active.get("ownership_state") == "CLAIM_PENDING":
+                deadline = dt_parse(str(active["claim_deadline_at_utc"]))
+                if _utc(self.clock()) <= deadline:
+                    raise LifecycleError("ACTIVE_WRITER_CONFLICT")
             if active and process_matches(active.get("pid"), active.get("birth_token")):
                 raise LifecycleError("ACTIVE_WRITER_CONFLICT")
             if active:
@@ -715,16 +805,186 @@ class FrozenOOSLifecycleV01:
                 "termination": None,
                 "pid": int(pid),
                 "birth_token": birth_token,
+                "launcher_pid": int(pid),
+                "ownership_state": "OWNED",
+                "claimed_at_utc": started,
             }
             state["segments"].append(segment)
             state["active_process"] = {
                 "pid": int(pid), "birth_token": birth_token,
                 "segment_id": segment_id,
+                "ownership_state": "OWNED",
             }
             state["lifecycle_state"] = "ACTIVE"
             state["last_error"] = None
             self._save_state(run_id, state)
             return segment
+
+    def prepare_segment_launch(
+        self, run_id: str, *, claim_token: str
+    ) -> dict[str, Any]:
+        """Create one unowned segment which only the launched worker may claim."""
+        if not claim_token:
+            raise ValueError("claim_token is required")
+        self.verify_identity(run_id)
+        run_dir = self.run_dir(run_id)
+        with _exclusive_lock(run_dir):
+            state = self._state(run_id)
+            if state["lifecycle_state"] in {"INVALID", "FROZEN_READY_FOR_EVALUATION"}:
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "run is terminal")
+            active = state.get("active_process")
+            if active is not None:
+                raise LifecycleError("ACTIVE_WRITER_CONFLICT")
+            segment_index = len(state["segments"]) + 1
+            segment_id = f"{run_id}-segment-{segment_index:04d}"
+            started = _utc(self.clock())
+            deadline = started + timedelta(seconds=WORKER_CLAIM_TIMEOUT_SECONDS)
+            claim_sha256 = hashlib.sha256(claim_token.encode("utf-8")).hexdigest()
+            segment = {
+                "segment_id": segment_id,
+                "segment_index": segment_index,
+                "started_at_utc": dt_text(started),
+                "start_cursor": int(state["source_cursor"]),
+                "ended_at_utc": None,
+                "end_cursor": None,
+                "termination": None,
+                "pid": None,
+                "birth_token": None,
+                "launcher_pid": None,
+                "ownership_state": "CLAIM_PENDING",
+                "claimed_at_utc": None,
+            }
+            state["segments"].append(segment)
+            state["active_process"] = {
+                "pid": None,
+                "birth_token": None,
+                "segment_id": segment_id,
+                "ownership_state": "CLAIM_PENDING",
+                "claim_token_sha256": claim_sha256,
+                "claim_deadline_at_utc": dt_text(deadline),
+            }
+            state["lifecycle_state"] = "ACTIVE"
+            state["last_error"] = None
+            self._save_state(run_id, state)
+            return dict(segment)
+
+    def record_launcher_pid(
+        self, run_id: str, *, segment_id: str, launcher_pid: int
+    ) -> dict[str, Any]:
+        """Record launch diagnostics without granting worker ownership."""
+        run_dir = self.run_dir(run_id)
+        with _exclusive_lock(run_dir):
+            state = self._state(run_id)
+            matches = [
+                item for item in state["segments"]
+                if item["segment_id"] == segment_id
+            ]
+            if len(matches) != 1 or matches[0]["ended_at_utc"] is not None:
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "launch segment missing")
+            matches[0]["launcher_pid"] = int(launcher_pid)
+            self._save_state(run_id, state)
+            return dict(matches[0])
+
+    def claim_segment(
+        self,
+        run_id: str,
+        *,
+        segment_id: str,
+        claim_token: str,
+        pid: int,
+        birth_token: str,
+    ) -> dict[str, Any]:
+        """Atomically bind the actual worker process to one pending segment."""
+        if not claim_token or not birth_token or int(pid) <= 0:
+            raise LifecycleError("ACTIVE_WRITER_CONFLICT", "invalid worker claim")
+        if not process_matches(pid, birth_token):
+            raise LifecycleError(
+                "ACTIVE_WRITER_CONFLICT", "worker process identity is not live"
+            )
+        run_dir = self.run_dir(run_id)
+        with _exclusive_lock(run_dir):
+            state = self._state(run_id)
+            active = state.get("active_process")
+            claim_sha256 = hashlib.sha256(claim_token.encode("utf-8")).hexdigest()
+            if (
+                not active
+                or active.get("segment_id") != segment_id
+                or active.get("ownership_state") != "CLAIM_PENDING"
+                or active.get("claim_token_sha256") != claim_sha256
+            ):
+                raise LifecycleError("ACTIVE_WRITER_CONFLICT", "segment claim rejected")
+            if _utc(self.clock()) > dt_parse(str(active["claim_deadline_at_utc"])):
+                raise LifecycleError("ACTIVE_WRITER_CONFLICT", "segment claim expired")
+            matches = [
+                item for item in state["segments"]
+                if item["segment_id"] == segment_id and item["ended_at_utc"] is None
+            ]
+            if len(matches) != 1:
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "pending segment missing")
+            segment = matches[0]
+            claimed_at = dt_text(self.clock())
+            segment.update({
+                "pid": int(pid),
+                "birth_token": birth_token,
+                "ownership_state": "OWNED",
+                "claimed_at_utc": claimed_at,
+            })
+            state["active_process"] = {
+                "pid": int(pid),
+                "birth_token": birth_token,
+                "segment_id": segment_id,
+                "ownership_state": "OWNED",
+            }
+            self._save_state(run_id, state)
+            return dict(segment)
+
+    def fail_segment_startup(
+        self,
+        run_id: str,
+        *,
+        segment_id: str,
+        reason: str,
+        claim_token: str | None = None,
+        pid: int | None = None,
+        birth_token: str | None = None,
+    ) -> dict[str, Any]:
+        """Close only the pending or owned segment proven by the caller."""
+        run_dir = self.run_dir(run_id)
+        with _exclusive_lock(run_dir):
+            state = self._state(run_id)
+            active = state.get("active_process")
+            if not active or active.get("segment_id") != segment_id:
+                return state
+            ownership = active.get("ownership_state")
+            authorized = False
+            if ownership == "CLAIM_PENDING" and claim_token is not None:
+                authorized = active.get("claim_token_sha256") == hashlib.sha256(
+                    claim_token.encode("utf-8")
+                ).hexdigest()
+            elif ownership == "OWNED":
+                authorized = (
+                    int(active.get("pid", -1)) == int(pid or -1)
+                    and active.get("birth_token") == birth_token
+                )
+            if not authorized:
+                return state
+            matches = [
+                item for item in state["segments"]
+                if item["segment_id"] == segment_id and item["ended_at_utc"] is None
+            ]
+            if len(matches) != 1:
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "startup segment missing")
+            segment = matches[0]
+            segment["ended_at_utc"] = dt_text(self.clock())
+            segment["end_cursor"] = int(state["source_cursor"])
+            segment["termination"] = "WORKER_STARTUP_FAILED"
+            state["active_process"] = None
+            state["lifecycle_state"] = "INVALID" if ownership == "OWNED" else "STOPPED"
+            state["last_error"] = str(reason)
+            if ownership == "OWNED":
+                state["coverage_status"] = "OOS_COVERAGE_INCOMPLETE"
+            self._save_state(run_id, state)
+            return state
 
     def record_progress(
         self,
@@ -744,7 +1004,11 @@ class FrozenOOSLifecycleV01:
         with _exclusive_lock(run_dir):
             state = self._state(run_id)
             active = state.get("active_process")
-            if process_token is not None and (not active or active.get("birth_token") != process_token):
+            if process_token is not None and (
+                not active
+                or active.get("ownership_state", "OWNED") != "OWNED"
+                or active.get("birth_token") != process_token
+            ):
                 raise LifecycleError("ACTIVE_WRITER_CONFLICT", "segment process token mismatch")
             if int(source_cursor) < int(state["source_cursor"]):
                 raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "durable cursor moved backward")
@@ -819,8 +1083,18 @@ class FrozenOOSLifecycleV01:
         with _exclusive_lock(run_dir):
             state = self._state(run_id)
             active = state.get("active_process")
-            if not active or process_matches(active.get("pid"), active.get("birth_token")):
+            if not active:
                 return state
+            if active.get("ownership_state") == "CLAIM_PENDING":
+                if _utc(self.clock()) <= dt_parse(str(active["claim_deadline_at_utc"])):
+                    return state
+                termination = "WORKER_CLAIM_TIMEOUT"
+                last_error = "WORKER_CLAIM_TIMEOUT"
+            elif process_matches(active.get("pid"), active.get("birth_token")):
+                return state
+            else:
+                termination = "STALE_PROCESS_AFTER_RESTART"
+                last_error = state.get("last_error")
             matches = [
                 item for item in state["segments"]
                 if item["segment_id"] == active["segment_id"]
@@ -830,9 +1104,10 @@ class FrozenOOSLifecycleV01:
             segment = matches[0]
             segment["ended_at_utc"] = dt_text(self.clock())
             segment["end_cursor"] = int(state["source_cursor"])
-            segment["termination"] = "STALE_PROCESS_AFTER_RESTART"
+            segment["termination"] = termination
             state["active_process"] = None
             state["lifecycle_state"] = "STOPPED"
+            state["last_error"] = last_error
             self._save_state(run_id, state)
             return state
 
@@ -843,11 +1118,12 @@ class FrozenOOSLifecycleV01:
         start = dt_parse(manifest["start_at_utc"])
         end = dt_parse(state["target_end_at_utc"])
         active = state.get("active_process")
-        process_health = (
-            "RUNNING_OWNED_PROCESS"
-            if active and process_matches(active.get("pid"), active.get("birth_token"))
-            else "NOT_RUNNING"
-        )
+        if active and active.get("ownership_state") == "CLAIM_PENDING":
+            process_health = "STARTING_UNCLAIMED"
+        elif active and process_matches(active.get("pid"), active.get("birth_token")):
+            process_health = "RUNNING_OWNED_PROCESS"
+        else:
+            process_health = "NOT_RUNNING"
         reported_state = state["lifecycle_state"]
         if instant < start and state["lifecycle_state"] == "ACTIVE":
             reported_state = "ARMED_WAITING_FOR_START"
@@ -878,6 +1154,370 @@ class FrozenOOSLifecycleV01:
         if tuple(result) != NO_PEEK_STATUS_FIELDS:
             raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "status surface drift")
         return result
+
+    def salvage_check(
+        self, run_id: str, *, now: datetime | None = None
+    ) -> dict[str, Any]:
+        """Read-only eligibility proof for the one known T002A failed launch."""
+        checked_at = _utc(now or self.clock())
+        checks: dict[str, bool] = {
+            "exact_known_run_id": run_id == KNOWN_SALVAGE_RUN_ID,
+        }
+        result: dict[str, Any] = {
+            "result": "SALVAGE_NOT_AUTHORIZED",
+            "run_id": run_id,
+            "checked_at_utc": dt_text(checked_at),
+            "checks": checks,
+            "migration_reason": MIGRATION_REASON,
+            "evaluation_performed": False,
+        }
+        if not checks["exact_known_run_id"]:
+            return result
+        run_dir = self.run_dir(run_id)
+        try:
+            manifest = _read_envelope(run_dir / "run_manifest.json")
+            state = _read_envelope(run_dir / "lifecycle_state.json")
+        except (LifecycleError, FileNotFoundError, OSError, ValueError) as exc:
+            result["error"] = f"{type(exc).__name__}:{exc}"
+            return result
+
+        migration_path = run_dir / "lifecycle_migration_v0_2.json"
+        checks.update({
+            "not_already_migrated": not migration_path.exists(),
+            "exact_predecessor_commit": manifest.get("repository_commit") == ACCEPTED_PARENT_COMMIT,
+            "exact_predecessor_model": (
+                manifest.get("model_id") == PREDECESSOR_MODEL_ID
+                and manifest.get("schema_version") == PREDECESSOR_SCHEMA_VERSION
+                and manifest.get("model_fingerprint") == PREDECESSOR_MODEL_FINGERPRINT
+            ),
+            "exact_scientific_start": manifest.get("start_at_utc") == KNOWN_SALVAGE_START,
+            "exact_scientific_end": (
+                manifest.get("minimum_end_at_utc") == KNOWN_SALVAGE_END
+                and state.get("target_end_at_utc") == KNOWN_SALVAGE_END
+            ),
+            "exact_source_anchor": (
+                int(manifest.get("source_start_cursor", -1)) == KNOWN_SALVAGE_SOURCE_ANCHOR
+                and int(state.get("source_cursor", -1)) == KNOWN_SALVAGE_SOURCE_ANCHOR
+                and int(state.get("source_watermark", -1)) == KNOWN_SALVAGE_SOURCE_ANCHOR
+            ),
+            "protocol_unchanged": manifest.get("protocol_fingerprint") == P6_PROTOCOL_FINGERPRINT,
+            "policy_set_unchanged": manifest.get("policy_set_sha256") == P6_POLICY_SET_SHA256,
+            "no_scientific_progress": (
+                int(state.get("source_row_count", -1)) == 0
+                and int(state.get("candidate_count", -1)) == 0
+                and int(state.get("h1_eligible_sample_count", -1)) == 0
+                and state.get("coverage_complete_through_utc") == KNOWN_SALVAGE_START
+                and state.get("durable_work_pending") is False
+            ),
+            "no_evaluation_handoff": (
+                state.get("frozen_handoff_sha256") is None
+                and not (run_dir / "frozen_handoff_manifest.json").exists()
+            ),
+        })
+        active = state.get("active_process") or {}
+        checks["registered_process_is_dead"] = bool(active) and not process_matches(
+            active.get("pid"), active.get("birth_token")
+        )
+        log_path = run_dir / "segment_0001.log"
+        try:
+            failure = json.loads(log_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            failure = {}
+        checks["exact_worker_failure_signature"] = (
+            failure.get("reason") == "ACTIVE_WRITER_CONFLICT"
+            and failure.get("result") == "FAIL_CLOSED"
+            and failure.get("detail")
+            == "ACTIVE_WRITER_CONFLICT: worker is not the registered segment"
+        )
+        checks["exact_unadvanced_segment"] = (
+            state.get("lifecycle_state") == "ACTIVE"
+            and len(state.get("segments", [])) == 1
+            and state["segments"][0].get("segment_id") == active.get("segment_id")
+            and int(state["segments"][0].get("start_cursor", -1))
+            == KNOWN_SALVAGE_SOURCE_ANCHOR
+            and state["segments"][0].get("end_cursor") is None
+            and state["segments"][0].get("ended_at_utc") is None
+        )
+
+        paper = _resolved(manifest.get("paper_db_path", run_dir / "missing-paper"))
+        checks["paper_identity_unchanged"] = (
+            paper.is_file()
+            and _file_object_token(paper) == manifest.get("paper_file_object_token")
+            and _path_identity(
+                paper, kind="PAPER_DB", run_id=run_id,
+                anchor=KNOWN_SALVAGE_SOURCE_ANCHOR,
+                file_object_token=_file_object_token(paper),
+            ) == manifest.get("paper_database_identity")
+        )
+        checks["paper_scientific_state_absent"] = paper.is_file() and paper.stat().st_size == 0
+        allowed_runtime_names = {
+            "run_manifest.json", "lifecycle_state.json", "paper_oos.sqlite3",
+        }
+        unexpected_artifacts = [
+            path for path in run_dir.iterdir()
+            if path.name not in allowed_runtime_names
+            and not (
+                path.is_file()
+                and path.name.startswith("segment_")
+                and path.name.endswith(".log")
+            )
+        ]
+        checks["performance_and_evaluation_artifacts_absent"] = not unexpected_artifacts
+
+        source = _resolved(manifest.get("source_db_path", run_dir / "missing-source"))
+        source_summary: dict[str, Any] = {
+            "source_db_path": source.as_posix(),
+            "connection_mode": "mode=ro; PRAGMA query_only=ON",
+            "source_start_cursor": KNOWN_SALVAGE_SOURCE_ANCHOR,
+        }
+        try:
+            from phase4.paper_continuous_market_source_v0_2 import ContinuousMarketSourceV02
+
+            conn = ContinuousMarketSourceV02.open_readonly(source)
+            try:
+                ContinuousMarketSourceV02.validate_schema(conn)
+                anchor_present = conn.execute(
+                    "SELECT 1 FROM pump_events WHERE rowid=?",
+                    (KNOWN_SALVAGE_SOURCE_ANCHOR,),
+                ).fetchone() is not None
+                maximum_rowid = int(
+                    conn.execute("SELECT COALESCE(MAX(rowid),0) FROM pump_events").fetchone()[0]
+                )
+                gap_rows = conn.execute(
+                    "SELECT gap_key,status,gap_started_at_utc,gap_ended_at_utc "
+                    "FROM gap_jobs_v034 WHERE gap_ended_at_utc>=? "
+                    "AND gap_started_at_utc<? ORDER BY gap_started_at_utc,gap_key",
+                    (KNOWN_SALVAGE_START, dt_text(min(
+                        max(checked_at, dt_parse(KNOWN_SALVAGE_START)),
+                        dt_parse(KNOWN_SALVAGE_END),
+                    ))),
+                ).fetchall()
+                gap_status_counts = {
+                    str(status): sum(1 for item in gap_rows if str(item[1]) == str(status))
+                    for status in sorted({str(item[1]) for item in gap_rows})
+                }
+                active_recovery_gaps = {
+                    f"{row[0]}:{row[1]}"
+                    for row in gap_rows
+                    if str(row[1]) in {"PENDING", "RETRY", "IN_PROGRESS"}
+                }
+            finally:
+                conn.close()
+            source_token = _file_object_token(source)
+            source_identity_ok = (
+                source_token == manifest.get("source_file_object_token")
+                and _path_identity(
+                    source, kind="SOURCE_DB", run_id=run_id,
+                    anchor=KNOWN_SALVAGE_SOURCE_ANCHOR,
+                    file_object_token=source_token,
+                ) == manifest.get("source_database_identity")
+            )
+            coverage_target = min(max(checked_at, dt_parse(KNOWN_SALVAGE_START)), dt_parse(KNOWN_SALVAGE_END))
+            coverage, gaps = source_coverage_probe(
+                source,
+                start=dt_parse(KNOWN_SALVAGE_START),
+                target=coverage_target,
+                source_start_cursor=KNOWN_SALVAGE_SOURCE_ANCHOR,
+            )
+            recoverable_statuses = {
+                status for status in gap_status_counts
+                if status in {"PENDING", "RETRY", "IN_PROGRESS"}
+                or status.startswith("DONE")
+            }
+            recovery_available = (
+                recoverable_statuses == set(gap_status_counts)
+                and all(gap in active_recovery_gaps for gap in gaps)
+            )
+            checks.update({
+                "source_identity_continuity": source_identity_ok,
+                "original_anchor_row_present": anchor_present,
+                "subsequent_source_rows_present": maximum_rowid > KNOWN_SALVAGE_SOURCE_ANCHOR,
+                "source_gap_ledger_inspectable": True,
+                "source_coverage_recovery_path_available": recovery_available,
+            })
+            source_summary.update({
+                "maximum_pump_events_rowid": maximum_rowid,
+                "rows_after_anchor": maximum_rowid - KNOWN_SALVAGE_SOURCE_ANCHOR,
+                "coverage_target_utc": dt_text(coverage_target),
+                "coverage_complete_through_utc": dt_text(coverage),
+                "unresolved_coverage_gap_count": len(gaps),
+                "gap_status_counts": gap_status_counts,
+                "coverage_proven_through_check_time": coverage >= coverage_target and not gaps,
+                "assessment": (
+                    "PROVEN_THROUGH_CHECK_TIME"
+                    if coverage >= coverage_target and not gaps
+                    else "RECOVERABLE_GAPS_PENDING"
+                    if recovery_available
+                    else "UNRECOVERABLE_SOURCE_GAP"
+                ),
+            })
+        except (LifecycleError, OSError, sqlite3.DatabaseError, ValueError) as exc:
+            checks.update({
+                "source_identity_continuity": False,
+                "original_anchor_row_present": False,
+                "subsequent_source_rows_present": False,
+                "source_gap_ledger_inspectable": False,
+                "source_coverage_recovery_path_available": False,
+            })
+            source_summary["inspection_error"] = f"{type(exc).__name__}:{exc}"
+
+        try:
+            current_runtime = runtime_contract(
+                self.repo_root, verify_files=self.verify_runtime_files
+            )
+            checks["phase4_runtime_hashes_unchanged"] = (
+                manifest.get("runtime_contract") == current_runtime
+            )
+        except (LifecycleError, OSError, ValueError):
+            checks["phase4_runtime_hashes_unchanged"] = False
+        result.update({
+            "original_repository_commit": manifest.get("repository_commit"),
+            "original_lifecycle_model_id": manifest.get("model_id"),
+            "original_lifecycle_model_fingerprint": manifest.get("model_fingerprint"),
+            "corrected_runtime_commit_candidate": git_head(self.repo_root),
+            "corrected_lifecycle_model_id": MODEL_ID,
+            "corrected_lifecycle_model_fingerprint": MODEL_FINGERPRINT,
+            "pre_migration_state_payload_sha256": canonical_sha256(state),
+            "scientific_identity": {
+                "start_at_utc": manifest.get("start_at_utc"),
+                "end_at_utc": state.get("target_end_at_utc"),
+                "source_start_cursor": manifest.get("source_start_cursor"),
+                "protocol_fingerprint": manifest.get("protocol_fingerprint"),
+                "policy_set_sha256": manifest.get("policy_set_sha256"),
+            },
+            "source_coverage": source_summary,
+            "paper_db": {
+                "path": paper.as_posix(),
+                "size_bytes": paper.stat().st_size if paper.is_file() else None,
+                "scientific_state_present": not checks["paper_scientific_state_absent"],
+            },
+        })
+        if all(checks.values()):
+            result["result"] = "SALVAGE_AUTHORIZED"
+        return result
+
+    def migrate_salvage(self, run_id: str) -> dict[str, Any]:
+        """Atomically bind the known predecessor run to a reviewed checkpoint."""
+        current_commit = git_head(self.repo_root)
+        if current_commit == ACCEPTED_PARENT_COMMIT or git_status(self.repo_root).strip():
+            raise LifecycleError(
+                "CORRECTED_RUNTIME_NOT_CHECKPOINTED",
+                "migration requires one clean corrected Git checkpoint",
+            )
+        run_dir = self.run_dir(run_id)
+        migration_path = run_dir / "lifecycle_migration_v0_2.json"
+        eligibility = None if migration_path.exists() else self.salvage_check(run_id)
+        with _exclusive_lock(run_dir):
+            state = self._state(run_id)
+            current_state_sha = canonical_sha256(state)
+            if migration_path.exists():
+                existing = _read_envelope(migration_path)
+                if (
+                    existing.get("corrected_runtime_commit") != current_commit
+                    or existing.get("corrected_lifecycle_model_fingerprint") != MODEL_FINGERPRINT
+                ):
+                    raise LifecycleError("PROTOCOL_MISMATCH", "existing migration binding")
+                if current_state_sha == existing.get("post_migration_state_payload_sha256"):
+                    return existing
+                if current_state_sha == existing.get("pre_migration_state_payload_sha256"):
+                    self._save_state(run_id, existing["post_migration_state_payload"])
+                    return existing
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "migration replay state mismatch")
+
+            if eligibility is None or eligibility.get("result") != "SALVAGE_AUTHORIZED":
+                if (
+                    eligibility is not None
+                    and eligibility.get("source_coverage", {}).get("assessment")
+                    == "UNRECOVERABLE_SOURCE_GAP"
+                ):
+                    active = state.get("active_process")
+                    matches = [
+                        item for item in state["segments"]
+                        if active and item["segment_id"] == active.get("segment_id")
+                    ]
+                    if len(matches) == 1 and matches[0]["ended_at_utc"] is None:
+                        matches[0]["ended_at_utc"] = dt_text(self.clock())
+                        matches[0]["end_cursor"] = int(state["source_cursor"])
+                        matches[0]["termination"] = "UNRECOVERABLE_SOURCE_GAP"
+                    state["active_process"] = None
+                    state["lifecycle_state"] = "INVALID"
+                    state["last_error"] = "UNRECOVERABLE_SOURCE_GAP"
+                    state["coverage_status"] = "OOS_COVERAGE_INCOMPLETE"
+                    self._save_state(run_id, state)
+                raise LifecycleError("SALVAGE_NOT_AUTHORIZED")
+            if current_state_sha != eligibility["pre_migration_state_payload_sha256"]:
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "state changed after salvage check")
+            manifest = self._manifest(run_id)
+            migrated_at = _utc(self.clock())
+            post_state = json.loads(json.dumps(state))
+            active = post_state.get("active_process")
+            matches = [
+                item for item in post_state["segments"]
+                if active and item["segment_id"] == active.get("segment_id")
+            ]
+            if len(matches) != 1 or matches[0]["ended_at_utc"] is not None:
+                raise LifecycleError("SALVAGE_NOT_AUTHORIZED", "failed segment shape changed")
+            matches[0]["ended_at_utc"] = dt_text(migrated_at)
+            matches[0]["end_cursor"] = KNOWN_SALVAGE_SOURCE_ANCHOR
+            matches[0]["termination"] = MIGRATION_REASON
+            migration_id = "P6M-" + canonical_sha256({
+                "run_id": run_id,
+                "pre_state": current_state_sha,
+                "corrected_commit": current_commit,
+                "corrected_fingerprint": MODEL_FINGERPRINT,
+            })[:32]
+            post_state["active_process"] = None
+            post_state["lifecycle_state"] = "STOPPED"
+            post_state["last_error"] = "MIGRATED_AFTER_WINDOWS_WORKER_OWNERSHIP_FAILURE"
+            post_state["runtime_migration"] = {
+                "migration_id": migration_id,
+                "migration_reason": MIGRATION_REASON,
+                "migrated_at_utc": dt_text(migrated_at),
+                "original_repository_commit": manifest["repository_commit"],
+                "original_lifecycle_model_fingerprint": manifest["model_fingerprint"],
+                "corrected_runtime_commit": current_commit,
+                "corrected_lifecycle_model_fingerprint": MODEL_FINGERPRINT,
+            }
+            post_state_sha = canonical_sha256(post_state)
+            migration = {
+                "migration_schema_version": MIGRATION_SCHEMA_VERSION,
+                "migration_id": migration_id,
+                "migration_reason": MIGRATION_REASON,
+                "migrated_at_utc": dt_text(migrated_at),
+                "run_id": run_id,
+                "original_repository_commit": manifest["repository_commit"],
+                "original_lifecycle_model_id": manifest["model_id"],
+                "original_lifecycle_model_fingerprint": manifest["model_fingerprint"],
+                "corrected_runtime_commit": current_commit,
+                "corrected_lifecycle_model_id": MODEL_ID,
+                "corrected_lifecycle_model_fingerprint": MODEL_FINGERPRINT,
+                "pre_migration_state_payload_sha256": current_state_sha,
+                "post_migration_state_payload_sha256": post_state_sha,
+                "post_migration_state_payload": post_state,
+                "protocol_fingerprint_before_after": [
+                    manifest["protocol_fingerprint"], P6_PROTOCOL_FINGERPRINT,
+                ],
+                "policy_set_sha256_before_after": [
+                    manifest["policy_set_sha256"], P6_POLICY_SET_SHA256,
+                ],
+                "phase4_runtime_sha256_before_after": [
+                    manifest["runtime_contract"]["runtime_file_sha256"],
+                    runtime_contract(self.repo_root, verify_files=True)["runtime_file_sha256"],
+                ],
+                "scientific_identity_before_after": [{
+                    "start_at_utc": manifest["start_at_utc"],
+                    "end_at_utc": state["target_end_at_utc"],
+                    "source_start_cursor": manifest["source_start_cursor"],
+                }, {
+                    "start_at_utc": manifest["start_at_utc"],
+                    "end_at_utc": post_state["target_end_at_utc"],
+                    "source_start_cursor": manifest["source_start_cursor"],
+                }],
+                "evaluation_performed": False,
+            }
+            _write_envelope(migration_path, migration, immutable=True)
+            self._save_state(run_id, post_state)
+            return migration
 
     def extend(self, run_id: str, *, seconds: int, reason: str, decided_at: datetime | None = None) -> dict[str, Any]:
         if int(seconds) != EXTENSION_SECONDS:
@@ -1503,31 +2143,95 @@ def launch_worker_process(
     stale_stop = manager.run_dir(run_id) / "stop.request"
     if stale_stop.exists():
         stale_stop.unlink()
-    log_path = manager.run_dir(run_id) / f"segment_{len(state['segments']) + 1:04d}.log"
+    claim_token = secrets.token_urlsafe(32)
+    pending = manager.prepare_segment_launch(run_id, claim_token=claim_token)
+    segment_id = str(pending["segment_id"])
+    log_path = manager.run_dir(run_id) / f"segment_{int(pending['segment_index']):04d}.log"
     handle = log_path.open("a", encoding="utf-8", newline="\n")
     creationflags = 0
     if os.name == "nt":
         creationflags = int(getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)) | int(getattr(subprocess, "DETACHED_PROCESS", 0))
-    process = subprocess.Popen(
-        (
-            str(python_path or Path(sys.executable)), str(cli_path), "_worker",
-            "--run-id", run_id, "--runtime-root", str(manager.runtime_root),
-        ),
-        cwd=manager.repo_root, stdin=subprocess.DEVNULL, stdout=handle,
-        stderr=subprocess.STDOUT, text=True, creationflags=creationflags,
-        close_fds=True,
+    try:
+        process = subprocess.Popen(
+            (
+                str(python_path or Path(sys.executable)), str(cli_path), "_worker",
+                "--run-id", run_id, "--runtime-root", str(manager.runtime_root),
+                "--segment-id", segment_id, "--claim-token", claim_token,
+            ),
+            cwd=manager.repo_root, stdin=subprocess.DEVNULL, stdout=handle,
+            stderr=subprocess.STDOUT, text=True, creationflags=creationflags,
+            close_fds=True,
+        )
+    except BaseException as exc:
+        manager.fail_segment_startup(
+            run_id, segment_id=segment_id, claim_token=claim_token,
+            reason=f"{type(exc).__name__}:{exc}",
+        )
+        raise
+    finally:
+        handle.close()
+    manager.record_launcher_pid(
+        run_id, segment_id=segment_id, launcher_pid=process.pid
     )
-    handle.close()
-    token: str | None = None
-    deadline = time.monotonic() + 3.0
-    while token is None and time.monotonic() < deadline and process.poll() is None:
-        token = process_birth_token(process.pid)
-        if token is None:
-            time.sleep(0.02)
-    if token is None:
+    deadline = time.monotonic() + WORKER_CLAIM_TIMEOUT_SECONDS
+    while time.monotonic() < deadline:
+        observed = manager._state(run_id)
+        active = observed.get("active_process")
+        if (
+            active
+            and active.get("segment_id") == segment_id
+            and active.get("ownership_state") == "OWNED"
+            and process_matches(active.get("pid"), active.get("birth_token"))
+        ):
+            matches = [
+                item for item in observed["segments"]
+                if item["segment_id"] == segment_id
+            ]
+            if len(matches) != 1:
+                raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "claimed segment missing")
+            return dict(matches[0])
+        if observed.get("active_process") is None:
+            raise LifecycleError(
+                "WORKER_STARTUP_FAILED",
+                str(observed.get("last_error") or "worker exited before ownership claim"),
+            )
+        time.sleep(0.02)
+    # One final authoritative state read closes the boundary race where the
+    # actual worker commits its claim as the parent's monotonic deadline fires.
+    observed = manager._state(run_id)
+    active = observed.get("active_process")
+    if (
+        active
+        and active.get("segment_id") == segment_id
+        and active.get("ownership_state") == "OWNED"
+        and process_matches(active.get("pid"), active.get("birth_token"))
+    ):
+        matches = [
+            item for item in observed["segments"]
+            if item["segment_id"] == segment_id
+        ]
+        if len(matches) == 1:
+            return dict(matches[0])
+    failed = manager.fail_segment_startup(
+        run_id, segment_id=segment_id, claim_token=claim_token,
+        reason="WORKER_CLAIM_TIMEOUT",
+    )
+    active = failed.get("active_process")
+    if (
+        active
+        and active.get("segment_id") == segment_id
+        and active.get("ownership_state") == "OWNED"
+        and process_matches(active.get("pid"), active.get("birth_token"))
+    ):
+        matches = [
+            item for item in failed["segments"]
+            if item["segment_id"] == segment_id
+        ]
+        if len(matches) == 1:
+            return dict(matches[0])
+    if failed.get("active_process") is None and process.poll() is None:
         process.terminate()
-        raise LifecycleError("CORRUPT_LIFECYCLE_STATE", "could not bind child process identity")
-    return manager.begin_segment(run_id, pid=process.pid, birth_token=token)
+    raise LifecycleError("WORKER_STARTUP_FAILED", "actual worker did not claim segment")
 
 
 def request_stop(manager: FrozenOOSLifecycleV01, run_id: str) -> dict[str, Any]:
@@ -1536,6 +2240,10 @@ def request_stop(manager: FrozenOOSLifecycleV01, run_id: str) -> dict[str, Any]:
     active = state.get("active_process")
     if active is None:
         return state
+    if active.get("ownership_state") == "CLAIM_PENDING":
+        stop_path = manager.run_dir(run_id) / "stop.request"
+        stop_path.write_text("GRACEFUL_STOP_REQUESTED\n", encoding="ascii")
+        return manager._state(run_id)
     if not process_matches(active.get("pid"), active.get("birth_token")):
         return manager.reconcile_process(run_id)
     stop_path = manager.run_dir(run_id) / "stop.request"
