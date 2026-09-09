@@ -63,3 +63,26 @@ Abrupt subprocess exits immediately before/after the economic commit returned `7
 This supplies the actual Evidence -> Ledger opening-baseline boundary relevant to M13/M14. Project review and the remaining finality, settlement, funding and future policy/runtime transitions remain pending; no matrix row or package is self-accepted here. No shared Evidence/P4/P5 source was changed, so broader regression is deferred to the final Ledger freeze as planned.
 
 NEXT: L2 — economic identity and durable action/attempt progression. Signing/send/broadcast/mutating RPC and real-capital authority remain OFF.
+
+## L2 implementation evidence
+
+L1 was checkpointed at `12cebb838652b66550ae73b396381b6b2f448ad8`. L2 is `IMPLEMENTED_PENDING_PROJECT_REVIEW`; CHIEF reviewed its concrete action contracts, journal integration and tests and independently reproduced the final focused results before the authorized checkpoint.
+
+`ledger_actions_v0_1.py` preserves original candidate/run/signal/source/winner and exact reference-price provenance, reusing the accepted canonical run/signal identity formula without executing strategy logic. BUY roots cannot change with amount, policy, restart or schema metadata. SELL terms remain position/mint/obligation scoped. Immutable pending action terms and external simulation/authorization claims explicitly confer no real admission or send authority. The inbox accepts original candidate provenance without requiring a future Authority deadline; a claimed ENTRY deadline belongs to pending action terms.
+
+Preparation durably binds the exact public message, plan/policy digests, original blockhash lease and finalized lower anchor before any possible exposure. Canonical signed-wire storage retains public bytes/signature lineage only; it contains no signing operation. A wallet mutation lane prevents overlapping unresolved attempts across roots. Transport repeats retain the same message/signature. Timeout, restart, signed cancellation and UNKNOWN cannot clear it. Positive local unsigned cancellation is limited to an intact writer generation and stages with no signed bytes; caller-supplied finality/non-landing assertions are rejected. Finality adjudication belongs to L3.
+
+Storage/schema v2 adds six concrete journal fact kinds with immutable history, exact-content uniqueness, common revision/digest CAS and reconstruction of signature/lane state. Economic domain identity is unchanged. Pre-L2 fixture stores require their original explicit binding and are not silently migrated. The L1 digest above describes its schema-v1 checkpoint; the schema-v2 baseline replay digest is `4c43f8ec46a782cebd39bd24be11cda1f139251053f4d35f07fccf6faf30b6a9`. Every public mutation checks trusted state after `BEGIN IMMEDIATE`; trusted head/data/schema versions are captured before commit. Outside commits, including structurally valid same-value metadata commits, require explicit reopen and verification. Ordinary economic appends verify their relevant facts without re-decoding the entire original Wallet Evidence history. No-commit insertion helpers preserve the later atomic admission/reservation/inbox seam without implementing those policies.
+
+Worker and CHIEF each ran from the isolated checkout:
+
+```powershell
+& 'C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe' -B scripts/live_ledger_actions_selftest_v0_1.py
+& 'C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe' -B scripts/live_ledger_baseline_selftest_v0_1.py
+```
+
+Both commands exited `0`: **98 action checks**, **126 baseline checks**, `failed=[]`. Tests cover canonical duplicates/conflicts, two mints/position identities, original message/lease/anchor binding, held UNKNOWN, unsigned cancellation limits, terminal inbox tombstones, fencing, interleaved original Wallet Evidence, and external-write races around begin/commit. Action and attempt subprocess cuts exit `81` before commit and `82` after commit; reopen recovers zero/one facts respectively and exact retry converges to one. Replayed UNKNOWN commit digest: `e156c7e5fa38024eaf3c65b05a0bba5c2fbfb6329d16a71a015ba0d77e1d2752`. All database/network inputs are temporary deterministic fixtures; signing operations and real network requests are zero. `git diff --check` exits `0`.
+
+No Evidence/P4/P5/P6 source was changed. Actual upstream Runtime/Authority/Execution consumers are still unbuilt; no lifecycle row or package is self-accepted. Broader regression remains scheduled for final Ledger freeze.
+
+NEXT: L3 — original transaction/coverage Evidence and authoritative finality/non-landing reconciliation, without settlement or retry policy.
