@@ -1,4 +1,4 @@
-"""Bounded LIVE public-account RPC; no arbitrary method or mutation surface."""
+"""Bounded LIVE public Solana RPC; no arbitrary method or mutation surface."""
 from __future__ import annotations
 
 import base64
@@ -9,10 +9,12 @@ import re
 import time
 from dataclasses import asdict, dataclass, is_dataclass
 from enum import StrEnum
+from typing import TYPE_CHECKING
 
 import httpx
 from solders.hash import Hash
 from solders.pubkey import Pubkey
+from solders.signature import Signature
 
 from phase5.shadow_domain_v0_1 import content_fingerprint
 from phase5.shadow_venue_route_quote_v0_1 import (
@@ -20,7 +22,11 @@ from phase5.shadow_venue_route_quote_v0_1 import (
 )
 
 
-MODEL_ID = "LIVE-PUBLIC-ACCOUNT-RPC-0001"
+if TYPE_CHECKING:
+    from .transaction_evidence_v0_1 import CanonicalSignatureBlock, ExactTransactionFact, SignatureStatusFact
+
+
+MODEL_ID = "LIVE-PUBLIC-SOLANA-RPC-0002"
 TOKEN_PROGRAMS = (TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID)
 MAX_U64 = (1 << 64) - 1
 
@@ -51,6 +57,15 @@ def block_hash(value: object) -> str:
         return value
     except Exception:
         raise PublicRpcError("INVALID_BLOCK_HASH") from None
+
+
+def primary_signature(value: object) -> str:
+    try:
+        if type(value) is not str or str(Signature.from_string(value)) != value:
+            raise ValueError
+        return value
+    except Exception:
+        raise PublicRpcError("INVALID_PRIMARY_SIGNATURE") from None
 
 
 def immutable_tuple(value: tuple, kind: type) -> None:
@@ -87,22 +102,28 @@ class PublicRpcProfile:
     max_response_bytes: int = 1048576
     max_account_bytes: int = 4096
     max_inventory_accounts_per_program: int = 64
-    max_requests: int = 12
-    max_total_response_bytes: int = 4194304
+    max_requests: int = 320
+    max_total_response_bytes: int = 67108864
     request_timeout_seconds: int = 10
-    observation_timeout_seconds: int = 60
+    observation_timeout_seconds: int = 180
     observation_freshness_seconds: int = 30
     finalized_block_freshness_seconds: int = 120
+    max_block_signatures: int = 8192
+    max_transaction_wire_bytes: int = 1232
+    max_inner_instructions: int = 1024
+    max_instruction_data_bytes: int = 16384
     trust_profile: str = "HONEST-COMPLETE-STANDARD-SOLANA-RPC-0001"
 
     def __post_init__(self) -> None:
         public_label(self.provider_id)
         public_label(self.provider_version)
         for name, maximum in (("max_response_bytes", 4194304), ("max_account_bytes", 65536),
-                              ("max_inventory_accounts_per_program", 256), ("max_requests", 64),
-                              ("max_total_response_bytes", 16777216), ("request_timeout_seconds", 30),
+                              ("max_inventory_accounts_per_program", 256), ("max_requests", 512),
+                              ("max_total_response_bytes", 134217728), ("request_timeout_seconds", 30),
                               ("observation_timeout_seconds", 300), ("observation_freshness_seconds", 3600),
-                              ("finalized_block_freshness_seconds", 3600)):
+                              ("finalized_block_freshness_seconds", 3600), ("max_block_signatures", 32768),
+                              ("max_transaction_wire_bytes", 1232), ("max_inner_instructions", 4096),
+                              ("max_instruction_data_bytes", 65536)):
             value = getattr(self, name)
             if type(value) is not int or not 1 <= value <= maximum:
                 raise PublicRpcError("INVALID_RPC_PROFILE_BOUND")
@@ -199,7 +220,7 @@ class FinalizedBlockAnchor:
             u64(item)
         block_hash(self.blockhash)
         block_hash(self.previous_blockhash)
-        if (self.slot > 0 and self.parent_slot >= self.slot) or self.commitment != "finalized":
+        if self.block_height > self.slot or (self.slot > 0 and self.parent_slot >= self.slot) or self.commitment != "finalized":
             raise PublicRpcError("INVALID_FINALIZED_BLOCK_ANCHOR")
         if re.fullmatch(r"[0-9a-f]{64}", self.provider_fingerprint) is None:
             raise PublicRpcError("INVALID_PROVIDER_FINGERPRINT")
@@ -211,6 +232,8 @@ class _ReadMethod(StrEnum):
     BLOCK = "getBlock"
     ACCOUNTS = "getMultipleAccounts"
     TOKEN_ACCOUNTS = "getTokenAccountsByOwner"
+    SIGNATURE_STATUS = "getSignatureStatuses"
+    TRANSACTION = "getTransaction"
 
 
 READ_ONLY_METHODS = tuple(method.value for method in _ReadMethod)
@@ -250,7 +273,7 @@ def _json(content: bytes) -> dict:
 class PublicReadOnlyRpc:
     """Fixed methods and explicit budgets for one bounded public observation.
 
-    No retry/reset, arbitrary-call, transaction, simulation or mutation method.
+    No retry/reset, arbitrary-call, simulation or mutation method.
     The endpoint stays private transport configuration and is never evidence.
     """
 
@@ -406,3 +429,23 @@ class PublicReadOnlyRpc:
                 raise PublicRpcError("INVENTORY_ENTRY_INVALID")
             accounts.append(self._account(public_key(row["pubkey"]), row["account"]))
         return TokenInventoryRead(wallet, program, context, tuple(accounts))
+
+    def get_signature_status(self, signature: str) -> SignatureStatusFact:
+        from .transaction_evidence_v0_1 import decode_signature_status
+        primary_signature(signature)
+        result = self._post(_ReadMethod.SIGNATURE_STATUS, [[signature], {"searchTransactionHistory": True}])
+        return decode_signature_status(signature, result)
+
+    def get_finalized_transaction(self, signature: str) -> ExactTransactionFact | None:
+        from .transaction_evidence_v0_1 import decode_transaction_result
+        primary_signature(signature)
+        result = self._post(_ReadMethod.TRANSACTION, [signature, {"commitment": "finalized",
+                            "encoding": "base64", "maxSupportedTransactionVersion": 0}])
+        return None if result is None else decode_transaction_result(signature, result, self.profile)
+
+    def get_finalized_signature_block(self, slot: int) -> CanonicalSignatureBlock:
+        from .transaction_evidence_v0_1 import decode_signature_block
+        slot = u64(slot)
+        result = self._post(_ReadMethod.BLOCK, [slot, {"commitment": "finalized", "transactionDetails": "signatures",
+                            "rewards": False, "maxSupportedTransactionVersion": 0}])
+        return decode_signature_block(slot, result, self.profile)
