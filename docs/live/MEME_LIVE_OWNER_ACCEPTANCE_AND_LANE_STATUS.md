@@ -1,15 +1,16 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instruction: **MEME-LIVE — OWNER ACCEPTANCE + STEP 3 / G000**, received 2026-09-09 in the existing CHIEF task.
+Owner instructions: **MEME-LIVE — OWNER ACCEPTANCE + STEP 3 / G000**, followed by **MEME-LIVE — STEP 4 / Evidence foundation: G001 + T001**, received 2026-09-09 in the existing CHIEF task. Historical G000 evidence below remains scoped to that checkpoint.
 
 ## Accepted planning baseline
 
 - STEP 1: **OWNER_ACCEPTED**.
 - STEP 2: **OWNER_ACCEPTED**.
 - STEP 3 / G000: **BRANCH_AND_CONTROL_PLANE_ESTABLISHED**. Remote delivery is verified separately in the final handoff; no production implementation acceptance is implied.
-- Production implementation, signing, send, broadcast, wallet/RPC mutation and real-capital authority: **OFF**.
+- STEP 4 / G001 + T001: **AUTHORIZED_IN_PROGRESS**, limited to read-only source/public-chain Evidence, directly required consumer contracts, focused qualification and reviewed LIVE-branch implementation checkpoints. See [Evidence foundation](MEME_LIVE_EVIDENCE_FOUNDATION_V1.md).
+- Ledger/T002/T003, risk, signer/send, orchestration and Operations implementation: outside the current task. Signing, send, broadcast, wallet/RPC mutation and real-capital authority: **OFF**.
 
-The explicit owner instruction supplies acceptance and authorizes this bounded documentation/Git/control-plane task, its minimal commits and a normal push of the new LIVE branch. It does not authorize G001/T001, application tests, a soak, key access or any production capability. The earlier audit and locked planning documents remain historical controls; this later instruction supplies their required separate G000 authorization without rewriting them.
+The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
 
@@ -60,4 +61,4 @@ Validation evidence (Git/document checks only):
 
 Delivery requires a normal push of this G000 commit to the new LIVE ref, followed by `git ls-remote` equality with local HEAD. The verified remote LIVE HEAD is then the authoritative production-readiness checkpoint. The final handoff records that exact hash and remote verification; remote audit/master are not push targets.
 
-NEXT: **STEP 4 — Source health + public chain truth foundation** (G001/T001); requires a separately bounded task and is not started here.
+CURRENT: **STEP 4 — Source health + public chain truth foundation** (G001/T001), separately authorized after G000. Execution and evidence are recorded in the [Evidence foundation delivery record](MEME_LIVE_EVIDENCE_FOUNDATION_V1.md).

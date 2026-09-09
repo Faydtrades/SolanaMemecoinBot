@@ -2,7 +2,7 @@
 
 Status: OWNER_ACCEPTED
 
-Date: 2026-09-09. Chief-led Step 1 architecture, corrected by the Step 2 independent review recorded in `MEME_LIVE_ARCHITECTURE_REVIEW_V2.md`. Steps 1 and 2 are OWNER_ACCEPTED with the decisions in [Owner acceptance and LIVE lane status](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md). Only Step 3 / G000 documentation, Git and control-plane setup is authorized now. Production implementation and all signing/send/broadcast/real-capital authority remain OFF. Section markers record document coverage; future package acceptance still requires its own evidence.
+Date: 2026-09-09. Chief-led Step 1 architecture, corrected by the Step 2 independent review recorded in `MEME_LIVE_ARCHITECTURE_REVIEW_V2.md`. Steps 1 and 2 are OWNER_ACCEPTED with the decisions in [Owner acceptance and LIVE lane status](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md). G000 established the lane; the later Step 4 instruction authorizes only bounded G001/T001 Evidence implementation and qualification. All signing/send/broadcast/real-capital authority remains OFF. Section markers record document coverage; package acceptance requires its own evidence in the [Evidence foundation record](MEME_LIVE_EVIDENCE_FOUNDATION_V1.md).
 
 ## Baseline and authority
 
