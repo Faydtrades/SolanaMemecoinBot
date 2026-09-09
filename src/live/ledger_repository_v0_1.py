@@ -10,7 +10,7 @@ from __future__ import annotations
 import hashlib
 import os
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from phase5.shadow_domain_v0_1 import canonical_json, content_fingerprint
@@ -23,6 +23,10 @@ from .ledger_evidence_codec_v0_1 import (
 )
 from .public_rpc_v0_1 import public_label, u64
 from .wallet_evidence_v0_1 import WalletObservation
+from .ledger_chain_codec_v0_1 import chain_observation_to_json, chain_observation_from_json
+from .ledger_finality_v0_1 import (
+    AttemptFinality, RetainedChainFacts, LedgerChainReceipt, chain_receipt_from_record, adjudicate_chain_observation,
+)
 from .ledger_actions_v0_1 import (
     CandidateInboxInput, PendingAction, AttemptPreparation, AttemptStageInput, StoredAttempt,
     PENDING_ADMISSION, NON_ACCEPTANCE, TERMINAL_INBOX, candidate_from_json, action_from_json,
@@ -31,11 +35,11 @@ from .ledger_actions_v0_1 import (
 )
 
 APPLICATION_ID = 0x4C454447
-STORAGE_VERSION = 2
+STORAGE_VERSION = 3
 RECEIPT_VERSION = "live_ledger_wallet_receipt_v0.1"
 GENERATION_VERSION = "live_ledger_writer_generation_v0.1"
 COMMIT_VERSION = "live_ledger_concrete_commit_v0.1"
-_COMMIT_KINDS = frozenset(("WALLET", "INBOX", "NON_ACCEPTANCE", "ACTION", "ATTEMPT", "ATTEMPT_STAGE"))
+_COMMIT_KINDS = frozenset(("WALLET", "INBOX", "NON_ACCEPTANCE", "ACTION", "ATTEMPT", "ATTEMPT_STAGE", "CHAIN_EVIDENCE"))
 _OPEN_TOKEN = object()
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _PROTECTED_RUNTIME = Path("D:/Tradingbot/solana_memecoin_bot_phase1_v0_1")
@@ -117,10 +121,20 @@ _DDL = {
     "ledger_mutation_lane": """CREATE TABLE ledger_mutation_lane (
         singleton INTEGER PRIMARY KEY CHECK(singleton=1),
         active_attempt_id TEXT REFERENCES ledger_attempts(attempt_id), revision INTEGER NOT NULL CHECK(revision>=0))""",
+    "ledger_chain_observations": """CREATE TABLE ledger_chain_observations (
+        evidence_digest TEXT PRIMARY KEY NOT NULL, payload_json TEXT NOT NULL)""",
+    "ledger_chain_receipts": """CREATE TABLE ledger_chain_receipts (
+        commit_seq INTEGER PRIMARY KEY REFERENCES ledger_commits(seq) DEFERRABLE INITIALLY DEFERRED,
+        ingestion_key TEXT NOT NULL UNIQUE, attempt_id TEXT NOT NULL REFERENCES ledger_attempts(attempt_id),
+        evidence_revision INTEGER NOT NULL CHECK(evidence_revision>=1),
+        evidence_digest TEXT NOT NULL UNIQUE REFERENCES ledger_chain_observations(evidence_digest),
+        receipt_digest TEXT NOT NULL UNIQUE, payload_json TEXT NOT NULL,
+        UNIQUE(attempt_id,evidence_revision))""",
 }
 for _table in ("ledger_domain", "ledger_writer_generations", "ledger_wallet_observations", "ledger_baseline_journal",
                "ledger_commits", "ledger_candidate_inbox", "ledger_inbox_dispositions", "ledger_pending_actions",
-               "ledger_attempts", "ledger_attempt_stages", "ledger_signature_bindings"):
+               "ledger_attempts", "ledger_attempt_stages", "ledger_signature_bindings",
+               "ledger_chain_observations", "ledger_chain_receipts"):
     for _operation in ("UPDATE", "DELETE"):
         _name = f"{_table}_no_{_operation.lower()}"
         _DDL[_name] = (f"CREATE TRIGGER {_name} BEFORE {_operation} ON {_table} BEGIN "
@@ -333,6 +347,12 @@ class LedgerRepository:
         verified_data_version = self._conn.execute("PRAGMA data_version").fetchone()[0]
         verified_schema_cookie = self._conn.execute("PRAGMA schema_version").fetchone()[0]
         self._conn.execute("COMMIT")
+        # Publish derived chain facts before blessing the new trusted head.
+        # A lost acknowledgement must never leave a trusted head with old facts.
+        pending_chain = getattr(self, "_pending_chain_facts", None)
+        if pending_chain is not None:
+            self._chain_facts = pending_chain
+            self._pending_chain_facts = None
         self._verified_head = verified_head
         self._verified_data_version = verified_data_version
         self._verified_schema_cookie = verified_schema_cookie
@@ -597,7 +617,7 @@ class LedgerRepository:
                 signature = str(tx.signatures[0])
                 wire_digest = hashlib.sha256(bytes(tx)).hexdigest()
         return StoredAttempt(prep, target, previous.revision+1, previous.prepared_generation, at,
-                             signature, wire_digest, target != "CANCELLED_UNSIGNED")
+                             signature, wire_digest, target != "CANCELLED_UNSIGNED", previous.chain_finality, previous.chain_quarantined)
 
     def attempt(self, attempt_id: str) -> StoredAttempt | None:
         self._require_open()
@@ -619,7 +639,93 @@ class LedgerRepository:
         signature_row = self._conn.execute("SELECT signature,wire_digest FROM ledger_signature_bindings WHERE attempt_id=?", (attempt_id,)).fetchone()
         if signature_row != (None if value.primary_signature is None else (value.primary_signature, value.signed_wire_digest)):
             raise LedgerConflict("LEDGER_ATTEMPT_SIGNATURE_LINEAGE_CONFLICT")
-        return value
+        finality = self.attempt_finality(attempt_id)
+        return replace(value, chain_finality=finality.disposition, chain_quarantined=finality.quarantined)
+
+    def attempt_finality(self, attempt_id: str) -> AttemptFinality:
+        self._require_open()
+        digest_value(attempt_id)
+        if self._head() != self._verified_head:
+            raise LedgerConflict("LEDGER_CHAIN_FACTS_REQUIRE_VERIFIED_HEAD")
+        facts = getattr(self, "_chain_facts", {}).get(attempt_id)
+        return AttemptFinality(attempt_id) if facts is None else facts.state
+
+    def _signed_lineage(self, attempt_id: str) -> tuple[bytes, str]:
+        for payload, in self._conn.execute("SELECT payload_json FROM ledger_attempt_stages WHERE attempt_id=? ORDER BY revision", (attempt_id,)):
+            record = strict_json_object(payload)
+            if record["to_stage"] == "SIGNED_DURABLE":
+                stage = stage_from_record(record["stage_input"])
+                return bytes(stage.signed_public_transaction()), stage.recorded_at_utc
+        raise LedgerConflict("LEDGER_DURABLE_SIGNED_LINEAGE_REQUIRED")
+
+    def _chain_receipt_row(self, row: tuple) -> LedgerChainReceipt:
+        seq, key, attempt_id, revision, evidence_digest, digest, payload, original = row
+        observation = chain_observation_from_json(original)
+        receipt = chain_receipt_from_record(strict_json_object(payload), observation)
+        if ((receipt.sequence, receipt.ingestion_key, receipt.attempt_id, receipt.decision.resulting_state.evidence_revision,
+             observation.content_digest, receipt.content_digest) != (seq, key, attempt_id, revision, evidence_digest, digest)
+                or canonical_json(receipt.to_record()) != payload):
+            raise LedgerJournalError("LEDGER_ORIGINAL_CHAIN_RECEIPT_CONTENT_CONFLICT")
+        return receipt
+
+    def _chain_rows(self, clause: str = "", params: tuple = ()) -> list[tuple]:
+        return self._conn.execute("SELECT r.*,o.payload_json FROM ledger_chain_receipts r JOIN ledger_chain_observations o "
+                                  "ON o.evidence_digest=r.evidence_digest " + clause, params).fetchall()
+
+    def chain_receipt(self, ingestion_key: str) -> LedgerChainReceipt | None:
+        self._require_open()
+        public_reference(ingestion_key)
+        rows = self._chain_rows("WHERE r.ingestion_key=?", (ingestion_key,))
+        return None if not rows else self._chain_receipt_row(rows[0])
+
+    def ingest_chain_observation(self, attempt_id: str, observation, *, ingestion_key: str,
+                                 evaluated_at_utc: str, fence: LedgerWriteFence) -> LedgerChainReceipt:
+        """Commit original Evidence and its re-derived decision together, no lane release."""
+        try:
+            public_reference(ingestion_key)
+            evaluated_at_utc = ledger_utc(evaluated_at_utc)
+            original = chain_observation_to_json(observation)
+            restored = chain_observation_from_json(original)
+            if restored != observation:
+                raise LedgerConflict("LEDGER_ORIGINAL_CHAIN_EVIDENCE_ROUNDTRIP_CONFLICT")
+            current = self._begin_economic_write(fence)
+            attempt = self.attempt(attempt_id)
+            if attempt is None:
+                raise LedgerConflict("LEDGER_ATTEMPT_NOT_FOUND")
+            rows = self._chain_rows("WHERE r.ingestion_key=? OR r.evidence_digest=?", (ingestion_key, restored.content_digest))
+            if rows:
+                if len(rows) != 1:
+                    raise LedgerConflict("LEDGER_CHAIN_INGESTION_IDENTITY_CONFLICT")
+                receipt = self._chain_receipt_row(rows[0])
+                if (receipt.attempt_id != attempt_id or receipt.ingestion_key != ingestion_key or receipt.observation != restored
+                        or receipt.decision.evaluated_at_utc != evaluated_at_utc):
+                    raise LedgerConflict("LEDGER_CHAIN_INGESTION_CONTENT_CONFLICT")
+                self._commit()
+                return receipt
+            self._new_revision(fence, current)
+            if not attempt.lane_held or self._lane()[0] != attempt_id:
+                raise LedgerConflict("LEDGER_CHAIN_EVIDENCE_WITHOUT_HELD_ATTEMPT")
+            signed_wire, signed_at = self._signed_lineage(attempt_id)
+            baseline = self.baseline()
+            if baseline is None:
+                raise LedgerConflict("LEDGER_CHAIN_EVIDENCE_REQUIRES_OPENING_BASELINE")
+            decision, retained = adjudicate_chain_observation(self.domain, attempt, signed_wire, signed_at,
+                baseline.observation.anchor, restored, evaluated_at_utc=evaluated_at_utc,
+                retained=self._chain_facts.get(attempt_id))
+            receipt = LedgerChainReceipt(current.revision+1, ingestion_key, attempt_id, attempt.revision,
+                attempt.preparation.content_digest, attempt.signed_wire_digest, baseline.content_digest,
+                current.last_receipt_digest, current.generation, current.generation_digest, restored, decision)
+            self._conn.execute("INSERT INTO ledger_chain_observations VALUES(?,?)", (restored.content_digest, original))
+            self._conn.execute("INSERT INTO ledger_chain_receipts VALUES(?,?,?,?,?,?,?)",
+                (receipt.sequence, ingestion_key, attempt_id, retained.state.evidence_revision, restored.content_digest,
+                 receipt.content_digest, canonical_json(receipt.to_record())))
+            self._append_commit("CHAIN_EVIDENCE", ingestion_key, receipt.content_digest, current)
+            self._pending_chain_facts = {**self._chain_facts, attempt_id: retained}
+            self._commit()
+            return receipt
+        except BaseException as exc:
+            self._pending_chain_facts = None
+            self._rollback_economic(exc)
 
     def _validate_preparation(self, prep: AttemptPreparation) -> None:
         action = self.action(prep.action_id)
@@ -722,6 +828,9 @@ class LedgerRepository:
             self._new_revision(fence, current)
             if previous.revision != expected_attempt_revision:
                 raise LedgerConflict("LEDGER_ATTEMPT_REVISION_CAS_FAILED")
+            chain = self.attempt_finality(attempt_id)
+            if chain.positive_finality is not None or chain.quarantined:
+                raise LedgerConflict("LEDGER_CHAIN_FINALITY_OWNS_ATTEMPT")
             target = stage.target_stage if stage is not None else (
                 "CANCELLED_UNSIGNED" if previous.recorded_stage in ("PREPARED", "EXACT_SIMULATED", "AUTHORIZED")
                 and previous.prepared_generation == current.generation and previous.primary_signature is None else "UNKNOWN")
@@ -843,7 +952,8 @@ class LedgerRepository:
             raise LedgerJournalError("LEDGER_MULTIPLE_OPENING_BASELINES")
         baseline_seq = next((receipt.sequence for receipt in receipts if receipt.decision.disposition == "ESTABLISHED"), None)
         baseline_slot = next((receipt.decision.context_slot for receipt in receipts if receipt.decision.disposition == "ESTABLISHED"), None)
-        records = self._audit_economic_history(commits, baseline_seq, baseline_slot)
+        baseline_receipt = next((receipt for receipt in receipts if receipt.decision.disposition == "ESTABLISHED"), None)
+        records, chain_facts = self._audit_economic_history(commits, baseline_seq, baseline_slot, baseline_receipt)
         for receipt in receipts:
             commit = commits.get(receipt.sequence)
             if (commit is None or receipt.sequence in records or receipt.previous_digest != commit["previous_digest"]
@@ -853,8 +963,10 @@ class LedgerRepository:
         if set(records) != set(commits) or any(records[seq] != (item["kind"], item["record_key"], item["record_digest"])
                                                for seq, item in commits.items()):
             raise LedgerJournalError("LEDGER_ORPHAN_OR_CONFLICTING_CONCRETE_COMMIT")
+        self._chain_facts = chain_facts
 
-    def _audit_economic_history(self, commits: dict, baseline_seq: int | None, baseline_slot: int | None) -> dict:
+    def _audit_economic_history(self, commits: dict, baseline_seq: int | None, baseline_slot: int | None,
+                                baseline_receipt: LedgerWalletReceipt | None) -> tuple[dict, dict]:
         """Full finite replay on open/audit; ordinary appends validate touched facts."""
         records, events, candidates, actions, attempts = {}, {}, {}, {}, {}
 
@@ -918,7 +1030,16 @@ class LedgerRepository:
                 raise LedgerJournalError("LEDGER_ATTEMPT_STAGE_REPLAY_CONFLICT")
             remember(seq, "ATTEMPT_STAGE", f"{attempt_id}:{revision}", digest, item)
 
+        chain_rows = self._chain_rows()
+        if (len(chain_rows) != self._conn.execute("SELECT COUNT(*) FROM ledger_chain_observations").fetchone()[0]
+                or len(chain_rows) != self._conn.execute("SELECT COUNT(*) FROM ledger_chain_receipts").fetchone()[0]):
+            raise LedgerJournalError("LEDGER_ORPHAN_OR_MISSING_CHAIN_EVIDENCE")
+        for row in chain_rows:
+            receipt = self._chain_receipt_row(row)
+            remember(receipt.sequence, "CHAIN_EVIDENCE", receipt.ingestion_key, receipt.content_digest, receipt)
+
         inbox, live_actions, live_attempts, per_action = {}, {}, {}, {}
+        chain_facts, signed_inputs = {}, {}
         signatures = {}
         lane, lane_revision = None, 0
         for seq in sorted(events):
@@ -952,23 +1073,42 @@ class LedgerRepository:
                 live_attempts[item.attempt_id] = StoredAttempt(item, "PREPARED", 0, commits[seq]["generation"], item.prepared_at_utc, None, None, True)
                 per_action.setdefault(item.action_id, []).append(item.attempt_id)
                 lane, lane_revision = item.attempt_id, seq
+            elif kind == "CHAIN_EVIDENCE":
+                previous = live_attempts.get(item.attempt_id)
+                if (previous is None or item.attempt_id not in signed_inputs or lane != item.attempt_id
+                        or baseline_receipt is None or seq <= baseline_receipt.sequence):
+                    raise LedgerJournalError("LEDGER_CHAIN_RECEIPT_BEFORE_DURABLE_LINEAGE")
+                decision, retained = adjudicate_chain_observation(self.domain, previous, *signed_inputs[item.attempt_id],
+                    baseline_receipt.observation.anchor, item.observation, evaluated_at_utc=item.decision.evaluated_at_utc,
+                    retained=chain_facts.get(item.attempt_id))
+                expected = LedgerChainReceipt(seq, item.ingestion_key, item.attempt_id, previous.revision,
+                    previous.preparation.content_digest, previous.signed_wire_digest, baseline_receipt.content_digest,
+                    commits[seq]["previous_digest"], commits[seq]["generation"], commits[seq]["generation_digest"], item.observation, decision)
+                if canonical_json(expected.to_record()) != canonical_json(item.to_record()):
+                    raise LedgerJournalError("LEDGER_ORIGINAL_CHAIN_DECISION_REPLAY_CONFLICT")
+                chain_facts[item.attempt_id] = retained
             else:
                 previous = live_attempts.get(item["attempt_id"])
                 if (previous is None or lane != item["attempt_id"]
                         or inbox[live_actions[previous.preparation.action_id].root_id][0] in TERMINAL_INBOX):
                     raise LedgerJournalError("LEDGER_STAGE_AFTER_TOMBSTONE_OR_WITHOUT_LANE")
+                chain = chain_facts.get(item["attempt_id"])
+                if chain is not None and (chain.state.positive_finality is not None or chain.state.quarantined):
+                    raise LedgerJournalError("LEDGER_EXTERNAL_STAGE_AFTER_CHAIN_FINALITY")
                 value = self._replay_stage(previous, item, commits[seq]["generation"])
                 if value.primary_signature is not None and previous.primary_signature is None:
                     if value.primary_signature in signatures:
                         raise LedgerJournalError("LEDGER_SIGNATURE_REUSED_BY_ANOTHER_ATTEMPT")
                     signatures[value.primary_signature] = (value.preparation.attempt_id, value.signed_wire_digest)
+                    stage = stage_from_record(item["stage_input"])
+                    signed_inputs[item["attempt_id"]] = (bytes(stage.signed_public_transaction()), stage.recorded_at_utc)
                 live_attempts[item["attempt_id"]] = value
                 lane, lane_revision = (item["attempt_id"] if value.lane_held else None), seq
         if self._lane() != (lane, lane_revision):
             raise LedgerJournalError("LEDGER_MUTATION_LANE_RECONSTRUCTION_CONFLICT")
         if {signature: (attempt_id, wire) for signature, attempt_id, wire in self._conn.execute("SELECT * FROM ledger_signature_bindings")} != signatures:
             raise LedgerJournalError("LEDGER_SIGNATURE_BINDINGS_RECONSTRUCTION_CONFLICT")
-        return records
+        return records, chain_facts
 
     def audit(self) -> dict:
         self._require_open()
@@ -981,7 +1121,8 @@ class LedgerRepository:
                 "replayed_receipts": self._conn.execute("SELECT COUNT(*) FROM ledger_baseline_journal").fetchone()[0],
                 "candidate_count": self._conn.execute("SELECT COUNT(*) FROM ledger_candidate_inbox").fetchone()[0],
                 "action_count": self._conn.execute("SELECT COUNT(*) FROM ledger_pending_actions").fetchone()[0],
-                "attempt_count": self._conn.execute("SELECT COUNT(*) FROM ledger_attempts").fetchone()[0]}
+                "attempt_count": self._conn.execute("SELECT COUNT(*) FROM ledger_attempts").fetchone()[0],
+                "chain_receipt_count": self._conn.execute("SELECT COUNT(*) FROM ledger_chain_receipts").fetchone()[0]}
 
     def receipt(self, ingestion_key: str) -> LedgerWalletReceipt | None:
         self._require_open()

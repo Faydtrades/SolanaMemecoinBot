@@ -243,6 +243,7 @@ class AttemptPreparation:
     prepared_at_utc: str
     external_preparation_ref: str
     external_preparation_digest: str
+    validity_profile: str = "RECENT_BLOCKHASH"
     admission_status: str = field(init=False, default=PENDING_ADMISSION)
     has_real_authority_grant: bool = field(init=False, default=False)
     version: str = field(init=False, default=ATTEMPT_VERSION)
@@ -255,7 +256,8 @@ class AttemptPreparation:
             u64(self.ordinal)
             public_reference(self.external_preparation_ref)
             object.__setattr__(self, "prepared_at_utc", ledger_utc(self.prepared_at_utc))
-            if self.ordinal < 1 or type(self.lease) is not BlockhashLeaseV01 or type(self.finalized_lower_anchor) is not FinalizedBlockAnchor:
+            if (self.ordinal < 1 or type(self.lease) is not BlockhashLeaseV01 or type(self.finalized_lower_anchor) is not FinalizedBlockAnchor
+                    or self.validity_profile not in ("RECENT_BLOCKHASH", "DURABLE_NONCE", "UNKNOWN")):
                 raise ValueError
             message = decode_message(self.message_hex)
             lower = self.finalized_lower_anchor
@@ -365,6 +367,8 @@ class StoredAttempt:
     primary_signature: str | None
     signed_wire_digest: str | None
     lane_held: bool
+    chain_finality: str = "UNOBSERVED"
+    chain_quarantined: bool = False
     admission_status: str = field(init=False, default=PENDING_ADMISSION)
     has_real_authority_grant: bool = field(init=False, default=False)
     may_send: bool = field(init=False, default=False)

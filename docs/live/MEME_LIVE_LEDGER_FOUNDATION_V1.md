@@ -86,3 +86,33 @@ Both commands exited `0`: **98 action checks**, **126 baseline checks**, `failed
 No Evidence/P4/P5/P6 source was changed. Actual upstream Runtime/Authority/Execution consumers are still unbuilt; no lifecycle row or package is self-accepted. Broader regression remains scheduled for final Ledger freeze.
 
 NEXT: L3 — original transaction/coverage Evidence and authoritative finality/non-landing reconciliation, without settlement or retry policy.
+
+## L3 implementation evidence
+
+L2 was checkpointed at `1933457be4cbe9fb7a14e8ae6c6098eba4639c49`. L3 is `IMPLEMENTED_PENDING_PROJECT_REVIEW`. The finite `ledger_chain_codec_v0_1.py` preserves original accepted transaction/coverage observations, model/version, exact public bytes and digest. Its explicit 160 MiB bound accommodates the accepted RPC profile's 128 MiB maximum response budget; oversize input fails without truncating evidence or changing held state. Storage/schema v3 adds original chain observations and derived receipts as one concrete common-journal transaction. Economic identity is unchanged; earlier fixture schemas are not silently migrated.
+
+`ledger_finality_v0_1.py` reuses the accepted transaction/coverage ports with the stored attempt's genesis/profile/signature/full wire, original lease, finalized lower anchor and baseline cut. Actual confirmed status is provisional. Null, timeout, pruned/incomplete metadata and finalized status without a qualified exact transaction remain `UNKNOWN`, retaining positive finalized claims separately. Complete supported exact transactions establish `FINALIZED_SUCCESS_UNAPPLIED` or `FINALIZED_FAILURE_UNAPPLIED`. Later missing/stale observations do not erase the original positive proof. Contradictory finalized status/outcome/metadata, retained anchors or canonical signature vectors quarantine. Optional block-time/inner-stack facts may enrich from unknown to known; conflicting known values fail closed. A later compatible supported transaction reference is available for settlement while the first proof remains immutable.
+
+`PROVEN_NON_LANDED` requires the original recent-blockhash profile, full canonical coverage through its last-valid height, a fresh finalized root strictly beyond expiry, and no exact-signature occurrence in present or retained finalized claims. A complete shorter requested interval, missing/pruned block, budget exhaustion or positive occurrence without an exact outcome cannot prove nonlanding. The installed read-only `VersionedTransaction.uses_durable_nonce()` check prevents nonce-shaped messages receiving recent-hash expiration proof. A finalized recent-hash transaction beyond its original last-valid height is contradictory. These results do not release the economic lane, apply balances or grant replacement-message authority.
+
+Original observations and receipts reconstruct at their original evaluation time. Derived chain facts publish before the committed head is trusted in memory, so lost acknowledgements cannot pair a new trusted head with old finality. Full reopen audits receipt derivation, generation, common-chain linkage and original evidence. Ordinary writes retain the L2 outside-write guard.
+
+Worker and CHIEF independently ran the following from the isolated checkout with the pinned interpreter, all exit `0`, `failed=[]`:
+
+| Command suffix after `python.exe -B` | Checks |
+|---|---:|
+| `scripts/live_ledger_finality_selftest_v0_1.py` | 113 |
+| `scripts/live_ledger_actions_selftest_v0_1.py` | 98 |
+| `scripts/live_ledger_baseline_selftest_v0_1.py` | 126 |
+
+The new suite uses actual MockTransport Transaction/Coverage adapters -> original Ledger ingestion -> durable decisions -> reopen. It covers legacy/v0 bytes, finalized/provisional/unknown/nonlanding distinctions, conflicting historical claims, nullable enrichment, original validity bounds, nonce rejection, competing processes, malformed codecs, tampered receipts and lost acknowledgement. Subprocess cuts exit `91` before commit and `92` after commit, recovering zero/one receipt respectively; exact retry converges to one. Positive decision digest: `47d0cd779840de093ebeb7d211be97e9e6ff64444a09fe314a3b9f4a4afb72a0`; original transaction Evidence digest: `876f32fe59c73453f25bea7d2be0816e535690be49812404f4eb9542e9eb31aa`; nonlanding decision digest: `ca606c5cdb818a8df6fd1ac009a3fab4de33bb9df083601b45e6d7d9d5b9ecc6`. Current schema-v3 baseline replay digest is `9a6ae1a862df585cd0a437e7f0f49adbcb1fd6279d35da1633dec7b51d8024d8`; earlier sections retain their historical checkpoint digests.
+
+This establishes the available real Evidence -> Ledger finality/coverage boundary for M13/M15/M33. The actual Execution producer of the original lease/preparation and later economic/Runtime consumers remain unbuilt; deterministic external producer claims confer no authority. No lifecycle row or package is self-accepted. No Evidence/P4/P5/P6 source, signing, RPC mutation or real-capital capability changed. `git diff --check` exited `0`; final broad regression remains deferred to the complete Ledger freeze.
+
+### Account-shape compatibility question discovered while preparing L4
+
+A concrete existing M13 compatibility limitation was reproduced, without source changes: the accepted planner's Token-2022 associated-account creation path produces an `ImmutableOwner` extension, while accepted Wallet Evidence currently supports only exact 165-byte token-account layouts. The [official extension guide](https://www.solana-program.com/docs/token-2022/extensions#immutable-owner) and [associated-account processor](https://github.com/solana-program/associated-token-account/blob/main/program/src/processor.rs) confirm that standard creation adds this extension. The actual Wallet Evidence adapter -> Ledger port probe returned COMPLETE/COHERENT/SUPPORTED for a plain account and COMPLETE/COHERENT/UNSUPPORTED (`UNSUPPORTED_TOKEN_EXTENSIONS_OR_LENGTH`) for the canonical 170-byte ImmutableOwner-only shape. Both probes used deterministic public fixtures, with zero network calls or source changes.
+
+Step-5 section 3 requires owner input before implementation in another package. A scope question is pending: authorize a bounded Evidence correction for this one extension, or retain and report the limitation. Evidence remains unchanged pending an explicit answer; unaffected Ledger work continues. This is an existing account-evidence compatibility requirement, not a new lifecycle subsystem or permission to support arbitrary extensions.
+
+NEXT: L4 — whole actual settlement attribution, producing a complete posting proposal or an unapplied/quarantined result; no economic application yet.
