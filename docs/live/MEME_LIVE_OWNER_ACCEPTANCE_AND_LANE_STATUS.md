@@ -6,7 +6,7 @@ Owner instruction: **MEME-LIVE — OWNER ACCEPTANCE + STEP 3 / G000**, received 
 
 - STEP 1: **OWNER_ACCEPTED**.
 - STEP 2: **OWNER_ACCEPTED**.
-- STEP 3 / G000: **AUTHORIZED_PENDING_LANE_SETUP**.
+- STEP 3 / G000: **BRANCH_AND_CONTROL_PLANE_ESTABLISHED**. Remote delivery is verified separately in the final handoff; no production implementation acceptance is implied.
 - Production implementation, signing, send, broadcast, wallet/RPC mutation and real-capital authority: **OFF**.
 
 The explicit owner instruction supplies acceptance and authorizes this bounded documentation/Git/control-plane task, its minimal commits and a normal push of the new LIVE branch. It does not authorize G001/T001, application tests, a soak, key access or any production capability. The earlier audit and locked planning documents remain historical controls; this later instruction supplies their required separate G000 authorization without rewriting them.
@@ -33,16 +33,31 @@ The accepted architecture and matrix reflect these decisions. The historical Ste
 | Source/master audit baseline | `e6b9a4beca06d8a08ecfe900356b80228e7667b3` |
 | Protected active checkout | `D:\Tradingbot\solana_memecoin_bot_phase1_v0_1`, clean `master` at `5d5cb0426fa423fd9528fb37d86e80b1333a8aa9` |
 | Integration | Normal merge of the verified documentation-only audit divergence; both reviewed architecture and model-policy histories retained |
-| Intended dedicated branch | `live/meme-production-readiness` |
+| Dedicated LIVE branch | `live/meme-production-readiness` |
+| Owner-acceptance commit / G000 base checkpoint | `2cef2ea980c23d3daba5ea9e7c88a5aad6fa162a` |
+| Owner-acceptance merge parents | `3e64adfb051be50846896ed2802a38b7f0536279` and `2561e14bd3a6951e9dfd5cd30e3b6f400befd104` |
+| G000 checkpoint | The commit containing this lane-activation update; exact commit and matching remote LIVE HEAD are reported in the delivery handoff |
+| Authoritative published ref | `refs/heads/live/meme-production-readiness` on the existing `origin`; verify its remote HEAD equals the delivered G000 commit |
 
-The owner-acceptance merge commit containing this initial record is the clean base for G000 lane creation. No master ref is changed, no history is reset/rebased/discarded and no force-push is allowed. The exact accepted base and remote LIVE checkpoint are recorded in the lane activation step/handoff.
+The dedicated branch was created from the clean owner-acceptance merge checkpoint above. Both reviewed architecture and remote policy histories are ancestors. No master ref is changed, no history is reset/rebased/discarded and no force-push is allowed. Only the new LIVE branch is published; the remote audit branch is preserved at its independently verified policy checkpoint.
 
 ## G000 boundary and next task
 
 G000 establishes only the dedicated branch and this minimal control/status record. Phase-4/Phase-5 accepted source and contracts remain unchanged. Phase-6 files/history may remain present in Git but are outside production dependencies and task scope; this lane neither imports research as a production prerequisite nor changes research artifacts. No source/tests/scripts, runtime framework, placeholder provider, signer/send capability or application configuration is added.
 
-Git/document checks cover history preservation, exact changed-file scope, locked-document/source tree equality, matrix classification consistency and active-checkout preservation. No application or broad regression tests are required or run. No secrets, wallet state or production databases are accessed. No collector/runtime process is started, stopped or changed.
+Git/document checks establish history preservation, exact changed-file scope, locked-document/source tree equality, matrix classification consistency and active-checkout preservation. No application or broad regression tests are required or run. No secrets, wallet state or production databases are accessed. No collector/runtime process is started, stopped or changed.
 
-After acceptance, create `live/meme-production-readiness`, record its base and G000 result, and push only that branch normally. The verified remote LIVE HEAD then becomes the authoritative production-readiness checkpoint. The remote audit and master refs are not push targets.
+Validation evidence (Git/document checks only):
+
+- Start and post-acceptance `git status`, `git rev-parse HEAD` and `git branch --show-current`: clean expected checkout/branch; no conflicting user changes.
+- Remote audit/master refs matched `2561e14...` / `e6b9a4b...`; new LIVE branch was absent before creation. Divergence from `440e03f...` contained only the three architecture/review documents and the model-policy document. Normal merge completed without conflicts.
+- `git merge-base --is-ancestor` for both reviewed architecture and policy checkpoints: exit 0; history retained.
+- `git diff --exit-code e6b9a4b HEAD -- . ':(exclude)docs/live/**'`: exit 0. All tracked content outside LIVE documentation, including source/tests/scripts, Phase 4/5 and Phase 6, is unchanged.
+- Exact locked audit/workflow/plan/readiness/project-review files compared with `3e64adf`, and model policy compared with `2561e14`: exit 0, unchanged.
+- Matrix: 61 rows, 6 VERIFIED / 49 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED. Owner acceptance promotes no engineering row.
+- Review Sections 1–4 and architecture estimate tables are unchanged from Step 2; local document links resolve. `git diff --check` and staged whitespace/scope checks: exit 0.
+- Protected active checkout remains clean `master` at `5d5cb0426fa423fd9528fb37d86e80b1333a8aa9`; no protected checkout update or runtime operation was performed.
+
+Delivery requires a normal push of this G000 commit to the new LIVE ref, followed by `git ls-remote` equality with local HEAD. The verified remote LIVE HEAD is then the authoritative production-readiness checkpoint. The final handoff records that exact hash and remote verification; remote audit/master are not push targets.
 
 NEXT: **STEP 4 — Source health + public chain truth foundation** (G001/T001); requires a separately bounded task and is not started here.
