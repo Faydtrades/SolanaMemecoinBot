@@ -2,7 +2,9 @@
 
 Owner instructions: **MEME-LIVE — OWNER ACCEPTANCE + STEP 3 / G000**, followed by **MEME-LIVE — STEP 4 / Evidence foundation: G001 + T001**, received 2026-09-09 in the existing CHIEF task. Historical G000 evidence below remains scoped to that checkpoint.
 
-## Accepted planning baseline
+## Historical planning and Step-4 delivery baseline
+
+The following delivery status predates the supplied Step-5 decision recorded below. The later attributed instruction governs the current Ledger task; its bounded implementation record is [Ledger foundation](MEME_LIVE_LEDGER_FOUNDATION_V1.md).
 
 - STEP 1: **OWNER_ACCEPTED**.
 - STEP 2: **OWNER_ACCEPTED**.
@@ -13,6 +15,24 @@ Owner instructions: **MEME-LIVE — OWNER ACCEPTANCE + STEP 3 / G000**, followed
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Project decision supplied with the Step-5 request
+
+The user supplied the Step-5 request as attachment `cc768198-3058-4853-a0dc-7368e565c683/pasted-text.txt` and explicitly identified that pasted text as the request. The attachment SHA-256 read for this record is `4260bae0a5ac3f964d28819f6af2d321f8337f1181a6bcb26e513790ea32693c`. Its lines 45–56 supply the following project decision and authorization; this is an attributed record of that instruction, not an acceptance decision made by Codex:
+
+> Before Ledger implementation, record the ChatGPT project decision for Step 4:
+>
+> STEP 4 — EVIDENCE FOUNDATION
+> - PROJECT_ACCEPTED_IMPLEMENTATION
+> - LOCAL_PASS
+> - SYSTEM_TRANSITION_PASS_PENDING_REAL_CONSUMERS
+> - full package PASS remains pending the actual Ledger / Authority / Runtime consumer transitions already identified in the lifecycle matrix.
+>
+> This is NOT a blocker for Step 5.
+>
+> Step 5 / Ledger is AUTHORIZED.
+
+The supplied decision is bound to the reused Evidence checkpoint `5258537c7de98de4883f594375f24c90de57250b`. Local and remote LIVE heads were verified equal to that checkpoint with a clean worktree/index before this record. Evidence suites were not rerun to record it. Actual Authority/Runtime consumer transitions remain unbuilt, so this record does not designate the whole Evidence package SYSTEM_TRANSITION_PASS. The Step-5 package is limited to Ledger T002/T003; signing/send/broadcast, mutating Solana RPC, real capital, protected runtime changes and Authority/Execution/Runtime/Operations implementation remain outside its authorization.
 
 **Position concurrency.** V1 may enforce max 1 concurrently open LIVE position, solely as a policy/runtime limit. Core identity, ledger, settlement/accounting, risk/reservation, persistence/reconstruction and exit state remain position/mint scoped so later multi-position support can be enabled without redesigning the core. V1 does not implement concurrent multi-position execution. Occupied or unresolved reserved capacity denies additional acquisition, while the existing protective obligation remains owned. Sequential trades retain distinct position/mint identities and source suppression.
 
@@ -61,4 +81,4 @@ Validation evidence (Git/document checks only):
 
 Delivery requires a normal push of this G000 commit to the new LIVE ref, followed by `git ls-remote` equality with local HEAD. The verified remote LIVE HEAD is then the authoritative production-readiness checkpoint. The final handoff records that exact hash and remote verification; remote audit/master are not push targets.
 
-CURRENT: **STEP 4 — Source health + public chain truth foundation** (G001/T001), separately authorized after G000. Execution and evidence are recorded in the [Evidence foundation delivery record](MEME_LIVE_EVIDENCE_FOUNDATION_V1.md).
+Historical Step-4 delivery: **Source health + public chain truth foundation** (G001/T001), separately authorized after G000. Results are recorded in the [Evidence foundation delivery record](MEME_LIVE_EVIDENCE_FOUNDATION_V1.md). The later Step-5 supplied project decision and Ledger authorization are recorded above; current bounded work is documented in [Ledger foundation](MEME_LIVE_LEDGER_FOUNDATION_V1.md).
