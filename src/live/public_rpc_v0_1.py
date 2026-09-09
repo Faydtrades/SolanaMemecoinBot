@@ -220,7 +220,9 @@ class FinalizedBlockAnchor:
             u64(item)
         block_hash(self.blockhash)
         block_hash(self.previous_blockhash)
-        if self.block_height > self.slot or (self.slot > 0 and self.parent_slot >= self.slot) or self.commitment != "finalized":
+        if (self.slot == 0 and (self.parent_slot != 0 or self.block_height != 0)
+                or self.slot > 0 and (self.parent_slot >= self.slot or not 1 <= self.block_height <= self.parent_slot + 1)
+                or self.commitment != "finalized"):
             raise PublicRpcError("INVALID_FINALIZED_BLOCK_ANCHOR")
         if re.fullmatch(r"[0-9a-f]{64}", self.provider_fingerprint) is None:
             raise PublicRpcError("INVALID_PROVIDER_FINGERPRINT")

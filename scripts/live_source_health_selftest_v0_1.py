@@ -164,6 +164,47 @@ def main() -> int:
                (4, "DATA_GAP_CLOSED", at(6), json.dumps({"gap_started_at_utc": at(4), "gap_ended_at_utc": at(5), "error": "DO_NOT_RETAIN"})))
         check("gap_control_denies_when_job_missing", observe(control_gap_path, control_gap_binding).disposition == "GAP")
 
+        for kind in ("recorded_gap", "control_gap", "uncertain_boundary", "interrupted_boundary"):
+            later_path, later_binding = fresh()
+            initial = observe(later_path, later_binding, now=10)
+            change(later_path, "INSERT INTO websocket_observations VALUES (?,?,?,?,?)", ("sig3", 103, at(12), 1, ""))
+            reason = "UNRESOLVED_RECORDED_GAP"
+            if kind == "recorded_gap":
+                change(later_path, "INSERT INTO gap_jobs_v034 VALUES (?,?,?,?,?,?,?,?,?)",
+                       ("later-gap", at(10), at(11), "DONE", 102, 103, 2, 1, "DO_NOT_RETAIN"))
+            elif kind == "control_gap":
+                change(later_path, "INSERT INTO collector_events VALUES (?,?,?,?)", (4, "DATA_GAP_CLOSED", at(11),
+                       json.dumps({"gap_started_at_utc": at(10), "gap_ended_at_utc": at(11)})))
+            else:
+                reason = "UNCERTAIN_OR_INTERRUPTED_PREFIX"
+                event = "DECODE_ERROR" if kind == "uncertain_boundary" else "WS_DISCONNECTED"
+                change(later_path, "INSERT INTO collector_events VALUES (?,?,?,?)", (4, event, at(11), "{}"))
+            later = observe(later_path, later_binding, previous=initial, now=13)
+            check(f"older_requested_cut_cannot_hide_later_{kind}", reason in later.reasons
+                  and not source_consumer_evidence(later, expected_source_identity=later_binding.source_identity,
+                      required_cut_utc=at(9), now_utc=at(13)).observed_prefix_supported
+                  and later.binding == initial.binding and later.snapshot.requested_cut_utc == at(9))
+            check(f"healthy_constructor_rejects_later_{kind}", raises(ValueError, lambda: replace(
+                later, disposition="HEALTHY", reasons=(), covered_from_utc=at(3), covered_through_utc=at(9))))
+            later_journal_path = temporary / f"{kind}-evidence.sqlite3"
+            with SourceEvidenceStore(later_journal_path, later_binding, SourceProfile()) as journal:
+                journal.append(initial, expected_previous_digest=ZERO_DIGEST)
+                journal.append(later, expected_previous_digest=initial.content_digest)
+                captured = journal.latest_record()
+            with SourceEvidenceStore(later_journal_path, later_binding, SourceProfile()) as journal:
+                retained = observe(later_path, later_binding, previous=journal.latest(), now=14)
+                journal.append(retained, expected_previous_digest=later.content_digest)
+                captured_port = source_consumer_evidence(journal.read_record(captured[0])[1],
+                    expected_source_identity=later_binding.source_identity, required_cut_utc=at(9), now_utc=at(14))
+                check(f"later_{kind}_survives_reopen_and_captured_consumption", reason in retained.reasons
+                      and reason in captured_port.reasons and not captured_port.observed_prefix_supported
+                      and journal.read_record(captured[0]) == captured)
+
+        before_path, before_binding = fresh()
+        change(before_path, "INSERT INTO gap_jobs_v034 VALUES (?,?,?,?,?,?,?,?,?)",
+               ("before-origin", at(0), at(1), "DONE", 1, 2, 0, 0, ""))
+        check("gap_ending_before_original_origin_keeps_historical_scope", observe(before_path, before_binding).disposition == "HEALTHY")
+
         for kind in ("WS_STALE", "WS_DISCONNECTED", "LIVE_COLLECTION_STOPPED"):
             lost_path, lost_binding = fresh()
             change(lost_path, "INSERT INTO collector_events VALUES (?,?,?,?)", (4, kind, at(11), "{}"))

@@ -10,7 +10,8 @@ from .public_rpc_v0_1 import (
     block_hash, evidence_fingerprint, immutable_tuple, primary_signature, u64,
 )
 from .transaction_evidence_v0_1 import (
-    CanonicalSignatureBlock, TransactionReadFailure, observation_domain_reasons, utc,
+    CanonicalSignatureBlock, TransactionReadFailure, _known_finalized_anchors_consistent,
+    observation_domain_reasons, utc,
 )
 
 
@@ -250,8 +251,7 @@ def ledger_canonical_coverage(observation: CanonicalCoverageObservation, *, expe
                 occurrences.append(SignatureOccurrence(block.slot, position))
     upper_height = blocks[0].block_height if blocks and blocks[0].slot == chosen else None
     if root is not None and blocks:
-        if (root.slot == blocks[0].slot and _anchor_core(root) != _anchor_core(blocks[0])
-                or root.slot > blocks[0].slot and not 0 < root.block_height - blocks[0].block_height <= root.slot - blocks[0].slot):
+        if any(not _known_finalized_anchors_consistent(root, block) for block in blocks):
             reasons.append("UPPER_AND_CURRENT_ROOT_CONTRADICTION")
             contradictory = True
     disposition = "CONTRADICTORY" if contradictory else "INSUFFICIENT_COVERAGE" if reasons else "COMPLETE_REQUESTED_INTERVAL"

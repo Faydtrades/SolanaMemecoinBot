@@ -476,8 +476,29 @@ class CanonicalSignatureBlock:
             primary_signature(signature)
         if len(set(self.signatures)) != len(self.signatures):
             raise PublicRpcError("BLOCK_DUPLICATE_PRIMARY_SIGNATURE")
-        if self.block_height > self.slot or self.commitment != "finalized" or self.slot > 0 and self.parent_slot >= self.slot:
+        if (self.slot == 0 and (self.parent_slot != 0 or self.block_height != 0)
+                or self.slot > 0 and (self.parent_slot >= self.slot or not 1 <= self.block_height <= self.parent_slot + 1)
+                or self.commitment != "finalized"):
             raise PublicRpcError("BLOCK_PARENT_OR_COMMITMENT_INVALID")
+
+
+def _known_finalized_anchors_consistent(a: FinalizedBlockAnchor | CanonicalSignatureBlock,
+                                         b: FinalizedBlockAnchor | CanonicalSignatureBlock) -> bool:
+    """Reject contradictions in retained facts without asserting unseen ancestry."""
+    if a.slot == b.slot:
+        return ((a.blockhash, a.previous_blockhash, a.parent_slot, a.block_height)
+                == (b.blockhash, b.previous_blockhash, b.parent_slot, b.block_height)
+                and (a.block_time is None or b.block_time is None or a.block_time == b.block_time))
+    child, earlier = (a, b) if a.slot > b.slot else (b, a)
+    height_delta = child.block_height - earlier.block_height
+    if child.parent_slot < earlier.slot:
+        # A known produced block cannot be inside the child's skipped slots.
+        return False
+    if child.parent_slot == earlier.slot:
+        return child.previous_blockhash == earlier.blockhash and height_delta == 1
+    # There is at least one intermediate produced parent, and skipped slots
+    # between that parent and the child cannot contribute block height.
+    return 2 <= height_delta <= child.parent_slot - earlier.slot + 1
 
 
 def decode_signature_block(slot: int, result: object, profile: PublicRpcProfile) -> CanonicalSignatureBlock:
@@ -669,11 +690,7 @@ def ledger_transaction_evidence(observation: TransactionObservation, *, expected
             reasons.append("TRANSACTION_CANONICAL_MEMBERSHIP_CONTRADICTION")
             contradictory = True
         if block is not None and root is not None:
-            block_core = (block.blockhash, block.previous_blockhash, block.parent_slot, block.block_height)
-            root_core = (root.blockhash, root.previous_blockhash, root.parent_slot, root.block_height)
-            if (block.slot == root.slot and block_core != root_core
-                    or block.slot < root.slot and block.block_height >= root.block_height
-                    or block.slot < root.slot and root.block_height - block.block_height > root.slot - block.slot):
+            if not _known_finalized_anchors_consistent(block, root):
                 reasons.append("TRANSACTION_BLOCK_AND_FINALIZED_ROOT_CONTRADICTION")
                 contradictory = True
     disposition = "CONTRADICTORY" if contradictory else "UNKNOWN" if reasons else "SUPPORTED_FINALIZED_OBSERVATION"
@@ -710,17 +727,8 @@ def runtime_transaction_order(left: TransactionObservation, right: TransactionOb
         anchors = (left.root, left.membership_block, right.root, right.membership_block)
         for index, a in enumerate(anchors):
             for b in anchors[index+1:]:
-                if a.slot == b.slot:
-                    if ((a.blockhash, a.previous_blockhash, a.parent_slot, a.block_height)
-                            != (b.blockhash, b.previous_blockhash, b.parent_slot, b.block_height)
-                            or a.block_time is not None and b.block_time is not None and a.block_time != b.block_time):
-                        reasons.append("KNOWN_FINALIZED_ANCHOR_CONTRADICTION")
-                else:
-                    child, parent = (a, b) if a.slot > b.slot else (b, a)
-                    if (not 0 < child.block_height - parent.block_height <= child.slot - parent.slot
-                            or child.parent_slot == parent.slot and (child.previous_blockhash != parent.blockhash
-                                or child.block_height != parent.block_height + 1)):
-                        reasons.append("KNOWN_FINALIZED_ANCHOR_CONTRADICTION")
+                if not _known_finalized_anchors_consistent(a, b):
+                    reasons.append("KNOWN_FINALIZED_ANCHOR_CONTRADICTION")
     relation = "UNKNOWN"
     if not reasons:
         if left.request.signature == right.request.signature:

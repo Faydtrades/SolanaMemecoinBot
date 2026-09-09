@@ -555,12 +555,13 @@ def evaluate_source(binding: SourceBinding, profile: SourceProfile, snapshot: So
     integrity = tuple(sorted(set(progress.integrity_reasons) | (set(reasons) & INTEGRITY_REASONS)))
     if integrity != progress.integrity_reasons:
         progress = replace(progress, integrity_reasons=integrity)
-    # Any gap is retained regardless of mutable recovery status. No epoch/reset
-    # or newer receipt can remove a gap from a journal's original coverage cut.
-    if any(g.start_utc <= cut and g.end_utc >= origin for g in progress.gaps) or any(
-            g.gap_start_utc <= cut and g.gap_end_utc >= origin for g in progress.control_gaps):
+    # Current source health includes all known uncertainty since the original
+    # coverage origin, even beyond an older requested prefix. Mutable recovery
+    # status, a newer receipt or selecting an older cut cannot remove it.
+    if any(g.end_utc >= origin for g in progress.gaps) or any(
+            g.gap_end_utc >= origin for g in progress.control_gaps):
         reasons.append("UNRESOLVED_RECORDED_GAP")
-    if any(origin <= b.at_utc <= cut for b in progress.boundaries):
+    if any(b.at_utc >= origin for b in progress.boundaries):
         reasons.append("UNCERTAIN_OR_INTERRUPTED_PREFIX")
     if not progress.collector_start_utc or not progress.active_since_utc:
         reasons.append("SUBSCRIPTION_COVERAGE_UNOBSERVED")
@@ -612,9 +613,9 @@ def _healthy_consistent(verdict: SourceVerdict) -> bool:
         and p.last_live_receipt_utc and cut <= p.last_live_receipt_utc <= now
         and _seconds(now, p.last_live_receipt_utc) < verdict.profile.freshness_seconds
         and p.cursors == s.cursors and len(p.cursors) == len(TABLES)
-        and not any(origin <= b.at_utc <= cut for b in p.boundaries)
-        and not any(g.start_utc <= cut and g.end_utc >= origin for g in p.gaps)
-        and not any(g.gap_start_utc <= cut and g.gap_end_utc >= origin for g in p.control_gaps)
+        and not any(b.at_utc >= origin for b in p.boundaries)
+        and not any(g.end_utc >= origin for g in p.gaps)
+        and not any(g.gap_end_utc >= origin for g in p.control_gaps)
     )
 
 

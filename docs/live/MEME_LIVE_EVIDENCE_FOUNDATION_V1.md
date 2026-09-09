@@ -1,6 +1,6 @@
 # MEME-LIVE Step 4 — Evidence Foundation v1
 
-Status: IN_PROGRESS. Owner-authorized scope: G001 + T001 read-only Evidence implementation, focused tests, CHIEF review and normal LIVE-branch checkpoints. Ledger/T002/T003, risk, signing/send, orchestration, Operations and real-capital authority remain outside this task.
+Status: **IMPLEMENTED_PENDING_PROJECT_REVIEW**. The bounded G001/T001 implementation and final adapter-to-consumer-port/fixture verification results are recorded below. Formal package acceptance and lane advancement remain with the ChatGPT project under `AGENTS.md`. Ledger/T002/T003, risk, signing/send, orchestration, Operations and real-capital authority remain outside this task.
 
 Starting checkpoint: `1d0c27ae26425835aecf3dcd5cca440128ad0448`, clean local and remote `live/meme-production-readiness`. The literal protected path `D:\Tradingbot\solana\_memecoin\_bot\_phase1\_v0\_1` is absent on this machine; the previously identified active checkout `D:\Tradingbot\solana_memecoin_bot_phase1_v0_1` remains protected, clean master at `5d5cb0426fa423fd9528fb37d86e80b1333a8aa9`.
 
@@ -19,7 +19,7 @@ One consequential worker runs at a time. Difficult source identity/coverage and 
 
 Preserve the accepted collector and Phase-4/5 semantics. Bind explicit expected source lineage/model/anchor plus durable cursor witnesses; database file growth/mtime is not identity. Read collector tables in a bounded consistent read-only snapshot. Missing schema/identity/witnesses, cursor regression, invalid/future clock evidence, read truncation/failure, stale/lost subscription and recorded gaps deny new-exposure use.
 
-The new operational profile may certify only a **receipt-bounded observed LIVE prefix**: the requested source cut is inside a durably observed active subscription, extends no later than a corroborating live receipt, and has ordered control/row witnesses with no unresolved intersecting gap or uncertain session boundary. This is an explicit collector-trust assumption that its durable controls record connection loss and its committed rows report the observed stream; it is not a proof of chain-wide event completeness. It does not relabel the accepted research coverage export's open-EOF intervals as COMPLETE. A receipt without subscription/control continuity is insufficient. An unobserved tail stays UNKNOWN.
+The new operational profile may certify only a **receipt-bounded observed LIVE prefix**: the requested source cut is inside a durably observed active subscription, extends no later than a corroborating live receipt, and has ordered control/row witnesses. Current health additionally requires no known unresolved gap or uncertain session boundary since the original coverage start, including known facts after the requested cut. This is an explicit collector-trust assumption that its durable controls record connection loss and its committed rows report the observed stream; it is not a proof of chain-wide event completeness. It does not relabel the accepted research coverage export's open-EOF intervals as COMPLETE. A receipt without subscription/control continuity is insufficient. An unobserved tail stays UNKNOWN.
 
 Every explicit gap overrides optimistic liveness. In particular collector recovery `DONE`, `DONE_NO_BOUNDARY` or `DONE_NO_INTERIOR` is not a completeness certificate: confirmed interior scans, skipped/missing blocks and unrecovered boundaries cannot prove whole-interval recovery. Re-reading the same lineage with positive coverage/liveness can recover a transient stale/read-unknown verdict; an unresolved recorded gap cannot be erased by a new receipt, process, source anchor or evidence epoch. Evidence journals preserve previous verdicts and cuts. Producer checkpoint/input completeness is a separate future Runtime obligation and remains necessary for admission.
 
@@ -92,9 +92,9 @@ CHIEF review corrected optional RPC context/display-number handling, bracketing 
 
 E2 checkpoint: `ccd304723592865440371f730cba19a6edd7bb66`, normally pushed and verified equal to remote LIVE HEAD before E3 began.
 
-### Pending package-boundary correction
+### Source correction identified at the package boundary
 
-While E3 runs, CHIEF's composed source fixture identified an E4 correction: requested cut 9, a known recorded gap at 10–11 and a new receipt at 12 currently allow the older observed prefix. Current ENTRY-facing source health must also deny the known later unresolved gap; selecting an older cut must not hide it. The final boundary task will make that denial explicit and add the regression case. The package remains in progress and no full source/admission integration is claimed by the existing local checks.
+During E3, CHIEF's composed source fixture identified an E4 correction: requested cut 9, a known recorded gap at 10–11 and a new receipt at 12 allowed the older observed prefix. E4 removes the upper-cut clipping from both evaluation and in-memory healthy validation. Known recorded/control gaps and uncertainty since the original origin now deny current source health even after the requested cut. The original-origin boundary remains fixed; genuinely older facts outside it are not relabeled. The final boundary proof below records durable reopening and consumer behavior. No real source/admission integration is claimed by these fixtures.
 
 ## E3 / T001 transaction and bounded coverage implementation and review
 
@@ -114,4 +114,61 @@ Fixtures exercise legacy/v0 canonical bytes and loaded addresses, actual success
 
 CHIEF review corrected optional status/error consistency, same-slot root/membership conflicts and cross-observation order conflicts. Produced-block height relationships follow the [Agave parent-bank increment](https://github.com/anza-xyz/agave/blob/master/runtime/src/bank.rs); all coverage fixtures use physically consistent slot/height values. These refinements serve the already assigned Evidence-to-Ledger M13/M33 and Evidence-to-Runtime M35 requirements. They introduce no new economic transition or authority. Real consumers remain unbuilt.
 
-NEXT: E4 composed-boundary review/correction. Package SYSTEM qualification remains pending that task, including the source cut issue recorded above.
+E3 checkpoint: `d28ea330f2f80a29f6adf3bc6dadd0b91a0f8d75`, normally pushed and independently read back from the remote LIVE branch before E4 began.
+
+## E4 / consumer-boundary verification evidence
+
+A separate sequential Astra Ultra reviewer implemented the final source correction and composed fixtures. CHIEF independently inspected the diff and reran all directly affected Evidence suites at the final source revision; every check returned true. Review demonstrated retained finalized parent/hash/height contradictions that the individual Ledger transaction/coverage ports did not reject. One small pure pair-consistency check now serves those ports and Runtime order, using only retained public facts and no additional RPC or history scope. It rejects conflicting same-slot facts, wrong explicit parent hashes/heights, a claimed parent interval that skips a known produced block, and impossible height increments across known skipped slots. Both typed block constructors enforce genesis/non-genesis parent and produced-height bounds. Missing historical times remain allowed; current-root freshness remains required.
+
+### Focused local and composed transition results
+
+Run in `C:\Users\Mari1\AppData\Local\Temp\meme-live-audit-e6b9a4b`, using `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe`:
+
+| Exact arguments after the interpreter | Final worker / independent CHIEF result |
+|---|---|
+| `-B scripts/live_source_health_selftest_v0_1.py` | Exit 0; 67/67 |
+| `-B scripts/live_wallet_evidence_selftest_v0_1.py` | Exit 0; 88/88 |
+| `-B scripts/live_transaction_evidence_selftest_v0_1.py` | Exit 0; 170/170 |
+| `-B scripts/live_evidence_boundary_selftest_v0_1.py` | Exit 0; 40/40; composed system-transition evidence at the available boundary |
+
+The composed suite uses the actual production adapter classes with synthetic temporary SQLite and `httpx.MockTransport`, then consumes their immutable sanitized outputs through the real Evidence ports. It does not substitute pre-approved port results. Account and transaction observations share the same configured public wallet/genesis/provider and consistent finalized root. No real RPC endpoint, real wallet binding or economic state is required by these fixtures.
+
+| Actual transition exercised | Established distinction |
+|---|---|
+| Collector SQLite -> source verdict -> append-only journal -> captured/reopened Authority/Runtime evidence port | Healthy versus read-unknown/stale/gap; reread alone cannot recover staleness; restored same-lineage facts/new receipt can recover appropriate transient failures; a later known gap still denies an older cut after reopen; source bytes unchanged and journal integrity `ok` |
+| Public RPC account reads -> wallet observation -> Ledger account port | Complete versus incomplete enumeration; complete but unsupported Token-2022 shape; coherent versus differing account cuts; same-context contradictions; absent native account versus present zero; impossible finalized anchor remains unresolved |
+| Public RPC exact status/wire/metadata -> transaction observation -> Ledger transaction port | Supported finalized legacy/v0 facts versus null/unknown and contradictory identity/outcome/parent facts; fee remains a public fact without settlement attribution |
+| Public RPC canonical parent walk -> bounded coverage observation -> Ledger coverage port | Complete chosen interval can still miss the validity tail; pruned link means insufficient coverage even when a positive signature occurrence is retained; contradictory retained root/parent facts deny completeness |
+| Two exact transaction observations -> Runtime order port | Consistent canonical BEFORE/AFTER versus contradictory known anchors or unresolved same-transaction event order; no price eligibility or execution decision |
+
+The composed test also checks immutable/sanitized outputs, append-only source-only tables and all seven allowed public RPC wire reads. No generic mutation/sign/send API is exposed. Focused Phase-4/5 compatibility evidence above remains applicable: shared code and accepted decoder/source/Shadow RPC contracts were not changed. Broader regression was therefore unnecessary.
+
+The remaining real consumer obligations are already assigned by Architecture v2:
+
+| Evidence port | Future real consumer and required use |
+|---|---|
+| `source_consumer_evidence` plus captured journal sequence | Authority M07 checks the original source identity/cut and current evidence before ENTRY; Runtime M05/M47 separately verifies producer reconstruction/checkpoint/input completeness. Source health cannot discharge positions or protective obligations. |
+| `ledger_account_evidence` | Ledger M14–M18 establishes the opening baseline, attributes holdings/adjustments and derives settled/spendable facts only from supported coherent evidence; enumeration alone is not attribution or funding authority. |
+| `ledger_transaction_evidence` | Ledger M15–M17/M33 binds the original exact attempt/signature/message and performs finality/actual settlement adjudication with idempotent durable economic state. A public failed outcome and fee remain facts until that consumer exists. |
+| `ledger_canonical_coverage` | Ledger M33 checks its original pre-send lower anchor, blockhash and last-valid height, and verifies that the complete requested interval covers the necessary validity window. Missing occurrences, timeouts and null lookups do not independently prove non-landing. |
+| `runtime_transaction_order` | Runtime M35 applies exact acquisition/event identity and fixed knowledge-cut rules. Transaction order alone cannot establish event order inside a transaction, price eligibility or a protective trigger. |
+
+### Remaining boundaries and source-control surface
+
+M02 and M13 retain `OWNED_NOT_BUILT` because their actual Authority/Ledger/Runtime consumers listed above do not yet exist. Only their Evidence-owned factual proof descriptions are updated. The supplied results cover the expressly permitted adapter/port/fixture boundary; they do not mark the real economic/runtime lifecycle verified or authorize deployment, a soak or capital. Formal package classification remains pending project review.
+
+No new required downstream transition was discovered. The source older-cut correction and finalized parent-consistency corrections address defects inside already assigned M02/M07 and M13/M33/M35 responsibilities. Same-transaction event identity/order, original pre-send validity binding, coherent opening-baseline attribution and producer reconstruction remain the named existing future obligations.
+
+Unresolved source states are `UNKNOWN`, `GAP`, `STALE`, `LOST` and `REGRESSION`, with durable reasons. Wallet inventory is `INCOMPLETE` or `CONTRADICTORY` when coverage cannot be used; context may be `INCOHERENT`/`UNKNOWN`, shape `UNSUPPORTED`/`UNKNOWN`, and native presence `ABSENT`/`UNKNOWN`. Exact transaction evidence is `UNKNOWN` or `CONTRADICTORY`; canonical coverage is `INSUFFICIENT_COVERAGE` or `CONTRADICTORY`; order may be `UNKNOWN`. Limits, missing/pruned metadata, stale/future facts, unsupported versions/layouts and conflicting identities never silently become zero, finality or non-landing. Even `COMPLETE_REQUESTED_INTERVAL` has only its explicit interval scope; future Ledger must establish the full required validity coverage and adjudicate.
+
+The package changed-file surface is limited to:
+
+| Area | Files |
+|---|---|
+| Evidence implementation | `src/live/__init__.py`, `src/live/source_health_v0_1.py`, `src/live/evidence_store_v0_1.py`, `src/live/public_rpc_v0_1.py`, `src/live/wallet_evidence_v0_1.py`, `src/live/transaction_evidence_v0_1.py`, `src/live/transaction_coverage_v0_1.py` |
+| Focused fixtures | `scripts/live_source_health_selftest_v0_1.py`, `scripts/live_wallet_evidence_selftest_v0_1.py`, `scripts/live_transaction_evidence_selftest_v0_1.py`, `scripts/live_evidence_boundary_selftest_v0_1.py` |
+| Delivery/control status | This Evidence record; `docs/live/MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md`; status-only line in `docs/live/MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md`; Evidence-owned M02/M13 descriptions in `docs/live/MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md` |
+
+The isolated LIVE branch is the implementation lane; master and the active runtime checkout are not updated. Collector/source/Phase-4/5 implementations, locked plans/roadmap, model policy, strategy/research artifacts and production data/processes remain unchanged. All signing/send/broadcast/real-capital authority remains OFF. Real public-wallet/provider configuration and deployment/history-capacity qualification remain later HUMAN_EXTERNAL/authorized work and did not block implementation.
+
+NEXT: ChatGPT project review of this package and its recorded transition evidence. Following that review and separate authorization, the recommended engineering package is locked Step 5 / Ledger T002/T003, beginning with one bounded durable opening-baseline/original-evidence binding contract. No Step-5 implementation was begun.
