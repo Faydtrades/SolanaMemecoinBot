@@ -1,10 +1,12 @@
 # MEME-LIVE Architecture Review v2
 
-Status: **REVIEW_PASS_PENDING_OWNER_ACCEPTANCE**
+Status: **OWNER_ACCEPTED**
 
 Review date: 2026-09-09
 
-This is the independent Step 2 architecture review and estimate reconciliation for the documentation-only MEME-LIVE closure plan. It reviews the Step 1 design; it does not authorize implementation, production mutation, signing, send, broadcast, strategy selection or real capital.
+Steps 1 and 2 are now OWNER_ACCEPTED under [Owner acceptance and LIVE lane status](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md). Only Step 3 / G000 documentation, Git and control-plane setup is authorized. Production implementation, signing/send/broadcast and real-capital authority remain OFF.
+
+Sections 1–4 and the output identities below retain the historical independent Step 2 record at `3e64adfb051be50846896ed2802a38b7f0536279`. Its pending-owner statements and concurrent-position/168-hour assumptions describe that reviewed candidate and are superseded by the recorded owner decisions. The review, audit, estimates and quota reconciliation were not rerun or recalculated for owner acceptance.
 
 ## 1. Baseline, inputs and independence
 
@@ -187,29 +189,29 @@ The smallest practical calibration is to use ordinary upcoming authorized tasks.
 
 Quota uncertainty does not invalidate the architecture verdict and does not authorize model downgrades. The locked default remains Astra Extra High for meaningful engineering and Astra Ultra for critical architecture, state, settlement, risk, signing, recovery, transition and final-review work.
 
-## 5. Frozen corrected documents, owner decisions and disposition
+## 5. Historical reviewed identities, owner acceptance and disposition
 
 ### Corrected output identities
 
-| Corrected document | Git blob before commit |
+| Corrected document reviewed at 3e64adf | Historical Git blob |
 |---|---|
 | Production Closure Architecture v2 | `b4e30b008716db1457e4addd1ece0f245c06b2b4` |
 | Production Lifecycle Matrix v2 | `ab9036b7632f2125e5af564f27067a69f2076356` |
 
-The documentation commit containing this review freezes the review document itself; its commit identity is reported in the Step 2 handoff.
+The original Step 2 review document is frozen by commit `3e64adfb051be50846896ed2802a38b7f0536279`. These historical blob identities remain unchanged as evidence of what was reviewed; the later owner-acceptance commit records the accepted amendments.
 
-Owner acceptance must confirm or change:
+The owner has accepted:
 
-1. support for several held positions across distinct mints with one serialized wallet-mutation lane;
-2. the proposed 168-hour qualification interval and the measured aggregate/hottest-mint/restart profile required to support it;
-3. denial of pre-existing WSOL for new ENTRY in the initial supported wallet shape, while retained WSOL stays separately accounted.
+1. V1 may cap concurrently open LIVE positions at one as a policy/runtime limit only. Core identity, ledger, settlement/accounting, risk/reservation, persistence/reconstruction and exits remain position/mint scoped so later concurrency requires no core redesign. Concurrent multi-position implementation is outside V1 work.
+2. A dedicated Solana trading wallet with a later explicitly authorized local autonomous signer; optional Phantom visibility/import never makes unattended execution depend on Phantom approval. Key/seed remains local and outside Git, prompts, logs and evidence. Starting state requires a known wallet, known SOL funding and no unsupported/unattributed pre-existing token/WSOL holdings.
+3. Deterministic measured-load qualification covering supported aggregate/hot-mint state, checkpoints, unfinished/pending work, crash/reconstruction and open-position protection, with resource/restart measurements, followed by real-mainnet no-broadcast T010. Initial T010 target is 12 hours, not a technical minimum or automatic pass. Extend only for missing required evidence or an observed technical reason; 24–168-hour runs are otherwise optional confidence evidence. Passive soak time is not active labor, and unrelated safe work may continue in parallel.
 
 The deployment provider/coverage profile for bounded per-attempt non-landing proof is a later package input. If sufficient proof is unavailable, the attempt remains UNKNOWN; that does not block acceptance of this fail-closed design. The current subscription denominator is also a later planning input, not an architecture blocker.
 
-Final disposition: **REVIEW_PASS_PENDING_OWNER_ACCEPTANCE**
+Final disposition: **OWNER_ACCEPTED** (Steps 1 and 2).
 
-No material redesign, unresolved ownerless transition or implementation blocker remains in the reviewed documents. This status is an architecture-review result only. MEME-LIVE remains **NOT AUTHORIZED FOR IMPLEMENTATION**, and real capital remains **NOT AUTHORIZED**.
+No new review result or implementation acceptance is claimed. The owner has authorized only G000 branch/control-plane setup; all production implementation and signing/send/broadcast/real-capital authority remain OFF. Current lane status and the next separately authorized task are recorded in [Owner acceptance and LIVE lane status](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md).
 
 **CHECKPOINT 3 — FINAL DISPOSITION COMPLETE**
 
-NEXT: OWNER ACCEPTANCE OR BOUNDED OWNER CORRECTION; STOP STEP 2
+NEXT: G000 only under the owner instruction; then STEP 4 — Source health + public chain truth foundation, not started by this acceptance.
