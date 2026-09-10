@@ -1,10 +1,10 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions: **MEME-LIVE — OWNER ACCEPTANCE + STEP 3 / G000**, followed by **MEME-LIVE — STEP 4 / Evidence foundation: G001 + T001**, received 2026-09-09 in the existing CHIEF task. Historical G000 evidence below remains scoped to that checkpoint.
+Owner instructions through **MEME-LIVE — STEP 6 / Authority** are attributed below in the existing CHIEF task. Historical G000 and Step-4/5 evidence remains scoped to its recorded checkpoint; the latest supplied decision and bounded authorization govern current work.
 
 ## Historical planning and Step-4 delivery baseline
 
-The following delivery status predates the supplied Step-5 decision recorded below. The later attributed instruction governs the current Ledger task; its bounded implementation record is [Ledger foundation](MEME_LIVE_LEDGER_FOUNDATION_V1.md).
+The following delivery status predates the supplied Step-5 and Step-6 decisions recorded below. The accepted Ledger implementation record is [Ledger foundation](MEME_LIVE_LEDGER_FOUNDATION_V1.md); the current bounded Authority work is recorded under the Step-6 instruction below.
 
 - STEP 1: **OWNER_ACCEPTED**.
 - STEP 2: **OWNER_ACCEPTED**.
@@ -15,6 +15,28 @@ The following delivery status predates the supplied Step-5 decision recorded bel
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Project decision and bounded Authority work supplied with Step 6
+
+The user supplied Step 6 in attachment `8fc242ed-6a12-4f08-b95c-725d8c9263b5/pasted-text.txt`, SHA256 `249043bd4141d24b826fd212cb3e5318b7012f0f89914c7035623f042a97a140`. Its section 1 supplies the project decision for Step 5: `PROJECT_ACCEPTED_IMPLEMENTATION`, `LOCAL_PASS`, and **available Evidence -> Ledger SYSTEM TRANSITION evidence ACCEPTED**. L1–L6 are accepted within their documented supported profile; full cross-package transition acceptance remains pending the real downstream consumers named in the matrix. This records the user's project decision, not a Codex acceptance decision.
+
+The clean isolated LIVE checkout and remote both matched `91e902863a397efb32691f4cd7dcd3efea4ecd42` before Step-6 edits. Step 5 is not re-reviewed. Step 6 authorizes the full bounded Authority package and first explicitly authorizes the existing M13 correction for canonical Token-2022 ImmutableOwner accounts. This resolves the earlier permission question without authorizing arbitrary extensions.
+
+Before source edits, the directly relevant boundaries support this sequential worker split:
+
+| Task | Bounded implementation and consumer contract |
+|---|---|
+| A0 — Evidence prerequisite | Canonical ImmutableOwner-only account validation, original Evidence version/provenance preservation and actual Evidence -> Ledger compatibility fixtures; no general extension support |
+| A1 — Policy and authority state | Explicit public policy/arming inputs, durable versioned entry-deny/hard-stop/revocation scopes, trusted clock contract and original-source/deadline eligibility |
+| A2 — Immutable admission economics | Canonical candidate identity, exact integer sizing under explicit limits, durable original decision and expiry/dedup; no PAPER/Shadow mutation |
+| A3 — Funding and atomic reservation | Actual Ledger funding/positions/attempts plus fresh account evidence, exposure/fee/setup/exit-failure budgets and concrete admission/reservation/grant-consumption transaction |
+| A4 — Current message/reduction authority | Exact external message/simulation bindings, current resource/policy/stop checks, position/obligation-capped reductions, one-use/replay-resistant authority and retirement feedback |
+| A5 — Package composition | Actual Evidence -> Ledger -> Authority -> existing route/quote/plan-compatible economics and message port; settlement/retirement -> subsequent admission; final affected regression and matrix evidence |
+
+CHIEF owns review, this minimal existing documentation and the authorized normal LIVE checkpoints. One consequential worker runs at a time; ordinary corrections stay with that worker. Astra Ultra is used for original Evidence/replay compatibility, durable authority, identity, atomicity and risk work; Extra High remains the default for a bounded task without those dependencies. Each task stops for CHIEF review, then ordinary work continues without a separate owner round. Final broad regression is justified by the assigned identity/risk/authority/reservation changes and runs once after the Authority freeze.
+
+Authority is `AUTHORIZED_IN_PROGRESS`; subsequent entries record implementation evidence pending project review. Capital/operating limits and arming choices remain explicit HUMAN_EXTERNAL configuration, with synthetic fixture values only. No Execution, Runtime, Operations, signer/send/broadcast, mutating RPC, private material, real capital or protected runtime modification is authorized. Later real consumers and project/package acceptance remain separate.
+
 
 ### Project decision supplied with the Step-5 request
 

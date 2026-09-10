@@ -461,7 +461,8 @@ def main():
         denied("post-account-support-absent", fixture, support_value=value, expected="POST_ACCOUNT_SUPPORT_MISSING")
         fixture = Fixture(token_program=TOKEN_2022_PROGRAM_ID)
         value = fixture.wallet_scenario(support=True, tail=b"\x02\x07\x00\x00\x00")
-        denied("Token2022-ImmutableOwner-owner-scope-pending", fixture, support_value=value,
+        denied("Token2022-ImmutableOwner-original-v0.1-stays-unsupported", fixture, support_value=value,
+               support_change=lambda support: replace(support, observation=replace(support.observation, schema="live_wallet_account_evidence_v0.1")),
                expected="ORIGINAL_ACCOUNT_SUPPORT_UNAVAILABLE_OR_UNSUPPORTED")
         fixture = Fixture(); value = fixture.wallet_scenario(support=True)
         value.accounts[fixture.base] = account(TOKEN_PROGRAM_ID, token_data(MINT, WALLET, 7, delegate=MINT))

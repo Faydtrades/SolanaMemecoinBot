@@ -172,3 +172,31 @@ The package changed-file surface is limited to:
 The isolated LIVE branch is the implementation lane; master and the active runtime checkout are not updated. Collector/source/Phase-4/5 implementations, locked plans/roadmap, model policy, strategy/research artifacts and production data/processes remain unchanged. All signing/send/broadcast/real-capital authority remains OFF. Real public-wallet/provider configuration and deployment/history-capacity qualification remain later HUMAN_EXTERNAL/authorized work and did not block implementation.
 
 NEXT: ChatGPT project review of this package and its recorded transition evidence. Following that review and separate authorization, the recommended engineering package is locked Step 5 / Ledger T002/T003, beginning with one bounded durable opening-baseline/original-evidence binding contract. No Step-5 implementation was begun.
+
+## Step 6 / A0 — canonical ImmutableOwner prerequisite
+
+The supplied Step-6 instruction explicitly authorizes this narrow correction before Authority consumes account shape. Step-5 L1–L6 and their available Evidence -> Ledger transition evidence were project-accepted within the documented supported profile; see [owner/lane status](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#project-decision-and-bounded-authority-work-supplied-with-step-6). A0 implementation evidence is recorded here for project review.
+
+Wallet observations now explicitly default to `live_wallet_account_evidence_v0.2`. This version accepts a Token-2022 token account only when its standard 165-byte base is followed by exactly `02 07 00 00 00`: account type Account, ImmutableOwner extension, zero-length value. The [official Token-2022 definition](https://github.com/solana-program/token-2022/tree/aa84ca89f26127a8f881c46484974b534fefb6f6/interface/src/extension) is pinned at that revision, with the two source hashes recorded beside the implementation. No generic TLV parser or additional extension support was added.
+
+All original base amount/native/delegate/frozen/close-authority/program/mint/wallet checks remain. Truncation, wrong type/length/endianness, duplicate or unrelated extensions, padding, conflicting same-context account reads, incomplete enumeration and incoherent cuts remain unresolved or unsupported. Legacy SPL cannot claim this extension. Exact integer amounts, including u64 maximum, and original sanitized public bytes remain preserved.
+
+A finite legacy `v0.1` branch retains the exact earlier 165-byte-only interpretation. Original schemas and digests already belong to the Ledger codec, so no Ledger production edit, schema migration or receipt reinterpretation was required. Tests reject a schema relabel with an unchanged original digest and prove that a historical unsupported baseline/support receipt remains unchanged after new evidence is accepted and after reopen.
+
+Worker (Astra Ultra) and CHIEF independently ran from the isolated checkout using `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe -B`:
+
+| Script | Checks | Exit |
+|---|---:|---:|
+| `scripts/live_wallet_immutable_owner_selftest_v0_1.py` | 71 | 0 |
+| `scripts/live_wallet_evidence_selftest_v0_1.py` | 88 | 0 |
+| `scripts/live_ledger_baseline_selftest_v0_1.py` | 126 | 0 |
+| `scripts/live_ledger_settlement_selftest_v0_1.py` | 256 | 0 |
+| `scripts/live_ledger_custody_selftest_v0_1.py` | 279 | 0 |
+
+All **820 checks** succeeded. `git diff --check` exited 0. CHIEF logs are in `C:\Users\Mari1\AppData\Local\Temp\meme-live-authority-a0-chief-20260910`. A0 check digest: `98667e2c798acd4a6b64186b7662a053903891b8060c3e0a3db0d87cfbb66c9d`.
+
+Actual MockTransport Wallet/Transaction adapters -> original Evidence -> Ledger empty canonical170 baseline -> actual PumpSwap BUY into that existing ATA -> complete application -> actual scoped token/native/fee/account-lamport facts -> durable reopen is proved. Actual acquired units deliberately differ from quoted expected units. Hostile or original-v0.1 support produces no postings/position and retains the held attempt. Canonical application receipt `fe42ae7ba4a51e975714ae45b754b52722e5d102629e97478d74aab148189476`; custody digest `0cab49812889ce7d04b67b2e153680b90c4e6521951967a71f0287f145e5b3fe`; original support `9d5407be5b075bc8b66a1b87629b2fe0b8784934bd771a92905c2504db6fc06e`.
+
+The accepted L4 profile still excludes fresh Token-2022 ATA creation (`ACCOUNT_CREATE_SHAPE_UNSUPPORTED` / `ATA_EXTENSION_INITIALIZATION_UNSUPPORTED`); A0 changes account evidence, not that transaction lifecycle. The Authority package must deny plans outside the supported attribution profile. This is an explicit existing-profile limitation, not permission to expand Ledger or support arbitrary extensions.
+
+Changed implementation/selftests: `src/live/wallet_evidence_v0_1.py`, new `scripts/live_wallet_immutable_owner_selftest_v0_1.py`, and the affected old-version denial fixture in `scripts/live_ledger_settlement_selftest_v0_1.py`. No real RPC test, private material, signing/send, production data/process or protected-checkout change. The broader Step-5 regression was not repeated. No lifecycle row or full package PASS is self-authorized. NEXT: A1 Authority policy/stop/clock state under the already supplied Step-6 authorization.

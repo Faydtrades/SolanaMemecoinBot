@@ -8,7 +8,7 @@ from typing import Callable
 from solders.pubkey import Pubkey
 
 from phase5.shadow_venue_route_quote_v0_1 import (
-    SYSTEM_PROGRAM_ID, TOKEN_PROGRAM_ID, WSOL_MINT, decode_mint_account,
+    SYSTEM_PROGRAM_ID, TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID, WSOL_MINT, decode_mint_account,
     decode_token_account, VenueStateError,
 )
 from .public_rpc_v0_1 import (
@@ -18,7 +18,16 @@ from .public_rpc_v0_1 import (
 )
 
 
-SCHEMA = "live_wallet_account_evidence_v0.1"
+LEGACY_SCHEMA = "live_wallet_account_evidence_v0.1"
+SCHEMA = "live_wallet_account_evidence_v0.2"
+# One explicit new account shape, not a general extension parser. Official
+# https://github.com/solana-program/token-2022/tree/
+# aa84ca89f26127a8f881c46484974b534fefb6f6/interface/src/extension
+# mod.rs SHA256 502b8309d3243f81d3bb7b2ff5f9e412c48d4d68f354b8994792389fc904defd
+# immutable_owner.rs SHA256 8346ba8c6b309d75280550585a1bd7b6a43f0059db9fda0fc4d43d5ac408647d
+# 165-byte Account + AccountType::Account (u8=2) + ImmutableOwner (LEu16=7)
+# + zero value length (LEu16=0). No padding or additional TLV is accepted.
+_IMMUTABLE_OWNER_TAIL = b"\x02\x07\x00\x00\x00"
 
 
 def _utc(value: str) -> str:
@@ -97,7 +106,7 @@ class WalletObservation:
     schema: str = SCHEMA
 
     def __post_init__(self) -> None:
-        if type(self.request) is not WalletEvidenceRequest or type(self.profile) is not PublicRpcProfile or self.schema != SCHEMA:
+        if type(self.request) is not WalletEvidenceRequest or type(self.profile) is not PublicRpcProfile or self.schema not in (LEGACY_SCHEMA, SCHEMA):
             raise PublicRpcError("IMMUTABLE_WALLET_DOMAIN_REQUIRED")
         for field in ("started_at_utc", "observed_at_utc"):
             object.__setattr__(self, field, _utc(getattr(self, field)))
@@ -186,13 +195,16 @@ def _option(raw: bytes, offset: int, *, key: bool) -> str | int | None:
     return _key(data) if key else int.from_bytes(data, "little")
 
 
-def _token_shape(value: PublicAccount, slot: int, wallet: str) -> TokenShapeEvidence:
+def _token_shape(value: PublicAccount, slot: int, wallet: str, schema: str) -> TokenShapeEvidence:
     account, data = value.account, value.account.data
     reasons = []
     mint = _key(data[:32]) if len(data) >= 32 else None
     authority = _key(data[32:64]) if len(data) >= 64 else None
     amount = state = delegated_amount = delegate = reserve = close = None
-    if len(data) != 165:
+    immutable_owner = (schema == SCHEMA and account.owner == TOKEN_2022_PROGRAM_ID
+                       and len(data) == 170 and data[165:] == _IMMUTABLE_OWNER_TAIL)
+    # Historical v0.1 receipts must keep their original unsupported verdict.
+    if len(data) != 165 and not immutable_owner:
         reasons.append("UNSUPPORTED_TOKEN_EXTENSIONS_OR_LENGTH")
     if len(data) >= 165:
         amount, state = int.from_bytes(data[64:72], "little"), data[108]
@@ -406,7 +418,7 @@ def assess_wallet_accounts(observation: WalletObservation) -> WalletAccountAsses
                     coverage = "CONTRADICTORY"
                     reasons.add("SAME_CONTEXT_ACCOUNT_CONFLICT")
     unique_records = tuple(dict.fromkeys(records))
-    tokens = tuple(_token_shape(value, slot, request.wallet) for value, slot in unique_records)
+    tokens = tuple(_token_shape(value, slot, request.wallet, observation.schema) for value, slot in unique_records)
     for shape in tokens:
         reasons.update(shape.reasons)
         if shape.reasons:
