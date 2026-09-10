@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 6 / Authority closeout** are attributed below in the existing CHIEF task. Current Step-6 status is **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS**, within its documented supported profile, under the explicit owner decision below. Historical G000, Step-4/5 and A0–A5 evidence remains scoped to its recorded checkpoint; the latest supplied decision and bounded authorization govern current work.
+Owner instructions through **MEME-LIVE — STEP 7 / Execution** are attributed below in the existing CHIEF task. Step-6 status remains **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS**, within its documented supported profile, under the explicit owner decision below. Step 7 is **AUTHORIZED_IN_PROGRESS** within the supplied boundary. Historical evidence remains scoped to its recorded checkpoint; the latest supplied decision and bounded authorization govern current work.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,14 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 7 — Bounded Execution authorization
+
+The user supplied Step 7 in attachment `34ba5b8f-cbe7-4ef1-ab87-440be9a2a662/pasted-text.txt`, SHA256 `a177cb4f43675fd905812b628e5501aa3956a80a8d050ef28dba08eb0aa1f00c`. It explicitly authorizes the Execution package, one bounded worker item at a time, targeted validation, CHIEF local review, and normal checkpoint commits/pushes to `live/meme-production-readiness`. The isolated clean local checkout and fetched remote both matched `0c764c049ad3acd71f0a978bb9524fae45abfd30` before work. Step-6 acceptance and its 27-suite / 3,603-check evidence remain authoritative.
+
+The task-specific routing is CHIEF Astra High and worker Astra High by default; worker Extra High requires materially difficult message/signature/replay or cross-component semantics, and Ultra requires a concrete critical ambiguity or failed lower-level resolution. This explicit instruction governs Step 7 without rewriting the locked general routing policy. The bounded queue, contracts and evidence are recorded in [Execution foundation](MEME_LIVE_EXECUTION_FOUNDATION_V1.md).
+
+This authorization supersedes the historical Step-7 prohibition below only for exact-message production, simulation, guarded local signer engineering, durable envelope/claim, narrow send adapter and Ledger handoff qualification. Qualification uses isolated synthetic signer/public-chain/transport fixtures and disposable stores. Production key access, real mainnet signing/send/broadcast, capital mutation, protected-runtime modification, Runtime and Operations remain prohibited. Step 8 is not authorized. Local item validation does not confer project/package acceptance; delivery status remains `IMPLEMENTED_PENDING_PROJECT_REVIEW` when implemented.
 
 ### STEP6-CLOSE-T001 — Owner-approved project review checkpoint
 
