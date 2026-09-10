@@ -16,6 +16,12 @@ The G000 owner instruction supplied acceptance and authorized the bounded docume
 
 ## Locked owner decisions
 
+### Step 8C — Worker-capacity policy amendment
+
+On 2026-09-11 the owner explicitly superseded the capacity-only stop rule below for C2-C4. CHIEF must first attempt a fresh worker for each item. If the app's thread limit prevents creation, CHIEF may assign only that current item to the most recently completed suitable implementation worker, using the published previous checkpoint as authoritative input. This is a new bounded assignment, not continuation of prior unfinished reasoning. No future-item preparation, broad re-audit or parallel consequential workers is permitted. Corrections remain within the item, and its reviewed checkpoint must be normally published before advancing and attempting fresh creation again. Capacity alone is no longer a blocker; genuine technical/scope, unsafe-state and authorization blockers still require stopping.
+
+The previously published clean C1 checkpoint is `44aa1d2896c6e8e1e46d088d941bc46a2eb92a74`. Local/remote equality and clean state were reverified before resumption. A new C2 worker creation again returned `agent thread limit reached`; CHIEF therefore assigned C2 only to the completed C1 Astra High worker under this explicit fallback. All Step-8C scope, review, testing and safety boundaries remain unchanged.
+
 ### Step 8C Q0 — Owner acceptance and bounded Runtime completion authorization
 
 The owner's explicit Step-8C instruction in this task accepts Step 8B as **PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS**, limited to [B5's documented Runtime boundaries](MEME_LIVE_RUNTIME_FOUNDATION_V1.md#step-8b-b5--frozen-bounded-transition-review-and-handoff). Clean isolated local and remote `live/meme-production-readiness` HEAD both matched `d2839809bf000904f76c75159ec42c3aee021af4`. Accepted production freeze remains `35aa742ac7ac4911046e60ac09881adb6893c7f3`; its recorded evidence remains authoritative. Only **M34/M35/M36/M38/M41** are promoted to VERIFIED within those proofs. Matrix: **40 VERIFIED / 15 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Q0 changes control/documentation only, with no worker, production source change, tests or regression, and is normally published before C1.
