@@ -1442,6 +1442,15 @@ class LedgerRepository:
                 return bytes(stage.signed_public_transaction()), stage.recorded_at_utc
         raise LedgerConflict("LEDGER_DURABLE_SIGNED_LINEAGE_REQUIRED")
 
+    def attempt_stage_inputs(self, attempt_id: str) -> tuple[AttemptStageInput, ...]:
+        """Verified original external facts, never current permission/finality."""
+        with self._trusted_read():
+            if self._attempt(attempt_id) is None:
+                raise LedgerConflict("LEDGER_ATTEMPT_NOT_FOUND")
+            return tuple(stage_from_record(record["stage_input"]) for (payload,) in self._conn.execute(
+                "SELECT payload_json FROM ledger_attempt_stages WHERE attempt_id=? ORDER BY revision", (attempt_id,))
+                if (record := strict_json_object(payload))["stage_input"] is not None)
+
     def _chain_receipt_row(self, row: tuple) -> LedgerChainReceipt:
         seq, key, attempt_id, revision, evidence_digest, digest, payload, original = row
         observation = chain_observation_from_json(original)

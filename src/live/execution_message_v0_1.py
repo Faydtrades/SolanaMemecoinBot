@@ -275,14 +275,18 @@ def produce_exact_message(repository, action_id, rpc, wallet, quote_policy, plan
     return output
 
 
-def prepare_exact_message(repository, production, *, fence):
-    """Persist only a supported first unsigned attempt. A4b SIGN is the next gate."""
+def prepare_exact_message(repository, production, *, fence, ordinal=1):
+    """Explicit preparation; Ledger owns prior resolution and next ordinal.
+
+    A replacement has newly produced/simulated exact bytes and retains the same
+    immutable action. This call never refreshes a lease or grants SIGN/SEND.
+    """
     require(type(production) is ExactMessageProduction, "EXECUTION_ORIGINAL_PRODUCTION_REQUIRED")
     original = production.original
     require(production.validation.disposition == "SUPPORTED_CONTEXT_ONLY", "EXECUTION_MESSAGE_CONTEXT_UNSUPPORTED")
     action, evidence = original.context.action, original.evidence
     envelope = evidence.simulation.envelopes[0]
-    preparation = AttemptPreparation(action.action_id, action.content_digest, 1, envelope.message_hex,
+    preparation = AttemptPreparation(action.action_id, action.content_digest, ordinal, envelope.message_hex,
         envelope.plan_fingerprint, original.profile.content_digest, evidence.simulation.leases[0],
         evidence.wallet.observation.anchor, original.clock.utc_upper_utc, "LIVE_EXECUTION_EXACT_PREPARATION", production.content_digest)
     existing = repository.attempt(preparation.attempt_id)

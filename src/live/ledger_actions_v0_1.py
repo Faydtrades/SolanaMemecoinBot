@@ -304,6 +304,7 @@ class AttemptStageInput:
     external_reference: str
     external_record_digest: str
     signed_wire_base64: str | None = None
+    external_record_json: str | None = None
     admission_status: str = field(init=False, default=PENDING_ADMISSION)
     has_real_authority_grant: bool = field(init=False, default=False)
     version: str = field(init=False, default=ATTEMPT_VERSION)
@@ -319,6 +320,11 @@ class AttemptStageInput:
                 raise ValueError
             if self.signed_wire_base64 is not None:
                 self.signed_public_transaction()
+            if self.external_record_json is not None:
+                if (type(self.external_record_json) is not str or len(self.external_record_json.encode("utf-8")) > 16384
+                        or canonical_json(strict_json_object(self.external_record_json)) != self.external_record_json
+                        or content_fingerprint(strict_json_object(self.external_record_json)) != self.external_record_digest):
+                    raise ValueError
         except Exception:
             raise LedgerContractError("LEDGER_EXTERNAL_ATTEMPT_STAGE_INVALID_OR_FINALITY_OWNED") from None
 
@@ -343,7 +349,11 @@ class AttemptStageInput:
             raise LedgerContractError("LEDGER_EXTERNAL_SIGNED_WIRE_INVALID") from None
 
     def to_record(self) -> dict:
-        return asdict(self)
+        value = asdict(self)
+        # Old stage originals retain their exact canonical bytes and hashes.
+        if self.external_record_json is None:
+            value.pop("external_record_json")
+        return value
 
 
 def validate_stage_transition(prepared: AttemptPreparation, previous: str, stage: AttemptStageInput, last_at: str) -> None:

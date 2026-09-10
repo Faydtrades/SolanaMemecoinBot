@@ -64,3 +64,29 @@ Commands use the same isolated Python interpreter recorded for Q1:
 | `scripts/live_authority_message_control_selftest_v0_1.py` | 362/362 | 0 |
 
 Logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-q2-validation` (`q2-final.log`, `q2-chief.log`, `q1-compatibility.log`, `a4b-compatibility.log`). Independent Q2 output SHA256: `164fcaa1dd302b1006f57b23bfcc9c09394abaed66aca97e425747583a2ea01e`. A4b check digest: `023bd75b64ba9b4846985e5e3fc398d9cbd3c106e8d9034eccd71953bc8d4327`. Staged scope/whitespace checks accompany the checkpoint; no broad regression was run. M28/M29 receive actual current Authority -> synthetic key -> verified public envelope evidence, with durable envelope/send consumption still assigned to Q3. No new downstream transition was discovered; Runtime/Operations remain unimplemented.
+
+## Q3 — Durable envelope, claim, transport and replacement boundary
+
+**LOCAL PASS**, following bounded CHIEF review and an independent focused run. Worker: **Astra Extra High**, selected for durable claim ordering, one-use delivery, crash/replay and proof-gated replacement semantics. Parent checkpoint: `5e72510210e1a358f688c0b6d47df4ec078f3cae`; the Q3 checkpoint is the commit containing this record. Overall project/package acceptance remains pending.
+
+`src/live/execution_send_v0_1.py` retains and reconstructs the cryptographically verified Q2 envelope in the existing Ledger attempt journal. A bounded canonical original payload is hash-bound to stage metadata; the optional field is omitted when absent, preserving historical serialized records. The existing schema, custody and finality decisions are unchanged. Malformed SIGN commit metadata is rejected before any envelope write. Public envelope storage can resume interrupted stage writes but grants no external-call permission.
+
+Fresh actual A4b SEND or next-ordinal REBROADCAST consumption is spent once. The sender verifies its exact durable envelope, source-store identity, profile, current writer/attempt state and fresh clock; it commits the claim and possible-send UNKNOWN state before the external call. Only the exact expected own journal writes may advance the consumed cut. Ledger/source locks and a second fresh increasing clock sample guard the final call. A crash before claim does not claim submission; after claim, even before HTTP, uncertainty remains held. Observations are immutable, sanitized and durably reconstructable. ACK, timeout, null, protocol failure and signature mismatch never settle funds or confer retry permission.
+
+The closed transport sends only the original signed bytes through `sendTransaction`, with base64, confirmed preflight, `maxRetries=0`, no redirects/environment proxies and bounded request/response/time limits. It exposes no arbitrary-wire public operation. These wire semantics were checked against the [official Solana sendTransaction contract](https://solana.com/docs/rpc/http/sendtransaction); all qualification uses fake HTTP only. No real submission occurred.
+
+The Q1 preparation seam now accepts an explicit ordinal; the existing Ledger lane, prior resolution, next-ordinal and unique-message checks remain authoritative. Actual Evidence coverage -> Ledger adjudication tests show incomplete validity coverage stays UNKNOWN, positive proof alone holds the lane, and L5 resolution establishes `PROVEN_NON_LANDED_RESOLVED` without granting retry. A newly produced SELL replacement retains the same action/obligation/units and requires actual fresh SIGN, Q2 signing and SEND. BUY expiry still denies replacement after proof. No timer, missing lookup or caller-provided resolution flag releases an attempt.
+
+Commands use the isolated Python interpreter recorded for Q1:
+
+| Script | Checks | Exit |
+|---|---:|---:|
+| `scripts/live_execution_send_selftest_v0_1.py` | 355/355, worker and independent CHIEF run | 0 |
+| `scripts/live_execution_signer_selftest_v0_1.py` | 275/275 | 0 |
+| `scripts/live_execution_message_selftest_v0_1.py` | 81/81 | 0 |
+| `scripts/live_authority_message_control_selftest_v0_1.py` | 362/362 | 0 |
+| `scripts/live_ledger_actions_selftest_v0_1.py` | 98/98 | 0 |
+
+Logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-q3-validation`, one log per script plus `q3-chief.log` (SHA256 `721f72d151aa13cf6dec133fb9e4a0798d4f145cff9c456a4fc81b1c29f4e026`). Coverage includes BUY/SELL on Pump/PumpSwap, same-wire/signature rebroadcast after reopen, stale/revoked/source/clock guards, own-write races, lost HTTP response, envelope/claim/observation crash cuts, legacy canonical payloads and malformed inputs. An actual subprocess `os._exit(77)` at committed claim proves envelope and SEND_CLAIMED/held-lane reconstruction, no fabricated observation, a new writer generation and OS-released source lock without Python cleanup. Whitespace checks exit 0; no broad regression was run.
+
+Q4 consumes durable envelope/observations and the actual Evidence -> Ledger finality/reconciliation ports. Signature-lost-before-persistence remains possible-signing uncertainty; Q3 invents no non-landing evidence. Runtime retry scheduling and Operations recovery remain owned downstream. M29–M33/M40 gain these bounded producer/journal/transport/proof-consumer facts; matrix classifications are unchanged pending package disposition. No new required downstream transition was discovered.
