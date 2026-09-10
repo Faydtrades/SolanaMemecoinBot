@@ -1,6 +1,20 @@
 # MEME-LIVE Runtime Foundation v1
 
-Status: **STEP 8A LOCAL_PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**. A1-A3 and the bounded A4 transition review are LOCAL PASS under the owner's direct authorization; no Step-8A project acceptance or matrix promotion is self-authorized. [Owner authorization and Q0](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8a-q0--owner-acceptance-and-producer-authorization) govern this bounded work under existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection). No new architecture or roadmap is introduced. Step 8B, Step 8C and Step 9 are NOT AUTHORIZED.
+Status: **STEP 8A LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION; STEP 8B AUTHORIZED_IN_PROGRESS**. The owner accepts the bounded Step-8A producer-through-admission transition and approves M02/M05/M06 as VERIFIED in [Step-8B Q0](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8b-q0--owner-acceptance-and-bounded-positionprotection-authorization). Existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection) governs the bounded Runtime work; no new architecture or roadmap is introduced. Step 8C and Step 9 remain NOT AUTHORIZED. Step-8A records below retain their historical checkpoint scope.
+
+## Step 8B Q0 — Acceptance record and bounded queue
+
+Clean local/remote input: `d9469f9ddab55655bf7c1abf0ea2aaf3988757b0`. The owner's Step-8B instruction explicitly accepts Step 8A and its exact documented transition, and promotes only M02/M05/M06. Current matrix: **35 VERIFIED / 20 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Q0 changes documentation only and uses no worker, source edit, tests or regression. The previous 728-check evidence remains authoritative. Normal publication precedes B1.
+
+| Item | Producer -> durable state -> actual consumer | Scope |
+|---|---|---|
+| B1 | Authoritative finalized BUY/remaining Ledger units -> one selected accepted exit-controller binding -> exact reopen | Original candidate reference/time/track/policy/position retained; synthetic engineering selection only; M34 |
+| B2 | Accepted public order/acquisition/source facts -> immutable evaluation knowledge cut -> accepted exit evaluator | Unproven/pre-acquisition observations excluded; late enrichment cannot rewrite history; original fallback retained; M35 |
+| B3 | Accepted controller/evaluation -> durable protective obligation -> immutable actual-unit SELL action | Actual unencumbered residual units; entry denial cannot erase protection; hard stop still denies mutation; no retry progression; M36/M38 |
+| B4 | B3 SELL -> existing Step-7 Execution/Ledger -> continuous obligation/outcome state | Partial residual, failed fee, held UNKNOWN, authoritative replacement with fresh evidence, final satisfaction; M41 |
+| B5 | Frozen B1-B4 -> bounded composed transition review -> project-review eligibility | No self-project acceptance, second full trade, full Runtime loop or default broad regression |
+
+One consequential worker and one reviewed/published checkpoint at a time. Astra High is the default; Extra High/Ultra require the specific problems named in the owner control. Per-item targeted/affected tests and scoped static checks are required. A full Runtime regression is deferred to Step 8C unless a concrete shared Ledger/Authority/Execution contract is materially invalidated. Step 8C, Step 9, production keys, real mainnet sign/send/broadcast and capital actions are not authorized. Historical later-owner statements below are superseded only for the explicitly authorized Step-8B transition.
 
 ## Q0 — Owner acceptance record
 

@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 8A / Continuous Producer Foundation** are attributed below. Step 7 is **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS**, and the demonstrated Evidence -> Ledger -> Authority -> Execution -> Evidence/Ledger component SYSTEM TRANSITION is **ACCEPTED** within its documented boundaries. Step 8A is **LOCAL_PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**, ending at existing admission. Step 8B, Step 8C and Step 9 remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE — STEP 8B / Actual Position, Selected Exit and Protective Obligation** are attributed below. Step 8A is **LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION**, and its retained source -> same-lineage producer -> bounded reopen/continuation -> canonical candidate -> durable Ledger inbox -> existing Authority admission transition is **ACCEPTED** within the documented boundaries. Step 8B only is **AUTHORIZED_IN_PROGRESS**. Step 8C and Step 9 remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,18 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 8B Q0 — Owner acceptance and bounded position/protection authorization
+
+The owner supplied Step 8B in attachment `d7562e43-7578-4061-af51-bc4c78c5ce01/pasted-text.txt`, SHA256 `832f6ca6cc7cf0fc5c17693b27dbfd6ee0227600c14603921575732fc1da8537`. It explicitly accepts Step 8A as LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION and accepts the exact producer-through-admission transition recorded in [Runtime foundation](MEME_LIVE_RUNTIME_FOUNDATION_V1.md#a4--frozen-transition-review-and-closeout). Clean isolated local and remote LIVE branch HEAD both matched `d9469f9ddab55655bf7c1abf0ea2aaf3988757b0` before Q0. Frozen Step-8A implementation remains `c5ddb536560b80cdabc5a5c10dfbb6ffc9e19d5e`; its 10-suite / 728-check qualification remains authoritative and is not rerun by Q0.
+
+Only **M02, M05 and M06** are promoted to VERIFIED, within their documented Step-8A boundaries. Matrix after Q0: **35 VERIFIED / 20 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Q0 is documentation/control only: no worker, production-source edit, tests or regression. It is committed and normally pushed before B1.
+
+Step 8B authorizes four bounded engineering items followed by review: B1 actual finalized Ledger position -> one selected accepted controller; B2 acquisition-bound observations and immutable knowledge cuts; B3 durable protective obligation -> actual-unit SELL action; B4 existing Execution/Ledger outcomes -> continuous protection/replacement state; B5 bounded frozen transition review. CHIEF may record LOCAL PASS after review, commit/push each checkpoint normally and continue automatically, overriding AGENTS.md only for those bounded statuses/publication. This does not grant Step-8B project acceptance.
+
+CHIEF/workers use Astra High by default. Extra High requires a concrete difficult position/knowledge-cut/obligation/retry-state problem; Ultra requires a critical ambiguity or failed lower-level resolution. One consequential worker at a time. Tests are targeted/directly affected with scoped static checks; full Runtime regression belongs to the Step-8C freeze unless a concrete shared accepted contract is invalidated here.
+
+The new authorization supersedes historical Step-8B prohibitions only for this bounded transition. Synthetic explicit track selection is allowed for engineering; **M09 remains HUMAN_EXTERNAL** and no real production track is selected. No Step 8C, Step 9, full Runtime loop/second trade, DRY graph, general recovery/supervision, production key, real mainnet sign/send/broadcast, T010/T011 or capital mutation is authorized. The protected runtime checkout remains untouched. **STOP after Step 8B.**
 
 ### Step 8A Q0 — Owner acceptance and producer authorization
 
