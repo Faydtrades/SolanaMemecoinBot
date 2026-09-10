@@ -4,7 +4,8 @@ One serialized step selects protection, then truth reconciliation/application,
 then entry with actual V1 capacity. Concrete external facts/transports configure
 existing consumers, never replace admission, execution, settlement or protection.
 Satisfied protection retires through Ledger before fresh candidate admission.
-This LIVE root has no DRY switch, cold reconstruction or service loop.
+The separate C4 cold factory reconstructs these pointers from durable owners.
+This LIVE root has no DRY switch or service loop.
 """
 from __future__ import annotations
 
@@ -124,6 +125,8 @@ class RuntimeCompositionV01:
         return observed
 
     def _source_page(self, sample, cut):
+        if self.producer is None:
+            return "SOURCE_UNAVAILABLE_OR_PROFILE_EXHAUSTED"
         try:
             # Drain the accepted minimum prepared watermark, including a fence
             # already retained by the producer. Never skip it with a new clock.
@@ -165,7 +168,7 @@ class RuntimeCompositionV01:
         sources = [r.payload["source"] for r in evidence if r.payload["source"] is not None]
         if not due:
             try:
-                through = self.producer.next_event_sequence-1
+                through = -1 if self.producer is None else self.producer.next_event_sequence-1
                 after = sources[-1]["through_sequence"] if sources else -1
                 proof_ids = tuple((seq, pair[0].content_digest, pair[1].content_digest)
                     for seq, pair in sorted((proofs or {}).items()))
@@ -305,6 +308,8 @@ class RuntimeCompositionV01:
             return self._retire(sample, retirement_wallet)
         if self._entry_action_id is not None and self._binding is None:
             action = self.ledger.action(self._entry_action_id)
+            if self.producer is None:
+                return self._result("SOURCE_HELD", "COLD_SOURCE_RECONSTRUCTION_UNAVAILABLE", action=action)
             own = [item for item in snapshot["reservations"] if item.root_id == action.root_id]
             if snapshot["positions"] or len(snapshot["reservations"]) != 1 or len(own) != 1 or snapshot["funding"].quarantine_reasons:
                 return self._result("HELD", "V1_OCCUPIED_OR_QUARANTINED", action=action)
