@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 7 / Execution** are attributed below in the existing CHIEF task. Step-6 status remains **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS**, within its documented supported profile, under the explicit owner decision below. Step 7 is **IMPLEMENTED_PENDING_PROJECT_REVIEW** within the supplied boundary, with implementation frozen at `14d193c86ec77bb4c183fc4dfbd3cb08f82cc4c9`; final qualification is recorded in [Execution foundation](MEME_LIVE_EXECUTION_FOUNDATION_V1.md#q5--system-transition-review-and-project-handoff). Historical evidence remains scoped to its recorded checkpoint; the latest supplied decision and bounded authorization govern current work.
+Owner instructions through **MEME-LIVE — STEP 8A / Continuous Producer Foundation** are attributed below. Step 7 is **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS**, and the demonstrated Evidence -> Ledger -> Authority -> Execution -> Evidence/Ledger component SYSTEM TRANSITION is **ACCEPTED** within its documented boundaries. Step 8A only is **AUTHORIZED_IN_PROGRESS**. Step 8B, Step 8C and Step 9 remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,18 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 8A Q0 — Owner acceptance and producer authorization
+
+The owner supplied attachment `52d912b3-4ce8-478d-831c-0bfb719a3469/pasted-text.txt`, SHA256 `f56614ed199ace8179d67d37fa71d393a9dfe458805e097bd6bd826fff2e80e8`, explicitly approving the bounded Step-7 project conclusions. This supplies the human/project-owner acceptance required by AGENTS.md. Clean isolated local and remote LIVE branch HEAD both matched `9b9f210320bf43ecff37007bf11f3e63995b6a15` before Q0.
+
+**STEP 7 / Execution: PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS.** The demonstrated **Evidence -> Ledger -> Authority -> Execution -> Evidence/Ledger component SYSTEM TRANSITION is ACCEPTED** within the existing documented boundaries. Frozen implementation is `14d193c86ec77bb4c183fc4dfbd3cb08f82cc4c9`; final evidence publication is `9b9f210320bf43ecff37007bf11f3e63995b6a15`. The [31-suite / 4,526-check evidence](MEME_LIVE_EXECUTION_FOUNDATION_V1.md#final-frozen-regression), all suite exits 0, remains authoritative and is not rerun by Q0.
+
+Exactly **M15-M17, M20, M24-M33, M37, M39-M40 and M42** are promoted to VERIFIED within their previously reviewed component boundaries. Post-Q0 matrix: **32 VERIFIED, 23 OWNED_NOT_BUILT, 6 HUMAN_EXTERNAL, 0 BLOCKED; 61 total**. Q0 is control/documentation only: no worker, source change, tests or regression. It is committed and normally pushed before A1.
+
+Step 8A only is authorized: A1 same-lineage checkpointable producer; A2 bounded continuation/retirement; A3 durable candidate handoff into existing LIVE admission; A4 bounded transition review. One consequential worker and one reviewed/published checkpoint at a time. CHIEF/workers use Astra High by default; Extra High requires concrete difficult producer-state/checkpoint/replay semantics, and Ultra requires a critical ambiguity or failed lower-level resolution.
+
+This latest instruction supersedes historical Step-8 prohibitions only for Step 8A. Actual-position controllers, exit/protection/SELL scheduling, DRY/full Runtime composition and Operations/recovery remain later-owned. **Step 8B, Step 8C and Step 9 remain NOT AUTHORIZED.** No production key, real mainnet mutation, capital action or protected-checkout modification is authorized.
 
 ### Step 7 — Bounded Execution authorization
 

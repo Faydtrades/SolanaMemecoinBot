@@ -1,6 +1,6 @@
 # MEME-LIVE Execution Foundation v1
 
-Status: **IMPLEMENTED_PENDING_PROJECT_REVIEW**. Owner instruction and exact starting revision are recorded in [Owner acceptance and lane status](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-7--bounded-execution-authorization). Governing scope: [Architecture v2, Execution](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#45-execution--exact-envelope-signing-and-submission). Q1-Q4 implementation is frozen at `14d193c86ec77bb4c183fc4dfbd3cb08f82cc4c9`; the Q5 record below governs final qualification. No project/package PASS is asserted.
+Status: **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS** under [Step-8A Q0 owner acceptance](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8a-q0--owner-acceptance-and-producer-authorization). The demonstrated Evidence -> Ledger -> Authority -> Execution -> Evidence/Ledger component SYSTEM TRANSITION is **ACCEPTED** within this document's boundaries. Frozen implementation: `14d193c86ec77bb4c183fc4dfbd3cb08f82cc4c9`; final evidence publication: `9b9f210320bf43ecff37007bf11f3e63995b6a15`. Q1-Q5 below preserve the historical engineering/review sequence.
 
 ## Bounded queue and consumer contracts
 
@@ -144,7 +144,7 @@ The initial export attempt stopped before tests because an archive operation req
 
 ### Affected matrix disposition
 
-The [lifecycle matrix](MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md) records component-scoped eligibility only, with no classification promotion:
+The following Q5 recommendations were subsequently explicitly owner-approved in Step-8A Q0. The [lifecycle matrix](MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md) now records these 18 rows as VERIFIED at exactly these boundaries:
 
 | Eligible rows | Actual new producer -> durable boundary -> consumer evidence | Separate dependency |
 |---|---|---|
@@ -157,7 +157,7 @@ The [lifecycle matrix](MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md) records comp
 | M37 | Actual source gap denies ENTRY -> intact reduction permission -> actual Execution; hard stop still denies SELL | Runtime trigger/due-decision production |
 | M42 | Actual SELL -> durable settlement/accounting -> residual consumed by the next reduction | Runtime residual protection and retirement orchestration |
 
-These are **18 eligible rows**, pending project review at their stated boundaries. All 61 classifications remain **14 VERIFIED, 41 OWNED_NOT_BUILT, 6 HUMAN_EXTERNAL, 0 BLOCKED**. In particular M34-M36, M38 and M41 remain OWNED_NOT_BUILT, as do Runtime/Operations continuation, recovery and DRY orchestration. A fixture handoff, due obligation/SELL decision or retirement input is not proof of its production scheduler/controller. No genuinely new required downstream transition was discovered.
+These **18 component-scoped promotions are owner-approved** under [Step-8A Q0](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8a-q0--owner-acceptance-and-producer-authorization). Counts: **32 VERIFIED, 23 OWNED_NOT_BUILT, 6 HUMAN_EXTERNAL, 0 BLOCKED**, across 61 rows. M34-M36, M38 and M41 remain OWNED_NOT_BUILT, as do later Runtime/Operations transitions. Fixture handoff, due-obligation/SELL decisions and retirement inputs do not prove their production scheduler/controller. No genuinely new downstream transition was discovered.
 
 ### Checkpoint chain and safety boundary
 
