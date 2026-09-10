@@ -41,14 +41,20 @@ from .ledger_custody_v0_1 import (
     FundingView, PositionView, ComparisonView,
 )
 from .transaction_evidence_v0_1 import _known_finalized_anchors_consistent
+from .ledger_ports_v0_1 import (
+    require_admitted_action, ConsumerCut, AdmissionInput, ProtectiveHandoffInput, RetirementInput, DryTerminalInput, ConsumerPortReceipt,
+    GROUP_KINDS, admission_from_record, handoff_from_record, retirement_from_record, dry_terminal_from_record,
+    port_receipt_from_record, require_common_cut, admit_reservation, activate_protection, retire_reservation, terminate_dry,
+    reservation_identity,
+)
 
 APPLICATION_ID = 0x4C454447
-STORAGE_VERSION = 4
+STORAGE_VERSION = 5
 RECEIPT_VERSION = "live_ledger_wallet_receipt_v0.1"
 GENERATION_VERSION = "live_ledger_writer_generation_v0.1"
 COMMIT_VERSION = "live_ledger_concrete_commit_v0.1"
 _COMMIT_KINDS = frozenset(("WALLET", "INBOX", "NON_ACCEPTANCE", "ACTION", "ATTEMPT", "ATTEMPT_STAGE", "CHAIN_EVIDENCE",
-                         "SETTLEMENT_APPLICATION", "WALLET_COMPARISON"))
+                 "SETTLEMENT_APPLICATION", "WALLET_COMPARISON", *GROUP_KINDS))
 _OPEN_TOKEN = object()
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _PROTECTED_RUNTIME = Path("D:/Tradingbot/solana_memecoin_bot_phase1_v0_1")
@@ -163,12 +169,18 @@ _DDL = {
     "ledger_resolution_projection": """CREATE TABLE ledger_resolution_projection (
         attempt_id TEXT PRIMARY KEY NOT NULL REFERENCES ledger_attempts(attempt_id), signature TEXT NOT NULL UNIQUE,
         content_digest TEXT NOT NULL, payload_json TEXT NOT NULL)""",
+    "ledger_consumer_groups": """CREATE TABLE ledger_consumer_groups (
+        commit_seq INTEGER PRIMARY KEY REFERENCES ledger_commits(seq) DEFERRABLE INITIALLY DEFERRED,
+        ingestion_key TEXT NOT NULL UNIQUE, kind TEXT NOT NULL,
+        admission_root TEXT UNIQUE REFERENCES ledger_candidate_inbox(root_id),
+        protection_position TEXT UNIQUE, retired_reservation TEXT UNIQUE, dry_action TEXT UNIQUE REFERENCES ledger_pending_actions(action_id),
+        receipt_digest TEXT NOT NULL UNIQUE, payload_json TEXT NOT NULL)""",
 }
 for _table in ("ledger_domain", "ledger_writer_generations", "ledger_wallet_observations", "ledger_baseline_journal",
                "ledger_commits", "ledger_candidate_inbox", "ledger_inbox_dispositions", "ledger_pending_actions",
                "ledger_attempts", "ledger_attempt_stages", "ledger_signature_bindings",
                "ledger_chain_observations", "ledger_chain_receipts", "ledger_custody_inputs", "ledger_application_receipts",
-               "ledger_wallet_comparisons", "ledger_economic_postings"):
+               "ledger_wallet_comparisons", "ledger_economic_postings", "ledger_consumer_groups"):
     for _operation in ("UPDATE", "DELETE"):
         _name = f"{_table}_no_{_operation.lower()}"
         _DDL[_name] = (f"CREATE TRIGGER {_name} BEFORE {_operation} ON {_table} BEGIN "
@@ -525,7 +537,7 @@ class LedgerRepository:
             if own and self._conn.in_transaction:
                 self._conn.execute("ROLLBACK")
 
-    def consumer_snapshot(self, *, max_positions=1024, max_accounts=2048):
+    def consumer_snapshot(self, *, max_positions=1024, max_accounts=2048, max_reservations=2048):
         with self._trusted_read():
             # L6 may mark lawful retirement; historical positions/resolutions
             # remain addressable and never consume a lifetime consumer limit.
@@ -533,22 +545,31 @@ class LedgerRepository:
             needed = {item.account for item in positions}
             accounts = tuple(item for item in self._custody.accounts if item.presence == "PRESENT" or item.pubkey in needed
                              or item.mint == "So11111111111111111111111111111111111111112")
+            reservations = tuple(item for item in self._custody.reservations if item.status != "RETIRED")
             if (type(max_positions) is not int or type(max_accounts) is not int or not 1 <= max_positions <= 4096
-                    or not 1 <= max_accounts <= 8192 or len(positions) > max_positions or len(accounts) > max_accounts):
+                    or not 1 <= max_accounts <= 8192 or len(positions) > max_positions or len(accounts) > max_accounts
+                    or type(max_reservations) is not int or not 1 <= max_reservations <= 8192 or len(reservations) > max_reservations):
                 raise LedgerConflict("LEDGER_CONSUMER_SNAPSHOT_BOUND_EXCEEDED")
             state = self._custody
             value = state.latest_comparison
             comparison = None if value is None else ComparisonView(value.input_digest, value.evidence_digest, value.evaluated_at_utc,
                 value.required_min_context_slot, value.context_slot, value.profile_fingerprint, value.anchor, value.common_revision,
-                value.common_digest, value.pending_attempts, value.disposition, value.reasons, len(value.differences))
-            return {"fence": self.write_fence(), "custody_digest": state.content_digest,
+                value.common_digest, value.pending_attempts, value.disposition, value.reasons, len(value.differences),
+                value.target_custody_digest, value.effects_through_sequence, value.recognized_wallet_context_floor)
+            fence = self.write_fence()
+            return {"fence": fence, "custody_digest": state.content_digest, "mode": self.domain.mode,
+                    "consumer_cut": ConsumerCut(self.domain.economic_domain_id, fence.revision, fence.last_receipt_digest, state.content_digest),
                     "funding": FundingView(state.economic_domain_id, state.baseline_receipt_digest, state.known_initial_native_lamports,
                         state.native_lamports, state.network_fees_paid_lamports, state.venue_fees_paid_sol_lamports,
                         state.venue_fees_paid_wsol_units, state.external_setup_paid_lamports, state.anchor, state.last_effect_sequence,
                         state.quarantine_reasons),
                     "positions": tuple(PositionView(item.position_id, item.root_id, item.mint, item.token_program, item.account,
-                        item.acquired_units, item.sold_units, item.remaining_units, item.acquisition_signature, item.status) for item in positions),
+                        item.acquired_units, item.sold_units, item.remaining_units, item.acquisition_signature, item.status,
+                        item.usable and not state.quarantined, item.has_protective_handoff, item.protective_binding_id) for item in positions),
+                    "reservations": reservations,
+                    "protections": tuple(item for item in state.protections if any(position.position_id == item.handoff.position_id for position in positions)),
                     "accounts": accounts, "pending_attempts": self._pending_attempts(), "latest_comparison": comparison,
+                    "required_wallet_context_slot": max(state.latest_usable_wallet_context_slot, state.latest_qualified_wallet_anchor_slot, 0 if state.anchor is None else state.anchor.slot),
                     "comparison_is_historical": True, "authority_current": False,
                     "requires_current_external_consumer_validation": True}
 
@@ -659,6 +680,9 @@ class LedgerRepository:
     def inbox_disposition(self, root_id: str) -> str:
         if self.candidate(root_id) is None:
             raise LedgerConflict("LEDGER_CANDIDATE_NOT_FOUND")
+        reservation = next((item for item in self._custody.reservations if item.root_id == root_id), None)
+        if reservation is not None:
+            return reservation.terminal_disposition if reservation.status == "RETIRED" else "ACCEPTED"
         row = self._conn.execute("SELECT disposition FROM ledger_inbox_dispositions WHERE root_id=? ORDER BY ordinal DESC LIMIT 1",
                                  (root_id,)).fetchone()
         return "RECEIVED" if row is None else row[0]
@@ -705,6 +729,8 @@ class LedgerRepository:
                 or action.position_id != position_identity(self.domain, action.root_id, action.mint)
                 or action.side == "BUY" and action.claimed_entry_deadline_us < candidate.generated_at_us):
             raise LedgerConflict("LEDGER_ACTION_CANDIDATE_WINNER_OR_POSITION_MISMATCH")
+        if not allow_terminal:
+            require_admitted_action(self._custody, action)
         if not allow_terminal and self.inbox_disposition(action.root_id) in TERMINAL_INBOX:
             raise LedgerConflict("LEDGER_CANDIDATE_HAS_TERMINAL_TOMBSTONE")
         if self._conn.execute("SELECT 1 FROM ledger_baseline_journal WHERE baseline_domain_id=?", (self.domain.economic_domain_id,)).fetchone() is None:
@@ -774,6 +800,9 @@ class LedgerRepository:
 
     def _replay_stage(self, previous: StoredAttempt, record: dict, generation: int) -> StoredAttempt:
         prep = previous.preparation
+        if self.domain.mode == "DRY" and (record.get("to_stage") not in ("EXACT_SIMULATED", "UNKNOWN", "CANCELLED_UNSIGNED")
+                or record.get("to_stage") == "CANCELLED_UNSIGNED" and record.get("local_cancel") is not True):
+            raise LedgerConflict("LEDGER_DRY_SIGNED_SEND_OR_LIVE_CANCEL_GRAPH_FORBIDDEN")
         if (set(record) != {"version", "attempt_id", "revision", "idempotency_key", "from_stage", "to_stage",
                            "recorded_at_utc", "writer_generation", "stage_input", "local_cancel"}
                 or record["version"] != "live_ledger_attempt_stage_receipt_v0.1"
@@ -836,11 +865,15 @@ class LedgerRepository:
         finality = self.attempt_finality(attempt_id)
         resolution = self._custody.resolution(attempt_id)
         economic = "UNAPPLIED" if resolution is None else resolution.disposition
+        dry = next((item for item in self._custody.dry_dispositions if item.input.attempt_id == attempt_id), None)
+        action = self.action(prep.action_id)
+        reservation = self.reservation(action.root_id)
         return replace(value, chain_finality=finality.disposition, chain_quarantined=finality.quarantined,
             lane_held=self._lane()[0] == attempt_id, economic_disposition=economic,
             economically_applied=resolution is not None and resolution.disposition in ("FINALIZED_SUCCESS_APPLIED", "FINALIZED_FAILURE_APPLIED"),
-            custody_quarantined=self._custody.quarantined,
-            current_disposition="CUSTODY_QUARANTINED" if self._custody.quarantined else finality.disposition if resolution is None else economic)
+            custody_quarantined=self._custody.quarantined, current_inbox_disposition=self.inbox_disposition(action.root_id),
+            reservation_id=None if reservation is None else reservation.reservation_id,
+            current_disposition="NON_SUBMITTED" if dry is not None else "CUSTODY_QUARANTINED" if self._custody.quarantined else finality.disposition if resolution is None else economic)
 
     def attempt_finality(self, attempt_id: str) -> AttemptFinality:
         with self._trusted_read():
@@ -880,6 +913,8 @@ class LedgerRepository:
                                  evaluated_at_utc: str, fence: LedgerWriteFence) -> LedgerChainReceipt:
         """Commit original Evidence and its re-derived decision together, no lane release."""
         try:
+            if self.domain.mode != "LIVE":
+                raise LedgerConflict("LEDGER_DRY_HAS_NO_SIGNED_CHAIN_EVIDENCE_GRAPH")
             public_reference(ingestion_key)
             evaluated_at_utc = ledger_utc(evaluated_at_utc)
             original = chain_observation_to_json(observation)
@@ -971,6 +1006,209 @@ class LedgerRepository:
                 raise LedgerConflict("LEDGER_CUSTODY_INPUT_LOOKUP_CONFLICT")
             return value
 
+    def reservation(self, root_id):
+        with self._trusted_read():
+            digest_value(root_id)
+            return next((item for item in self._custody.reservations if item.root_id == root_id), None)
+
+    def protection(self, position_id):
+        with self._trusted_read():
+            digest_value(position_id)
+            return next((item for item in self._custody.protections if item.handoff.position_id == position_id), None)
+
+    def _port_row(self, receipt):
+        retired = (receipt.retirement.reservation_id if receipt.retirement_disposition == "RETIRED" else
+                   reservation_identity(self.domain.economic_domain_id, receipt.dry_terminal.root_id) if receipt.dry_terminal is not None else None)
+        return (receipt.sequence, receipt.ingestion_key, receipt.kind,
+            None if receipt.admission is None else receipt.admission.action.root_id,
+            None if receipt.handoff is None else receipt.handoff.position_id, retired,
+            None if receipt.dry_terminal is None else receipt.dry_terminal.action_id,
+            receipt.content_digest, canonical_json(receipt.to_record()))
+
+    def _port_receipt_row(self, row):
+        receipt = port_receipt_from_record(strict_json_object(row[-1]))
+        if self._port_row(receipt) != row:
+            raise LedgerConflict("LEDGER_CONSUMER_GROUP_CONTENT_OR_LINK_CONFLICT")
+        return receipt
+
+    def port_receipt(self, ingestion_key):
+        with self._trusted_read():
+            public_reference(ingestion_key)
+            row = self._conn.execute("SELECT * FROM ledger_consumer_groups WHERE ingestion_key=?", (ingestion_key,)).fetchone()
+            return None if row is None else self._port_receipt_row(row)
+
+    def _port_at_sequence(self, sequence):
+        row = self._conn.execute("SELECT * FROM ledger_consumer_groups WHERE commit_seq=?", (sequence,)).fetchone()
+        if row is None:
+            raise LedgerConflict("LEDGER_CONSUMER_GROUP_REFERENCE_MISSING")
+        return self._port_receipt_row(row)
+
+    def _root_attempts(self, root_id):
+        return tuple(self._attempt(row[0]) for row in self._conn.execute(
+            "SELECT t.attempt_id FROM ledger_attempts t JOIN ledger_pending_actions a ON a.action_id=t.action_id "
+            "WHERE a.root_id=? ORDER BY t.commit_seq", (root_id,)))
+
+    def _simulation_input_digest(self, attempt_id):
+        values = []
+        for payload, in self._conn.execute("SELECT payload_json FROM ledger_attempt_stages WHERE attempt_id=? ORDER BY revision", (attempt_id,)):
+            row = strict_json_object(payload)
+            if row["to_stage"] == "EXACT_SIMULATED":
+                values.append(content_fingerprint(stage_from_record(row["stage_input"]).to_record()))
+        if len(values) > 1:
+            raise LedgerConflict("LEDGER_ORIGINAL_SIMULATION_LINEAGE_CONFLICT")
+        return None if not values else values[0]
+
+    def _finish_port_group(self, receipt, updated, applications=None):
+        """Fixed group insertion only; caller appends the common commit."""
+        if not self._conn.in_transaction:
+            raise LedgerConflict("LEDGER_CONSUMER_GROUP_REQUIRES_OWNED_TRANSACTION")
+        self._conn.execute("INSERT INTO ledger_consumer_groups VALUES(?,?,?,?,?,?,?,?,?)", self._port_row(receipt))
+        self._store_custody_projection(updated)
+        self._pending_custody_bundle = (updated, self._applications if applications is None else applications, self._comparisons)
+
+    def admit(self, supplied, *, ingestion_key, fence):
+        """External exact terms + reservation + ACCEPTED, one common commit."""
+        try:
+            if type(supplied) is not AdmissionInput:
+                raise LedgerConflict("LEDGER_ADMISSION_INPUT_REQUIRED")
+            supplied = admission_from_record(strict_json_object(canonical_json(asdict(supplied))))
+            current = self._begin_economic_write(fence)
+            existing = self.port_receipt(ingestion_key)
+            reservation = self.reservation(supplied.action.root_id)
+            if existing is not None or reservation is not None:
+                original = existing if existing is not None else self._port_at_sequence(reservation.sequence)
+                if original.admission != supplied:
+                    raise LedgerConflict("LEDGER_ADMISSION_IMMUTABLE_CONTENT_CONFLICT")
+                self._commit()
+                return original
+            self._new_revision(fence, current)
+            require_common_cut(self.domain, self._custody, supplied.cut, current.revision, current.last_receipt_digest)
+            candidate = self._validate_action_parent(supplied.action)
+            updated = admit_reservation(self.domain, self._custody, candidate, self.inbox_disposition(supplied.action.root_id),
+                self._root_attempts(supplied.action.root_id), supplied, sequence=current.revision+1)
+            previous = self.action(supplied.action.action_id)
+            created = None
+            if previous is None:
+                self._insert_pending_action(supplied.action, current.revision+1)
+                created = supplied.action.content_digest
+            elif previous != supplied.action:
+                raise LedgerConflict("LEDGER_ADMISSION_STAGED_TERMS_CONFLICT")
+            receipt = ConsumerPortReceipt(current.revision+1, ingestion_key, "ADMISSION", supplied, None, None, None,
+                created, None, None, None, None, (), self._custody.content_digest, updated.content_digest)
+            self._finish_port_group(receipt, updated)
+            self._append_commit(receipt.kind, ingestion_key, receipt.content_digest, current)
+            self._commit()
+            return receipt
+        except BaseException as exc:
+            self._rollback_economic(exc)
+
+    def _protection_state(self, state, supplied, applications, *, sequence):
+        resolution = next((item for item in state.resolutions if item.signature == supplied.acquisition_signature), None)
+        acquisition = None if resolution is None else next((item for item in applications.values() if item.sequence == resolution.application_sequence), None)
+        chain = None if acquisition is None else self.chain_receipt(acquisition.chain_receipt_key)
+        return activate_protection(self.domain, state, supplied, acquisition, chain, sequence=sequence)
+
+    def record_protective_handoff(self, supplied, *, ingestion_key, fence):
+        try:
+            if type(supplied) is not ProtectiveHandoffInput:
+                raise LedgerConflict("LEDGER_PROTECTIVE_HANDOFF_INPUT_REQUIRED")
+            supplied = handoff_from_record(strict_json_object(canonical_json(asdict(supplied))))
+            current = self._begin_economic_write(fence)
+            existing, protection = self.port_receipt(ingestion_key), self.protection(supplied.position_id)
+            if existing is not None or protection is not None:
+                original = existing if existing is not None else self._port_at_sequence(protection.sequence)
+                if original.handoff != supplied:
+                    raise LedgerConflict("LEDGER_PROTECTION_BINDING_REPLACEMENT_FORBIDDEN")
+                self._commit()
+                return original
+            self._new_revision(fence, current)
+            require_common_cut(self.domain, self._custody, supplied.cut, current.revision, current.last_receipt_digest)
+            updated = self._protection_state(self._custody, supplied, self._applications, sequence=current.revision+1)
+            receipt = ConsumerPortReceipt(current.revision+1, ingestion_key, "PROTECTION", None, supplied, None, None,
+                None, None, None, None, None, (), self._custody.content_digest, updated.content_digest)
+            self._finish_port_group(receipt, updated)
+            self._append_commit(receipt.kind, ingestion_key, receipt.content_digest, current)
+            self._commit()
+            return receipt
+        except BaseException as exc:
+            self._rollback_economic(exc)
+
+    def _retirement_state(self, state, supplied, support, applications, *, current):
+        if type(support) is not WalletSupportInput or support.digest != supplied.wallet_support_digest or support.evaluated_at_utc != supplied.recorded_at_utc:
+            raise LedgerConflict("LEDGER_RETIREMENT_ORIGINAL_COMPARISON_INPUT_REQUIRED")
+        if support.required_min_context_slot < state.anchor.slot:
+            raise LedgerConflict("LEDGER_RETIREMENT_COMPARISON_BEHIND_RESULTING_SETTLEMENT_CUT")
+        comparison, updated = compare_wallet(self.domain, state, support, common_revision=current.revision,
+            common_digest=current.last_receipt_digest, pending_attempts=self._pending_attempts(),
+            chain_anchors=(anchor for facts in self._chain_facts.values() for anchor in facts.anchors))
+        resolution = state.resolution(supplied.terminal_attempt_id)
+        application = None if resolution is None else next((item for item in applications.values() if item.sequence == resolution.application_sequence), None)
+        updated, disposition, reasons = retire_reservation(self.domain, updated, supplied, self._root_attempts(supplied.root_id),
+            application, comparison, sequence=current.revision+1)
+        self._retain_custody_input(support)
+        return updated, comparison, disposition, reasons
+
+    def retire(self, supplied, support, *, ingestion_key, fence):
+        try:
+            if type(supplied) is not RetirementInput:
+                raise LedgerConflict("LEDGER_RETIREMENT_INPUT_REQUIRED")
+            supplied = retirement_from_record(strict_json_object(canonical_json(asdict(supplied))))
+            support = _support_from_json(_support_json(support))
+            current = self._begin_economic_write(fence)
+            existing = self.port_receipt(ingestion_key)
+            reservation = self.reservation(supplied.root_id)
+            if existing is None and reservation is not None and reservation.retired_sequence is not None:
+                existing = self._port_at_sequence(reservation.retired_sequence)
+            if existing is not None:
+                if existing.retirement != supplied or supplied.wallet_support_digest != support.digest:
+                    raise LedgerConflict("LEDGER_RETIREMENT_IDEMPOTENCY_CONTENT_CONFLICT")
+                self._commit()
+                return existing
+            self._new_revision(fence, current)
+            require_common_cut(self.domain, self._custody, supplied.cut, current.revision, current.last_receipt_digest)
+            updated, comparison, disposition, reasons = self._retirement_state(self._custody, supplied, support, self._applications, current=current)
+            receipt = ConsumerPortReceipt(current.revision+1, ingestion_key, "RETIREMENT", None, None, supplied, None,
+                None, None, None, content_fingerprint(asdict(comparison)), disposition, reasons, self._custody.content_digest, updated.content_digest)
+            self._finish_port_group(receipt, updated)
+            self._append_commit(receipt.kind, ingestion_key, receipt.content_digest, current)
+            self._commit()
+            return receipt
+        except BaseException as exc:
+            self._rollback_economic(exc)
+
+    def finish_dry(self, supplied, *, ingestion_key, fence):
+        try:
+            if type(supplied) is not DryTerminalInput:
+                raise LedgerConflict("LEDGER_DRY_TERMINAL_INPUT_REQUIRED")
+            supplied = dry_terminal_from_record(strict_json_object(canonical_json(asdict(supplied))))
+            current = self._begin_economic_write(fence)
+            existing = self.port_receipt(ingestion_key)
+            previous = next((item for item in self._custody.dry_dispositions if item.input.root_id == supplied.root_id), None)
+            if existing is not None or previous is not None:
+                original = existing if existing is not None else self._port_at_sequence(previous.sequence)
+                if original.dry_terminal != supplied:
+                    raise LedgerConflict("LEDGER_DRY_TERMINAL_CONTENT_CONFLICT")
+                self._commit()
+                return original
+            self._new_revision(fence, current)
+            require_common_cut(self.domain, self._custody, supplied.cut, current.revision, current.last_receipt_digest)
+            attempts = self._root_attempts(supplied.root_id)
+            simulation = None if supplied.attempt_id is None else self._simulation_input_digest(supplied.attempt_id)
+            updated = terminate_dry(self.domain, self._custody, supplied, attempts, simulation, sequence=current.revision+1)
+            lane = self._lane()
+            if any(item.recorded_stage != "CANCELLED_UNSIGNED" and lane[0] != item.preparation.attempt_id for item in attempts):
+                raise LedgerConflict("LEDGER_DRY_UNRESOLVED_LINEAGE_REQUIRES_OWN_LANE")
+            if supplied.attempt_id is not None and lane[0] == supplied.attempt_id:
+                self._change_lane(lane, None, current.revision+1)
+            receipt = ConsumerPortReceipt(current.revision+1, ingestion_key, "DRY_NON_SUBMITTED", None, None, None, supplied,
+                None, None, None, None, None, (), self._custody.content_digest, updated.content_digest)
+            self._finish_port_group(receipt, updated)
+            self._append_commit(receipt.kind, ingestion_key, receipt.content_digest, current)
+            self._commit()
+            return receipt
+        except BaseException as exc:
+            self._rollback_economic(exc)
+
     def _insert_settlement_application(self, attempt, chain, support, *, ingestion_key, recorded_at_utc, current):
         """No commit: L6 may add its concrete handoff facts in this transaction.
 
@@ -1012,6 +1250,8 @@ class LedgerRepository:
         or retry grant. Caller proposals and balance overrides are not accepted.
         """
         try:
+            if self.domain.mode != "LIVE":
+                raise LedgerConflict("LEDGER_DRY_HAS_NO_ECONOMIC_APPLICATION_GRAPH")
             public_reference(ingestion_key)
             public_reference(chain_receipt_key)
             recorded_at_utc = ledger_utc(recorded_at_utc)
@@ -1033,6 +1273,69 @@ class LedgerRepository:
             receipt = self._insert_settlement_application(attempt, chain, support, ingestion_key=ingestion_key,
                 recorded_at_utc=recorded_at_utc, current=current)
             self._append_commit("SETTLEMENT_APPLICATION", ingestion_key, receipt.content_digest, current)
+            self._commit()
+            return receipt
+        except BaseException as exc:
+            self._rollback_economic(exc)
+
+    def apply_settlement_with_ports(self, attempt_id, *, chain_receipt_key, support, ingestion_key,
+            recorded_at_utc, fence, handoff=None, retirement=None, retirement_support=None):
+        """One closed settlement + protection OR retirement group, with no callbacks."""
+        try:
+            if self.domain.mode != "LIVE" or (handoff is None) == (retirement is None):
+                raise LedgerConflict("LEDGER_LIVE_CLOSED_SETTLEMENT_PORT_GROUP_REQUIRED")
+            if handoff is not None:
+                handoff = handoff_from_record(strict_json_object(canonical_json(asdict(handoff))))
+                if retirement_support is not None:
+                    raise LedgerConflict("LEDGER_UNEXPECTED_RETIREMENT_SUPPORT")
+            else:
+                retirement = retirement_from_record(strict_json_object(canonical_json(asdict(retirement))))
+                retirement_support = _support_from_json(_support_json(retirement_support))
+            supplied = handoff if handoff is not None else retirement
+            recorded_at_utc = ledger_utc(recorded_at_utc)
+            if supplied.recorded_at_utc != recorded_at_utc:
+                raise LedgerConflict("LEDGER_GROUP_RECORDED_TIME_CONFLICT")
+            if support is not None:
+                support = _support_from_json(_support_json(support))
+            public_reference(ingestion_key)
+            child_key = ingestion_key+":application"
+            public_reference(child_key)
+            current = self._begin_economic_write(fence)
+            existing = self.port_receipt(ingestion_key)
+            if existing is not None:
+                child = self._applications.get(child_key)
+                if (existing.handoff != handoff or existing.retirement != retirement or child is None
+                        or (child.attempt_id, child.chain_receipt_key, child.support, child.recorded_at_utc) !=
+                           (attempt_id, chain_receipt_key, support, recorded_at_utc)
+                        or retirement is not None and retirement.wallet_support_digest != retirement_support.digest):
+                    raise LedgerConflict("LEDGER_SETTLEMENT_GROUP_IDEMPOTENCY_CONTENT_CONFLICT")
+                self._commit()
+                return existing
+            self._new_revision(fence, current)
+            require_common_cut(self.domain, self._custody, supplied.cut, current.revision, current.last_receipt_digest)
+            attempt = self.attempt(attempt_id)
+            if attempt is None:
+                raise LedgerConflict("LEDGER_APPLICATION_ATTEMPT_NOT_FOUND")
+            action = self.action(attempt.preparation.action_id)
+            if ((supplied.root_id, supplied.position_id) != (action.root_id, action.position_id)
+                    or handoff is not None and supplied.acquisition_signature != attempt.primary_signature
+                    or retirement is not None and supplied.terminal_attempt_id != attempt_id):
+                raise LedgerConflict("LEDGER_SETTLEMENT_GROUP_ROOT_POSITION_ATTEMPT_CONFLICT")
+            original_digest = self._custody.content_digest
+            application = self._insert_settlement_application(attempt, self.chain_receipt(chain_receipt_key), support,
+                ingestion_key=child_key, recorded_at_utc=recorded_at_utc, current=current)
+            state, applications, _ = self._pending_custody_bundle
+            comparison_digest, disposition, reasons = None, None, ()
+            if handoff is not None:
+                state = self._protection_state(state, handoff, applications, sequence=current.revision+1)
+            else:
+                state, comparison, disposition, reasons = self._retirement_state(state, retirement, retirement_support, applications, current=current)
+                comparison_digest = content_fingerprint(asdict(comparison))
+            receipt = ConsumerPortReceipt(current.revision+1, ingestion_key, "SETTLEMENT_PORTS", None, handoff, retirement, None,
+                None, child_key, application.content_digest, comparison_digest, disposition, reasons,
+                original_digest, state.content_digest, application.decision.disposition)
+            self._finish_port_group(receipt, state, applications)
+            self._append_commit(receipt.kind, ingestion_key, receipt.content_digest, current)
             self._commit()
             return receipt
         except BaseException as exc:
@@ -1223,6 +1526,8 @@ class LedgerRepository:
             at = ledger_utc(recorded_at_utc)
             current = self._begin_economic_write(fence)
             old = self.inbox_disposition(root_id)
+            if self.reservation(root_id) is not None:
+                raise LedgerConflict("LEDGER_ADMITTED_ROOT_REQUIRES_ATOMIC_RETIREMENT_OR_DRY_RELEASE")
             if utc_microseconds(at) < self.candidate(root_id).generated_at_us:
                 raise LedgerConflict("LEDGER_NONACCEPTANCE_PRECEDES_ORIGINAL_CANDIDATE")
             rows = self._conn.execute("SELECT ordinal,payload_json FROM ledger_inbox_dispositions WHERE root_id=? ORDER BY ordinal", (root_id,)).fetchall()
@@ -1319,8 +1624,15 @@ class LedgerRepository:
                                 baseline_receipt: LedgerWalletReceipt | None) -> tuple[dict, dict]:
         """Full finite replay on open/audit; ordinary appends validate touched facts."""
         records, events, candidates, actions, attempts = {}, {}, {}, {}, {}
+        groups = {item.sequence: item for item in (self._port_receipt_row(row) for row in self._conn.execute("SELECT * FROM ledger_consumer_groups"))}
+        children = {seq: {} for seq in groups}
 
         def remember(seq, kind, key, digest, event):
+            if seq in groups:
+                if kind not in ("ACTION", "SETTLEMENT_APPLICATION") or kind in children[seq] or seq not in commits:
+                    raise LedgerConflict("LEDGER_UNEXPECTED_OR_DUPLICATE_GROUP_CHILD")
+                children[seq][kind] = (key, digest, event)
+                return
             if seq in records or seq not in commits:
                 raise LedgerJournalError("LEDGER_ECONOMIC_COMMIT_BINDING_INVALID")
             records[seq] = (kind, key, digest)
@@ -1412,6 +1724,20 @@ class LedgerRepository:
                 raise LedgerConflict("LEDGER_COMPARISON_RECEIPT_CONTENT_CONFLICT")
             used_inputs.add(input_digest)
             remember(seq, "WALLET_COMPARISON", key, digest, (record, inputs[input_digest]))
+        for seq, group in groups.items():
+            expected_children = ({"ACTION"} if group.created_action_digest is not None else set()) | ({"SETTLEMENT_APPLICATION"} if group.application_key is not None else set())
+            if children[seq].keys() != expected_children or seq not in commits or seq in records:
+                raise LedgerConflict("LEDGER_GROUP_CHILD_SET_CONFLICT")
+            if "ACTION" in children[seq] and children[seq]["ACTION"][:2] != (group.admission.action.action_id, group.created_action_digest):
+                raise LedgerConflict("LEDGER_GROUP_ACTION_LINK_CONFLICT")
+            if "SETTLEMENT_APPLICATION" in children[seq] and children[seq]["SETTLEMENT_APPLICATION"][:2] != (group.application_key, group.application_digest):
+                raise LedgerConflict("LEDGER_GROUP_APPLICATION_LINK_CONFLICT")
+            if group.retirement is not None:
+                if group.retirement.wallet_support_digest not in inputs:
+                    raise LedgerConflict("LEDGER_GROUP_RETIREMENT_ORIGINAL_INPUT_MISSING")
+                used_inputs.add(group.retirement.wallet_support_digest)
+            records[seq] = (group.kind, group.ingestion_key, group.content_digest)
+            events[seq] = (group.kind, group)
         if used_inputs != inputs.keys():
             raise LedgerConflict("LEDGER_ORPHAN_CUSTODY_ORIGINAL_INPUT")
 
@@ -1421,6 +1747,39 @@ class LedgerRepository:
         applications, comparisons, chain_seen, postings = {}, {}, {}, []
         signatures = {}
         lane, lane_revision = None, 0
+        simulations = {}
+
+        def replay_application(seq, item):
+            nonlocal custody, lane, lane_revision
+            record, support = item
+            attempt_id = record["attempt_id"]
+            previous, chain = live_attempts.get(attempt_id), chain_seen.get(record["chain_receipt_key"])
+            if (previous is None or chain is None or chain.attempt_id != attempt_id
+                    or custody.resolution(attempt_id) is None and lane != attempt_id):
+                raise LedgerConflict("LEDGER_APPLICATION_REPLAY_ORIGINAL_LINEAGE_CONFLICT")
+            finality = chain_facts[attempt_id].state
+            view = replace(previous, chain_finality=finality.disposition, chain_quarantined=finality.quarantined,
+                           lane_held=lane == attempt_id)
+            at = ledger_utc(record["recorded_at_utc"])
+            if at < chain.decision.evaluated_at_utc or support is not None and at < support.evaluated_at_utc:
+                raise LedgerConflict("LEDGER_APPLICATION_REPLAY_TIME_CONFLICT")
+            decision, updated = adjudicate_application(self.domain, custody, live_actions[previous.preparation.action_id],
+                view, chain, support, sequence=seq, recorded_at_utc=at,
+                chain_anchors=(anchor for facts in chain_facts.values() for anchor in facts.anchors))
+            expected = LedgerApplicationReceipt(seq, record["ingestion_key"], attempt_id, chain.ingestion_key, chain.content_digest,
+                support, at, seq-1, commits[seq]["previous_digest"], decision)
+            if canonical_json(expected.to_record()) != canonical_json(record):
+                raise LedgerConflict("LEDGER_ORIGINAL_APPLICATION_DECISION_REPLAY_CONFLICT")
+            if decision.releases_own_lane:
+                if lane != attempt_id:
+                    raise LedgerConflict("LEDGER_APPLICATION_RELEASE_REPLAY_CONFLICT")
+                lane, lane_revision = None, seq
+            custody = updated
+            applications[expected.ingestion_key] = expected
+            postings.extend(self._posting_rows(expected))
+
+            return expected
+
         for seq in sorted(events):
             kind, item = events[seq]
             if kind == "INBOX":
@@ -1429,11 +1788,12 @@ class LedgerRepository:
             elif kind == "ACTION":
                 if item.root_id not in inbox or inbox[item.root_id][0] in TERMINAL_INBOX or baseline_seq is None or seq <= baseline_seq:
                     raise LedgerJournalError("LEDGER_ACTION_BEFORE_BASELINE_OR_AFTER_TOMBSTONE")
+                require_admitted_action(custody, item)
                 live_actions[item.action_id] = item
             elif kind == "NON_ACCEPTANCE":
                 root = item["root_id"]
                 state = inbox.get(root)
-                if (state is None or state[0] in TERMINAL_INBOX or item["from_disposition"] != state[0]
+                if (any(value.root_id == root for value in custody.reservations) or state is None or state[0] in TERMINAL_INBOX or item["from_disposition"] != state[0]
                         or item["ordinal"] != state[1]+1 or item["recorded_at_utc"] < state[2]
                         or utc_microseconds(item["recorded_at_utc"]) < candidates[root].generated_at_us
                         or any(live_actions[value.preparation.action_id].root_id == root and value.recorded_stage != "CANCELLED_UNSIGNED"
@@ -1442,6 +1802,8 @@ class LedgerRepository:
                 inbox[root] = (item["disposition"], item["ordinal"], item["recorded_at_utc"])
             elif kind == "ATTEMPT":
                 action = live_actions.get(item.action_id)
+                if action is not None:
+                    require_admitted_action(custody, action)
                 prior_ids = per_action.get(item.action_id, [])
                 previous = None if not prior_ids else live_attempts[prior_ids[-1]]
                 resolution = None if previous is None else custody.resolution(previous.preparation.attempt_id)
@@ -1476,32 +1838,7 @@ class LedgerRepository:
                 chain_seen[item.ingestion_key] = item
                 custody = retain_chain_custody(custody, retained)
             elif kind == "SETTLEMENT_APPLICATION":
-                record, support = item
-                attempt_id = record["attempt_id"]
-                previous, chain = live_attempts.get(attempt_id), chain_seen.get(record["chain_receipt_key"])
-                if (previous is None or chain is None or chain.attempt_id != attempt_id
-                        or custody.resolution(attempt_id) is None and lane != attempt_id):
-                    raise LedgerConflict("LEDGER_APPLICATION_REPLAY_ORIGINAL_LINEAGE_CONFLICT")
-                finality = chain_facts[attempt_id].state
-                view = replace(previous, chain_finality=finality.disposition, chain_quarantined=finality.quarantined,
-                               lane_held=lane == attempt_id)
-                at = ledger_utc(record["recorded_at_utc"])
-                if at < chain.decision.evaluated_at_utc or support is not None and at < support.evaluated_at_utc:
-                    raise LedgerConflict("LEDGER_APPLICATION_REPLAY_TIME_CONFLICT")
-                decision, updated = adjudicate_application(self.domain, custody, live_actions[previous.preparation.action_id],
-                    view, chain, support, sequence=seq, recorded_at_utc=at,
-                    chain_anchors=(anchor for facts in chain_facts.values() for anchor in facts.anchors))
-                expected = LedgerApplicationReceipt(seq, record["ingestion_key"], attempt_id, chain.ingestion_key, chain.content_digest,
-                    support, at, seq-1, commits[seq]["previous_digest"], decision)
-                if canonical_json(expected.to_record()) != canonical_json(record):
-                    raise LedgerConflict("LEDGER_ORIGINAL_APPLICATION_DECISION_REPLAY_CONFLICT")
-                if decision.releases_own_lane:
-                    if lane != attempt_id:
-                        raise LedgerConflict("LEDGER_APPLICATION_RELEASE_REPLAY_CONFLICT")
-                    lane, lane_revision = None, seq
-                custody = updated
-                applications[expected.ingestion_key] = expected
-                postings.extend(self._posting_rows(expected))
+                replay_application(seq, item)
             elif kind == "WALLET_COMPARISON":
                 record, support = item
                 comparison, updated = compare_wallet(self.domain, custody, support, common_revision=seq-1,
@@ -1520,7 +1857,12 @@ class LedgerRepository:
                 chain = chain_facts.get(item["attempt_id"])
                 if chain is not None and (chain.state.positive_finality is not None or chain.state.quarantined):
                     raise LedgerJournalError("LEDGER_EXTERNAL_STAGE_AFTER_CHAIN_FINALITY")
+                require_admitted_action(custody, live_actions[previous.preparation.action_id])
                 value = self._replay_stage(previous, item, commits[seq]["generation"])
+                if item["to_stage"] == "EXACT_SIMULATED":
+                    if item["attempt_id"] in simulations:
+                        raise LedgerConflict("LEDGER_DUPLICATE_SIMULATION_REPLAY")
+                    simulations[item["attempt_id"]] = content_fingerprint(stage_from_record(item["stage_input"]).to_record())
                 if value.primary_signature is not None and previous.primary_signature is None:
                     if value.primary_signature in signatures:
                         raise LedgerJournalError("LEDGER_SIGNATURE_REUSED_BY_ANOTHER_ATTEMPT")
@@ -1529,6 +1871,73 @@ class LedgerRepository:
                     signed_inputs[item["attempt_id"]] = (bytes(stage.signed_public_transaction()), stage.recorded_at_utc)
                 live_attempts[item["attempt_id"]] = value
                 lane, lane_revision = (item["attempt_id"] if value.lane_held else None), seq
+            elif kind in GROUP_KINDS:
+                group = item
+                supplied = next(value for value in (group.admission, group.handoff, group.retirement, group.dry_terminal) if value is not None)
+                require_common_cut(self.domain, custody, supplied.cut, seq-1, commits[seq]["previous_digest"])
+                original_digest = custody.content_digest
+                application = None
+                if group.application_key is not None:
+                    child_record = children[seq]["SETTLEMENT_APPLICATION"][2][0]
+                    child_attempt = live_attempts.get(child_record["attempt_id"])
+                    child_action = None if child_attempt is None else live_actions.get(child_attempt.preparation.action_id)
+                    if (child_action is None or (supplied.root_id, supplied.position_id) != (child_action.root_id, child_action.position_id)
+                            or group.handoff is not None and supplied.acquisition_signature != child_attempt.primary_signature
+                            or group.retirement is not None and supplied.terminal_attempt_id != child_record["attempt_id"]):
+                        raise LedgerConflict("LEDGER_GROUP_SETTLEMENT_LINEAGE_REPLAY_CONFLICT")
+                    application = replay_application(seq, children[seq]["SETTLEMENT_APPLICATION"][2])
+                    if application.recorded_at_utc != supplied.recorded_at_utc:
+                        raise LedgerConflict("LEDGER_GROUP_TIME_REPLAY_CONFLICT")
+                root = supplied.action.root_id if group.admission is not None else supplied.root_id
+                root_attempts = tuple(value for value in live_attempts.values() if live_actions[value.preparation.action_id].root_id == root)
+                comparison_digest, disposition, reasons = None, None, ()
+                if group.admission is not None:
+                    if root not in inbox or root not in candidates or baseline_seq is None or seq <= baseline_seq:
+                        raise LedgerConflict("LEDGER_ADMISSION_REPLAY_PARENT_MISSING")
+                    action = supplied.action
+                    previous = live_actions.get(action.action_id)
+                    if group.created_action_digest is not None:
+                        if previous is not None or children[seq]["ACTION"][2] != action:
+                            raise LedgerConflict("LEDGER_ADMISSION_GROUP_ACTION_REPLAY_CONFLICT")
+                        live_actions[action.action_id] = action
+                    elif previous != action:
+                        raise LedgerConflict("LEDGER_ADMISSION_STAGED_ACTION_REPLAY_CONFLICT")
+                    custody = admit_reservation(self.domain, custody, candidates[root], inbox[root][0], root_attempts, supplied, sequence=seq)
+                    inbox[root] = ("ACCEPTED", inbox[root][1], supplied.recorded_at_utc)
+                elif group.handoff is not None:
+                    resolution = next((value for value in custody.resolutions if value.signature == supplied.acquisition_signature), None)
+                    acquisition = None if resolution is None else next((value for value in applications.values() if value.sequence == resolution.application_sequence), None)
+                    chain = None if acquisition is None else chain_seen.get(acquisition.chain_receipt_key)
+                    custody = activate_protection(self.domain, custody, supplied, acquisition, chain, sequence=seq)
+                elif group.retirement is not None:
+                    support = inputs[supplied.wallet_support_digest]
+                    if support.evaluated_at_utc != supplied.recorded_at_utc or support.required_min_context_slot < custody.anchor.slot:
+                        raise LedgerConflict("LEDGER_RETIREMENT_RESULTING_CUT_REPLAY_CONFLICT")
+                    comparison, custody = compare_wallet(self.domain, custody, support, common_revision=seq-1,
+                        common_digest=commits[seq]["previous_digest"], pending_attempts=() if lane is None else (lane,),
+                        chain_anchors=(anchor for facts in chain_facts.values() for anchor in facts.anchors))
+                    resolution = custody.resolution(supplied.terminal_attempt_id)
+                    terminal_application = None if resolution is None else next((value for value in applications.values() if value.sequence == resolution.application_sequence), None)
+                    custody, disposition, reasons = retire_reservation(self.domain, custody, supplied, root_attempts,
+                        terminal_application, comparison, sequence=seq)
+                    comparison_digest = content_fingerprint(asdict(comparison))
+                    if disposition == "RETIRED":
+                        reservation = next(value for value in custody.reservations if value.reservation_id == supplied.reservation_id)
+                        inbox[root] = (reservation.terminal_disposition, inbox[root][1], supplied.recorded_at_utc)
+                else:
+                    custody = terminate_dry(self.domain, custody, supplied, root_attempts,
+                        simulations.get(supplied.attempt_id), sequence=seq)
+                    if any(value.recorded_stage != "CANCELLED_UNSIGNED" and lane != value.preparation.attempt_id for value in root_attempts):
+                        raise LedgerConflict("LEDGER_DRY_LINEAGE_LANE_REPLAY_CONFLICT")
+                    if supplied.attempt_id is not None and lane == supplied.attempt_id:
+                        lane, lane_revision = None, seq
+                    inbox[root] = ("NON_SUBMITTED", inbox[root][1], supplied.recorded_at_utc)
+                expected = ConsumerPortReceipt(seq, group.ingestion_key, kind, group.admission, group.handoff, group.retirement, group.dry_terminal,
+                    group.created_action_digest, None if application is None else application.ingestion_key,
+                    None if application is None else application.content_digest, comparison_digest, disposition, reasons,
+                    original_digest, custody.content_digest, None if application is None else application.decision.disposition)
+                if canonical_json(expected.to_record()) != canonical_json(group.to_record()):
+                    raise LedgerConflict("LEDGER_ORIGINAL_CONSUMER_GROUP_REPLAY_CONFLICT")
             else:
                 raise LedgerConflict("LEDGER_UNKNOWN_ECONOMIC_HISTORY_KIND")
         if self._lane() != (lane, lane_revision):

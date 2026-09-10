@@ -26,7 +26,7 @@ ACTION_VERSION = "live_ledger_pending_actions_v0.1"
 ATTEMPT_VERSION = "live_ledger_attempt_storage_v0.1"
 PENDING_ADMISSION = "PENDING_EXTERNAL_ADMISSION"
 NON_ACCEPTANCE = frozenset(("DENIED_RETRYABLE", "REJECTED", "EXPIRED"))
-TERMINAL_INBOX = frozenset(("REJECTED", "EXPIRED"))
+TERMINAL_INBOX = frozenset(("REJECTED", "EXPIRED", "RETIRED", "CLOSED_NO_ACQUISITION", "NON_SUBMITTED"))
 LEDGER_FINALITY_STATES = frozenset(("CONFIRMED_PROVISIONAL", "FINALIZED_SUCCESS", "FINALIZED_FAILURE",
                                   "PROVEN_NON_LANDED", "CANCELLED_NEVER_SUBMITTED"))
 EXTERNAL_STAGES = frozenset(("EXACT_SIMULATED", "AUTHORIZED", "SIGNED_DURABLE", "SEND_CLAIMED", "OBSERVING", "UNKNOWN"))
@@ -373,6 +373,8 @@ class StoredAttempt:
     economically_applied: bool = False
     custody_quarantined: bool = False
     current_disposition: str = "UNOBSERVED"
+    current_inbox_disposition: str = "RECEIVED"
+    reservation_id: str | None = None
     admission_status: str = field(init=False, default=PENDING_ADMISSION)
     has_real_authority_grant: bool = field(init=False, default=False)
     may_send: bool = field(init=False, default=False)

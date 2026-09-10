@@ -140,6 +140,8 @@ def adjudicate_chain_observation(domain: LedgerDomain, attempt: StoredAttempt, s
         observation: TransactionObservation | CanonicalCoverageObservation, *, evaluated_at_utc: str,
         retained: RetainedChainFacts | None = None) -> tuple[ChainDecision, RetainedChainFacts]:
     """No caller disposition enters this reducer. Historical UTC is explicit."""
+    if domain.mode != "LIVE":
+        raise LedgerContractError("LEDGER_DRY_HAS_NO_CHAIN_FINALITY_GRAPH")
     prep = attempt.preparation
     if (attempt.primary_signature is None or attempt.signed_wire_digest is None
             or hashlib.sha256(signed_wire).hexdigest() != attempt.signed_wire_digest):

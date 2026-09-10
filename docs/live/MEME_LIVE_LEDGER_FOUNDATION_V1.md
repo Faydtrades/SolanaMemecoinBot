@@ -1,6 +1,6 @@
 # MEME-LIVE Step 5 — Ledger Foundation v1
 
-Status: IN_PROGRESS under the supplied Step-5 owner instruction. Codex reports implementation evidence; project/package acceptance remains with the ChatGPT project. No Authority/Step-6 work is authorized here.
+Status: IMPLEMENTED_PENDING_PROJECT_REVIEW. L1–L6 are implemented and locally qualified; production coverage remains partial at the explicit Evidence/attribution limits below, and full system-transition acceptance remains pending real consumers. Project/package acceptance remains with the ChatGPT project. No Authority/Step-6 work is authorized here.
 
 Authoritative starting checkpoint: `5258537c7de98de4883f594375f24c90de57250b`, clean local/index/remote `live/meme-production-readiness` in `C:\Users\Mari1\AppData\Local\Temp\meme-live-audit-e6b9a4b`. Remote master remains `e6b9a4beca06d8a08ecfe900356b80228e7667b3`. The active checkout `D:\Tradingbot\solana_memecoin_bot_phase1_v0_1` is protected and is not an implementation/test target.
 
@@ -171,3 +171,86 @@ Application and comparison subprocess cuts exit `91` before commit and `92` afte
 The actual composed path is MockTransport Wallet/Transaction/Coverage adapters -> accepted Evidence ports -> original Ledger baseline/action/attempt/finality -> whole attribution -> atomic application -> actual scoped position/funding -> original wallet comparison -> durable reopen. No Ledger economic oracle is injected. M16–M18/M32/M33 now have additional real Ledger evidence; actual Authority/Runtime/Execution/Operations consumers and project review remain pending. No lifecycle row or package is self-accepted. No Evidence/P4/P5/P6 source or signer/send/mutation/real-capital capability changed. The separate Token-2022 Evidence scope question remains pending. Broader regression remains scheduled for the final Ledger freeze.
 
 NEXT: L6 — concrete atomic admission/reservation/inbox, protective handoff, retirement and DRY/NON_SUBMITTED storage ports; no policy or runtime orchestration.
+
+## L6 implementation evidence
+
+L5 was checkpointed at `1eba4e95ac3557cc23196c21a9677f7ff9e670c8`. L6 is `IMPLEMENTED_PENDING_PROJECT_REVIEW`. Storage/schema v5 adds one immutable concrete consumer-group table, with a closed set of admission, protection, retirement, DRY termination and settlement-plus-port receipts. An admission may contain its same-sequence original ACTION child; a settlement group contains its exact application child. Replay verifies the complete named child set and one common commit, re-derives each transition against its chronological parent cut and checks the resulting projection. No generic unit-of-work, callback transaction framework or policy subsystem was added.
+
+`ledger_ports_v0_1.py` accepts external immutable admission terms, explicit native reservation components and original decision provenance. `LedgerRepository.admit` persists these with the candidate's ACCEPTED disposition atomically. It does not calculate risk, headroom, allocation, maximum concurrent positions or current Authority permission. Admitted BUY terms cannot change; terminal roots cannot acquire new actions/attempts. Later SELL terms must retain the actual position, candidate, track/policy and original protective binding.
+
+A protective handoff contains the actual acquisition signature/proposal and original chain receipt, full original candidate, selected track/policy, fallback deadline and deadline-plus-one-microsecond fire boundary, external MONITORING or DUE decision, trigger, knowledge time and immutable decision provenance. Ledger binds and stores the supplied Runtime decision; it does not evaluate exits or schedule protection. Acquired inventory remains unusable until that handoff is durable. The grouped path commits complete actual settlement, position/funding and handoff together; the standalone handoff makes previously protection-pending inventory usable in the same commit as its binding. Residual reductions preserve the original obligation. Current quarantine masks usability without rewriting historical receipts.
+
+Retirement accepts an external intent and original Wallet support, with structural root/position/attempt/common-cut validation. Positive full reduction, fully applied failed costs, proven nonlanding or intact-generation unsigned cancellation may support retirement only with matched current account evidence and no residual/pending/unapplied obligation. Missing, contradictory or older account evidence yields a durable `WITHHELD` receipt retaining the original input and reservation. Complete economic settlement may commit atomically with withheld retirement; incomplete economic attribution still posts nothing and retains its lane. Retained WSOL and account funding survive lawful position retirement as distinct account facts. A historical retirement receipt never grants current capacity.
+
+Wallet comparison exposes its parent journal revision/digest separately from its target custody digest and effects-through sequence, including the post-settlement child inside a shared group. Its recognized context floor includes usable account cuts and qualified finalized Wallet anchors retained even when inventory coverage failed. An older complete response cannot erase that newer context. Consumer snapshots expose the current required wallet context; original comparisons remain historical evidence requiring fresh external validation.
+
+The fixed DRY domain supports NON_SUBMITTED terminal storage with atomic tentative-reservation release. An interruption before preparation records actual absence; later cases retain exact original preparation/simulation and any positively cancelled unsigned predecessors. DRY cannot enter signed/send stages, chain-finality adjudication, economic settlement or actual inventory. LIVE uncertainty cannot be reclassified through this DRY contract. No DRY runtime/controller was implemented.
+
+Worker focused qualification ran all six Ledger scripts with the pinned interpreter and `-B`, each exit `0`: **372 ports + 279 custody + 256 settlement + 113 finality + 98 actions + 126 baseline = 1,244 checks**. CHIEF reviewed the concrete contracts, transaction/replay paths, current-read guards, final fixture changes and all nine frozen file hashes, then independently reproduced those results within the final regression below.
+
+The ports suite uses actual deterministic Wallet/Transaction/Coverage adapters through original Ledger baseline/action/attempt/finality, complete settlement and the real atomic port methods. External decisions are explicit consumer fixtures, never injected economic state. Tests cover native Pump/PumpSwap BUY -> partial/full SELL, MONITORING/DUE acquisition handoff, residual protection, complete fee-only settlement with withheld retirement, stale/incomplete/contradictory or regressing wallet cuts, positive nonlanding/unsigned cancellation, held lost-generation/signed uncertainty, retained WSOL, fixed DRY modes, and late contradictions after retirement. Historical receipts and applied money remain intact while current custody quarantines and conveys no capacity grant.
+
+Actual subprocess cuts after ACTION/application/group/common inserts and before/after COMMIT recover zero/all linked facts and converge after exact retry. Lost acknowledgements before/after cache publication, competing writers, stale fences, outside commits and restored-trigger content tampering are covered. L6 check digest: `5b787a1687ae5ce46680e4cd73be683048fdcfd7fef5eb160b29a5a7dfa4bdbd`. Original receipt digests across crash cuts:
+
+| Group | Receipt SHA256 |
+|---|---|
+| admission | `e606cc200d4d119ddf459e81fa842911c4710e96974c72a96e6d9d761e6a1c15` |
+| protection | `45bc86339fb0f7f59e8e517a0b42c5e987368f611a68145e5acae54fd8e396f9` |
+| retirement | `123f6fd2181b34778184420dcb304a1e3fe922b1dac489d8d74c18b26027db42` |
+| withheld | `9b50aa816dc30ff3fea331cc5330aed6c6ef8c1cad253395eb0af92fb21c5778` |
+| dry | `5751b26eaaa53298538b55683a4b6366078b28e47420bc9ab8b3f7eb2db29d7f` |
+
+No Evidence/P4/P5/P6 source changed. Schema v5/SQLite user-version 5 is explicit; older fixture stores require their original version and are not silently migrated. All six bounded Ledger tasks are implemented pending project review. Real Authority policy/reservation calculations, Runtime evaluation/later obligation transitions/DRY orchestration, Execution producers and Operations startup remain unbuilt.
+
+## Final Ledger freeze — one broad regression
+
+CHIEF ran the authorized final broad regression once after L6 source freeze on 2026-09-10 UTC. All **20 standalone suites exited 0**, with **2,277 checks**: 668 Phase-5, 365 Evidence and 1,244 Ledger. Each script's own final result/check map was verified, including legacy JSON-plus-`RESULT: PASS` output. No implementation change or test rerun was required by this broad regression.
+
+Exact command for each table entry:
+
+```powershell
+& 'C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe' -B scripts/<script-below>
+```
+
+LIVE commands ran in `C:\Users\Mari1\AppData\Local\Temp\meme-live-audit-e6b9a4b`. Phase-5 commands ran in `C:\Users\Mari1\AppData\Local\Temp\meme-live-canonical-tests-t11edhd2`, an isolated canonical Git-byte export for accepted raw-hash checks on Windows. Before the run, all **356 non-LIVE Python files** in that export matched current HEAD Git blobs exactly; ordered relative-path/SHA256 manifest digest `9f1f5fa9ca5fe1ec7baeb88dc57a4d4ac31c4ef9f2e09fd5867472c5360dfa38`. Phase-4/5 source, compatibility scripts and hash locks were unchanged. Suites were sequential within each checkout; the two isolated groups ran concurrently.
+
+Logs and consolidated verification are in `C:\Users\Mari1\AppData\Local\Temp\meme-live-ledger-final-regression-20260910-0213`. `verified-regression.json` SHA256: `cc71b47ee6c06c07b0a96a6b20a1bf2cdea44d9f568936af1275dd3faeb60539`. The following per-command output hashes bind the reported checks to their captured logs.
+
+| Script in scripts/ | Checks | Exit | Output SHA256 |
+|---|---:|---:|---|
+| `phase5_shadow_venue_route_quote_selftest_v0_1.py` | 100 | 0 | `27b920525740114b4050f9e8e6bea7cbd22956e37ee8b5cb2adc7dec9d6c3295` |
+| `phase5_shadow_unsigned_plan_simulation_selftest_v0_1.py` | 116 | 0 | `c82718ad1cac7ac49abb91a73bee487698e6b70e5ef0565ba9d4c75a07603e08` |
+| `phase5_shadow_readonly_rpc_selftest_v0_1.py` | 59 | 0 | `ab59f30ded1c8d337cfc975acb995286f89c107248fd080c7cd1f5afc7c625ee` |
+| `phase5_shadow_lifecycle_bridge_selftest_v0_1.py` | 40 | 0 | `dc68dde5072b5c60177caedd5bf81ccfec5ad0ca8d4705b93fe024b296c02d7d` |
+| `phase5_shadow_instruction_persistence_selftest_v0_2.py` | 36 | 0 | `434a1ae0b204f3d43fd37ea9791188eaf1af4e266d11cf64be72e7c73f69bb32` |
+| `phase5_shadow_domain_capability_firewall_selftest_v0_1.py` | 43 | 0 | `856fa406a1ffc81732731ea427c4febef55f879f83f3359b97703acb6917a6b3` |
+| `phase5_shadow_continuous_source_bridge_selftest_v0_1.py` | 32 | 0 | `0c94ce5c51d93c1d1aabdbc6f1bbc20f933b3a069922c1157f0865faf5e39552` |
+| `phase5_shadow_continuous_execution_selftest_v0_1.py` | 182 | 0 | `cce9c66ccfb08aa859f6e3bb905a420a232830c65faed1576c522ede36ca80a0` |
+| `phase5_multirun_source_scope_selftest_v0_1.py` | 44 | 0 | `f70d8f5f4ae959ee0131660877f54b219d9a1532d5af866116e8c8a4352caa3f` |
+| `phase5_late_arriving_exit_source_selftest_v0_1.py` | 16 | 0 | `593fabc7526ee2708dcf4877d24bc85faeaca577a5bd83b1478d585866745973` |
+| `live_source_health_selftest_v0_1.py` | 67 | 0 | `da3c6014ac9181ef516a2305082a67cbeff3f6b975b9446a2a4d88c309bb8238` |
+| `live_wallet_evidence_selftest_v0_1.py` | 88 | 0 | `f115c110ee6c86bb71414c0a678869955fc3802b000cd1d947432863e834a135` |
+| `live_transaction_evidence_selftest_v0_1.py` | 170 | 0 | `aa0d5fa27a20da4cc32b4a7166833508a4c33c7285595cf2fd4f170480582509` |
+| `live_evidence_boundary_selftest_v0_1.py` | 40 | 0 | `8466afed691f27c144a9aadedcec1b1a168aa3d7ef31af9c55aebd6c56bb3029` |
+| `live_ledger_baseline_selftest_v0_1.py` | 126 | 0 | `042a0e28e6a4b74031276da542cc618f6ed55f7ffd7de0426ad52c84c3533166` |
+| `live_ledger_actions_selftest_v0_1.py` | 98 | 0 | `b6d2c8761a92ae9167c4f700e7b025f14540fef0f64d596f1df7781ecc86929d` |
+| `live_ledger_finality_selftest_v0_1.py` | 113 | 0 | `fa24a9b55301c004e1dee687c741184c594ed8e0e81e03e8789fae606673f2bf` |
+| `live_ledger_settlement_selftest_v0_1.py` | 256 | 0 | `45d36ca9d8f538f275b9571be346c1e046629d77921798fe5ee81b6b335e36bc` |
+| `live_ledger_custody_selftest_v0_1.py` | 279 | 0 | `1d6e9e2dcd75d2a6614b49fdd8917e9105cb5001e6cbe0ce609ec1a947a86f7e` |
+| `live_ledger_ports_selftest_v0_1.py` | 372 | 0 | `55012eeaca94e4a17204c53048fa9bfeaedf14e4e35d8258baeb8f95432d5b22` |
+
+The available system transition is actual MockTransport Wallet/Transaction/Coverage adapters -> immutable accepted Evidence -> actual Ledger original ingestion/reducers/store -> durable baseline/finality/whole settlement -> scoped position/funding and consumer-port outputs -> durable-only reconstruction. Complete versus incomplete account coverage, qualified finalized evidence versus unknown/contradictory claims, applied versus unapplied economics, and retired versus withheld reservations remain distinguishable. G001 regression also preserves healthy versus unresolved continuity at its existing Evidence ports/fixtures; its real Authority/Runtime consumers remain unbuilt. These are composed implementation proofs for project review, without real network or fabricated economic projections.
+
+## Matrix disposition, scope limits and next task
+
+No row was promoted to VERIFIED by Codex. M13–M18/M32/M33 now link actual Ledger consumer evidence and may advance within their proven scope after project review. In particular, M14's narrow opening-baseline consumer is built; M13's Evidence-to-Ledger portion is built, while Runtime chain-order use and the existing Token-2022 account compatibility issue remain open. M15/M16/M32/M33 still need real Execution producer composition; M17/M18 still need Runtime/Authority consumer composition.
+
+M12/M36/M42/M43/M48/M55 remain `OWNED_NOT_BUILT`, with the exact remaining consumers named in the matrix: Authority admission/reservation and capacity; Runtime protective evaluation/later obligation transitions, residual handling, reconstruction and DRY continuation; Execution SELL preparation; Operations startup. Ledger storage ports and fixture proof do not substitute for those implementations. The matrix remains 61 rows: 6 VERIFIED, 49 OWNED_NOT_BUILT, 6 HUMAN_EXTERNAL, 0 BLOCKED.
+
+The outstanding Token-2022 ImmutableOwner Evidence question remains unanswered. Evidence has not been changed under Ledger authorization. Canonical extended accounts remain explicitly unsupported; unknown/pruned/incomplete chain evidence remains UNKNOWN, incomplete attribution remains wholly unapplied, and unresolved retirement remains WITHHELD. The finite Pump/PumpSwap settlement profiles and native BUY witness limits documented under L4 still apply. These are production-coverage limitations, so no full Ledger/Evidence package or system-transition PASS is claimed.
+
+The implementation exposed no new required lifecycle subsystem or downstream transition beyond the accepted matrix. Original protective knowledge/fire facts, group comparison targets/context floors, retirement withholding and early interrupted DRY refine existing M36/M18/M43/M55 contracts. The ImmutableOwner issue is an existing M13 compatibility gap.
+
+Only Ledger implementation/selftests and minimal owner/status/evidence/matrix documentation changed during Step 5. Locked roadmaps and architecture, accepted Evidence and Phase-4/5/6 source remain unchanged. No Authority/Execution/Runtime/Operations implementation, signer/private-key support, signing/send/broadcast, mutation RPC or real-capital capability was added. Tests used temporary databases and deterministic public fixtures; the protected runtime checkout, production database and processes were not modified.
+
+NEXT: ChatGPT project review of L1–L6 and the composed proof, plus an explicit scope decision on the narrow Evidence ImmutableOwner correction. If authorized, close that compatibility issue with a separate bounded Evidence task and affected Ledger qualification. Authority/Step 6 has not begun.

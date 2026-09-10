@@ -13,6 +13,7 @@ from .ledger_settlement_v0_1 import WalletSupportInput, SettlementProposal, attr
 from .public_rpc_v0_1 import u64
 from .wallet_evidence_v0_1 import ledger_account_evidence, _epoch
 from .transaction_evidence_v0_1 import _known_finalized_anchors_consistent
+from .ledger_ports_v0_1 import ReservationFact, ProtectionFact, DryDispositionFact
 
 VERSION = "live_ledger_actual_custody_v0.1"
 RESOLVED = frozenset(("FINALIZED_SUCCESS_APPLIED", "FINALIZED_FAILURE_APPLIED", "PROVEN_NON_LANDED_RESOLVED"))
@@ -73,8 +74,9 @@ class PositionCustody:
     reduction_signatures: tuple[str, ...]
     posting_ids: tuple[str, ...]
     status: str
-    usable: bool = field(init=False, default=False)
-    has_protective_handoff: bool = field(init=False, default=False)
+    usable: bool = False
+    has_protective_handoff: bool = False
+    protective_binding_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,6 +116,9 @@ class WalletComparison:
     disposition: str
     reasons: tuple[str, ...]
     differences: tuple[WalletDifference, ...]
+    target_custody_digest: str
+    effects_through_sequence: int
+    recognized_wallet_context_floor: int
     proves_external_transfer: bool = field(init=False, default=False)
     authority_current: bool = field(init=False, default=False)
 
@@ -136,6 +141,11 @@ class CustodyState:
     quarantine_reasons: tuple[str, ...] = ()
     latest_comparison: WalletComparison | None = None
     qualified_wallet_anchors: tuple[CustodyAnchor, ...] = ()
+    latest_usable_wallet_context_slot: int = 0
+    latest_qualified_wallet_anchor_slot: int = 0
+    reservations: tuple[ReservationFact, ...] = ()
+    protections: tuple[ProtectionFact, ...] = ()
+    dry_dispositions: tuple[DryDispositionFact, ...] = ()
     version: str = field(init=False, default=VERSION)
     authority_current: bool = field(init=False, default=False)
 
@@ -196,8 +206,9 @@ class PositionView:
     remaining_units: int
     acquisition_signature: str
     status: str
-    usable: bool = field(init=False, default=False)
-    has_protective_handoff: bool = field(init=False, default=False)
+    usable: bool = False
+    has_protective_handoff: bool = False
+    protective_binding_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -215,6 +226,9 @@ class ComparisonView:
     disposition: str
     reasons: tuple[str, ...]
     difference_count: int
+    target_custody_digest: str
+    effects_through_sequence: int
+    recognized_wallet_context_floor: int
     authority_current: bool = field(init=False, default=False)
 
 
@@ -229,7 +243,8 @@ def baseline_custody(domain, receipt):
     return CustodyState(domain.economic_domain_id, receipt.content_digest, decision.owned_native_lamports,
         decision.owned_native_lamports, accounts=tuple(sorted(accounts, key=lambda row: row.pubkey)),
         anchor=CustodyAnchor.retain(receipt.observation.anchor), last_effect_sequence=receipt.sequence,
-        qualified_wallet_anchors=(CustodyAnchor.retain(receipt.observation.anchor),))
+        qualified_wallet_anchors=(CustodyAnchor.retain(receipt.observation.anchor),),
+        latest_usable_wallet_context_slot=decision.context_slot, latest_qualified_wallet_anchor_slot=receipt.observation.anchor.slot)
 
 
 def quarantine_custody(state, reason):
@@ -250,7 +265,8 @@ def retain_wallet_custody(state, anchor, chain_anchors):
     """Keep one port-qualified Wallet anchor even when its balances are pending."""
     conflict = any(not _known_finalized_anchors_consistent(anchor, previous) for previous in state.qualified_wallet_anchors)
     conflict = any(not _known_finalized_anchors_consistent(anchor, previous) for previous in chain_anchors) or conflict
-    state = replace(state, qualified_wallet_anchors=tuple(dict.fromkeys((*state.qualified_wallet_anchors, anchor))))
+    state = replace(state, qualified_wallet_anchors=tuple(dict.fromkeys((*state.qualified_wallet_anchors, anchor))),
+        latest_qualified_wallet_anchor_slot=max(state.latest_qualified_wallet_anchor_slot, anchor.slot))
     if conflict:
         state = quarantine_custody(state, "WALLET_AND_RETAINED_CANONICAL_ANCHOR_CONTRADICTION")
     return state, conflict
@@ -319,11 +335,18 @@ def _preconditions(domain, state, action, tx):
 def adjudicate_application(domain, state, action, attempt, receipt, support, *, sequence, recorded_at_utc, chain_anchors=()):
     """Recompute original L4, then apply everything or nothing to owned custody."""
     recorded_at_utc = ledger_utc(recorded_at_utc)
+    if domain.mode != "LIVE":
+        raise LedgerContractError("LEDGER_DRY_HAS_NO_ECONOMIC_APPLICATION_GRAPH")
     prior = state.content_digest
     if support is not None:
         qualified = qualified_wallet_anchor(domain, support)
         if qualified is not None:
             state, _ = retain_wallet_custody(state, qualified, chain_anchors)
+        account_port = ledger_account_evidence(support.observation, expected_wallet=domain.wallet, expected_genesis=domain.genesis_hash,
+            expected_profile_fingerprint=domain.expected_profile_fingerprint, required_min_context_slot=support.required_min_context_slot,
+            now_utc=support.evaluated_at_utc)
+        if account_port.account_facts_usable:
+            state = replace(state, latest_usable_wallet_context_slot=max(state.latest_usable_wallet_context_slot, account_port.assessment.context_slot))
     resolved = state.resolution(attempt.preparation.attempt_id)
     if resolved is not None:
         return ApplicationDecision("ALREADY_RESOLVED", (), None, prior, state.content_digest, False), state
@@ -388,7 +411,8 @@ def adjudicate_application(domain, state, action, attempt, receipt, support, *, 
                 raise LedgerContractError("WHOLE_SETTLEMENT_POSITION_INVARIANT_FAILED")
             positions[action.position_id] = replace(value, sold_units=value.sold_units-proposal.base_units_delta,
                 remaining_units=remaining, reduction_signatures=(*value.reduction_signatures, proposal.signature),
-                posting_ids=(*value.posting_ids, *posting_ids), status="FLAT_PENDING_RECONCILIATION" if remaining == 0 else "OWNED_PROTECTION_PENDING")
+                posting_ids=(*value.posting_ids, *posting_ids), usable=value.usable and remaining > 0,
+                status="FLAT_PENDING_RECONCILIATION" if remaining == 0 else "OWNED_PROTECTED" if value.has_protective_handoff else "OWNED_PROTECTION_PENDING")
     for account in accounts.values():
         if account.mint != WSOL_MINT and sum(item.remaining_units for item in positions.values() if item.account == account.pubkey) != account.units:
             raise LedgerContractError("POSITION_AND_ACCOUNT_AGGREGATE_CONFLICT")
@@ -409,6 +433,9 @@ def compare_wallet(domain, state, support, *, common_revision, common_digest, pe
     """Retain differences against one exact Ledger cut, never adopt them."""
     if type(support) is not WalletSupportInput:
         raise LedgerContractError("ORIGINAL_WALLET_COMPARISON_INPUT_REQUIRED")
+    target_digest, effects_through = state.content_digest, state.last_effect_sequence
+    wallet_floor = max(state.latest_usable_wallet_context_slot, state.latest_qualified_wallet_anchor_slot,
+        0 if state.anchor is None else state.anchor.slot)
     port = ledger_account_evidence(support.observation, expected_wallet=domain.wallet, expected_genesis=domain.genesis_hash,
         expected_profile_fingerprint=domain.expected_profile_fingerprint, required_min_context_slot=support.required_min_context_slot,
         now_utc=support.evaluated_at_utc)
@@ -426,6 +453,10 @@ def compare_wallet(domain, state, support, *, common_revision, common_digest, pe
         reasons.add("COMPARISON_BEHIND_RECOGNIZED_CUSTODY_CUT")
     elif qualified is not None and not _known_finalized_anchors_consistent(state.anchor, anchor):
         reasons.add("COMPARISON_ANCHOR_CONFLICT")
+    if port.assessment.context_slot is not None and port.assessment.context_slot < wallet_floor:
+        reasons.add("COMPARISON_BEHIND_LATEST_USABLE_WALLET_ACCOUNT_CUT")
+    if port.account_facts_usable:
+        state = replace(state, latest_usable_wallet_context_slot=max(state.latest_usable_wallet_context_slot, port.assessment.context_slot))
     differences = []
     explicit = {} if obs.explicit_read is None else dict(zip(obs.explicit_read.requested_keys, obs.explicit_read.accounts))
     if port.account_facts_usable and not reasons:
@@ -468,7 +499,7 @@ def compare_wallet(domain, state, support, *, common_revision, common_digest, pe
                    "PENDING_EFFECTS_UNKNOWN" if pending_attempts else "CUSTODY_DIFFERENCES_QUARANTINED" if differences else "MATCHED_AT_ORIGINAL_CUT")
     comparison = WalletComparison(support.digest, obs.content_digest, support.evaluated_at_utc, support.required_min_context_slot,
         port.assessment.context_slot, obs.profile.fingerprint, anchor, common_revision, common_digest, tuple(pending_attempts),
-        disposition, tuple(sorted(reasons)), tuple(differences))
+        disposition, tuple(sorted(reasons)), tuple(differences), target_digest, effects_through, wallet_floor)
     updated = replace(state, latest_comparison=comparison)
     if disposition == "CUSTODY_DIFFERENCES_QUARANTINED" or "COMPARISON_ANCHOR_CONFLICT" in reasons:
         updated = quarantine_custody(updated, "ORIGINAL_WALLET_CUSTODY_CONTRADICTION")

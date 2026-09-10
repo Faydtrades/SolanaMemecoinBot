@@ -288,6 +288,7 @@ def attribute_settlement(domain: LedgerDomain, action: PendingAction, attempt: S
 def _attribute(domain, action, attempt, receipt, support):
     _require(type(domain) is LedgerDomain and type(action) is PendingAction and type(attempt) is StoredAttempt
              and type(receipt) is LedgerChainReceipt and type(support) is WalletSupportInput, "IMMUTABLE_SETTLEMENT_INPUTS_REQUIRED")
+    _require(domain.mode == "LIVE", "DRY_HAS_NO_SETTLEMENT_GRAPH")
     obs = receipt.observation
     _require(type(obs) is TransactionObservation and obs.transaction is not None, "EXACT_TRANSACTION_RECEIPT_REQUIRED")
     tx = obs.transaction

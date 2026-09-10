@@ -14,7 +14,7 @@ from phase5.shadow_venue_route_quote_v0_1 import WSOL_MINT
 from .public_rpc_v0_1 import block_hash, immutable_tuple, public_key, u64
 from .wallet_evidence_v0_1 import ExpectedTokenAccount, WalletObservation, ledger_account_evidence
 
-SCHEMA_VERSION = "live_ledger_v0.4"
+SCHEMA_VERSION = "live_ledger_v0.5"
 DOMAIN_VERSION = "live_ledger_domain_v0.1"
 BASELINE_VERSION = "live_ledger_opening_baseline_v0.1"
 OPENING_PROFILE = "NATIVE_RECYCLING_V1"
@@ -68,7 +68,7 @@ class LedgerDomain:
             keys = tuple(item.pubkey for item in self.expected_empty_token_accounts)
             if (len(keys) > 32 or len(set(keys)) != len(keys) or self.wallet in keys
                     or any(item.mint == WSOL_MINT for item in self.expected_empty_token_accounts)
-                    or self.mode != "LIVE" or self.schema_version != SCHEMA_VERSION
+                    or self.mode not in ("LIVE", "DRY") or self.schema_version != SCHEMA_VERSION
                     or self.domain_version != DOMAIN_VERSION or self.opening_profile != OPENING_PROFILE):
                 raise ValueError
         except Exception:

@@ -114,7 +114,7 @@ def first(path, *, venue="pump", failed=False, mutate=None, landing=True):
 
 
 def next_step(repo, previous_fixture, lower, *, number, venue="swap", side="SELL", position_id=None,
-              mint=sf.MINT, quantity=None, keep_wsol=False, failed=False, ingest_finality=True, existing_action=None, mutate=None):
+              mint=sf.MINT, quantity=None, keep_wsol=False, failed=False, ingest_finality=True, existing_action=None, mutate=None, protective_handoff=None, action_ordinal=1):
     """One external public-message fixture from independent prior RPC balances."""
     before = dict(previous_fixture.owned_after)
     quote_key = previous_fixture.quote
@@ -222,8 +222,10 @@ def next_step(repo, previous_fixture, lower, *, number, venue="swap", side="SELL
             root = position.root_id
             item = repo.candidate(root)
         action = PendingAction(root, item.content_digest, side, mint, fixture.token_program, position_id, fixture.units,
-            "EXTERNAL_TERMS", content_fingerprint("terms"), "EXTERNAL_POLICY", content_fingerprint("policy"), "FINAL-A",
-            None if side == "BUY" else "reduction-"+str(number), 1, (NOW+10000)*1_000_000 if side == "BUY" else None,
+            "EXTERNAL_TERMS", content_fingerprint("terms"), "EXTERNAL_POLICY",
+            content_fingerprint("policy") if protective_handoff is None else protective_handoff.selected_policy_digest,
+            "FINAL-A" if protective_handoff is None else protective_handoff.selected_track,
+            None if side == "BUY" else "reduction-"+str(number) if protective_handoff is None else protective_handoff.obligation_id, action_ordinal, (NOW+10000)*1_000_000 if side == "BUY" else None,
             content_fingerprint("deadline") if side == "BUY" else None)
         repo.stage_action(action, fence=repo.write_fence())
         ordinal = 1
