@@ -66,15 +66,16 @@ from .authority_message_control_codec_v0_1 import (
     original_to_json, original_from_json, receipt_to_json as message_receipt_to_json,
     receipt_from_json as message_receipt_from_json,
 )
+from .exit_observation_v0_1 import ExitJournalRecord, KINDS as EXIT_KINDS, replay_exit_record
 
 APPLICATION_ID = 0x4C454447
-STORAGE_VERSION = 8
+STORAGE_VERSION = 9
 RECEIPT_VERSION = "live_ledger_wallet_receipt_v0.1"
 GENERATION_VERSION = "live_ledger_writer_generation_v0.1"
 COMMIT_VERSION = "live_ledger_concrete_commit_v0.1"
 _COMMIT_KINDS = frozenset(("WALLET", "INBOX", "NON_ACCEPTANCE", "ACTION", "ATTEMPT", "ATTEMPT_STAGE", "CHAIN_EVIDENCE",
                  "SETTLEMENT_APPLICATION", "WALLET_COMPARISON", "AUTHORITY_CONTROL", "AUTHORITY_ELIGIBILITY", "AUTHORITY_ADMISSION",
-                 "AUTHORITY_MESSAGE_PROFILE", "AUTHORITY_MESSAGE_STAGE", *GROUP_KINDS))
+                 "AUTHORITY_MESSAGE_PROFILE", "AUTHORITY_MESSAGE_STAGE", *GROUP_KINDS, *EXIT_KINDS))
 _OPEN_TOKEN = object()
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _PROTECTED_RUNTIME = Path("D:/Tradingbot/solana_memecoin_bot_phase1_v0_1")
@@ -215,6 +216,11 @@ _DDL = {
         command_id TEXT NOT NULL UNIQUE, attempt_id TEXT NOT NULL REFERENCES ledger_attempts(attempt_id),
         consumed_key TEXT UNIQUE, receipt_digest TEXT NOT NULL UNIQUE, payload_json TEXT NOT NULL)""",
     "ledger_authority_message_attempt_history": "CREATE INDEX ledger_authority_message_attempt_history ON ledger_authority_message_stages(attempt_id,commit_seq)",
+    "ledger_runtime_exit_records": """CREATE TABLE ledger_runtime_exit_records (
+        commit_seq INTEGER PRIMARY KEY REFERENCES ledger_commits(seq) DEFERRABLE INITIALLY DEFERRED,
+        kind TEXT NOT NULL, command_id TEXT NOT NULL UNIQUE, binding_id TEXT NOT NULL,
+        payload_json TEXT NOT NULL, content_digest TEXT NOT NULL UNIQUE)""",
+    "ledger_runtime_exit_binding": "CREATE INDEX ledger_runtime_exit_binding ON ledger_runtime_exit_records(binding_id,commit_seq)",
     "ledger_consumer_groups": """CREATE TABLE ledger_consumer_groups (
         commit_seq INTEGER PRIMARY KEY REFERENCES ledger_commits(seq) DEFERRABLE INITIALLY DEFERRED,
         ingestion_key TEXT NOT NULL UNIQUE, kind TEXT NOT NULL,
@@ -228,7 +234,7 @@ for _table in ("ledger_domain", "ledger_writer_generations", "ledger_wallet_obse
                "ledger_chain_observations", "ledger_chain_receipts", "ledger_custody_inputs", "ledger_application_receipts",
                "ledger_wallet_comparisons", "ledger_economic_postings", "ledger_consumer_groups",
                "ledger_authority_records", "ledger_authority_bindings", "ledger_authority_admissions",
-               "ledger_authority_message_profiles", "ledger_authority_message_stages"):
+               "ledger_authority_message_profiles", "ledger_authority_message_stages", "ledger_runtime_exit_records"):
     for _operation in ("UPDATE", "DELETE"):
         _name = f"{_table}_no_{_operation.lower()}"
         _DDL[_name] = (f"CREATE TRIGGER {_name} BEFORE {_operation} ON {_table} BEGIN "
@@ -1676,6 +1682,58 @@ class LedgerRepository:
         except BaseException as exc:
             self._rollback_economic(exc)
 
+    @staticmethod
+    def _exit_row(row):
+        value = ExitJournalRecord(*row[:5])
+        if value.content_digest != row[5]:
+            raise LedgerConflict("RUNTIME_EXIT_ORIGINAL_RECORD_DIGEST")
+        return value
+
+    def exit_record(self, command_id):
+        public_reference(command_id)
+        with self._trusted_read():
+            row = self._conn.execute("SELECT * FROM ledger_runtime_exit_records WHERE command_id=?", (command_id,)).fetchone()
+            return None if row is None else self._exit_row(row)
+
+    def exit_records(self, binding_id):
+        digest_value(binding_id)
+        with self._trusted_read():
+            return tuple(self._exit_row(row) for row in self._conn.execute(
+                "SELECT * FROM ledger_runtime_exit_records WHERE binding_id=? ORDER BY commit_seq", (binding_id,)))
+
+    def exit_evidence_sequence(self):
+        """Highest common committed public chain/Runtime order Evidence sequence."""
+        with self._trusted_read():
+            return self._conn.execute("SELECT coalesce(max(seq),0) FROM ledger_commits "
+                "WHERE kind IN ('CHAIN_EVIDENCE','RUNTIME_EXIT_EVIDENCE')").fetchone()[0]
+
+    def _record_exit(self, kind, command_id, binding_id, payload_json, *, fence):
+        """Finite Runtime cut port: common commit, exact replay, no custody write."""
+        try:
+            current = self._begin_economic_write(fence)
+            existing = self.exit_record(command_id)
+            if existing is not None:
+                if (existing.kind, existing.binding_id, existing.payload_json) != (kind, binding_id, payload_json):
+                    raise LedgerConflict("RUNTIME_EXIT_COMMAND_CONFLICT")
+                self._commit()
+                return existing
+            self._new_revision(fence, current)
+            value = ExitJournalRecord(current.revision+1, kind, command_id, binding_id, payload_json)
+            binding = strict_json_object(value.payload["binding"])
+            root, action_id = binding["root_id"], binding["buy_action_id"]
+            chains = [self._chain_receipt_row(row) for row in self._chain_rows()]
+            replay_exit_record(value, self.exit_records(binding_id), domain=self.domain, custody=self._custody,
+                candidates={root: self.candidate(root)}, actions={action_id: self.action(action_id)},
+                applications=self._applications, chains={chain.ingestion_key: chain for chain in chains},
+                previous_commit_digest=current.last_receipt_digest, evidence_sequence=self.exit_evidence_sequence())
+            self._conn.execute("INSERT INTO ledger_runtime_exit_records VALUES(?,?,?,?,?,?)",
+                (value.sequence, value.kind, value.command_id, value.binding_id, value.payload_json, value.content_digest))
+            self._append_commit(kind, command_id, value.content_digest, current)
+            self._commit()
+            return value
+        except BaseException as exc:
+            self._rollback_economic(exc)
+
     def _protection_state(self, state, supplied, applications, *, sequence):
         resolution = next((item for item in state.resolutions if item.signature == supplied.acquisition_signature), None)
         acquisition = None if resolution is None else next((item for item in applications.values() if item.sequence == resolution.application_sequence), None)
@@ -2346,6 +2404,9 @@ class LedgerRepository:
         for row in self._conn.execute("SELECT * FROM ledger_authority_records"):
             receipt = self._authority_receipt_row(row)
             remember(receipt.sequence, receipt.kind, receipt.command_id, receipt.content_digest, receipt)
+        for row in self._conn.execute("SELECT * FROM ledger_runtime_exit_records"):
+            receipt = self._exit_row(row)
+            remember(receipt.sequence, receipt.kind, receipt.command_id, receipt.content_digest, receipt)
         for row in self._conn.execute("SELECT * FROM ledger_authority_message_profiles"):
             receipt = self._read_message_profile_row(row)
             remember(receipt.sequence, "AUTHORITY_MESSAGE_PROFILE", receipt.command.command_id, receipt.content_digest, receipt)
@@ -2379,6 +2440,7 @@ class LedgerRepository:
         signatures = {}
         lane, lane_revision = None, 0
         simulations = {}
+        runtime_exit_history = []
         message_profiles, message_selections, message_history, revoked_authority = {}, {}, {}, set()
 
         def replay_application(seq, item):
@@ -2676,6 +2738,13 @@ class LedgerRepository:
                     signed_inputs[item["attempt_id"]] = (bytes(stage.signed_public_transaction()), stage.recorded_at_utc)
                 live_attempts[item["attempt_id"]] = value
                 lane, lane_revision = (item["attempt_id"] if value.lane_held else None), seq
+            elif kind in EXIT_KINDS:
+                replay_exit_record(item, runtime_exit_history, domain=self.domain, custody=custody,
+                    candidates=candidates, actions=live_actions, applications=applications, chains=chain_seen,
+                    previous_commit_digest=commits[seq]["previous_digest"],
+                    evidence_sequence=max((n for n in commits if n < seq and commits[n]["kind"] in
+                        ("CHAIN_EVIDENCE", "RUNTIME_EXIT_EVIDENCE")), default=0))
+                runtime_exit_history.append(item)
             elif kind in GROUP_KINDS:
                 group = item
                 supplied = next(value for value in (group.admission, group.handoff, group.retirement, group.dry_terminal) if value is not None)
