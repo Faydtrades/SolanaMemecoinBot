@@ -1,6 +1,20 @@
 # MEME-LIVE Runtime Foundation v1
 
-Status: **STEP 8A LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION; STEP 8B LOCAL_PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**. The owner accepts the bounded Step-8A producer-through-admission transition and approves M02/M05/M06 as VERIFIED in [Step-8B Q0](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8b-q0--owner-acceptance-and-bounded-positionprotection-authorization). Existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection) governs the bounded Runtime work; no new architecture or roadmap is introduced. Step 8C and Step 9 remain NOT AUTHORIZED. Step-8A records below retain their historical checkpoint scope.
+Status: **STEP 8A LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION; STEP 8B PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS; STEP 8C AUTHORIZED_IN_PROGRESS**. [Step-8C Q0 owner acceptance](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8c-q0--owner-acceptance-and-bounded-runtime-completion-authorization) promotes only M34/M35/M36/M38/M41 within B5's documented proofs. Existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection) governs Runtime; no new architecture or roadmap is introduced. Step 9 and later steps remain NOT AUTHORIZED. Earlier records below retain their historical checkpoint scope.
+
+## Step 8C Q0 — Acceptance record and bounded queue
+
+Clean isolated local/remote input: `d2839809bf000904f76c75159ec42c3aee021af4`. The owner accepts Step 8B as PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS and exactly its documented Runtime boundaries at production freeze `35aa742ac7ac4911046e60ac09881adb6893c7f3`. Only M34/M35/M36/M38/M41 become VERIFIED. Matrix: **40 VERIFIED / 15 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Q0 is documentation/control only: no worker, source changes, tests or regression. Existing Step-8B validation is retained unchanged. Normal publication precedes C1.
+
+| Item | Bounded producer -> consumer contract | Review boundary |
+|---|---|---|
+| C1 | Existing exact plan/message/simulation -> structurally isolated DRY graph -> Ledger NON_SUBMITTED and tentative-capacity disposition | M54/M55 actual Runtime consumers; idempotence and interruptions before preparation, after preparation and after simulation |
+| C2 | Accepted source/producer, handoff, Ledger, Authority, Execution and B1-B4 -> actual Runtime root and next legal unit of work | Actionable protection first, truth-establishing reconciliation next, eligible entry only with actual capacity and Authority; Runtime side of M45 |
+| C3 | Actual first lifecycle -> lawful retirement -> original fresh second canonical candidate/root -> distinct admission/action | M44 and Runtime scheduler side of M45; no expired/replayed/retried candidate relabelled as a trade |
+| C4 | Accepted durable producer/economic/controller/obligation/DRY owners -> exact cold Runtime reconstruction | Representative pending/open/due/partial/UNKNOWN/resolved/DRY states; Runtime evidence for M47/M49 and later M48 consumer only |
+| C5 | Frozen C1-C4 plus accepted Step 8A/8B -> CHIEF Runtime SYSTEM review and one justified broad affected regression | Evidence-based eligibility only; exhaustive Step-10 dossier and Operations qualification remain later-owned |
+
+Each of C1-C4 requires a **new/fresh Astra High worker context**, exactly one consequential worker at a time. Correction loops may reuse that item's worker only. Extra High/Ultra follow the owner's concrete escalation conditions. If fresh creation hits the app task limit, stop after the current clean checkpoint with **WORKER_CAPACITY_BLOCKED**, without reusing an old context or assigning implementation to CHIEF as a workaround. CHIEF records bounded review/checkpoints, carries package context, and performs C5. No Step-8C promotion is predeclared; no M48 promotion assessment or Operations-dependent row closure is authorized. Step 9/10, production keys, real mainnet mutation and capital remain unauthorized. The protected runtime checkout is not used for edits or tests.
 
 ## Step 8B Q0 — Acceptance record and bounded queue
 

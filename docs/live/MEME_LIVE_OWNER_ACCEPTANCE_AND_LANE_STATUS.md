@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 8B / Actual Position, Selected Exit and Protective Obligation** are attributed below. Step 8A is **LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION**, and its retained source -> same-lineage producer -> bounded reopen/continuation -> canonical candidate -> durable Ledger inbox -> existing Authority admission transition is **ACCEPTED** within the documented boundaries. Step 8B is **LOCAL_PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**, with bounded SYSTEM TRANSITION PASS and no project acceptance or new classification promotion. Step 8C and Step 9 remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE — STEP 8C / Runtime Composition, DRY, Continuous Next Trade and Runtime Reopen** are attributed below. Step 8A remains LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION. Step 8B is **PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS** within its documented Runtime boundaries. Step 8C only is **AUTHORIZED_IN_PROGRESS**. Step 9 and later steps remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,16 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 8C Q0 — Owner acceptance and bounded Runtime completion authorization
+
+The owner's explicit Step-8C instruction in this task accepts Step 8B as **PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS**, limited to [B5's documented Runtime boundaries](MEME_LIVE_RUNTIME_FOUNDATION_V1.md#step-8b-b5--frozen-bounded-transition-review-and-handoff). Clean isolated local and remote `live/meme-production-readiness` HEAD both matched `d2839809bf000904f76c75159ec42c3aee021af4`. Accepted production freeze remains `35aa742ac7ac4911046e60ac09881adb6893c7f3`; its recorded evidence remains authoritative. Only **M34/M35/M36/M38/M41** are promoted to VERIFIED within those proofs. Matrix: **40 VERIFIED / 15 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Q0 changes control/documentation only, with no worker, production source change, tests or regression, and is normally published before C1.
+
+Step 8C authorizes C1 actual structurally non-signing/non-sending DRY orchestration and NON_SUBMITTED; C2 actual production Runtime composition and protection-before-entry arbitration; C3 lawful retirement followed by a fresh second legitimate trade; C4 Runtime-owned durable reconstruction; C5 CHIEF frozen Runtime SYSTEM review and exactly one justified broad Runtime regression. Existing accepted components remain semantic owners; no replacement architecture, accounting model or generic Runtime framework is authorized. C1-C4 use targeted/directly affected validation and individually reviewed/published checkpoints.
+
+CHIEF may record bounded LOCAL PASS and commit/push normally without additional item-level confirmation, overriding AGENTS.md only for these statuses/checkpoints. **C1, C2, C3 and C4 each require a fresh worker context**, one consequential worker at a time. A completed worker cannot be carried into the next item. If the app task limit prevents fresh creation, stop at the current clean checkpoint and report **WORKER_CAPACITY_BLOCKED**. CHIEF/Astra High and worker/Astra High are the defaults; Extra High requires a concrete difficult composition, scheduler, DRY atomicity or reconstruction problem, and Ultra requires a critical ambiguity or failed lower-level resolution.
+
+C4 may provide Runtime-side M47/M49 evidence without closing their Operations-dependent contracts; M48 is not assessed for promotion. M46/M50/M51/M53 remain Operations-owned, M52 retains its integrated operating-envelope requirement, and M56/M57 remain later integrated/gate work. Step 9 Operations and Step 10 exhaustive acceptance are not authorized. No exclusive OS ownership, boot readiness barriers, watchdog/services, production track choice, production keys, real mainnet sign/send/broadcast, T010/T011 or capital mutation is authorized. Protected runtime `D:\Tradingbot\solana\_memecoin\_bot\_phase1\_v0\_1` must remain untouched; work continues only in the isolated checkout. **STOP after Step 8C.**
 
 ### Step 8B Q0 — Owner acceptance and bounded position/protection authorization
 
