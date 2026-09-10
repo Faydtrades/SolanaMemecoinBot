@@ -507,7 +507,7 @@ def main():
             deny(route+"_new_evaluation_does_not_reuse_aged_context",replace(value,clock=a3.clock(f.repo,NOW+100)),True)
             check(route+"_validator_no_journal_mutation",f.repo.audit()==old_audit)
             with closing(sqlite3.connect(f.path)) as outside:
-                outside.execute("PRAGMA user_version=7")
+                outside.execute("PRAGMA user_version=8")
             check(route+"_guarded_capture_rejects_unverified_outside_commit",raises(lambda:capture_message_context(f.repo,action.action_id)))
             f.reopen()
             check(route+"_explicit_reopen_reverifies_unchanged_history",capture_message_context(f.repo,action.action_id)==value.context)

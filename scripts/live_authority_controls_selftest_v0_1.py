@@ -422,7 +422,7 @@ def faults(directory):
     command=ControlCommand("stale",f.domain.economic_domain_id,"DISARM_ENTRY",operator())
     check("common_cas_fences_stale_control",raises(lambda:f.repo.record_authority_control(command,fence=fence)))
     with closing(sqlite3.connect(f.path)) as outside, outside:
-        outside.execute("PRAGMA user_version=7")
+        outside.execute("PRAGMA user_version=8")
     check("outside_noop_commit_invalidates_public_read",raises(lambda:f.repo.authority_snapshot()))
     check("outside_noop_commit_invalidates_control_write",raises(lambda:control(f.repo,"HARD_STOP","outside-stop")))
     f.reopen()
@@ -431,7 +431,7 @@ def faults(directory):
     check("reopen_generation_fences_old_caller",raises(lambda:f.repo.record_authority_control(command,fence=stale)))
     check("competing_writer_excluded",raises(lambda:LedgerRepository.reopen(f.path,f.domain)))
     f.close()
-    for kind in ("projection","binding","v5"):
+    for kind in ("projection","binding","v5","v7"):
         f=Fixture(directory,"tamper-"+kind); f.evaluate("initial"); f.repo.close()
         with closing(sqlite3.connect(f.path)) as conn, conn:
             if kind=="projection":
@@ -441,7 +441,7 @@ def faults(directory):
                 conn.execute("UPDATE ledger_authority_bindings SET payload_json='{}'")
                 conn.execute(_DDL["ledger_authority_bindings_no_update"])
             else:
-                conn.execute("PRAGMA user_version=5")
+                conn.execute("PRAGMA user_version="+("7" if kind=="v7" else "5"))
         check(kind+"_reopen_fails_closed",raises(lambda:LedgerRepository.reopen(f.path,f.domain)))
         f.source.close()
 

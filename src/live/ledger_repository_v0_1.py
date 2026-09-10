@@ -56,14 +56,25 @@ from .evidence_store_v0_1 import SourceEvidenceStore
 from .authority_admission_v0_1 import (
     EntryRequest, AuthorityAdmissionReceipt, admission_receipt_from_record, assess_entry_risk, admission_terms,
 )
+from .authority_message_evidence_v0_1 import ExternalMessageEvidence, MessageValidationInput, MessageContext, capture_message_context
+from .authority_message_control_v0_1 import (
+    MessageProfileCommand, MessageProfileReceipt, MessageStageRequest, MessageStageOriginal, MessageStageReceipt,
+    FreshStageConsumption, _FRESH_DELIVERY, select_profile, assess_message_stage,
+)
+from .authority_message_control_codec_v0_1 import (
+    profile_command_from_record, profile_receipt_to_json, profile_receipt_from_json,
+    original_to_json, original_from_json, receipt_to_json as message_receipt_to_json,
+    receipt_from_json as message_receipt_from_json,
+)
 
 APPLICATION_ID = 0x4C454447
-STORAGE_VERSION = 7
+STORAGE_VERSION = 8
 RECEIPT_VERSION = "live_ledger_wallet_receipt_v0.1"
 GENERATION_VERSION = "live_ledger_writer_generation_v0.1"
 COMMIT_VERSION = "live_ledger_concrete_commit_v0.1"
 _COMMIT_KINDS = frozenset(("WALLET", "INBOX", "NON_ACCEPTANCE", "ACTION", "ATTEMPT", "ATTEMPT_STAGE", "CHAIN_EVIDENCE",
-                 "SETTLEMENT_APPLICATION", "WALLET_COMPARISON", "AUTHORITY_CONTROL", "AUTHORITY_ELIGIBILITY", "AUTHORITY_ADMISSION", *GROUP_KINDS))
+                 "SETTLEMENT_APPLICATION", "WALLET_COMPARISON", "AUTHORITY_CONTROL", "AUTHORITY_ELIGIBILITY", "AUTHORITY_ADMISSION",
+                 "AUTHORITY_MESSAGE_PROFILE", "AUTHORITY_MESSAGE_STAGE", *GROUP_KINDS))
 _OPEN_TOKEN = object()
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _PROTECTED_RUNTIME = Path("D:/Tradingbot/solana_memecoin_bot_phase1_v0_1")
@@ -194,6 +205,16 @@ _DDL = {
         receipt_digest TEXT NOT NULL UNIQUE, payload_json TEXT NOT NULL)""",
     "ledger_authority_projection": """CREATE TABLE ledger_authority_projection (
         singleton INTEGER PRIMARY KEY CHECK(singleton=1), content_digest TEXT NOT NULL, payload_json TEXT NOT NULL)""",
+    "ledger_authority_message_profiles": """CREATE TABLE ledger_authority_message_profiles (
+        commit_seq INTEGER PRIMARY KEY REFERENCES ledger_commits(seq) DEFERRABLE INITIALLY DEFERRED,
+        command_id TEXT NOT NULL UNIQUE, policy_digest TEXT NOT NULL, profile_id TEXT NOT NULL,
+        installed_profile_id TEXT UNIQUE, receipt_digest TEXT NOT NULL UNIQUE, payload_json TEXT NOT NULL)""",
+    "ledger_authority_message_profile_selection": "CREATE INDEX ledger_authority_message_profile_selection ON ledger_authority_message_profiles(policy_digest,commit_seq)",
+    "ledger_authority_message_stages": """CREATE TABLE ledger_authority_message_stages (
+        commit_seq INTEGER PRIMARY KEY REFERENCES ledger_commits(seq) DEFERRABLE INITIALLY DEFERRED,
+        command_id TEXT NOT NULL UNIQUE, attempt_id TEXT NOT NULL REFERENCES ledger_attempts(attempt_id),
+        consumed_key TEXT UNIQUE, receipt_digest TEXT NOT NULL UNIQUE, payload_json TEXT NOT NULL)""",
+    "ledger_authority_message_attempt_history": "CREATE INDEX ledger_authority_message_attempt_history ON ledger_authority_message_stages(attempt_id,commit_seq)",
     "ledger_consumer_groups": """CREATE TABLE ledger_consumer_groups (
         commit_seq INTEGER PRIMARY KEY REFERENCES ledger_commits(seq) DEFERRABLE INITIALLY DEFERRED,
         ingestion_key TEXT NOT NULL UNIQUE, kind TEXT NOT NULL,
@@ -206,7 +227,8 @@ for _table in ("ledger_domain", "ledger_writer_generations", "ledger_wallet_obse
                "ledger_attempts", "ledger_attempt_stages", "ledger_signature_bindings",
                "ledger_chain_observations", "ledger_chain_receipts", "ledger_custody_inputs", "ledger_application_receipts",
                "ledger_wallet_comparisons", "ledger_economic_postings", "ledger_consumer_groups",
-               "ledger_authority_records", "ledger_authority_bindings", "ledger_authority_admissions"):
+               "ledger_authority_records", "ledger_authority_bindings", "ledger_authority_admissions",
+               "ledger_authority_message_profiles", "ledger_authority_message_stages"):
     for _operation in ("UPDATE", "DELETE"):
         _name = f"{_table}_no_{_operation.lower()}"
         _DDL[_name] = (f"CREATE TRIGGER {_name} BEFORE {_operation} ON {_table} BEGIN "
@@ -970,6 +992,171 @@ class LedgerRepository:
         self._conn.executemany("INSERT INTO ledger_resolution_projection VALUES(?,?,?,?) ON CONFLICT(attempt_id) DO UPDATE SET "
                               "signature=excluded.signature,content_digest=excluded.content_digest,payload_json=excluded.payload_json", resolutions)
 
+    @staticmethod
+    def _message_profile_row(value):
+        command = value.command
+        return (value.sequence, command.command_id, command.profile.policy_digest, command.profile.profile_id,
+            command.profile.profile_id if command.operation == "INSTALL_AND_SELECT" else None,
+            value.content_digest, profile_receipt_to_json(value))
+
+    def _read_message_profile_row(self, row):
+        value = profile_receipt_from_json(row[-1])
+        if self._message_profile_row(value) != row:
+            raise LedgerConflict("AUTHORITY_MESSAGE_PROFILE_ROW_CONFLICT")
+        return value
+
+    def authority_message_profile(self, policy_digest):
+        """Historical selected profile/selection identity; no message permission."""
+        with self._trusted_read():
+            digest_value(policy_digest)
+            row = self._conn.execute("SELECT * FROM ledger_authority_message_profiles WHERE policy_digest=? ORDER BY commit_seq DESC LIMIT 1",
+                (policy_digest,)).fetchone()
+            return None if row is None else self._read_message_profile_row(row)
+
+    def record_authority_message_profile(self, command, *, fence):
+        try:
+            if type(command) is not MessageProfileCommand:
+                raise LedgerConflict("AUTHORITY_EXACT_MESSAGE_PROFILE_COMMAND_REQUIRED")
+            command = profile_command_from_record(asdict(command))
+            current = self._begin_economic_write(fence)
+            old = self._conn.execute("SELECT * FROM ledger_authority_message_profiles WHERE command_id=?", (command.command_id,)).fetchone()
+            if old is not None:
+                receipt = self._read_message_profile_row(old)
+                if receipt.command != command:
+                    raise LedgerConflict("AUTHORITY_MESSAGE_PROFILE_COMMAND_CONTENT_CONFLICT")
+                self._commit()
+                return receipt
+            self._new_revision(fence, current)
+            known = self._conn.execute("SELECT * FROM ledger_authority_message_profiles WHERE installed_profile_id=?", (command.profile.profile_id,)).fetchone()
+            known_profile = None if known is None else self._read_message_profile_row(known).command.profile
+            policy = next((value.original.policy for value in (self._authority_receipt_row(row) for row in
+                self._conn.execute("SELECT * FROM ledger_authority_records WHERE policy_id IS NOT NULL"))
+                if value.original.policy.content_digest == command.profile.policy_digest), None)
+            previous = self.authority_message_profile(command.profile.policy_digest)
+            updated = select_profile(self.domain, self._authority, command, policy, known_profile, previous)
+            receipt = MessageProfileReceipt(current.revision+1, command, None if previous is None else previous.content_digest,
+                self._authority.content_digest, updated.content_digest, current.last_receipt_digest)
+            if profile_receipt_from_json(profile_receipt_to_json(receipt)) != receipt:
+                raise LedgerConflict("AUTHORITY_MESSAGE_PROFILE_FINITE_ROUNDTRIP_CONFLICT")
+            self._conn.execute("INSERT INTO ledger_authority_message_profiles VALUES(?,?,?,?,?,?,?)", self._message_profile_row(receipt))
+            self._store_authority_projection(updated)
+            self._pending_authority = updated
+            self._append_commit("AUTHORITY_MESSAGE_PROFILE", command.command_id, receipt.content_digest, current)
+            self._commit()
+            return receipt
+        except BaseException as exc:
+            self._rollback_economic(exc)
+
+    @staticmethod
+    def _message_stage_row(value):
+        request = value.original.request
+        return (value.sequence, request.command_id, request.attempt_id,
+            request.consumption_key if value.consumed else None, value.content_digest, message_receipt_to_json(value))
+
+    def _read_message_stage_row(self, row):
+        value = message_receipt_from_json(row[-1])
+        if self._message_stage_row(value) != row:
+            raise LedgerConflict("AUTHORITY_MESSAGE_STAGE_ROW_CONFLICT")
+        return value
+
+    def authority_message_receipt(self, command_id):
+        """Only immutable historical facts; cannot recreate a fresh delivery."""
+        with self._trusted_read():
+            public_reference(command_id)
+            row = self._conn.execute("SELECT * FROM ledger_authority_message_stages WHERE command_id=?", (command_id,)).fetchone()
+            return None if row is None else self._read_message_stage_row(row)
+
+    def _authority_sign_consumed(self, attempt_id, through_sequence=None):
+        key = f"{attempt_id}:SIGN:0"
+        row = self._conn.execute("SELECT commit_seq FROM ledger_authority_message_stages WHERE consumed_key=?", (key,)).fetchone()
+        return row is not None and (through_sequence is None or row[0] <= through_sequence)
+
+    def consume_authority_message_stage(self, request, clock, source_store, evidence, *, fence):
+        """ONE current check/consumption commit, with no signer or transport.
+
+        A fresh successful call returns FreshStageConsumption. Every lookup,
+        exact retry, denial or post-crash recovery returns only a historical
+        MessageStageReceipt. A consumed SIGN already implies possible signing,
+        even before Execution durably supplies the public signature.
+        """
+        try:
+            if (type(request) is not MessageStageRequest or type(clock) is not TrustedClockSample
+                    or type(evidence) is not ExternalMessageEvidence):
+                raise LedgerConflict("AUTHORITY_EXACT_STAGE_CLOCK_EXTERNAL_EVIDENCE_REQUIRED")
+            current = self._begin_economic_write(fence)
+            existing = self.authority_message_receipt(request.command_id)
+            if existing is not None:
+                previous = existing.original
+                repeated = MessageStageOriginal(request, replace(previous.validation, clock=clock, evidence=evidence),
+                    previous.selection_digest, previous.source)
+                if original_to_json(repeated) != original_to_json(previous):
+                    raise LedgerConflict("AUTHORITY_MESSAGE_COMMAND_CONTENT_CONFLICT")
+                self._commit()
+                return existing
+            self._new_revision(fence, current)
+            context = capture_message_context(self, request.action_id)
+            selection = self.authority_message_profile(context.original_policy.content_digest)
+            if selection is None:
+                raise LedgerConflict("AUTHORITY_DURABLY_SELECTED_MESSAGE_PROFILE_REQUIRED")
+            attempt = self.attempt(request.attempt_id)
+            if attempt is None or attempt.preparation.action_id != request.action_id:
+                raise LedgerConflict("AUTHORITY_CURRENT_EXACT_ATTEMPT_REQUIRED")
+            selected = source = None
+            if context.action.side == "BUY":
+                if type(source_store) is not SourceEvidenceStore:
+                    raise LedgerConflict("AUTHORITY_CURRENT_ACTUAL_SOURCE_STORE_REQUIRED")
+                selected = source_store.latest_record()
+                old = next((item for item in self._authority.source_checkpoints if (item.source_identity, item.profile_fingerprint) ==
+                    (source_store.binding.source_identity, source_store.profile.fingerprint)), None)
+                prior = None if old is None else source_store.read_record(old.sequence)
+                source = EligibilityInput(context.action.root_id, context.candidate.content_digest, context.action.selected_exit_track, clock,
+                    None if selected is None else selected[0], None if selected is None else selected[1],
+                    None if prior is None else prior[1].content_digest)
+            elif source_store is not None:
+                raise LedgerConflict("AUTHORITY_PROTECTIVE_SCOPE_DOES_NOT_SELECT_ENTRY_SOURCE")
+            original = MessageStageOriginal(request, MessageValidationInput(context, selection.command.profile, clock, evidence),
+                selection.content_digest, source)
+            # Whole enclosing input bound is checked before inserting any child.
+            original = original_from_json(original_to_json(original))
+            comparison, compared = self._insert_wallet_comparison(original.validation.evidence.wallet,
+                ingestion_key=request.command_id, current=current)
+            accepted, policies, actions, _ = self._authority_risk_history(context.acceptance.request, context.candidate)
+            status = self.authority_grant_status(context.acceptance.eligibility.decision.grant_id)
+            history = tuple(self._read_message_stage_row(row) for row in self._conn.execute(
+                "SELECT * FROM ledger_authority_message_stages WHERE attempt_id=? AND consumed_key IS NOT NULL ORDER BY commit_seq", (request.attempt_id,)))
+            decision, updated = assess_message_stage(original, self._authority, self._custody, attempt, selection, comparison.comparison,
+                generation=current.generation, lane=self._lane()[0], grant=status["issuance"], grant_revoked=status["revoked"],
+                consumed_grant_root=status["consumed_root"], accepted=accepted, policies=policies, applications=self._applications,
+                actions=actions, stage_history=history, inbox_disposition=self.inbox_disposition(context.action.root_id))
+            receipt = MessageStageReceipt(current.revision+1, current.generation, original, decision, comparison.content_digest,
+                self._authority.content_digest, updated.content_digest, self._custody.content_digest, compared.content_digest,
+                current.last_receipt_digest)
+            if message_receipt_from_json(message_receipt_to_json(receipt)) != receipt:
+                raise LedgerConflict("AUTHORITY_MESSAGE_GROUP_FINITE_ROUNDTRIP_CONFLICT")
+            self._conn.execute("INSERT INTO ledger_authority_message_stages VALUES(?,?,?,?,?,?)", self._message_stage_row(receipt))
+            self._store_authority_projection(updated)
+            self._pending_authority = updated
+            # Controls, lane, profile selection and economic facts cannot change
+            # under this owned writer transaction. The source store is separate.
+            if receipt.consumed and context.action.side == "BUY" and source_store.latest_record() != selected:
+                raise LedgerConflict("AUTHORITY_CURRENT_SOURCE_CHANGED_DURING_MESSAGE_CONSUMPTION")
+            self._append_commit("AUTHORITY_MESSAGE_STAGE", request.command_id, receipt.content_digest, current)
+            expected_delivery_fence = self.write_fence()
+            self._commit()
+            if receipt.consumed:
+                # Trusted read detects an outside commit immediately after COMMIT;
+                # failure here loses delivery, never the already consumed slot.
+                with self._trusted_read():
+                    fresh = self.write_fence()
+                    if fresh != expected_delivery_fence:
+                        raise LedgerConflict("AUTHORITY_CONSUMED_CUT_CHANGED_BEFORE_DELIVERY")
+                    if context.action.side == "BUY" and source_store.latest_record() != selected:
+                        raise LedgerConflict("AUTHORITY_CONSUMED_SOURCE_CHANGED_BEFORE_DELIVERY")
+                    return FreshStageConsumption(receipt, fresh.generation, fresh.last_receipt_digest, _token=_FRESH_DELIVERY)
+            return receipt
+        except BaseException as exc:
+            self._rollback_economic(exc)
+
     def _verify_custody_projection(self, state):
         funding, accounts, positions, resolutions = self._projection_rows(state)
         if (self._conn.execute("SELECT * FROM ledger_funding_projection").fetchall() != [funding]
@@ -1163,7 +1350,7 @@ class LedgerRepository:
         return self._conn.execute("SELECT a.payload_json,a.content_digest,a.commit_seq,c.generation FROM ledger_attempts a "
             "JOIN ledger_commits c ON c.seq=a.commit_seq WHERE a.attempt_id=?", (attempt_id,)).fetchone()
 
-    def _replay_stage(self, previous: StoredAttempt, record: dict, generation: int) -> StoredAttempt:
+    def _replay_stage(self, previous: StoredAttempt, record: dict, generation: int, *, sign_consumed=False) -> StoredAttempt:
         prep = previous.preparation
         if self.domain.mode == "DRY" and (record.get("to_stage") not in ("EXACT_SIMULATED", "UNKNOWN", "CANCELLED_UNSIGNED")
                 or record.get("to_stage") == "CANCELLED_UNSIGNED" and record.get("local_cancel") is not True):
@@ -1184,7 +1371,7 @@ class LedgerRepository:
             if record["local_cancel"] is not True or record["stage_input"] is not None or previous.recorded_stage == "CANCELLED_UNSIGNED":
                 raise LedgerConflict("LEDGER_LOCAL_CANCEL_PROOF_INVALID")
             positive = (previous.recorded_stage in ("PREPARED", "EXACT_SIMULATED", "AUTHORIZED")
-                        and previous.prepared_generation == generation and signature is None)
+                        and previous.prepared_generation == generation and signature is None and not sign_consumed)
             target = "CANCELLED_UNSIGNED" if positive else "UNKNOWN"
             if record["to_stage"] != target:
                 raise LedgerConflict("LEDGER_SIGNED_OR_PREDECESSOR_UNCERTAINTY_CANNOT_RELEASE")
@@ -1217,13 +1404,13 @@ class LedgerRepository:
         if prep.attempt_id != attempt_id or prep.content_digest != row[1]:
             raise LedgerConflict("LEDGER_ATTEMPT_IDENTITY_OR_CONTENT_CONFLICT")
         value = StoredAttempt(prep, "PREPARED", 0, row[3], prep.prepared_at_utc, None, None, True)
-        for revision, key, digest, payload, generation in self._conn.execute(
-                "SELECT s.revision,s.idempotency_key,s.content_digest,s.payload_json,c.generation FROM ledger_attempt_stages s "
+        for revision, key, digest, payload, generation, sequence in self._conn.execute(
+                "SELECT s.revision,s.idempotency_key,s.content_digest,s.payload_json,c.generation,s.commit_seq FROM ledger_attempt_stages s "
                 "JOIN ledger_commits c ON c.seq=s.commit_seq WHERE attempt_id=? ORDER BY revision", (attempt_id,)):
             record = strict_json_object(payload)
             if canonical_json(record) != payload or content_fingerprint(record) != digest or (record["revision"], record["idempotency_key"]) != (revision, key):
                 raise LedgerConflict("LEDGER_ATTEMPT_STAGE_CONTENT_CONFLICT")
-            value = self._replay_stage(value, record, generation)
+            value = self._replay_stage(value, record, generation, sign_consumed=self._authority_sign_consumed(attempt_id, sequence))
         signature_row = self._conn.execute("SELECT signature,wire_digest FROM ledger_signature_bindings WHERE attempt_id=?", (attempt_id,)).fetchone()
         if signature_row != (None if value.primary_signature is None else (value.primary_signature, value.signed_wire_digest)):
             raise LedgerConflict("LEDGER_ATTEMPT_SIGNATURE_LINEAGE_CONFLICT")
@@ -1826,7 +2013,8 @@ class LedgerRepository:
         lane = self._lane()
         if lane[0] != previous.preparation.attempt_id:
             raise LedgerConflict("LEDGER_ATTEMPT_DOES_NOT_HOLD_MUTATION_LANE")
-        value = self._replay_stage(previous, record, current.generation)
+        value = self._replay_stage(previous, record, current.generation,
+            sign_consumed=self._authority_sign_consumed(previous.preparation.attempt_id))
         digest = content_fingerprint(record)
         self._conn.execute("INSERT INTO ledger_attempt_stages VALUES(?,?,?,?,?,?)",
             (record["attempt_id"], record["revision"], record["idempotency_key"], digest, canonical_json(record), current.revision+1))
@@ -1868,7 +2056,8 @@ class LedgerRepository:
                 raise LedgerConflict("LEDGER_CHAIN_FINALITY_OWNS_ATTEMPT")
             target = stage.target_stage if stage is not None else (
                 "CANCELLED_UNSIGNED" if previous.recorded_stage in ("PREPARED", "EXACT_SIMULATED", "AUTHORIZED")
-                and previous.prepared_generation == current.generation and previous.primary_signature is None else "UNKNOWN")
+                and previous.prepared_generation == current.generation and previous.primary_signature is None
+                and not self._authority_sign_consumed(attempt_id) else "UNKNOWN")
             record = {"version": "live_ledger_attempt_stage_receipt_v0.1", "attempt_id": attempt_id,
                 "revision": previous.revision+1, "idempotency_key": idempotency_key, "from_stage": previous.recorded_stage,
                 "to_stage": target, "recorded_at_utc": at, "writer_generation": current.generation,
@@ -2013,8 +2202,16 @@ class LedgerRepository:
         authority_groups = {item.sequence: item for item in (self._read_authority_admission_row(row)
             for row in self._conn.execute("SELECT * FROM ledger_authority_admissions"))}
         authority_children = {seq: {} for seq in authority_groups}
+        message_groups = {item.sequence: item for item in (self._read_message_stage_row(row)
+            for row in self._conn.execute("SELECT * FROM ledger_authority_message_stages"))}
+        message_children = {seq: {} for seq in message_groups}
 
         def remember(seq, kind, key, digest, event):
+            if seq in message_groups:
+                if kind != "WALLET_COMPARISON" or kind in message_children[seq] or seq not in commits:
+                    raise LedgerConflict("AUTHORITY_MESSAGE_UNEXPECTED_GROUP_CHILD")
+                message_children[seq][kind] = (key, digest, event)
+                return
             if seq in authority_groups and kind != "ACTION":
                 if kind not in ("AUTHORITY_ELIGIBILITY", "WALLET_COMPARISON", "NON_ACCEPTANCE", "ADMISSION") or kind in authority_children[seq] or seq not in commits:
                     raise LedgerConflict("AUTHORITY_UNEXPECTED_OR_DUPLICATE_GROUP_CHILD")
@@ -2139,6 +2336,17 @@ class LedgerRepository:
         for row in self._conn.execute("SELECT * FROM ledger_authority_records"):
             receipt = self._authority_receipt_row(row)
             remember(receipt.sequence, receipt.kind, receipt.command_id, receipt.content_digest, receipt)
+        for row in self._conn.execute("SELECT * FROM ledger_authority_message_profiles"):
+            receipt = self._read_message_profile_row(row)
+            remember(receipt.sequence, "AUTHORITY_MESSAGE_PROFILE", receipt.command.command_id, receipt.content_digest, receipt)
+        for seq, group in message_groups.items():
+            child = message_children[seq]
+            if (child.keys() != {"WALLET_COMPARISON"} or seq not in commits or seq in records
+                    or child["WALLET_COMPARISON"][:2] != (group.original.request.command_id, group.comparison_digest)
+                    or child["WALLET_COMPARISON"][2][1] != group.original.validation.evidence.wallet):
+                raise LedgerConflict("AUTHORITY_MESSAGE_CLOSED_GROUP_LINK_CONFLICT")
+            records[seq] = ("AUTHORITY_MESSAGE_STAGE", group.original.request.command_id, group.content_digest)
+            events[seq] = ("AUTHORITY_MESSAGE_STAGE", group)
         for seq, group in authority_groups.items():
             expected = {"AUTHORITY_ELIGIBILITY", "WALLET_COMPARISON"} | ({"ADMISSION"} if group.accepted else set()) | ({"NON_ACCEPTANCE"} if group.inbox_disposition_digest is not None else set())
             actual = authority_children[seq]
@@ -2161,6 +2369,7 @@ class LedgerRepository:
         signatures = {}
         lane, lane_revision = None, 0
         simulations = {}
+        message_profiles, message_selections, message_history, revoked_authority = {}, {}, {}, set()
 
         def replay_application(seq, item):
             nonlocal custody, lane, lane_revision
@@ -2207,10 +2416,82 @@ class LedgerRepository:
                     authority_policies[command.policy.policy_id] = command.policy
                 if command.grant is not None:
                     authority_grants[command.grant.grant_id] = command.grant
+                if command.operation == "REVOKE_GRANT":
+                    revoked_authority.add(command.target_id)
                 expected = AuthorityReceipt(seq, command.command_id, kind, command, None, previous_digest,
                     authority.content_digest, commits[seq]["previous_digest"])
                 if expected != item:
                     raise LedgerConflict("AUTHORITY_ORIGINAL_CONTROL_REPLAY_CONFLICT")
+            elif kind == "AUTHORITY_MESSAGE_PROFILE":
+                command = item.command
+                selected = message_selections.get(command.profile.policy_digest)
+                policy = next((value for value in authority_policies.values() if value.content_digest == command.profile.policy_digest), None)
+                updated = select_profile(self.domain, authority, command, policy,
+                    message_profiles.get(command.profile.profile_id), selected)
+                expected = MessageProfileReceipt(seq, command, None if selected is None else selected.content_digest,
+                    authority.content_digest, updated.content_digest, commits[seq]["previous_digest"])
+                if expected != item:
+                    raise LedgerConflict("AUTHORITY_MESSAGE_PROFILE_CHRONOLOGICAL_REPLAY_CONFLICT")
+                if command.operation == "INSTALL_AND_SELECT":
+                    message_profiles[command.profile.profile_id] = command.profile
+                message_selections[command.profile.policy_digest] = item
+                authority = updated
+            elif kind == "AUTHORITY_MESSAGE_STAGE":
+                group, original = item, item.original
+                request, c = original.request, original.validation.context
+                action = live_actions.get(request.action_id)
+                attempt = live_attempts.get(request.attempt_id)
+                acceptance = None if action is None else accepted_authority.get(action.root_id)
+                reservation = None if action is None else next((value for value in custody.reservations if value.root_id == action.root_id), None)
+                if action is None or attempt is None or acceptance is None or reservation is None:
+                    raise LedgerConflict("AUTHORITY_MESSAGE_CHRONOLOGICAL_PARENTS_MISSING")
+                ledger_admission = groups.get(reservation.sequence)
+                actual_position = next((value for value in custody.positions if value.position_id == action.position_id and value.status != "RETIRED"), None)
+                position = None if actual_position is None else PositionView(**{name:
+                    actual_position.usable and not custody.quarantined if name == "usable" else getattr(actual_position, name)
+                    for name in PositionView.__dataclass_fields__})
+                protection = None if position is None else next((value for value in custody.protections if value.handoff.position_id == position.position_id), None)
+                expected_context = MessageContext(self.domain, candidates[action.root_id], acceptance, ledger_admission,
+                    reservation.admission.action, action, authority_policies.get(reservation.admission.action.policy_ref), authority.policy,
+                    ConsumerCut(self.domain.economic_domain_id, seq-1, commits[seq]["previous_digest"], custody.content_digest),
+                    max(custody.latest_usable_wallet_context_slot, custody.latest_qualified_wallet_anchor_slot,
+                        0 if custody.anchor is None else custody.anchor.slot), position, protection)
+                if c != expected_context:
+                    raise LedgerConflict("AUTHORITY_MESSAGE_CONTEXT_CHRONOLOGICAL_CUT_CONFLICT")
+                selection = message_selections.get(c.original_policy.content_digest)
+                if selection is None or original.selection_digest != selection.content_digest:
+                    raise LedgerConflict("AUTHORITY_MESSAGE_ORIGINAL_SELECTION_MISSING")
+                support = original.validation.evidence.wallet
+                comparison, compared = compare_wallet(self.domain, custody, support, common_revision=seq-1,
+                    common_digest=commits[seq]["previous_digest"], pending_attempts=() if lane is None else (lane,),
+                    chain_anchors=(anchor for facts in chain_facts.values() for anchor in facts.anchors))
+                comparison_receipt = LedgerComparisonReceipt(seq, request.command_id, support, comparison,
+                    custody.content_digest, compared.content_digest)
+                child = message_children[seq]["WALLET_COMPARISON"][2][0]
+                if canonical_json(comparison_receipt.to_record()) != canonical_json(child):
+                    raise LedgerConflict("AUTHORITY_MESSAGE_COMPARISON_ORIGINAL_REPLAY_CONFLICT")
+                finality = chain_facts[request.attempt_id].state if request.attempt_id in chain_facts else AttemptFinality(request.attempt_id)
+                resolution = custody.resolution(request.attempt_id)
+                current_attempt = replace(attempt, chain_finality=finality.disposition, chain_quarantined=finality.quarantined,
+                    lane_held=lane == request.attempt_id,
+                    economically_applied=resolution is not None and resolution.disposition in ("FINALIZED_SUCCESS_APPLIED", "FINALIZED_FAILURE_APPLIED"))
+                grant_id = acceptance.eligibility.decision.grant_id
+                consumed_by = next((value.request.root_id for value in accepted_authority.values() if value.consumed_grant_id == grant_id), None)
+                active_policies = {value.content_digest: value for value in authority_policies.values()}
+                decision, updated = assess_message_stage(original, authority, custody, current_attempt, selection, comparison,
+                    generation=commits[seq]["generation"], lane=lane, grant=authority_grants.get(grant_id), grant_revoked=grant_id in revoked_authority,
+                    consumed_grant_root=consumed_by, accepted=accepted_authority, policies=active_policies, applications=applications,
+                    actions=live_actions, stage_history=tuple(message_history.values()), inbox_disposition=inbox[action.root_id][0])
+                expected = MessageStageReceipt(seq, commits[seq]["generation"], original, decision, comparison_receipt.content_digest,
+                    authority.content_digest, updated.content_digest, custody.content_digest, compared.content_digest, commits[seq]["previous_digest"])
+                if message_receipt_to_json(expected) != message_receipt_to_json(group):
+                    raise LedgerConflict("AUTHORITY_MESSAGE_CURRENT_DECISION_ORIGINAL_REPLAY_CONFLICT")
+                if group.consumed:
+                    if request.consumption_key in message_history:
+                        raise LedgerConflict("AUTHORITY_MESSAGE_CONSUMPTION_REPLAY_DUPLICATE")
+                    message_history[request.consumption_key] = group
+                authority, custody = updated, compared
+                comparisons[request.command_id] = comparison_receipt
             elif kind == "AUTHORITY_ELIGIBILITY":
                 supplied = item.original
                 if supplied.root_id not in inbox:
@@ -2371,7 +2652,8 @@ class LedgerRepository:
                 if chain is not None and (chain.state.positive_finality is not None or chain.state.quarantined):
                     raise LedgerJournalError("LEDGER_EXTERNAL_STAGE_AFTER_CHAIN_FINALITY")
                 require_admitted_action(custody, live_actions[previous.preparation.action_id])
-                value = self._replay_stage(previous, item, commits[seq]["generation"])
+                value = self._replay_stage(previous, item, commits[seq]["generation"],
+                    sign_consumed=f"{item['attempt_id']}:SIGN:0" in message_history)
                 if item["to_stage"] == "EXACT_SIMULATED":
                     if item["attempt_id"] in simulations:
                         raise LedgerConflict("LEDGER_DUPLICATE_SIMULATION_REPLAY")

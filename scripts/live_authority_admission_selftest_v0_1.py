@@ -551,7 +551,7 @@ def fault_cases(directory):
     fence=f.repo.write_fence();f.evaluate("clock")
     check("stale_common_cut_cannot_admit",raises(lambda:f.repo.admit_authority_entry(EntryRequest(f.root,"PUMP",TOKEN_PROGRAM_ID,"FINAL-A"),
         clock(f.repo,NOW+5),f.source,wallet(f,at=NOW+5),command_id="stale",fence=fence)))
-    with closing(sqlite3.connect(f.path)) as conn,conn:conn.execute("PRAGMA user_version=7")
+    with closing(sqlite3.connect(f.path)) as conn,conn:conn.execute("PRAGMA user_version=8")
     check("outside_structurally_valid_commit_invalidates_reads",raises(lambda:f.repo.authority_acceptance(f.root)))
     check("outside_structurally_valid_commit_invalidates_admission",raises(lambda:admit(f,"outside")))
     f.reopen();check("reopen_reverifies_unchanged_journal",f.repo.authority_acceptance(f.root) is None)

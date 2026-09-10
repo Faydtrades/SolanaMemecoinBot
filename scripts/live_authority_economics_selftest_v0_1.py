@@ -277,7 +277,7 @@ def guarded_cuts(directory):
     gap_result=propose(f,"current-gap",at=NOW+5)
     check("new_request_selects_latest_actual_gap",gap_result.proposal is None and "CURRENT_SOURCE_NOT_USABLE" in gap_result.reasons)
     with closing(sqlite3.connect(f.path)) as conn,conn:
-        conn.execute("PRAGMA user_version=7")
+        conn.execute("PRAGMA user_version=8")
     check("outside_commit_blocks_guarded_economics_snapshot",raises(lambda:f.repo.authority_candidate_economics(f.root)))
     check("outside_commit_blocks_public_proposal_path",raises(lambda:propose(f,"outside",at=NOW+6)))
     f.reopen()
