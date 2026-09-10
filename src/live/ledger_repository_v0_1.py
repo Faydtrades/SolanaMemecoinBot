@@ -675,6 +675,26 @@ class LedgerRepository:
                 "authority_current": False, "grants_message_permission": False,
                 "protection_requires_position_obligation_and_current_resource_validation": True}
 
+    def authority_candidate_economics(self, root_id):
+        """One guarded concrete cut for A2/A3; historical admission stays exact."""
+        with self._trusted_read():
+            candidate = self.candidate(root_id)
+            if candidate is None:
+                raise LedgerConflict("AUTHORITY_CANONICAL_INBOX_REQUIRED")
+            row = self._conn.execute("SELECT action_id FROM ledger_pending_actions WHERE root_id=? AND side='BUY'", (root_id,)).fetchone()
+            action = None if row is None else self.action(row[0])
+            reservation = self.reservation(root_id)
+            admission = None if reservation is None else self._port_at_sequence(reservation.sequence)
+            if admission is not None and (admission.admission is None or admission.admission.action != action):
+                raise LedgerConflict("AUTHORITY_ORIGINAL_ADMITTED_TERMS_CONFLICT")
+            fence = self.write_fence()
+            return {"domain": self.domain, "candidate": candidate, "inbox_disposition": self.inbox_disposition(root_id),
+                "entry_binding": self.authority_entry_binding(root_id), "policy": self._authority.policy,
+                "authority_state_digest": self._authority.content_digest, "staged_action": action,
+                "admitted_action": None if admission is None else action, "admission_receipt": admission,
+                "fence": fence, "cut": ConsumerCut(self.domain.economic_domain_id, fence.revision,
+                    fence.last_receipt_digest, self._custody.content_digest), "grants_message_permission": False}
+
     def _insert_authority_receipt(self, receipt, updated):
         """One closed Authority child; caller owns its common SQL transaction."""
         if not self._conn.in_transaction:

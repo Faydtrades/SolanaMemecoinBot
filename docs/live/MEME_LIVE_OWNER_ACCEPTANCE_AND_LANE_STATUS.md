@@ -63,6 +63,28 @@ A1 check digest: `4a313092bb9583fc931d6cd4352c6ea0387166e2a0d8c1c4e6a27b8aa3aa4a
 
 Implementation files: new `src/live/authority_controls_v0_1.py`, `src/live/ledger_repository_v0_1.py`, `src/live/ledger_domain_v0_1.py`, and new `scripts/live_authority_controls_selftest_v0_1.py`. No Evidence/PAPER/Shadow producer change, live RPC/mutation, protected-checkout change, private material, signing/send, Runtime or Operations implementation. NEXT: A2 immutable sizing output, followed by A3 actual atomic admission under the existing Step-6 authorization.
 
+### A2 — Fixed LIVE sizing and durable expiry
+
+Starting reviewed checkpoint: `9ac8e47e5305f07f80209a151d302dd99554f9fc` (A1). Status: `IMPLEMENTED_PENDING_PROJECT_REVIEW`.
+
+`authority_economics_v0_1.py` produces a frozen `UNADMITTED_ECONOMICS_PROPOSAL` from the actual candidate inbox, current A1 source/clock/policy evaluation and a guarded common Ledger cut. It binds the original root/mint/position/track/deadline, exact native quote cap and policy/receipt digests. The full quote cap includes venue fees. Integer minimum/ceiling/trade limits deny rather than raise the amount; bool/float/negative/overflow inputs deny. Proposal permission flags cannot be relabelled. No action, reservation or fill is created, and A3 must revalidate before its atomic acceptance.
+
+There is no new proposal journal or schema. Positive original expiry uses the existing Ledger terminal inbox port; interrupted eligibility-to-expiry delivery converges to one tombstone. Unknown/backward/ambiguous UTC retains denial evidence without invented expiry. A fixed-size denial's stored reference equals its returned immutable result digest. A new policy may change an unadmitted proposal within the original window; an admitted or retired root yields only its unchanged historical terms. Changed original staged amount or deadline binding conflicts. Reusing an old positive request cannot publish fresh permission, and source/control changes across the cut deny the proposal.
+
+Worker (Astra Ultra) ran with the same isolated interpreter and `-B`:
+
+| Script | Checks | Exit |
+|---|---:|---:|
+| `scripts/live_authority_economics_selftest_v0_1.py` | 84 | 0 |
+| `scripts/live_authority_controls_selftest_v0_1.py` | 149 | 0 |
+| `scripts/live_ledger_actions_selftest_v0_1.py` | 98 | 0 |
+
+All **331 checks** succeeded. CHIEF reviewed the three changed implementation/test files and independently reproduced the 84-check sizing suite on the frozen hashes; logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-authority-a2-chief-20260910`. Two actual abrupt process exits prove recovery after eligibility and after terminal expiry; additional interruptions, source/control races and external-write checks deny stale output. `git diff --check` exited 0. Check digest: `8c02e1c9366f77e87430c5f330bcd41e022cc70f3998cdbe96db0eb0c77176bf`; unadmitted proposal: `6c12564b1b66b831d28fdb99d7547f20e2d99a90406c544b417e22e8f27d1645`.
+
+Actual Source/Wallet Evidence and Ledger -> A1 -> sizing output and durable expiry are proved. Existing admission/unsigned cancellation/retirement fixtures exercise original Ledger storage only and explicitly do not claim real Authority acceptance. Accepted economics, funding/exposure/reservation, mint suppression and one-time consumption remain A3. No lifecycle classification or package acceptance is promoted.
+
+Changed implementation files: new `src/live/authority_economics_v0_1.py`, the guarded `LedgerRepository.authority_candidate_economics` read in `src/live/ledger_repository_v0_1.py`, and new `scripts/live_authority_economics_selftest_v0_1.py`. No PAPER/Shadow edit, new RPC capability, signer/send, real capital, protected runtime, Execution/Runtime/Operations work or broad regression. NEXT: A3 actual funding/risk and atomic Authority admission.
+
 ### Project decision supplied with the Step-5 request
 
 The user supplied the Step-5 request as attachment `cc768198-3058-4853-a0dc-7368e565c683/pasted-text.txt` and explicitly identified that pasted text as the request. The attachment SHA-256 read for this record is `4260bae0a5ac3f964d28819f6af2d321f8337f1181a6bcb26e513790ea32693c`. Its lines 45–56 supply the following project decision and authorization; this is an attributed record of that instruction, not an acceptance decision made by Codex:
