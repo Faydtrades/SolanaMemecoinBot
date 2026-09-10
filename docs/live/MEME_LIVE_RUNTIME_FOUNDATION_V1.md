@@ -1,6 +1,6 @@
 # MEME-LIVE Runtime Foundation v1
 
-Status: **STEP 8A LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION; STEP 8B AUTHORIZED_IN_PROGRESS**. The owner accepts the bounded Step-8A producer-through-admission transition and approves M02/M05/M06 as VERIFIED in [Step-8B Q0](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8b-q0--owner-acceptance-and-bounded-positionprotection-authorization). Existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection) governs the bounded Runtime work; no new architecture or roadmap is introduced. Step 8C and Step 9 remain NOT AUTHORIZED. Step-8A records below retain their historical checkpoint scope.
+Status: **STEP 8A LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION; STEP 8B LOCAL_PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**. The owner accepts the bounded Step-8A producer-through-admission transition and approves M02/M05/M06 as VERIFIED in [Step-8B Q0](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8b-q0--owner-acceptance-and-bounded-positionprotection-authorization). Existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection) governs the bounded Runtime work; no new architecture or roadmap is introduced. Step 8C and Step 9 remain NOT AUTHORIZED. Step-8A records below retain their historical checkpoint scope.
 
 ## Step 8B Q0 — Acceptance record and bounded queue
 
@@ -113,6 +113,54 @@ Commands use `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\
 | External `b4-static.py`: compile, frozen hashes, immutable read-only dependency/call surface, exact fence and shared-source preservation | 10 | 0 |
 
 Reproducible static/compatibility scripts and logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-outcome-b4-validation`. Focused and CHIEF logs are byte-identical, SHA256 `b6e40edcbc99965aa67eb4267789e9c2d6c462369bdb7a2286966ff66fde2eb0`; replacement compatibility log `4f9098528618c52c20f729f38ecbdd86ef07a38803bae27d4fd0d9a0f56120e1`; static log `a96b0083fabfab7287f40dee58a8acf6de9787b36022b027b54b520786283d88`. Frozen source SHA256 `c67bed93e4e06d5f7f79a9a9ec9590f13246e17e4ac8df5887672a415320e9c1`; test `4f11e59babf912e89e14877e20665ef6668fba292ef47795df189ac0593500eb`. No shared contract was materially invalidated and no broader regression ran. M41 eligibility is reserved for B5/project review. Only ephemeral synthetic in-memory signing and mock transports are used; no production key, real mainnet transaction or capital action occurred.
+
+## Step 8B B5 — Frozen bounded transition review and handoff
+
+**LOCAL PASS / bounded SYSTEM TRANSITION PASS; IMPLEMENTED_PENDING_PROJECT_REVIEW.** CHIEF reviewed the B1-B4 source, actual consumer fixtures, recorded focused/compatibility/static evidence and the five affected lifecycle transitions. The source freeze is published B4 revision **`35aa742ac7ac4911046e60ac09881adb6893c7f3`**. B5 changes only the existing Runtime foundation, owner/lane status and lifecycle matrix. No Step-8B project acceptance or classification promotion is asserted, and full Architecture 4.6 Runtime SYSTEM TRANSITION PASS is not claimed.
+
+The bounded composition is actual finalized BUY -> applied actual position -> selected original controller -> eligible observation or original fallback -> durable protective obligation -> immutable actual-unit SELL -> existing Step-7 Execution and Ledger finality/application -> actual residual, failed/UNKNOWN hold, lawful replacement or satisfied actual zero. B4 executes one acquired position through this entire fallback path. B3 separately connects actual A2/B2 market output to the same authentic handoff and SELL factory; B2 qualifies its acquisition-order and committed-knowledge exclusions. No fabricated OPEN inventory or approved mutation decision is used to bridge these components. External inputs are synthetic public-chain/source/RPC accounts, test policy/track selection, an ephemeral in-memory signer, mock HTTP transport and explicit Authority control fixtures.
+
+| Required boundary | Accepted bounded evidence |
+|---|---|
+| Actual acquisition and selected controller | B1 actual finalized Ledger application, exact root/position/mint/track/policy/reference binding, actual units and reopen; B4 actual Step-7 BUY application |
+| Late BUY with already-due fallback | B1 original signal/deadline; B2 source-free original deadline + 1 microsecond; B3 late acquisition; B4 immediately DUE original handoff |
+| Pre-acquisition/unproven observation and same-slot ambiguity | B2 canonical-order cases, explicit UNKNOWN for unproven/same-transaction ordering, complete same-slot transaction membership required |
+| Fixed knowledge and late enrichment | B2 immutable common-journal evaluations, original capture/chain watermark, no historical trigger rewrite or excluded-row reconsumption, exact reopen |
+| Actual observation into protection | B3 `actual_A2_B2_market_trigger_binds_handoff` binds the genuine committed market evaluation into the original handoff and immutable SELL |
+| ENTRY/source denial with intact protection | B3 no-source original fallback/obligation and actual-unit SELL; B4 actual source gap and ENTRY stop through existing protective Execution |
+| Partial SELL and actual residual | B3 positive application releases only fulfilled claim; B4 actual partial settlement creates the next immutable action from actual residual units |
+| Failed SELL with actual fee | B4 finalized failure remains HELD before application; applied 7,777-lamport fixture fee preserves position/obligation and qualifies the same-action next ordinal |
+| UNKNOWN and proven replacement | B4 original signature/claim survives timeout, incomplete coverage and reopen; complete public proof alone remains held; Ledger application precedes fresh Q1/A4b/Q2/Q3 replacement |
+| Hard stop and stale permission | B3 exact-fence staging race; B4 stale fence specifically rejected by Ledger, otherwise-eligible replacement denied by hard stop, actual fresh unsigned SIGN denied solely by hard stop, old SIGN deliveries rejected |
+| Reopen of residual and due state | B1/B2 immutable binding/cut; B3 original handoff/action/actual units; B4 partial, failed, UNKNOWN, proof-only and resolved replacement reconstruction |
+| Final satisfaction | B4 actual successful applied reduction to zero with no unresolved position claim/attempt; same SATISFIED state reopens; reservation remains RESERVED and no capacity retirement/second trade is claimed |
+
+Frozen production file SHA256 values (checkout bytes, verified unchanged after B4):
+
+| File under `src/live/` | SHA256 |
+|---|---|
+| `position_controller_v0_1.py` | `42897d278fc247994acfe83483082780c6de59beb06214f27801beac2cdb6498` |
+| `exit_observation_v0_1.py` | `2964b14b09ca8298f3ff6569555635c069b8e896ee8a766b0f325de11be8e2e1` |
+| `protective_obligation_v0_1.py` | `e7e69fe19cc360c35609861d559ed15d5a67b27565779234f3580c9b516e0a68` |
+| `protective_outcome_v0_1.py` | `c67bed93e4e06d5f7f79a9a9ec9590f13246e17e4ac8df5887672a415320e9c1` |
+| `ledger_repository_v0_1.py` | `8d192421bc2e2f682422d4452814ebf5c70968fceb82b223d756b50738d930ac` |
+
+All per-item commands/results and test/log hashes are recorded in B1-B4 above. Focused counts are B1 **80**, B2 **102**, B3 **43 plus 11 actual-BUY assertions**, B4 **45 plus 48 accepted Execution checks**, each with independent CHIEF exit 0. Scoped static counts are **5 / 10 / 10 / 10**, all exit 0, with directly affected compatibility recorded per item. B5 reuses those results without rerunning tests. The explicit Step-8B owner instruction narrows Architecture 4.6's broad-regression rule for this checkpoint: full Runtime regression belongs at Step-8C freeze. No accepted shared Ledger/Authority/Execution contract was materially invalidated; B2's additive versioned journal and B3's read accessor received their exact affected tests/static preservation checks. No broader regression ran during Step 8B.
+
+| Reviewed item | Published commit |
+|---|---|
+| Q0 | `2cb93eb7110575c042239eee04fdc192a8cd3055` |
+| B1 | `ed4b343bd4e55ea049f84df16bb7ab0fed4189a9` |
+| B2 | `536ccd04f84b4d09ca6a5c9363a0c36ca21deed1` |
+| B3 | `b4395d5d33a7d76586b89f01d9b83291ae43f156` |
+| B4 / production freeze | `35aa742ac7ac4911046e60ac09881adb6893c7f3` |
+| B5 | This documentation-only closeout; final remote HEAD verified in the handoff |
+
+**M34, M35, M36, M38 and M41 are eligible for project-review promotion only within these bounded proofs.** Their classifications remain OWNED_NOT_BUILT pending owner/project acceptance. M39/M40/M42 retain accepted Execution/Ledger status and receive actual B4 consumer evidence. No other row is proposed for promotion. Q0's M02/M05/M06 acceptance remains the only Step-8B classification change: **35 VERIFIED / 20 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Bounded controller/obligation reopen does not complete M48/M49's full startup scenarios.
+
+No new required downstream transition was discovered. Existing later owners retain: Runtime/Authority M44-M45 second-trade continuation, scheduling and exit priority; Runtime with Ledger M54-M55 actual DRY construction/continuation; Runtime/Evidence M47 full producer/economic recovery; Ledger M48 with Runtime/Operations startup consumers; Runtime M49 full boot restoration; Operations M46 exclusive ownership/schema audit, M50-M51 protective/entry barriers with Runtime/Authority, M52 measured integrated operating envelope with Runtime, and M53 degradation/recovery; Operations/External gates M56-M57 dossier and gate-ready artifact. M09/M10/M58-M61 remain HUMAN_EXTERNAL. Ledger storage v9 rejects old schema; deployment/schema identity belongs to the existing Operations startup boundary, and no active-state migration is attempted here.
+
+All work used the isolated checkout. The source-control surface contains only the four new Runtime modules/tests, the directly required Ledger journal/read additions, and these three existing documentation files; accepted Phase-4/Phase-5, collector, locked roadmap/research and runtime/data paths are unchanged. No production key, real mainnet signing/send/broadcast, capital mutation, production database/process operation or protected-checkout modification occurred. Step 8C and Step 9 were not implemented. **STOP after Step 8B.**
 
 ## Q0 — Owner acceptance record
 
