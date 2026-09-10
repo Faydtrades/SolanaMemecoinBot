@@ -67,6 +67,30 @@ Logs and reproducible static script: `C:\Users\Mari1\AppData\Local\Temp\meme-liv
 
 B3 consumes the trusted `ExitJournalRecord` through `ledger.exit_record` / `exit_records`, revalidates the B1 binding and actual current units, and references the committed evaluation digest when constructing the existing protective handoff. Its historical evaluation cut is evidence, not current mutation permission. B2 creates no protective handoff, SELL or retry progression. M35 eligibility remains for B5/project review; classifications stay **35 VERIFIED / 20 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED**. Full Runtime composition and operating-envelope qualification remain with their existing Step-8C/Step-9 owners.
 
+## Step 8B B3 — Protective obligation and immutable actual-unit SELL
+
+**LOCAL PASS**, after CHIEF contract/diff review and independent exit-0 43-check qualification. Starting published checkpoint: `536ccd04f84b4d09ca6a5c9363a0c36ca21deed1`. A new Astra High worker could not be created because the app's agent-task limit was reached. CHIEF reused the completed worker at **Astra Extra High**, justified by the concrete unencumbered-unit, immutable-action and common-cut atomicity problem; one consequential item remained active. No Ultra escalation.
+
+`src/live/protective_obligation_v0_1.py` reconstructs protection from the actual B1 binding, trusted committed B2 evaluations, original Ledger handoff, immutable actions and actual applications. No quantity cache, progress store, table or schema change is added. `ensure_protective_obligation` uses the existing Ledger handoff transaction to make actual acquired inventory usable together with its stable obligation binding. Original candidate/root/position/mint, selected track/policy, acquisition, fallback deadline, initial committed evaluation and knowledge provenance remain exact. An original MONITORING handoff is retained unchanged when a later B2 evaluation becomes DUE. Caller-supplied external DUE fixtures cannot impersonate the B3 producer.
+
+`stage_protective_sell` requires that latest authentic DUE state. It defaults to actual unencumbered remaining base units; an explicit optional `max_units` ceiling supports a bounded partial reduction and is capped by actual available units. It is not a strategy parameter or production track selection. Existing unresolved or failed action claims remain encumbered and cannot be replaced by another B3 decision. Exact action replay preserves original terms and grants no attempt, signing or send permission. A positive applied reduction releases only its fulfilled claim, and the next action uses actual residual units with the same obligation ID. Historical quantities and decision digests are revalidated on reopen. A positively cancelled unsigned predecessor does not prevent recognition of a later actual successful reduction; cancellation alone does not release the B3 claim or implement retry progression.
+
+The only Ledger change is `protective_position_context`, a bounded position-scoped read of original actions, attempts/resolutions/applications, protection, B2 history, common cut, stop state and wallet lane. New SELL staging uses that exact captured fence through existing `stage_action`; it does not obtain a replacement fence after calculating units. A competing hard stop, settlement, action or evaluation invalidates the write. ENTRY stop and unavailable producer access leave protection intact. Hard stop permits obligation maintenance but denies new SELL decisions; existing Authority still owns current SIGN/SEND permission.
+
+Commands use `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe -B` from the isolated checkout:
+
+| Script/check | Checks | Exit |
+|---|---:|---:|
+| `scripts/live_protective_obligation_selftest_v0_1.py` | 43 B3 checks, plus 11 reused actual-BUY fixture assertions; worker and CHIEF | 0 |
+| `scripts/live_exit_observation_selftest_v0_1.py` | 102 | 0 |
+| `scripts/live_position_controller_selftest_v0_1.py` | 80 | 0 |
+| `scripts/live_ledger_ports_selftest_v0_1.py` | 372 | 0 |
+| External `b3_scoped_static.py`: AST/compile, whitespace, capability/read-query checks and preservation of every prior Ledger method/schema/DDL contract | 10 | 0 |
+
+Logs and reproducible static script: `C:\Users\Mari1\AppData\Local\Temp\meme-live-protection-b3-validation`. Focused/CHIEF logs are byte-identical, SHA256 `c4bd8be96d7507960309c3a75f88dd736936e0ec52459c54093cbf9ec7783b64`; check digest `cbb8a4552e54d2152588cd8dfe3ff5263f2bef575fd464b8d408b4f9e9377021`. Frozen SHA256: Runtime `e7e69fe19cc360c35609861d559ed15d5a67b27565779234f3580c9b516e0a68`; Ledger repository `8d192421bc2e2f682422d4452814ebf5c70968fceb82b223d756b50738d930ac`; test `0214bf979e00e52d94f1e957a7be5303a3be2446e3ac4f640fde803b220d724c`. Tests cover actual A2/B2 market input into the handoff/SELL consumer, initial MONITORING -> original fallback DUE without source access, late SENS-C acquisition, actual partial settlement/residual action, immutable reopen, external claims, forged handoff denial, concurrent hard stop and atomic rollback. No broad regression ran.
+
+B4 consumes this immutable SELL through the existing Step-7 Execution path and owns outcome/attempt progression. B3's returned action is never a retry grant. M36/M38 remain project-review eligibility candidates for B5, with no classification promotion here. No full Runtime composition, Step 8C/9, signing/send implementation, production keys, real network or capital action was added.
+
 ## Q0 — Owner acceptance record
 
 Published documentation-only checkpoint: `6f024ab897dedcd0cdd552fee9f82b9b3ca1a2d7`, following verified clean local/remote `9b9f210320bf43ecff37007bf11f3e63995b6a15`. The owner's explicit approval records Step 7 as PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS and its demonstrated component SYSTEM TRANSITION as ACCEPTED within the existing boundaries. Exactly the 18 reviewed classifications were promoted: **32 VERIFIED, 23 OWNED_NOT_BUILT, 6 HUMAN_EXTERNAL, 0 BLOCKED; 61 total**. No worker, source change, test or regression was used for Q0.

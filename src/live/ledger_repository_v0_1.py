@@ -639,6 +639,35 @@ class LedgerRepository:
             digest_value(position_id)
             return next((item for item in self._custody.positions if item.position_id == position_id), None)
 
+    def protective_position_context(self, position_id, binding_id, *, max_actions=1024, max_attempts=4096):
+        """One guarded B3 read: actual position, claims, outcomes and stop/lane.
+
+        The returned original fence can guard existing consumer writes. This
+        snapshot grants neither new attempts nor SIGN/SEND permission.
+        """
+        digest_value(position_id)
+        digest_value(binding_id)
+        if (type(max_actions) is not int or not 1 <= max_actions <= 4096
+                or type(max_attempts) is not int or not 1 <= max_attempts <= 8192):
+            raise LedgerConflict("LEDGER_POSITION_CONTEXT_BOUND_INVALID")
+        with self._trusted_read():
+            rows = self._conn.execute("SELECT commit_seq,action_id FROM ledger_pending_actions WHERE position_id=? "
+                "ORDER BY commit_seq LIMIT ?", (position_id, max_actions+1)).fetchall()
+            attempts = self._conn.execute("SELECT t.attempt_id FROM ledger_attempts t JOIN ledger_pending_actions a "
+                "ON a.action_id=t.action_id WHERE a.position_id=? ORDER BY t.commit_seq LIMIT ?",
+                (position_id, max_attempts+1)).fetchall()
+            if len(rows) > max_actions or len(attempts) > max_attempts:
+                raise LedgerConflict("LEDGER_POSITION_CONTEXT_BOUND_EXCEEDED")
+            action_ids = {action_id for _, action_id in rows}
+            return {"snapshot": self.consumer_snapshot(), "position": self.position_history(position_id),
+                "protection": self.protection(position_id), "authority": self.authority_snapshot(),
+                "lane": self.mutation_lane(), "actions": tuple((seq, self.action(key)) for seq, key in rows),
+                "attempts": tuple(self.attempt(key) for key, in attempts),
+                "resolutions": tuple(r for r in self._custody.resolutions if r.action_id in action_ids),
+                "applications": tuple(r for r in self._applications.values()
+                    if r.decision.proposal is not None and r.decision.proposal.action_id in action_ids),
+                "exit_records": self.exit_records(binding_id)}
+
     def _pending_attempts(self):
         active = self._lane()[0]
         return () if active is None else (active,)
