@@ -217,6 +217,39 @@ def _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, clock):
     return reads, state, route, quote, plan
 
 
+def construct_exact_readonly_message(plan, wallet, compute, rpc, *, now_us):
+    """Shared finite zero-signature construction; no domain or Authority grant."""
+    started = u64(now_us())
+    lease = plans.acquire_blockhash_lease(rpc, plan, observed_at_us=started)
+    lease = replace(lease, observed_at_us=rpc.last_observed_at_us)
+    config = plans.SimulationRequestConfigV01(max(plan.prerequisite_slot, lease.context_slot))
+    instructions = [set_compute_unit_limit(compute.units), set_compute_unit_price(compute.micro_lamports)]
+    instructions.extend(ix.materialize() for ix in plan.instructions)
+    message = Message.new_with_blockhash(instructions, Pubkey.from_string(wallet), Hash.from_string(lease.blockhash))
+    raw = bytes(message)
+    wire = b"\x01"+bytes(64)+raw
+    require(message.header.num_required_signatures == 1 and len(wire) <= 1232, "EXECUTION_FINAL_MESSAGE_SHAPE_UNSUPPORTED")
+    envelope = plans.SimulationEnvelopeV01(plan.plan_id, plan.fingerprint, lease.lease_id, lease.fingerprint,
+        config.fingerprint, canonical_json(config.payload()), raw.hex(), base64.b64encode(wire).decode(), 1, 1,
+        hashlib.sha256(raw).hexdigest(), hashlib.sha256(wire).hexdigest())
+    setup = rpc.account_batch(tuple(map(str, message.account_keys)), min_context_slot=config.min_context_slot)
+    fee = rpc.fee_for_message(envelope.message_hex, min_context_slot=config.min_context_slot)
+    validity = plans.verify_blockhash_lease(rpc, plan, lease, observed_at_us=u64(now_us()))
+    validity = replace(validity, observed_at_us=rpc.last_observed_at_us)
+    require(validity.rpc_valid and validity.block_height <= lease.last_valid_block_height, "EXECUTION_LEASE_UNAVAILABLE_OR_EXPIRED")
+    return started, lease, config, envelope, setup, fee, validity
+
+
+def simulate_exact_readonly_message(plan, lease, config, envelope, validity, rpc, *, now_us):
+    """Simulate only the original zero-signature envelope, without replacement."""
+    attempt = plans.SimulationAttemptV01(plan.plan_id, lease.lease_id, envelope.envelope_id, config.fingerprint,
+        validity.fingerprint, 0, u64(now_us()))
+    response = rpc.simulate_transaction(envelope.transaction_base64, config=config.rpc_payload())
+    result = plans.classify_simulation_response(plan, attempt, lease, envelope, config, response, observed_at_us=rpc.last_observed_at_us)
+    run = plans.SimulationRunEvidenceV01((lease,), (validity,), (envelope,), (attempt,), (result,))
+    return run
+
+
 def produce_exact_message(repository, action_id, rpc, wallet, quote_policy, plan_policy, compute, *, clock, now_us):
     """One finite Q1 call. Errors fail closed; returned validation grants nothing.
 
@@ -241,29 +274,9 @@ def produce_exact_message(repository, action_id, rpc, wallet, quote_policy, plan
     intent = _intent(context, utc_microseconds(initial_clock.utc_lower_utc))
     rpc.bind_genesis(context.domain.genesis_hash)
     reads, state, route, quote, plan = _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, initial_clock)
-    started = u64(now_us())
-    lease = plans.acquire_blockhash_lease(rpc, plan, observed_at_us=started)
-    lease = replace(lease, observed_at_us=rpc.last_observed_at_us)
-    config = plans.SimulationRequestConfigV01(max(plan.prerequisite_slot, lease.context_slot))
-    instructions = [set_compute_unit_limit(compute.units), set_compute_unit_price(compute.micro_lamports)]
-    instructions.extend(ix.materialize() for ix in plan.instructions)
-    message = Message.new_with_blockhash(instructions, Pubkey.from_string(context.domain.wallet), Hash.from_string(lease.blockhash))
-    raw = bytes(message)
-    wire = b"\x01"+bytes(64)+raw
-    require(message.header.num_required_signatures == 1 and len(wire) <= 1232, "EXECUTION_FINAL_MESSAGE_SHAPE_UNSUPPORTED")
-    envelope = plans.SimulationEnvelopeV01(plan.plan_id, plan.fingerprint, lease.lease_id, lease.fingerprint,
-        config.fingerprint, canonical_json(config.payload()), raw.hex(), base64.b64encode(wire).decode(), 1, 1,
-        hashlib.sha256(raw).hexdigest(), hashlib.sha256(wire).hexdigest())
-    setup = rpc.account_batch(tuple(map(str, message.account_keys)), min_context_slot=config.min_context_slot)
-    fee = rpc.fee_for_message(envelope.message_hex, min_context_slot=config.min_context_slot)
-    validity = plans.verify_blockhash_lease(rpc, plan, lease, observed_at_us=u64(now_us()))
-    validity = replace(validity, observed_at_us=rpc.last_observed_at_us)
-    require(validity.rpc_valid and validity.block_height <= lease.last_valid_block_height, "EXECUTION_LEASE_UNAVAILABLE_OR_EXPIRED")
-    attempt = plans.SimulationAttemptV01(plan.plan_id, lease.lease_id, envelope.envelope_id, config.fingerprint,
-        validity.fingerprint, 0, u64(now_us()))
-    response = rpc.simulate_transaction(envelope.transaction_base64, config=config.rpc_payload())
-    result = plans.classify_simulation_response(plan, attempt, lease, envelope, config, response, observed_at_us=rpc.last_observed_at_us)
-    run = plans.SimulationRunEvidenceV01((lease,), (validity,), (envelope,), (attempt,), (result,))
+    started, lease, config, envelope, setup, fee, validity = construct_exact_readonly_message(
+        plan, context.domain.wallet, compute, rpc, now_us=now_us)
+    run = simulate_exact_readonly_message(plan, lease, config, envelope, validity, rpc, now_us=now_us)
     provenance = SimulationProvenance(context.domain.genesis_hash, rpc.profile.fingerprint,
         "LIVE_EXECUTION_EXACT_READ", rpc.record_digest, simulation_run_digest(run), started, rpc.last_observed_at_us)
     evidence = ExternalMessageEvidence(intent, reads, wallet, quote_policy, plan_policy,
