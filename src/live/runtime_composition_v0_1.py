@@ -1,9 +1,10 @@
-"""C2 finite production Runtime composition; accepted components own semantics.
+"""C2/C3 finite production Runtime composition; accepted components own semantics.
 
 One serialized step selects protection, then truth reconciliation/application,
 then entry with actual V1 capacity. Concrete external facts/transports configure
 existing consumers, never replace admission, execution, settlement or protection.
-This LIVE root has no DRY switch, cold reconstruction, retirement or service loop.
+Satisfied protection retires through Ledger before fresh candidate admission.
+This LIVE root has no DRY switch, cold reconstruction or service loop.
 """
 from __future__ import annotations
 
@@ -20,6 +21,7 @@ from .continuous_producer_v0_2 import LiveContinuousProducerV02
 from .evidence_store_v0_1 import SourceEvidenceStore
 from .source_health_v0_1 import CollectorSourceAdapter, ZERO_DIGEST, utc
 from .ledger_repository_v0_1 import LedgerRepository
+from .ledger_ports_v0_1 import RetirementInput
 from .ledger_actions_v0_1 import utc_microseconds
 from .execution_message_v0_1 import produce_exact_message, prepare_exact_message
 from .execution_readonly_v0_1 import ExecutionReadOnlyRpc
@@ -254,7 +256,34 @@ class RuntimeCompositionV01:
             self._entry_action_id = None
         return self._result("APPLIED", receipt.decision.disposition, action=action, attempt=attempt_id, key=key)
 
-    def step(self, *, clock, entry=None, execution=None, truth_rpc=None, application_wallet=None, exit_proofs=None, source_cut_utc=None):
+    def _retire(self, sample, wallet):
+        binding = self._binding
+        if wallet is None:
+            return self._result("NEED_RETIREMENT", "SATISFIED_REQUIRES_CURRENT_WALLET_SUPPORT", root=binding.root_id)
+        context = self.ledger.protective_position_context(binding.position_id, binding.binding_id)
+        applications = [r for r in context["applications"]
+            if r.decision.disposition == "FINALIZED_SUCCESS_APPLIED" and r.decision.proposal.base_units_delta < 0]
+        require(bool(applications), "RUNTIME_RETIREMENT_ACTUAL_REDUCTION_REQUIRED")
+        terminal = max(applications, key=lambda r: r.sequence)
+        action = self.ledger.action(terminal.decision.proposal.action_id)
+        snapshot = context["snapshot"]
+        key = self._key("retirement", binding.root_id, sample.utc_upper_utc)
+        # This reference identifies the Runtime request, not a new Authority
+        # grant. Ledger verifies actual terminal proof and current wallet cut.
+        intent = RetirementInput(snapshot["consumer_cut"], binding.root_id,
+            self.ledger.reservation(binding.root_id).reservation_id, binding.position_id,
+            terminal.attempt_id, "FULLY_REDUCED", wallet.digest, key,
+            content_fingerprint({"binding": binding.binding_id, "application": terminal.content_digest,
+                "cut": snapshot["consumer_cut"].commit_digest, "wallet": wallet.digest}), sample.utc_upper_utc)
+        receipt = self.ledger.retire(intent, wallet, ingestion_key=key, fence=snapshot["fence"])
+        if receipt.retirement_disposition == "RETIRED":
+            self._binding = self._entry_action_id = self._chain_key = None
+        return self._result("RETIREMENT_"+receipt.retirement_disposition,
+            ":".join(receipt.retirement_reasons) or "ACTUAL_LEDGER_CAPACITY_RELEASED",
+            action=action, attempt=terminal.attempt_id, key=key)
+
+    def step(self, *, clock, entry=None, execution=None, truth_rpc=None, application_wallet=None,
+             retirement_wallet=None, exit_proofs=None, source_cut_utc=None):
         """One bounded next legal work unit. Resource presence never sets priority."""
         sample = clock()
         require(type(sample) is TrustedClockSample and sample.status == "QUALIFIED", "RUNTIME_QUALIFIED_CLOCK_REQUIRED")
@@ -272,6 +301,8 @@ class RuntimeCompositionV01:
         if snapshot["pending_attempts"]:
             require(len(snapshot["pending_attempts"]) == 1, "RUNTIME_V1_SINGLE_MUTATION_LANE_REQUIRED")
             return self._truth(snapshot["pending_attempts"][0], sample, truth_rpc, application_wallet)
+        if protection is not None and protection.state == "SATISFIED":
+            return self._retire(sample, retirement_wallet)
         if self._entry_action_id is not None and self._binding is None:
             action = self.ledger.action(self._entry_action_id)
             own = [item for item in snapshot["reservations"] if item.root_id == action.root_id]

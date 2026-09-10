@@ -258,8 +258,8 @@ def lifecycle(directory):
             applied=f.step(NOW+28,application_wallet=support)
             check('actual_final_reduction_application',applied.work=='APPLIED' and applied.reason=='FINALIZED_SUCCESS_APPLIED')
             satisfied=f.step(NOW+29)
-            check('actual_SATISFIED_keeps_reservation_no_C3',protective_outcome(f.repo,f.runtime.position_binding).state=='SATISFIED'
-                and satisfied.work=='ENTRY_HELD' and f.repo.reservation(f.buy.root_id).status=='RESERVED'
+            check('actual_SATISFIED_keeps_reservation_without_retirement_support',protective_outcome(f.repo,f.runtime.position_binding).state=='SATISFIED'
+                and satisfied.work=='NEED_RETIREMENT' and f.repo.reservation(f.buy.root_id).status=='RESERVED'
                 and f.runtime.queued_roots==pending and f.repo.audit()['attempt_count']==2)
             check('full_root_Ledger_integrity',bool(f.repo.audit()))
         finally:f.close()
@@ -381,7 +381,7 @@ def structural():
     imports={n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom)}
     check('root_uses_production_consumers_only',not any('selftest' in (name or '') for name in imports))
     calls={n.func.attr for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute)}
-    check('no_C3_retirement_or_Operations_mutation',not calls & {'retire','retire_with_ports','record_retirement','initialize','reopen','terminate','kill','load_keypair','from_seed'})
+    check('only_Ledger_retirement_no_Operations_mutation','retire' in calls and not calls & {'retire_with_ports','record_retirement','initialize','reopen','terminate','kill','load_keypair','from_seed'})
     methods=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='RuntimeCompositionV01')
     step=next(n for n in methods.body if isinstance(n,ast.FunctionDef) and n.name=='step')
     check('no_injected_semantic_callbacks',not {arg.arg for arg in (*step.args.args,*step.args.kwonlyargs)}
