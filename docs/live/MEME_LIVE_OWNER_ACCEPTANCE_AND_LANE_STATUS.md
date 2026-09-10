@@ -38,6 +38,31 @@ CHIEF owns review, this minimal existing documentation and the authorized normal
 Authority is `AUTHORIZED_IN_PROGRESS`; subsequent entries record implementation evidence pending project review. Capital/operating limits and arming choices remain explicit HUMAN_EXTERNAL configuration, with synthetic fixture values only. No Execution, Runtime, Operations, signer/send/broadcast, mutating RPC, private material, real capital or protected runtime modification is authorized. Later real consumers and project/package acceptance remain separate.
 
 
+### A1 — Durable controls and original eligibility
+
+A0 was reviewed and pushed at `140033ab87f9f581585bf250fbc5c8b80f571a28`, with the 820 focused checks recorded in [Evidence results](MEME_LIVE_EVIDENCE_FOUNDATION_V1.md#step-6--a0--canonical-immutableowner-prerequisite). A1 starts from that clean checkpoint and is `IMPLEMENTED_PENDING_PROJECT_REVIEW`.
+
+A1 adds explicit HUMAN_EXTERNAL policy/size/cost/clock/operator/grant contracts, immutable policy and grant identities, normal/one-root/DRY entry scopes, latched ENTRY/global stops, exact release and durable revocation records. Installation never arms; restart or policy replacement never recreates a grant or clears a stop. Required capital values remain configuration, with synthetic fixture values only.
+
+Finite Authority control/eligibility receipts and a verified projection share Ledger's existing writer fence and common journal. Storage/domain v6 explicitly rejects v5; no migration, reset or economic-identity change is implicit. A fixed no-commit admission insertion seam serves A3's immediate atomic consumer. The original 16 MiB receipt limit is checked before insertion. A1 performs no sizing acceptance, risk reservation, grant consumption or message authorization; grant lookup returns historical issuance.
+
+Eligibility selects actual `SourceEvidenceStore.latest_record`, retains the original sequence/content and previously observed cut, and consumes the accepted source port. An older copied journal cannot erase a known gap, including one observed before policy installation. Current source coverage must include the original signal. Missing/unresolved evidence and unknown/backward clocks deny; positive same-lineage evidence can recover within the original window. FINAL-A/B retain 15 seconds and SENS-C 5 seconds from the original signal, inclusively; ambiguous UTC cannot falsely expire. Original track/deadline and clock/source inputs replay unchanged after reopen.
+
+Worker (Astra Ultra) ran the following with `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe -B` from the isolated LIVE checkout:
+
+| Script | Checks | Exit |
+|---|---:|---:|
+| `scripts/live_authority_controls_selftest_v0_1.py` | 149 | 0 |
+| `scripts/live_ledger_baseline_selftest_v0_1.py` | 126 | 0 |
+| `scripts/live_ledger_actions_selftest_v0_1.py` | 98 | 0 |
+| `scripts/live_ledger_ports_selftest_v0_1.py` | 372 | 0 |
+
+All **745 checks** succeeded. CHIEF reviewed all four changed implementation/test files and independently reproduced the 149-check Authority suite on the frozen hashes; logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-authority-a1-chief-20260910`. Tests include four actual child-process exits immediately before/after COMMIT, interrupted record/projection/binding/common writes, lost acknowledgement/cache publication, stale generations, tamper and version rejection. `git diff --check` exited 0. No broad regression was repeated.
+
+A1 check digest: `4a313092bb9583fc931d6cd4352c6ea0387166e2a0d8c1c4e6a27b8aa3aa4a61`; original eligibility receipt: `60c0ac251285b59fcd23de2a57606f332c6a41214292dcf6b882dd90779848a2`; replayed Authority state: `7037aff2d174863eb45e04185fe35c31ee3d4d094fe01c27598af16efb3c6b09`. Actual temporary CollectorSourceAdapter -> SourceEvidenceStore -> durable Authority eligibility is proved at this bounded interface. Actual admission/risk and Execution/Runtime consumers remain subsequent work; no lifecycle classification or package acceptance is self-promoted.
+
+Implementation files: new `src/live/authority_controls_v0_1.py`, `src/live/ledger_repository_v0_1.py`, `src/live/ledger_domain_v0_1.py`, and new `scripts/live_authority_controls_selftest_v0_1.py`. No Evidence/PAPER/Shadow producer change, live RPC/mutation, protected-checkout change, private material, signing/send, Runtime or Operations implementation. NEXT: A2 immutable sizing output, followed by A3 actual atomic admission under the existing Step-6 authorization.
+
 ### Project decision supplied with the Step-5 request
 
 The user supplied the Step-5 request as attachment `cc768198-3058-4853-a0dc-7368e565c683/pasted-text.txt` and explicitly identified that pasted text as the request. The attachment SHA-256 read for this record is `4260bae0a5ac3f964d28819f6af2d321f8337f1181a6bcb26e513790ea32693c`. Its lines 45–56 supply the following project decision and authorization; this is an attributed record of that instruction, not an acceptance decision made by Codex:
