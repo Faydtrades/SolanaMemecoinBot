@@ -422,7 +422,7 @@ def faults(directory):
     command=ControlCommand("stale",f.domain.economic_domain_id,"DISARM_ENTRY",operator())
     check("common_cas_fences_stale_control",raises(lambda:f.repo.record_authority_control(command,fence=fence)))
     with closing(sqlite3.connect(f.path)) as outside, outside:
-        outside.execute("PRAGMA user_version=6")
+        outside.execute("PRAGMA user_version=7")
     check("outside_noop_commit_invalidates_public_read",raises(lambda:f.repo.authority_snapshot()))
     check("outside_noop_commit_invalidates_control_write",raises(lambda:control(f.repo,"HARD_STOP","outside-stop")))
     f.reopen()

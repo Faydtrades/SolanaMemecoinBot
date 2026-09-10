@@ -14,7 +14,7 @@ from phase5.shadow_venue_route_quote_v0_1 import WSOL_MINT
 from .public_rpc_v0_1 import block_hash, immutable_tuple, public_key, u64
 from .wallet_evidence_v0_1 import ExpectedTokenAccount, WalletObservation, ledger_account_evidence
 
-SCHEMA_VERSION = "live_ledger_v0.6"
+SCHEMA_VERSION = "live_ledger_v0.7"
 DOMAIN_VERSION = "live_ledger_domain_v0.1"
 BASELINE_VERSION = "live_ledger_opening_baseline_v0.1"
 OPENING_PROFILE = "NATIVE_RECYCLING_V1"

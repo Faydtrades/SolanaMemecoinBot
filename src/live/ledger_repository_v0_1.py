@@ -53,14 +53,17 @@ from .authority_controls_v0_1 import (
     apply_control, evaluate_entry, authority_receipt_from_record, command_from_record, clock_from_record,
 )
 from .evidence_store_v0_1 import SourceEvidenceStore
+from .authority_admission_v0_1 import (
+    EntryRequest, AuthorityAdmissionReceipt, admission_receipt_from_record, assess_entry_risk, admission_terms,
+)
 
 APPLICATION_ID = 0x4C454447
-STORAGE_VERSION = 6
+STORAGE_VERSION = 7
 RECEIPT_VERSION = "live_ledger_wallet_receipt_v0.1"
 GENERATION_VERSION = "live_ledger_writer_generation_v0.1"
 COMMIT_VERSION = "live_ledger_concrete_commit_v0.1"
 _COMMIT_KINDS = frozenset(("WALLET", "INBOX", "NON_ACCEPTANCE", "ACTION", "ATTEMPT", "ATTEMPT_STAGE", "CHAIN_EVIDENCE",
-                 "SETTLEMENT_APPLICATION", "WALLET_COMPARISON", "AUTHORITY_CONTROL", "AUTHORITY_ELIGIBILITY", *GROUP_KINDS))
+                 "SETTLEMENT_APPLICATION", "WALLET_COMPARISON", "AUTHORITY_CONTROL", "AUTHORITY_ELIGIBILITY", "AUTHORITY_ADMISSION", *GROUP_KINDS))
 _OPEN_TOKEN = object()
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _PROTECTED_RUNTIME = Path("D:/Tradingbot/solana_memecoin_bot_phase1_v0_1")
@@ -183,6 +186,12 @@ _DDL = {
         root_id TEXT PRIMARY KEY NOT NULL REFERENCES ledger_candidate_inbox(root_id),
         first_sequence INTEGER NOT NULL UNIQUE REFERENCES ledger_authority_records(commit_seq),
         content_digest TEXT NOT NULL, payload_json TEXT NOT NULL)""",
+    "ledger_authority_admissions": """CREATE TABLE ledger_authority_admissions (
+        commit_seq INTEGER PRIMARY KEY REFERENCES ledger_commits(seq) DEFERRABLE INITIALLY DEFERRED,
+        command_id TEXT NOT NULL UNIQUE, root_id TEXT NOT NULL REFERENCES ledger_candidate_inbox(root_id),
+        accepted_root TEXT UNIQUE REFERENCES ledger_candidate_inbox(root_id), accepted_mint TEXT UNIQUE,
+        consumed_grant_id TEXT UNIQUE REFERENCES ledger_authority_records(grant_id),
+        receipt_digest TEXT NOT NULL UNIQUE, payload_json TEXT NOT NULL)""",
     "ledger_authority_projection": """CREATE TABLE ledger_authority_projection (
         singleton INTEGER PRIMARY KEY CHECK(singleton=1), content_digest TEXT NOT NULL, payload_json TEXT NOT NULL)""",
     "ledger_consumer_groups": """CREATE TABLE ledger_consumer_groups (
@@ -197,7 +206,7 @@ for _table in ("ledger_domain", "ledger_writer_generations", "ledger_wallet_obse
                "ledger_attempts", "ledger_attempt_stages", "ledger_signature_bindings",
                "ledger_chain_observations", "ledger_chain_receipts", "ledger_custody_inputs", "ledger_application_receipts",
                "ledger_wallet_comparisons", "ledger_economic_postings", "ledger_consumer_groups",
-               "ledger_authority_records", "ledger_authority_bindings"):
+               "ledger_authority_records", "ledger_authority_bindings", "ledger_authority_admissions"):
     for _operation in ("UPDATE", "DELETE"):
         _name = f"{_table}_no_{_operation.lower()}"
         _DDL[_name] = (f"CREATE TRIGGER {_name} BEFORE {_operation} ON {_table} BEGIN "
@@ -787,6 +796,167 @@ class LedgerRepository:
         except BaseException as exc:
             self._rollback_economic(exc)
 
+    @staticmethod
+    def _authority_admission_row(receipt):
+        return (receipt.sequence, receipt.command_id, receipt.request.root_id,
+            receipt.request.root_id if receipt.accepted else None, receipt.mint if receipt.accepted else None,
+            receipt.consumed_grant_id, receipt.content_digest, canonical_json(asdict(receipt)))
+
+    def _read_authority_admission_row(self, row):
+        value = admission_receipt_from_record(strict_json_object(row[-1]))
+        if self._authority_admission_row(value) != row:
+            raise LedgerConflict("AUTHORITY_ADMISSION_RECORD_LINK_CONFLICT")
+        return value
+
+    def authority_admission_receipt(self, command_id):
+        """Historical exact receipt, never current message permission."""
+        with self._trusted_read():
+            public_reference(command_id)
+            row = self._conn.execute("SELECT * FROM ledger_authority_admissions WHERE command_id=?", (command_id,)).fetchone()
+            return None if row is None else self._read_authority_admission_row(row)
+
+    def authority_acceptance(self, root_id):
+        with self._trusted_read():
+            digest_value(root_id)
+            row = self._conn.execute("SELECT * FROM ledger_authority_admissions WHERE accepted_root=?", (root_id,)).fetchone()
+            return None if row is None else self._read_authority_admission_row(row)
+
+    def authority_grant_status(self, grant_id):
+        with self._trusted_read():
+            issuance = self.authority_grant(grant_id)
+            spent = self._conn.execute("SELECT command_id,accepted_root FROM ledger_authority_admissions WHERE consumed_grant_id=?", (grant_id,)).fetchone()
+            revoked = any(self._authority_receipt_row(row).original.operation == "REVOKE_GRANT"
+                and self._authority_receipt_row(row).original.target_id == grant_id for row in self._conn.execute(
+                    "SELECT * FROM ledger_authority_records WHERE kind='AUTHORITY_CONTROL'"))
+            return {"issuance": issuance, "consumed_by_command": None if spent is None else spent[0],
+                "consumed_root": None if spent is None else spent[1], "revoked": revoked,
+                "currently_selected": self._authority.grant is not None and self._authority.grant.grant_id == grant_id,
+                "grants_message_permission": False}
+
+    def _authority_risk_history(self, request, candidate):
+        # Read original accepted records only for current roots or the exact
+        # candidate/mint tombstone. Lifetime source Evidence is not decoded for
+        # every new economic append.
+        roots = {item.root_id for item in self._custody.reservations if item.retired_sequence is None} | {request.root_id}
+        accepted = {}
+        for root in sorted(roots):
+            value = self.authority_acceptance(root)
+            if value is not None:
+                accepted[root] = value
+        row = self._conn.execute("SELECT * FROM ledger_authority_admissions WHERE accepted_mint=?", (candidate.mint,)).fetchone()
+        if row is not None:
+            value = self._read_authority_admission_row(row)
+            accepted[value.request.root_id] = value
+        policy_digests = {value.eligibility.decision.policy_digest for value in accepted.values()}
+        policies = {}
+        for digest in policy_digests:
+            reservation = next((item for item in self._custody.reservations if item.root_id in accepted
+                and item.admission.action.policy_digest == digest), None)
+            if reservation is not None:
+                policy = self.authority_policy(reservation.admission.action.policy_ref)
+                if policy is None or policy.content_digest != digest:
+                    raise LedgerConflict("AUTHORITY_ACCEPTED_POLICY_HISTORY_MISSING")
+                policies[digest] = policy
+        actions = {app.decision.proposal.action_id: self.action(app.decision.proposal.action_id)
+                   for app in self._applications.values() if app.decision.proposal is not None}
+        spent = set()
+        grant = self._authority.grant
+        if grant is not None and self._conn.execute("SELECT 1 FROM ledger_authority_admissions WHERE consumed_grant_id=?", (grant.grant_id,)).fetchone():
+            spent.add(grant.grant_id)
+        return accepted, policies, actions, spent
+
+    def _authority_nonacceptance(self, root, decision, risk, *, command_id, current):
+        # Unknown time is not positive expiry/nonacceptance proof. A root with
+        # an encumbrance or unresolved attempt uses its lawful later disposition.
+        at = decision.original.clock.utc_lower_utc
+        old = self.inbox_disposition(root)
+        if (decision.decision.clock_reasons or utc_microseconds(at) < self.candidate(root).generated_at_us
+                or self.reservation(root) is not None or old in TERMINAL_INBOX
+                or any(item.recorded_stage != "CANCELLED_UNSIGNED" for item in self._root_attempts(root))):
+            return None
+        prior = self._conn.execute("SELECT ordinal,payload_json FROM ledger_inbox_dispositions WHERE root_id=? ORDER BY ordinal DESC LIMIT 1", (root,)).fetchone()
+        if prior is not None and at < strict_json_object(prior[1])["recorded_at_utc"]:
+            return None
+        ordinal = 1 if prior is None else prior[0]+1
+        record = {"version": "live_ledger_nonacceptance_v0.1", "root_id": root, "ordinal": ordinal,
+            "idempotency_key": command_id, "from_disposition": old,
+            "disposition": "EXPIRED" if decision.decision.disposition == "EXPIRED" else "DENIED_RETRYABLE",
+            "external_reference": command_id, "external_record_digest": risk.content_digest,
+            "recorded_at_utc": at, "has_real_authority_grant": False}
+        digest = content_fingerprint(record)
+        self._conn.execute("INSERT INTO ledger_inbox_dispositions VALUES(?,?,?,?,?,?,?)",
+            (root, ordinal, command_id, record["disposition"], digest, canonical_json(record), current.revision+1))
+        return digest
+
+    def admit_authority_entry(self, request, clock, source_store, support, *, command_id, fence):
+        """Fresh original facts -> risk + terms/reservation/consumption, ONE commit.
+
+        A repeated command returns historical original facts. A new command
+        reselects current source and current controls/custody under the common
+        writer transaction. Neither return value grants an Execution message.
+        """
+        try:
+            public_reference(command_id)
+            if type(request) is not EntryRequest or type(clock) is not TrustedClockSample or type(source_store) is not SourceEvidenceStore:
+                raise LedgerConflict("AUTHORITY_CONCRETE_REQUEST_CLOCK_AND_SOURCE_STORE_REQUIRED")
+            support = _support_from_json(_support_json(support))
+            current = self._begin_economic_write(fence)
+            existing = self.authority_admission_receipt(command_id)
+            if existing is not None:
+                if (existing.request, existing.eligibility.original.clock, existing.wallet_support_digest) != (request, clock, support.digest):
+                    raise LedgerConflict("AUTHORITY_ADMISSION_COMMAND_CONTENT_CONFLICT")
+                self._commit()
+                return existing
+            self._new_revision(fence, current)
+            candidate = self.candidate(request.root_id)
+            if candidate is None:
+                raise LedgerConflict("AUTHORITY_CANONICAL_INBOX_REQUIRED")
+            selected = source_store.latest_record()
+            old = next((item for item in self._authority.source_checkpoints if (item.source_identity, item.profile_fingerprint) ==
+                (source_store.binding.source_identity, source_store.profile.fingerprint)), None)
+            prior_source = None if old is None else source_store.read_record(old.sequence)
+            supplied = EligibilityInput(request.root_id, candidate.content_digest, request.track, clock,
+                None if selected is None else selected[0], None if selected is None else selected[1],
+                None if prior_source is None else prior_source[1].content_digest)
+            decision, authority = evaluate_entry(self.domain, self._authority, candidate, self.inbox_disposition(request.root_id),
+                supplied, self.authority_entry_binding(request.root_id))
+            eligibility = AuthorityReceipt(current.revision+1, command_id, "AUTHORITY_ELIGIBILITY", supplied, decision,
+                self._authority.content_digest, authority.content_digest, current.last_receipt_digest)
+            comparison, compared = self._insert_wallet_comparison(support, ingestion_key=command_id, current=current)
+            accepted, policies, actions, spent = self._authority_risk_history(request, candidate)
+            action_row = self._conn.execute("SELECT action_id FROM ledger_pending_actions WHERE root_id=? AND side='BUY'", (request.root_id,)).fetchone()
+            staged = None if action_row is None else self.action(action_row[0])
+            risk = assess_entry_risk(self.domain, self._custody, candidate, request, eligibility, self._authority.policy,
+                support, comparison.comparison, accepted=accepted, policies=policies, applications=self._applications,
+                pending_attempts=self._pending_attempts(), staged_action=staged, spent_grants=spent, actions=actions)
+            admission = consumed = denial_digest = None
+            updated = compared
+            if risk.disposition == "ADMISSIBLE_STORAGE_ONLY":
+                cut = ConsumerCut(self.domain.economic_domain_id, current.revision, current.last_receipt_digest, self._custody.content_digest)
+                terms = admission_terms(self.domain, candidate, request, eligibility, risk, self._authority.policy, cut, command_id, staged)
+                admission = self._insert_admission(terms, ingestion_key=command_id, current=current, compared_custody=compared)
+                updated = self._pending_custody_bundle[0]
+                consumed = self._authority.grant.grant_id if self._authority.grant.scope == "ENTRY_ONCE" else None
+            else:
+                denial_digest = self._authority_nonacceptance(request.root_id, eligibility, risk, command_id=command_id, current=current)
+            receipt = AuthorityAdmissionReceipt(current.revision+1, command_id, request, candidate.mint, eligibility, support.digest,
+                comparison.content_digest, risk, None if admission is None else admission.content_digest, consumed, denial_digest,
+                self._custody.content_digest, updated.content_digest, current.last_receipt_digest)
+            if admission_receipt_from_record(strict_json_object(canonical_json(asdict(receipt)))) != receipt:
+                raise LedgerConflict("AUTHORITY_ADMISSION_FINITE_CODEC_CONFLICT")
+            self._insert_authority_receipt(eligibility, authority)
+            self._conn.execute("INSERT INTO ledger_authority_admissions VALUES(?,?,?,?,?,?,?,?)", self._authority_admission_row(receipt))
+            # Preserve both child caches before _commit publishes the trusted head.
+            self._store_custody_projection(updated)
+            self._pending_custody_bundle = (updated, self._applications, {**self._comparisons, command_id: comparison})
+            if receipt.accepted and source_store.latest_record() != selected:
+                raise LedgerConflict("AUTHORITY_CURRENT_SOURCE_CHANGED_DURING_ADMISSION")
+            self._append_commit("AUTHORITY_ADMISSION", command_id, receipt.content_digest, current)
+            self._commit()
+            return receipt
+        except BaseException as exc:
+            self._rollback_economic(exc)
+
     def _store_custody_projection(self, state):
         if not self._conn.in_transaction:
             raise LedgerConflict("CUSTODY_PROJECTION_REQUIRES_OWNED_TRANSACTION")
@@ -1261,7 +1431,7 @@ class LedgerRepository:
         self._store_custody_projection(updated)
         self._pending_custody_bundle = (updated, self._applications if applications is None else applications, self._comparisons)
 
-    def _insert_admission(self, supplied, *, ingestion_key, current):
+    def _insert_admission(self, supplied, *, ingestion_key, current, compared_custody=None):
         """Fixed no-commit insertion for the immediate Authority admission consumer.
 
         Its caller must group any one-time consumption with this exact receipt
@@ -1271,7 +1441,8 @@ class LedgerRepository:
             raise LedgerConflict("LEDGER_ADMISSION_REQUIRES_OWNED_TRANSACTION")
         require_common_cut(self.domain, self._custody, supplied.cut, current.revision, current.last_receipt_digest)
         candidate = self._validate_action_parent(supplied.action)
-        updated = admit_reservation(self.domain, self._custody, candidate, self.inbox_disposition(supplied.action.root_id),
+        state = self._custody if compared_custody is None else compared_custody
+        updated = admit_reservation(self.domain, state, candidate, self.inbox_disposition(supplied.action.root_id),
             self._root_attempts(supplied.action.root_id), supplied, sequence=current.revision+1)
         previous = self.action(supplied.action.action_id)
         created = None
@@ -1281,7 +1452,7 @@ class LedgerRepository:
         elif previous != supplied.action:
             raise LedgerConflict("LEDGER_ADMISSION_STAGED_TERMS_CONFLICT")
         receipt = ConsumerPortReceipt(current.revision+1, ingestion_key, "ADMISSION", supplied, None, None, None,
-            created, None, None, None, None, (), self._custody.content_digest, updated.content_digest)
+            created, None, None, None, None, (), state.content_digest, updated.content_digest)
         self._finish_port_group(receipt, updated)
         return receipt
 
@@ -1547,6 +1718,21 @@ class LedgerRepository:
         except BaseException as exc:
             self._rollback_economic(exc)
 
+    def _insert_wallet_comparison(self, support, *, ingestion_key, current):
+        if not self._conn.in_transaction:
+            raise LedgerConflict("LEDGER_COMPARISON_REQUIRES_OWNED_TRANSACTION")
+        comparison, updated = compare_wallet(self.domain, self._custody, support, common_revision=current.revision,
+            common_digest=current.last_receipt_digest, pending_attempts=self._pending_attempts(),
+            chain_anchors=(anchor for facts in self._chain_facts.values() for anchor in facts.anchors))
+        receipt = LedgerComparisonReceipt(current.revision+1, ingestion_key, support, comparison,
+            self._custody.content_digest, updated.content_digest)
+        self._retain_custody_input(support)
+        self._conn.execute("INSERT INTO ledger_wallet_comparisons VALUES(?,?,?,?,?)",
+            (receipt.sequence, ingestion_key, support.digest, receipt.content_digest, canonical_json(receipt.to_record())))
+        self._store_custody_projection(updated)
+        self._pending_custody_bundle = (updated, self._applications, {**self._comparisons, ingestion_key: receipt})
+        return receipt, updated
+
     def compare_wallet_observation(self, support, *, ingestion_key, fence):
         """Original ongoing Wallet comparison, separate from opening ingestion."""
         try:
@@ -1560,16 +1746,7 @@ class LedgerRepository:
                 self._commit()
                 return existing
             self._new_revision(fence, current)
-            comparison, updated = compare_wallet(self.domain, self._custody, support, common_revision=current.revision,
-                common_digest=current.last_receipt_digest, pending_attempts=self._pending_attempts(),
-                chain_anchors=(anchor for facts in self._chain_facts.values() for anchor in facts.anchors))
-            receipt = LedgerComparisonReceipt(current.revision+1, ingestion_key, support, comparison,
-                self._custody.content_digest, updated.content_digest)
-            self._retain_custody_input(support)
-            self._conn.execute("INSERT INTO ledger_wallet_comparisons VALUES(?,?,?,?,?)",
-                (receipt.sequence, ingestion_key, support.digest, receipt.content_digest, canonical_json(receipt.to_record())))
-            self._store_custody_projection(updated)
-            self._pending_custody_bundle = (updated, self._applications, {**self._comparisons, ingestion_key: receipt})
+            receipt, updated = self._insert_wallet_comparison(support, ingestion_key=ingestion_key, current=current)
             self._append_commit("WALLET_COMPARISON", ingestion_key, receipt.content_digest, current)
             self._commit()
             return receipt
@@ -1833,8 +2010,16 @@ class LedgerRepository:
         records, events, candidates, actions, attempts = {}, {}, {}, {}, {}
         groups = {item.sequence: item for item in (self._port_receipt_row(row) for row in self._conn.execute("SELECT * FROM ledger_consumer_groups"))}
         children = {seq: {} for seq in groups}
+        authority_groups = {item.sequence: item for item in (self._read_authority_admission_row(row)
+            for row in self._conn.execute("SELECT * FROM ledger_authority_admissions"))}
+        authority_children = {seq: {} for seq in authority_groups}
 
         def remember(seq, kind, key, digest, event):
+            if seq in authority_groups and kind != "ACTION":
+                if kind not in ("AUTHORITY_ELIGIBILITY", "WALLET_COMPARISON", "NON_ACCEPTANCE", "ADMISSION") or kind in authority_children[seq] or seq not in commits:
+                    raise LedgerConflict("AUTHORITY_UNEXPECTED_OR_DUPLICATE_GROUP_CHILD")
+                authority_children[seq][kind] = (key, digest, event)
+                return
             if seq in groups:
                 if kind not in ("ACTION", "SETTLEMENT_APPLICATION") or kind in children[seq] or seq not in commits:
                     raise LedgerConflict("LEDGER_UNEXPECTED_OR_DUPLICATE_GROUP_CHILD")
@@ -1943,14 +2128,30 @@ class LedgerRepository:
                 if group.retirement.wallet_support_digest not in inputs:
                     raise LedgerConflict("LEDGER_GROUP_RETIREMENT_ORIGINAL_INPUT_MISSING")
                 used_inputs.add(group.retirement.wallet_support_digest)
-            records[seq] = (group.kind, group.ingestion_key, group.content_digest)
-            events[seq] = (group.kind, group)
+            if seq in authority_groups:
+                remember(seq, group.kind, group.ingestion_key, group.content_digest, group)
+            else:
+                records[seq] = (group.kind, group.ingestion_key, group.content_digest)
+                events[seq] = (group.kind, group)
         if used_inputs != inputs.keys():
             raise LedgerConflict("LEDGER_ORPHAN_CUSTODY_ORIGINAL_INPUT")
 
         for row in self._conn.execute("SELECT * FROM ledger_authority_records"):
             receipt = self._authority_receipt_row(row)
             remember(receipt.sequence, receipt.kind, receipt.command_id, receipt.content_digest, receipt)
+        for seq, group in authority_groups.items():
+            expected = {"AUTHORITY_ELIGIBILITY", "WALLET_COMPARISON"} | ({"ADMISSION"} if group.accepted else set()) | ({"NON_ACCEPTANCE"} if group.inbox_disposition_digest is not None else set())
+            actual = authority_children[seq]
+            if (actual.keys() != expected or seq not in commits or seq in records
+                    or actual["AUTHORITY_ELIGIBILITY"][:2] != (group.command_id, group.eligibility.content_digest)
+                    or actual["AUTHORITY_ELIGIBILITY"][2] != group.eligibility
+                    or actual["WALLET_COMPARISON"][:2] != (group.command_id, group.comparison_digest)
+                    or group.accepted and actual["ADMISSION"][:2] != (group.command_id, group.admission_digest)
+                    or group.inbox_disposition_digest is not None and actual["NON_ACCEPTANCE"][1] != group.inbox_disposition_digest):
+                raise LedgerConflict("AUTHORITY_ADMISSION_CLOSED_GROUP_LINK_CONFLICT")
+            records[seq] = ("AUTHORITY_ADMISSION", group.command_id, group.content_digest)
+            events[seq] = ("AUTHORITY_ADMISSION", group)
+        accepted_authority, spent_authority = {}, set()
         authority = AuthorityState(self.domain.economic_domain_id)
         authority_policies, authority_grants, authority_bindings = {}, {}, {}
         inbox, live_actions, live_attempts, per_action = {}, {}, {}, {}
@@ -2022,6 +2223,78 @@ class LedgerRepository:
                     authority.content_digest, commits[seq]["previous_digest"])
                 if expected != item:
                     raise LedgerConflict("AUTHORITY_ORIGINAL_ELIGIBILITY_REPLAY_CONFLICT")
+            elif kind == "AUTHORITY_ADMISSION":
+                group = item
+                root, request = group.request.root_id, group.request
+                if root not in inbox:
+                    raise LedgerConflict("AUTHORITY_ADMISSION_BEFORE_INBOX")
+                original = custody
+                supplied = group.eligibility.original
+                decision, updated_authority = evaluate_entry(self.domain, authority, candidates[root], inbox[root][0], supplied,
+                    authority_bindings.get(root, (None,))[0])
+                eligibility = AuthorityReceipt(seq, group.command_id, "AUTHORITY_ELIGIBILITY", supplied, decision,
+                    authority.content_digest, updated_authority.content_digest, commits[seq]["previous_digest"])
+                if eligibility != group.eligibility or request.track != supplied.track:
+                    raise LedgerConflict("AUTHORITY_ADMISSION_ORIGINAL_ELIGIBILITY_CONFLICT")
+                support = inputs[group.wallet_support_digest]
+                comparison, compared = compare_wallet(self.domain, custody, support, common_revision=seq-1,
+                    common_digest=commits[seq]["previous_digest"], pending_attempts=() if lane is None else (lane,),
+                    chain_anchors=(anchor for facts in chain_facts.values() for anchor in facts.anchors))
+                comparison_receipt = LedgerComparisonReceipt(seq, group.command_id, support, comparison, custody.content_digest, compared.content_digest)
+                child_comparison = authority_children[seq]["WALLET_COMPARISON"][2][0]
+                if canonical_json(comparison_receipt.to_record()) != canonical_json(child_comparison):
+                    raise LedgerConflict("AUTHORITY_ADMISSION_ORIGINAL_COMPARISON_CONFLICT")
+                staged = next((value for value in live_actions.values() if value.root_id == root and value.side == "BUY"), None)
+                risk = assess_entry_risk(self.domain, custody, candidates[root], request, eligibility, authority.policy,
+                    support, comparison, accepted=accepted_authority,
+                    policies={value.content_digest: value for value in authority_policies.values()}, applications=applications,
+                    pending_attempts=() if lane is None else (lane,), staged_action=staged, spent_grants=spent_authority, actions=live_actions)
+                admission = consumed = denial_digest = None
+                custody = compared
+                if risk.disposition == "ADMISSIBLE_STORAGE_ONLY":
+                    cut = ConsumerCut(self.domain.economic_domain_id, seq-1, commits[seq]["previous_digest"], original.content_digest)
+                    terms = admission_terms(self.domain, candidates[root], request, eligibility, risk, authority.policy, cut, group.command_id, staged)
+                    root_attempts = tuple(value for value in live_attempts.values() if live_actions[value.preparation.action_id].root_id == root)
+                    prior = custody.content_digest
+                    custody = admit_reservation(self.domain, custody, candidates[root], inbox[root][0], root_attempts, terms, sequence=seq)
+                    created = terms.action.content_digest if staged is None else None
+                    admission = ConsumerPortReceipt(seq, group.command_id, "ADMISSION", terms, None, None, None,
+                        created, None, None, None, None, (), prior, custody.content_digest)
+                    if admission != authority_children[seq]["ADMISSION"][2]:
+                        raise LedgerConflict("AUTHORITY_ADMISSION_ORIGINAL_TERMS_CONFLICT")
+                    live_actions[terms.action.action_id] = terms.action
+                    inbox[root] = ("ACCEPTED", inbox[root][1], terms.recorded_at_utc)
+                    consumed = authority.grant.grant_id if authority.grant.scope == "ENTRY_ONCE" else None
+                else:
+                    at = eligibility.original.clock.utc_lower_utc
+                    eligible_denial = (not decision.clock_reasons and utc_microseconds(at) >= candidates[root].generated_at_us
+                        and not any(value.root_id == root for value in custody.reservations) and inbox[root][0] not in TERMINAL_INBOX
+                        and not any(live_actions[value.preparation.action_id].root_id == root and value.recorded_stage != "CANCELLED_UNSIGNED" for value in live_attempts.values())
+                        and (not inbox[root][2] or at >= inbox[root][2]))
+                    if eligible_denial:
+                        record = {"version": "live_ledger_nonacceptance_v0.1", "root_id": root, "ordinal": inbox[root][1]+1,
+                            "idempotency_key": group.command_id, "from_disposition": inbox[root][0],
+                            "disposition": "EXPIRED" if decision.disposition == "EXPIRED" else "DENIED_RETRYABLE",
+                            "external_reference": group.command_id, "external_record_digest": risk.content_digest,
+                            "recorded_at_utc": at, "has_real_authority_grant": False}
+                        denial_digest = content_fingerprint(record)
+                        if authority_children[seq].get("NON_ACCEPTANCE", (None, None, None))[2] != record:
+                            raise LedgerConflict("AUTHORITY_ORIGINAL_NONACCEPTANCE_CONFLICT")
+                        inbox[root] = (record["disposition"], record["ordinal"], at)
+                expected = AuthorityAdmissionReceipt(seq, group.command_id, request, candidates[root].mint, eligibility, support.digest,
+                    comparison_receipt.content_digest, risk, None if admission is None else admission.content_digest, consumed,
+                    denial_digest, original.content_digest, custody.content_digest, commits[seq]["previous_digest"])
+                if expected != group:
+                    raise LedgerConflict("AUTHORITY_ADMISSION_ORIGINAL_RISK_OR_CONSUMPTION_CONFLICT")
+                if group.accepted:
+                    if root in accepted_authority or any(value.mint == group.mint for value in accepted_authority.values()) or consumed is not None and consumed in spent_authority:
+                        raise LedgerConflict("AUTHORITY_PERMANENT_ACCEPTANCE_OR_GRANT_CONFLICT")
+                    accepted_authority[root] = group
+                    if consumed is not None:
+                        spent_authority.add(consumed)
+                authority = updated_authority
+                authority_bindings.setdefault(root, (decision.binding, seq))
+                comparisons[group.command_id] = comparison_receipt
             elif kind == "INBOX":
                 root, _candidate = item
                 inbox[root] = ("RECEIVED", 0, "")

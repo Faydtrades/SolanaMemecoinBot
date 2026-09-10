@@ -9,6 +9,7 @@ from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timedelta, timezone
 
 from phase4.paper_entry_execution_deadline_v0_1 import deadline_for
+from phase4.paper_continuous_firstpullback_binding_v0_1 import LOCKED_SELECTION_SHA256, LOCKED_ROLE_ORDER, LOCKED_PARAMETER_SET_BY_ROLE
 from phase5.shadow_domain_v0_1 import canonical_json, content_fingerprint
 from .ledger_actions_v0_1 import CandidateInboxInput, public_reference, utc_microseconds
 from .ledger_domain_v0_1 import LedgerContractError, digest_value, ledger_utc, ZERO_DIGEST
@@ -72,9 +73,12 @@ class CostLimits:
     priority_fee_within_total_lamports: int
     setup_outflow_lamports: int
     refundable_account_lock_lamports: int
+    # Required NEXT-exit headroom persists while a root is unretired. Paid
+    # partial-reduction fees do not consume that future headroom.
     protective_network_fee_lamports: int
     protective_setup_lamports: int
     protective_refundable_lock_lamports: int
+    # Shared per-root failed BUY/SELL allowance, never reset by partial exit.
     failed_attempt_count: int
     failed_attempt_network_budget_lamports: int
     maximum_impact_bps: int
@@ -149,6 +153,57 @@ class AuthorityPolicy:
         return content_fingerprint(asdict(self))
 
 
+# V02 pins the static accepted selection manifest and original role; the old
+# v0.1 policy still pins its exact candidate winner digest on historical replay.
+# No candidate bytes, identity, locked selection or research facts are changed.
+@dataclass(frozen=True, slots=True)
+class AuthorityPolicyV02:
+    economic_domain_id: str
+    policy_id: str
+    approval: OperatorProvenance
+    entry_valid_from_utc: str
+    entry_valid_through_utc: str
+    allowed_venues: tuple[str, ...]
+    selected_track: str
+    strategy_version: str
+    parameter_set_id: str
+    parameter_fingerprint: str
+    model_fingerprint: str
+    selection_manifest_digest: str
+    winner_role: str
+    source_identity: str
+    source_profile_fingerprint: str
+    wallet_profile_fingerprint: str
+    account_profile: str
+    size: EntrySizeLimits
+    costs: CostLimits
+    clock: ClockPolicy
+    version: str = "live_authority_policy_v0.2"
+
+    def __post_init__(self):
+        for value in (self.economic_domain_id, self.parameter_fingerprint, self.model_fingerprint,
+                      self.selection_manifest_digest, self.source_identity, self.source_profile_fingerprint, self.wallet_profile_fingerprint):
+            digest_value(value)
+        require(self.selection_manifest_digest == LOCKED_SELECTION_SHA256 and self.winner_role in LOCKED_ROLE_ORDER
+                and self.parameter_set_id == LOCKED_PARAMETER_SET_BY_ROLE[self.winner_role],
+                "AUTHORITY_LOCKED_SELECTION_PROFILE_REQUIRED")
+        for value in (self.policy_id, self.strategy_version, self.parameter_set_id):
+            public_reference(value)
+        for name in ("entry_valid_from_utc", "entry_valid_through_utc"):
+            object.__setattr__(self, name, ledger_utc(getattr(self, name)))
+        require(type(self.approval) is OperatorProvenance and type(self.size) is EntrySizeLimits
+                and type(self.costs) is CostLimits and type(self.clock) is ClockPolicy and self.version == "live_authority_policy_v0.2",
+                "AUTHORITY_EXPLICIT_POLICY_TYPES_REQUIRED")
+        require(type(self.allowed_venues) is tuple and len(set(self.allowed_venues)) == len(self.allowed_venues)
+                and all(item in ("PUMP", "PUMPSWAP") for item in self.allowed_venues)
+                and self.selected_track in TRACKS and self.account_profile == "LEDGER_SETTLEMENT_SUPPORTED_V0_1"
+                and self.entry_valid_from_utc <= self.entry_valid_through_utc, "AUTHORITY_POLICY_PROFILE_INVALID")
+
+    @property
+    def content_digest(self):
+        return content_fingerprint(asdict(self))
+
+
 @dataclass(frozen=True, slots=True)
 class ArmingGrant:
     grant_id: str
@@ -195,7 +250,7 @@ class ControlCommand:
                 (self.policy, self.grant, self.target_id, self.barrier_audit_digest)) == shapes[self.operation],
                 "AUTHORITY_CLOSED_CONTROL_SHAPE_REQUIRED")
         if self.policy is not None:
-            require(type(self.policy) is AuthorityPolicy and self.policy.approval == self.approval,
+            require(type(self.policy) in (AuthorityPolicy, AuthorityPolicyV02) and self.policy.approval == self.approval,
                     "AUTHORITY_POLICY_APPROVAL_BINDING_CONFLICT")
         if self.grant is not None:
             require(type(self.grant) is ArmingGrant and self.grant.approval == self.approval,
@@ -441,10 +496,12 @@ def evaluate_entry(domain, state, candidate, inbox_disposition, supplied, previo
     if policy is None:
         reasons.append("POLICY_MISSING")
     else:
-        if (policy.selected_track, policy.strategy_version, policy.parameter_set_id, policy.parameter_fingerprint,
-                policy.model_fingerprint, policy.winner_binding_digest, policy.source_identity) != (
+        selection_matches = (policy.winner_binding_digest == candidate.winner_binding_digest if type(policy) is AuthorityPolicy
+            else policy.selection_manifest_digest == LOCKED_SELECTION_SHA256 and policy.winner_role == candidate.winner_role)
+        if not selection_matches or (policy.selected_track, policy.strategy_version, policy.parameter_set_id, policy.parameter_fingerprint,
+                policy.model_fingerprint, policy.source_identity) != (
                 supplied.track, candidate.strategy_version, candidate.parameter_set_id, candidate.parameter_fingerprint,
-                candidate.model_fingerprint, candidate.winner_binding_digest, candidate.source_binding.source_identity):
+                candidate.model_fingerprint, candidate.source_binding.source_identity):
             reasons.append("POLICY_ORIGINAL_CANDIDATE_PROFILE_CONFLICT")
         if not policy.allowed_venues or not policy.size.fixed_quote_lamports or not policy.size.max_open_positions:
             reasons.append("EXPLICIT_ZERO_ENTRY_POLICY")
@@ -515,7 +572,7 @@ def policy_from_record(record):
     value["size"] = EntrySizeLimits(**value["size"])
     value["costs"] = CostLimits(**value["costs"])
     value["clock"] = ClockPolicy(**value["clock"])
-    return AuthorityPolicy(**value)
+    return (AuthorityPolicyV02 if value.get("version") == "live_authority_policy_v0.2" else AuthorityPolicy)(**value)
 
 
 def grant_from_record(record):

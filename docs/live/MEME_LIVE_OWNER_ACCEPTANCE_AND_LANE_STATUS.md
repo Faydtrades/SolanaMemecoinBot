@@ -85,6 +85,39 @@ Actual Source/Wallet Evidence and Ledger -> A1 -> sizing output and durable expi
 
 Changed implementation files: new `src/live/authority_economics_v0_1.py`, the guarded `LedgerRepository.authority_candidate_economics` read in `src/live/ledger_repository_v0_1.py`, and new `scripts/live_authority_economics_selftest_v0_1.py`. No PAPER/Shadow edit, new RPC capability, signer/send, real capital, protected runtime, Execution/Runtime/Operations work or broad regression. NEXT: A3 actual funding/risk and atomic Authority admission.
 
+### A3 — Actual risk and atomic Authority admission
+
+Starting reviewed local checkpoint: `49ab783acf86f281ee7ac67b61022ef495a9becd` (A2). Status: `IMPLEMENTED_PENDING_PROJECT_REVIEW`.
+
+The finite `AuthorityPolicyV02` pins the accepted selection manifest and original winner role separately from each candidate's original winner digest. The old v0.1 policy and receipt semantics remain explicit; candidate/root identity and locked research remain unchanged. Storage/domain v7 explicitly rejects v6 without migration or reset. Public money/cost values remain HUMAN_EXTERNAL configuration, with synthetic test values only.
+
+`LedgerRepository.admit_authority_entry` selects current source/clock/controls and original fresh Wallet support against actual custody. One common-journal transaction retains eligibility/comparison/risk and either the complete denial or the immutable accepted action/reservation/inbox disposition plus exactly-once ENTRY_ONCE consumption. Current source selection is checked again before positive publication. Historical receipt lookup grants no message permission. Reopening rederives the whole group from original evidence; no second database or cross-database atomicity claim.
+
+Risk preserves actual native SOL, WSOL/account locks, paid costs, outstanding encumbrances and conservative original-cap exposure until lawful retirement. The BUY cap already includes venue fees. Applied costs are not subtracted twice; actual failed BUY/SELL fees consume the shared failure allowance, and every unretired root retains full next-exit headroom. V1 explicitly supports only max-one admission policy; Ledger remains position/mint scoped. Unknown attempts, incomplete/currently contradictory wallet evidence, unsupported account shape, retained WSOL and insufficient fee/setup/protection deny. Fresh Token-2022 ATA creation remains outside the accepted settlement profile; an existing canonical170 account is supported.
+
+Worker (Astra Ultra) ran the following with `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe -B` from the isolated LIVE checkout:
+
+| Script under `scripts/` | Checks | Exit |
+|---|---:|---:|
+| `live_authority_admission_selftest_v0_1.py` | 230 | 0 |
+| `live_authority_controls_selftest_v0_1.py` | 149 | 0 |
+| `live_authority_economics_selftest_v0_1.py` | 84 | 0 |
+| `live_ledger_baseline_selftest_v0_1.py` | 126 | 0 |
+| `live_ledger_actions_selftest_v0_1.py` | 98 | 0 |
+| `live_ledger_custody_selftest_v0_1.py` | 279 | 0 |
+| `live_ledger_ports_selftest_v0_1.py` | 372 | 0 |
+
+All **1,338 checks** succeeded. CHIEF reviewed all seven changed implementation/test files and independently reproduced the 230-check suite on the frozen hashes; logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-authority-a3-chief-20260910`. Check digest: `939ad4f4e63ae947aea939915edddf8e772ad78691a4813eb51468a194c2e6e3`; original admission: `1805deabd14651092f8a079643854711b744e1607a2fe2f04bbdf227393d3211`. The suite tests exact integer boundaries, including a higher protective-fee cap: failure funding requires count times the larger entry/exit network cap. No broad regression was repeated.
+
+Implementation files: new `src/live/authority_admission_v0_1.py`, `src/live/authority_controls_v0_1.py`, `src/live/ledger_domain_v0_1.py`, `src/live/ledger_repository_v0_1.py`, new `scripts/live_authority_admission_selftest_v0_1.py`, and the schema-version fixture constants in `scripts/live_authority_controls_selftest_v0_1.py` and `scripts/live_authority_economics_selftest_v0_1.py`.
+
+Available composed evidence includes real Source/Wallet adapters -> actual Ledger baseline -> true Authority admission/atomic reservation; actual Pump/PumpSwap and canonical170 BUY/failure effects -> current risk; actual partial/full SELL -> reconciled retirement -> subsequent distinct-mint admission without rearming recurring policy. Candidate production, public final-message/Execution stages and Runtime handoff are explicit external fixture boundaries, not implementations or pre-approved Authority. Actual paid-failure retirement keeps the one-time grant spent, and accepted mint/root tombstones remain permanent. Ten SQL/COMMIT exception cuts, both cache-publication cuts and fresh-process before/after-COMMIT tests converge without partial acceptance. Both abrupt paths reconstruct admission digest `98e1f236e42ec351ad6452b7da8a871acbda6faddd70b0e6006ec397ac2d1a5f`. Retained WSOL after actual full retirement still denies native-entry reuse.
+
+No project/package acceptance or blanket lifecycle promotion is implied. Current per-message/reduction permission remains A4; complete Authority composition and final regression remain A5.
+
+
+Before A4 source edits, the next concrete split is A4a validation of external exact message/plan/simulation/fee evidence with no mutation permission, then A4b current entry/reduction state and durable per-stage one-use consumption. Execution still owns the final-message producer; Runtime owns signals, controllers and scheduling. No protected runtime, new RPC, signing/send, private material or real capital is used.
+
 ### Project decision supplied with the Step-5 request
 
 The user supplied the Step-5 request as attachment `cc768198-3058-4853-a0dc-7368e565c683/pasted-text.txt` and explicitly identified that pasted text as the request. The attachment SHA-256 read for this record is `4260bae0a5ac3f964d28819f6af2d321f8337f1181a6bcb26e513790ea32693c`. Its lines 45–56 supply the following project decision and authorization; this is an attributed record of that instruction, not an acceptance decision made by Codex:
