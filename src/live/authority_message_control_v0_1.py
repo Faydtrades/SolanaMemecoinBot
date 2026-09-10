@@ -7,6 +7,7 @@ delivery at its last durable claim/call boundary, under the same writer ownershi
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field, replace
+from threading import Lock
 
 from phase5.shadow_domain_v0_1 import content_fingerprint
 from .authority_controls_v0_1 import (
@@ -208,17 +209,44 @@ class FreshStageConsumption:
     including current source and clock. A Ledger fence cannot freeze the
     separate source store or turn this original clock sample into a clock API.
     """
-    __slots__ = ("_receipt", "_generation", "_common_digest")
+    __slots__ = ("_receipt", "_generation", "_common_digest", "_execution_spent", "_execution_lock", "_source_store")
 
-    def __init__(self, receipt, generation, common_digest, *, _token):
+    def __init__(self, receipt, generation, common_digest, *, _token, _source_store=None):
         require(_token is _FRESH_DELIVERY and type(receipt) is MessageStageReceipt and receipt.consumed,
             "AUTHORITY_FRESH_COMMIT_DELIVERY_REQUIRED")
         object.__setattr__(self, "_receipt", receipt)
         object.__setattr__(self, "_generation", generation)
         object.__setattr__(self, "_common_digest", common_digest)
+        object.__setattr__(self, "_execution_spent", False)
+        object.__setattr__(self, "_execution_lock", Lock())
+        object.__setattr__(self, "_source_store", _source_store)
 
     def __setattr__(self, name, value):
         raise AttributeError("immutable Authority call delivery")
+
+    def _claim_execution(self):
+        """Spend before a consumer callback/key call, including failed calls.
+
+        This changes no Authority decision or durable fact. The original SIGN
+        slot is already consumed; Execution cannot retry a possibly used key.
+        """
+        with self._execution_lock:
+            require(not self._execution_spent, "AUTHORITY_FRESH_DELIVERY_ALREADY_SPENT")
+            object.__setattr__(self, "_execution_spent", True)
+
+    def __copy__(self):
+        return self
+
+    def __deepcopy__(self, memo):
+        return self
+
+    def __reduce_ex__(self, protocol):
+        raise TypeError("ephemeral Authority delivery cannot be serialized")
+
+    def _uses_source_store(self, source_store):
+        # A copied journal with the same historical row cannot substitute for
+        # the actual source store sampled by the original current consumption.
+        return source_store is self._source_store
 
     @property
     def receipt(self):

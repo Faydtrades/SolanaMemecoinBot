@@ -1152,7 +1152,8 @@ class LedgerRepository:
                         raise LedgerConflict("AUTHORITY_CONSUMED_CUT_CHANGED_BEFORE_DELIVERY")
                     if context.action.side == "BUY" and source_store.latest_record() != selected:
                         raise LedgerConflict("AUTHORITY_CONSUMED_SOURCE_CHANGED_BEFORE_DELIVERY")
-                    return FreshStageConsumption(receipt, fresh.generation, fresh.last_receipt_digest, _token=_FRESH_DELIVERY)
+                    return FreshStageConsumption(receipt, fresh.generation, fresh.last_receipt_digest,
+                        _token=_FRESH_DELIVERY, _source_store=source_store)
             return receipt
         except BaseException as exc:
             self._rollback_economic(exc)

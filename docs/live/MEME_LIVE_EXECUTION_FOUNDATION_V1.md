@@ -44,3 +44,23 @@ Commands use `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\
 Logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-q1-validation` (`q1-final.log`, `q1-chief.log`, `a4a-captured-output.log`, `a4b-captured-output.log`, `phase5-canonical.log`). Independent Q1 output SHA256: `85e7b4ef6cbf7697954b1da1a2fbad5d8d804d97aec1ac062ca45f5e83f9500c`. The ordinary checkout Phase-5 run reported 115/116 solely on the known protected-file line-ending hash check; the successful run used `C:\Users\Mari1\AppData\Local\Temp\meme-live-canonical-tests-t11edhd2`, whose existing 365 Python files were verified against current Git blobs. No locked files were altered. `git diff --check` exited 0; no broad regression was run.
 
 Q2 must consume the exact prepared message and fresh current A4b SIGN delivery, then enforce its final call boundary. Q1 context/preparation is never permission. Preparation is limited to first-attempt ordinal 1; proof-gated replacement belongs to Q3. Existing supported account/venue restrictions remain unchanged. M20/M24/M26/M27/M39 receive Q1 producer evidence, but classifications remain unchanged until the package disposition review. No new downstream transition was discovered.
+
+## Q2 — Guarded autonomous local signer
+
+**LOCAL PASS**, following bounded CHIEF review and an independent focused run. Worker: **Astra Extra High**, selected for the concrete one-use Authority delivery, journal continuation and final-call message/source/clock semantics. Parent checkpoint: `3210f6ebfb1e147cfe6819c78c449c1b90bcfd5e`; the Q2 checkpoint is the commit containing this record. No project/package acceptance is asserted.
+
+`src/live/execution_signer_v0_1.py` exposes one guarded signing operation for an isolated in-memory solders key. It accepts the exact Q1 production object, stored preparation and newly consumed A4b SIGN delivery. It checks root/action/wallet/message/lease/profile identity, current writer generation and common cut, original source-store identity, intact attempt/lane and a fresh chained trusted-clock sample. Existing Ledger and source-journal write locks protect the finite local final-call interval; no network operation occurs under them and no cross-database commit guarantee is claimed. The returned immutable public envelope cryptographically verifies the signature against the exact message and wallet and carries no send permission. There is no key loading/serialization, arbitrary-message signing method, Phantom dependency or send transport.
+
+The only Authority/Ledger integration change is ephemeral delivery custody: thread-safe one-time spending, copy/deepcopy retaining the same spent object, serialization rejection and the original source-store reference passed by the existing Ledger factory. Durable codecs, schemas and Authority decisions are unchanged. A failed or lost return spends the delivery and leaves durable SIGN consumption and possible-signing uncertainty intact. Local cancellation then yields UNKNOWN with the lane held; reopen/history cannot re-create key-call permission. Q3 owns durable envelope persistence and send claims.
+
+Review corrected two direct boundary gaps: rollback after a failed post-BEGIN validation, and rejection of a copied same-row source journal in place of the actual source store. Focused qualification also covers actual BUY/SELL on Pump/PumpSwap, wrong signer/signature/message, stale or revoked controls/profile, interrupted or regressed clock/source/fence, callback and concurrent replay, lost return, no lingering locks and sanitized external callback errors. Synthetic ephemeral keys exist only in the disposable test process; no production key, real mainnet signature or broadcast was used.
+
+Commands use the same isolated Python interpreter recorded for Q1:
+
+| Script | Checks | Exit |
+|---|---:|---:|
+| `scripts/live_execution_signer_selftest_v0_1.py` | 275/275, worker and independent CHIEF run | 0 |
+| `scripts/live_execution_message_selftest_v0_1.py` | 81/81 | 0 |
+| `scripts/live_authority_message_control_selftest_v0_1.py` | 362/362 | 0 |
+
+Logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-q2-validation` (`q2-final.log`, `q2-chief.log`, `q1-compatibility.log`, `a4b-compatibility.log`). Independent Q2 output SHA256: `164fcaa1dd302b1006f57b23bfcc9c09394abaed66aca97e425747583a2ea01e`. A4b check digest: `023bd75b64ba9b4846985e5e3fc398d9cbd3c106e8d9034eccd71953bc8d4327`. Staged scope/whitespace checks accompany the checkpoint; no broad regression was run. M28/M29 receive actual current Authority -> synthetic key -> verified public envelope evidence, with durable envelope/send consumption still assigned to Q3. No new downstream transition was discovered; Runtime/Operations remain unimplemented.
