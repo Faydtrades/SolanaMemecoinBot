@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 8A / Continuous Producer Foundation** are attributed below. Step 7 is **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS**, and the demonstrated Evidence -> Ledger -> Authority -> Execution -> Evidence/Ledger component SYSTEM TRANSITION is **ACCEPTED** within its documented boundaries. Step 8A only is **AUTHORIZED_IN_PROGRESS**. Step 8B, Step 8C and Step 9 remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE — STEP 8A / Continuous Producer Foundation** are attributed below. Step 7 is **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL_PASS**, and the demonstrated Evidence -> Ledger -> Authority -> Execution -> Evidence/Ledger component SYSTEM TRANSITION is **ACCEPTED** within its documented boundaries. Step 8A is **LOCAL_PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**, ending at existing admission. Step 8B, Step 8C and Step 9 remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -27,6 +27,16 @@ Exactly **M15-M17, M20, M24-M33, M37, M39-M40 and M42** are promoted to VERIFIED
 Step 8A only is authorized: A1 same-lineage checkpointable producer; A2 bounded continuation/retirement; A3 durable candidate handoff into existing LIVE admission; A4 bounded transition review. One consequential worker and one reviewed/published checkpoint at a time. CHIEF/workers use Astra High by default; Extra High requires concrete difficult producer-state/checkpoint/replay semantics, and Ultra requires a critical ambiguity or failed lower-level resolution.
 
 This latest instruction supersedes historical Step-8 prohibitions only for Step 8A. Actual-position controllers, exit/protection/SELL scheduling, DRY/full Runtime composition and Operations/recovery remain later-owned. **Step 8B, Step 8C and Step 9 remain NOT AUTHORIZED.** No production key, real mainnet mutation, capital action or protected-checkout modification is authorized.
+
+### Step 8A A4 — Bounded implementation handoff
+
+The owner directly authorized CHIEF in chat to record reviewed A1/A2/A3 LOCAL PASS, publish each checkpoint normally, perform A4 and continue without additional item-level confirmation. This overrides AGENTS.md only for those bounded statuses/publication; it does not grant Step-8A project acceptance or authorize Step 8B/8C/9.
+
+A1, A2 and A3 are LOCAL PASS and were published in order at `4b8e73d`, `06ba568` and `c5ddb53`, following Q0 `6f024ab`. A4's independent Astra High review found no concrete blocker; CHIEF records bounded SYSTEM TRANSITION PASS for retained source -> exact same-lineage producer -> checkpoint/reopen -> canonical candidate -> durable Ledger inbox -> existing Authority admission. Frozen production revision: `c5ddb536560b80cdabc5a5c10dfbb6ffc9e19d5e`. Final affected regression: **10 suites / 728 checks, all qualified with final exits 0**, source unchanged. Exact commands, hashes, scope, canonical-byte compatibility handling and limitations are in [Runtime foundation](MEME_LIVE_RUNTIME_FOUNDATION_V1.md#a4--frozen-transition-review-and-closeout).
+
+M02/M05/M06 are eligible for later project-review promotion only. No Step-8A classification was promoted; counts remain **32 VERIFIED / 23 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. M45/M47/M52 retain their later Runtime/Operations requirements. No new required transition was discovered. Existing later ownership covers observation consumption/pending maintenance, actual-position/exit/obligation/SELL/DRY/full composition, independent recovery/protection and operational qualification. Human policy/public-wallet/key/capital gates remain separate.
+
+Step 8A delivery status is **LOCAL_PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**. Protected checkout remains unchanged. No production key, real mainnet mutation, real-capital action or Step 8B/8C/9 implementation occurred. **STOP after Step 8A.**
 
 ### Step 7 — Bounded Execution authorization
 

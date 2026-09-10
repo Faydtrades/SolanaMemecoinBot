@@ -1,6 +1,6 @@
 # MEME-LIVE Runtime Foundation v1
 
-Status: **STEP 8A AUTHORIZED_IN_PROGRESS**. [Owner authorization and Q0](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8a-q0--owner-acceptance-and-producer-authorization) govern this bounded work under existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection). No new architecture or roadmap is introduced. Step 8B, Step 8C and Step 9 are NOT AUTHORIZED.
+Status: **STEP 8A LOCAL_PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**. A1-A3 and the bounded A4 transition review are LOCAL PASS under the owner's direct authorization; no Step-8A project acceptance or matrix promotion is self-authorized. [Owner authorization and Q0](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8a-q0--owner-acceptance-and-producer-authorization) govern this bounded work under existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection). No new architecture or roadmap is introduced. Step 8B, Step 8C and Step 9 are NOT AUTHORIZED.
 
 ## Q0 — Owner acceptance record
 
@@ -68,6 +68,51 @@ Actual source -> A2 -> candidate `fp1sig-04389f4508d01b23c905ceeb` -> Ledger roo
 Failure tests cover before/after Ledger receipt and producer ACK, including four child-process `os._exit` cuts immediately before/after each store's actual commit. Reopen yields exactly one original candidate. Concurrent generation change after capture rejects ACK while the exact Ledger receipt safely replays. Missing configuration in both ACK-pending and ACKed states, wrong destination, empty replacement, altered original output, stale generation, oversized anchor and over-limit page deny safely.
 
 Validation with the A1 interpreter and `-B`: `scripts/live_candidate_handoff_selftest_v0_1.py` **83 checks, exit 0**, worker and independent CHIEF; `scripts/live_ledger_actions_selftest_v0_1.py` **98 checks, exit 0**; `scripts/live_authority_admission_selftest_v0_1.py` **230 checks, exit 0**. Logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-producer-a3-validation` (`a3-focused.log`, `a3-chief.log`, `ledger-actions-compatibility.log`, `authority-admission-compatibility.log`). Worker focused log SHA256 `25db377f05ff1b1e47686cc6de761cacad549432fc128803d86b659365dcba03`. Frozen source SHA256 `8cd450876d28faef54dc7f39ed23198dcdc7bd236f1d77de32db01f763b516be`; focused test SHA256 `77d5b4736560420fb7667ea5246c42975b3edc95a3dbcc5e6f5b3fe298dfc0b5`. No accepted source, Ledger or Authority executable file changed and no broad regression ran between items.
+
+## A4 — Frozen transition review and closeout
+
+**LOCAL PASS / bounded SYSTEM TRANSITION PASS**, ending at existing LIVE admission. Independent read-only review worker: **Astra High**; CHIEF retained status/publication responsibility. Review found no concrete Step-8A blocker and no new required downstream transition. The frozen production revision is `c5ddb536560b80cdabc5a5c10dfbb6ffc9e19d5e`; only closeout documentation changes follow. No Ultra worker was used. A2's documented Extra High escalation was specific to exact active/pending/retired identity semantics, not a blanket Runtime escalation.
+
+The demonstrated composition is actual retained source -> same-lineage A2 producer -> checkpoint/reopen -> next canonical candidate -> exact durable Ledger inbox -> actual Authority admission. A1/A2 differential proof preserves accepted normalization, feature/strategy/timer behavior and original IDs. A3's actual consumer fixture covers restart before and after candidate production, duplicate outbox/inbox delivery, retained unfinished mint, retired-winner suppression, healthy-source stale backlog, source identity/continuity failures and an unchanged original deadline. The first candidate is admitted; the distinct next candidate is denied occupied capacity. No signing, attempt, acquired position or exit behavior is used to establish this boundary.
+
+Reviewed and normally published checkpoints:
+
+| Item | Commit | Bounded result |
+|---|---|---|
+| Q0 | `6f024ab897dedcd0cdd552fee9f82b9b3ca1a2d7` | Owner acceptance recorded; exactly 18 Step-7 promotions |
+| A1 | `4b8e73d3f32bcc83e2918a3649be360c5bed7256` | LOCAL PASS; exact producer checkpoint/reopen |
+| A2 | `06ba568a49371f46fd8c5a67618eef636d4fdb96` | LOCAL PASS; finite-profile continuation and retirement |
+| A3 | `c5ddb536560b80cdabc5a5c10dfbb6ffc9e19d5e` | LOCAL PASS; original candidate handoff through admission |
+| A4 | This documentation closeout; remote HEAD verified in final handoff | LOCAL PASS; no project/matrix promotion |
+
+### Final affected regression
+
+Architecture 4.6 requires affected regression for new producer checkpoint/retirement and candidate handoff contracts. One frozen scope covers those adapters, accepted source/planner/timer/atomicity and the actual Evidence/Ledger/Authority consumers. No accepted Step-4–7 broad regression, unrelated research, full Execution or elapsed soak was repeated.
+
+All **10 suites / 728 checks qualified, final suite exits 0**, at the frozen revision. Each command is `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe -B scripts/<script below>`, with exact command, cwd, log hash and result retained in `summary.json`. Default cwd is the isolated authoritative checkout; V05 uses the exact same revision's canonical Git export as explained below.
+
+| Script | Checks | Exit |
+|---|---:|---:|
+| `live_continuous_producer_selftest_v0_1.py` | 45 | 0 |
+| `live_continuous_producer_selftest_v0_2.py` | 98 | 0 |
+| `live_candidate_handoff_selftest_v0_1.py` | 83 | 0 |
+| `phase4_continuous_market_source_selftest_v0_2.py` | 14 | 0 |
+| `phase4_continuous_firstpullback_binding_selftest_v0_1.py` | 59 | 0 |
+| `phase4_timer_fence_throughput_selftest_v0_1.py` | 29 | 0 |
+| `phase4_continuous_firstpullback_multihour_run_selftest_v0_5.py` | 5 | 0 |
+| `live_source_health_selftest_v0_1.py` | 67 | 0 |
+| `live_ledger_actions_selftest_v0_1.py` | 98 | 0 |
+| `live_authority_admission_selftest_v0_1.py` | 230 | 0 |
+
+Artifacts: `C:\Users\Mari1\AppData\Local\Temp\meme-live-step8a-final-regression-npj6tg_k`. Scope SHA256 `0fa3e531d9a40e378766597c900b5987f6f7412af03d9a433918913f36f44194`; final summary SHA256 `5cbf59d92fdfcc7a0d61aefaf229897b61f751769978ef18e59c0c70c2c41d32`; canonical-manifest SHA256 `8c47f55179c701940a947794fe978e92049722dca6ec68987cc75073cadd5a5a`. The runner verified clean HEAD and unchanged frozen source/test bytes. The report collector initially missed indented binding result labels; it was corrected by reparsing retained logs without repeating completed suites. V05 initially exited at the accepted T009 file-byte guard before checks because of Windows line endings. Only that suite was retried in a 420-Python-file export of exact frozen Git blobs, with every exported file verified equivalent to the working copy apart from line endings. The guard attempt and final canonical run are both retained. No locked file was edited to satisfy a hash.
+
+### Matrix eligibility and remaining boundaries
+
+M02, M05 and M06 are **eligible for later project-review promotion**, within their specific source-health, finite producer and durable inbox boundaries. Their classifications remain OWNED_NOT_BUILT pending project acceptance. M03/M04/M07/M08 receive compatibility evidence without a classification change. M47 retains producer reconstruction evidence but still needs intact economic recovery during producer failure; M52 retains measured producer evidence but still needs actual-position observation/protection and operating-envelope qualification; M45 still needs Runtime scheduling/exit priority. None of those full rows is promoted by Step 8A. Counts remain **32 VERIFIED / 23 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**.
+
+The architecture's existing later owners cover every remaining dependency: Runtime under separately authorized Step 8B/8C owns observation consumption and safe maintenance of retained pending/provenance, continuous admission scheduling, actual-position/controller/exit causality, obligations, SELL/retry, DRY/full composition and repeat-trade lifecycle. Step 9 / Operations owns independent boot/recovery/protection barriers, ownership/fencing, measured operating envelope with economic protection, qualification, services and operational configuration. Evidence/Authority retain current source-health/clock/admission truth. Human external decisions and later gates retain actual public-wallet binding, approved policy/limits/track, operational keys, T010/T011 and any capital authority. Producer profile exhaustion remains explicit fail-closed; this foundation does not claim indefinite unattended operation.
+
+Final safety inspection found no Step-8A changes to accepted `src/phase4`, `src/phase5`, collector code or data. Protected checkout `D:\Tradingbot\solana_memecoin_bot_phase1_v0_1` remained clean on `master` at `5d5cb0426fa423fd9528fb37d86e80b1333a8aa9`. No production process/database mutation, production key, real mainnet signing/send/broadcast or real-capital action occurred. Step 8B/8C/9 were not implemented. Work stops after this Step-8A handoff.
 
 ## Later ownership and safety
 
