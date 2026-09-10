@@ -118,6 +118,28 @@ No project/package acceptance or blanket lifecycle promotion is implied. Current
 
 Before A4 source edits, the next concrete split is A4a validation of external exact message/plan/simulation/fee evidence with no mutation permission, then A4b current entry/reduction state and durable per-stage one-use consumption. Execution still owns the final-message producer; Runtime owns signals, controllers and scheduling. No protected runtime, new RPC, signing/send, private material or real capital is used.
 
+### A4a — Original exact-message evidence
+
+Starting reviewed local checkpoint: `9a626717829c95a7e4e8aa2c74c3756876176f7d` (A3). Status: `IMPLEMENTED_PENDING_PROJECT_REVIEW`.
+
+Three finite source/test files add original public venue/account/fee/simulation contracts, a closed 16 MiB codec and read-only exact-message validation. Actual A3 acceptance, original Ledger admission/action/policy and actual position/protection bind the context. Original raw account bytes rederive the accepted route/state/quote/plan; supplied factory tokens alone are insufficient. The validator checks the supplied legacy message and inert wire envelope, original recent-blockhash lease, simulation provenance, complete supported instruction/setup lifecycle, exact total fee and gross upfront funding facts. It neither produces a final transaction nor installs its caller-supplied validation profile.
+
+Outputs are `SUPPORTED_CONTEXT_ONLY`, `UNKNOWN` or `DENIED_CONTEXT`; all permission flags remain false. Null/missing/pruned/error fee evidence, incomplete or contradictory originals and unsupported account/lifecycle facts cannot authorize a stage. Canonical existing ImmutableOwner accounts remain supported; fresh Token-2022 ATA creation remains unsupported. Native SOL and existing supported WSOL remain distinct, simulated refunds/proceeds never fund upfront costs, and complete wire size must fit 1,232 bytes. Fresh approved Pump/PumpSwap migration retains the same immutable economic root/action within original allowed venues; the admission venue hint is not a permanent route pin.
+
+Worker (Astra Ultra) ran with the same isolated interpreter and `-B`:
+
+| Script under `scripts/` | Checks | Exit |
+|---|---:|---:|
+| `live_authority_message_evidence_selftest_v0_1.py` | 298 | 0 |
+| `live_authority_admission_selftest_v0_1.py` | 230 | 0 |
+| `live_ledger_settlement_selftest_v0_1.py` | 256 | 0 |
+
+All **784 checks** succeeded. CHIEF reviewed all three frozen files and independently reproduced the final 298-check suite; logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-authority-a4a-chief-final-20260910`. Check digest: `85d372b29c4a46db4e0e7bf1c05357e3ea9d9b10f3a93bad1a3937e3475a9bcd`; output SHA256: `4b6760304e00a4519407f91fa3bd64693081a2f5680feb4d78aa172d61a1ffbe`. This final run includes the full-wire bound correction and supersedes the earlier 290-check run. No broad regression was repeated.
+
+Actual Source/Wallet adapters -> Ledger/A3 -> compatible LIVE economics/original public message evidence -> context validation and codec/reopen are exercised. Actual Ledger acquisition/protection also feeds Pump SELL and same-action migration SELL contexts. Result digests: Pump BUY `ad339c001069ebd58bf7ba1fca310440a2d114e64d14a654f470171f96d0b5fe`; PumpSwap BUY `0b2aa8e12edabf4244ffa7cb1be9665cc5096b3984e1ac8854bf6dba5c091f3f`; Pump SELL `6d4f10ca5ec6c78e4f194917506dd99b4c643ff7df861f9de4d53c005a756d3e`; migration SELL `c4525efb2b28d5f283858cb7766eb29050616c1a0d146511acde73e46b505dd9`. These contexts do not yet prove one continuous Authority message -> settlement chain; A5 must supply that exact-identity composition.
+
+Files: `src/live/authority_message_evidence_v0_1.py`, `src/live/authority_message_codec_v0_1.py`, and `scripts/live_authority_message_evidence_selftest_v0_1.py`. Ledger schema and Phase-5/Evidence decoders are unchanged. A4b must durably select the approved profile and check current controls/source/clock/resources and one-use stage consumption. Execution still owns the exact-message/public-evidence producer and final call boundary; Runtime still owns signals/scheduling. No lifecycle classification or package acceptance is promoted, and no RPC mutation, signer/send, private material, real capital or protected runtime operation is added.
+
 ### Project decision supplied with the Step-5 request
 
 The user supplied the Step-5 request as attachment `cc768198-3058-4853-a0dc-7368e565c683/pasted-text.txt` and explicitly identified that pasted text as the request. The attachment SHA-256 read for this record is `4260bae0a5ac3f964d28819f6af2d321f8337f1181a6bcb26e513790ea32693c`. Its lines 45–56 supply the following project decision and authorization; this is an attributed record of that instruction, not an acceptance decision made by Codex:
