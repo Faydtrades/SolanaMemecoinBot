@@ -90,3 +90,25 @@ Commands use the isolated Python interpreter recorded for Q1:
 Logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-q3-validation`, one log per script plus `q3-chief.log` (SHA256 `721f72d151aa13cf6dec133fb9e4a0798d4f145cff9c456a4fc81b1c29f4e026`). Coverage includes BUY/SELL on Pump/PumpSwap, same-wire/signature rebroadcast after reopen, stale/revoked/source/clock guards, own-write races, lost HTTP response, envelope/claim/observation crash cuts, legacy canonical payloads and malformed inputs. An actual subprocess `os._exit(77)` at committed claim proves envelope and SEND_CLAIMED/held-lane reconstruction, no fabricated observation, a new writer generation and OS-released source lock without Python cleanup. Whitespace checks exit 0; no broad regression was run.
 
 Q4 consumes durable envelope/observations and the actual Evidence -> Ledger finality/reconciliation ports. Signature-lost-before-persistence remains possible-signing uncertainty; Q3 invents no non-landing evidence. Runtime retry scheduling and Operations recovery remain owned downstream. M29–M33/M40 gain these bounded producer/journal/transport/proof-consumer facts; matrix classifications are unchanged pending package disposition. No new required downstream transition was discovered.
+
+## Q4 — Original public finality handoff and composed BUY/SELL
+
+**LOCAL PASS**, following bounded CHIEF review and an independent focused run. Worker: **Astra High**. Parent checkpoint: `1b053a43e138bb895f12036d7bd2c12c24e2171c`; the Q4 checkpoint is the commit containing this record. No project/package acceptance is asserted.
+
+`src/live/execution_reconciliation_v0_1.py` derives a bounded public transaction request from the reconstructed signed envelope, domain and original finalized anchors. It uses the accepted public Evidence adapter and hands the immutable original observation to the existing Ledger ingestion transaction. The supplied Ledger fence spans the public read. Execution neither adjudicates finality nor applies settlement; missing or contradictory public evidence remains subject to the existing Ledger reducer. No scheduler, second evidence provider or replacement policy is introduced.
+
+`scripts/live_execution_composition_selftest_v0_1.py` replaces the accepted A5 fixture's execution helper with actual Q1/Q2/Q3/Q4 components. Actual admission and current Authority consumption produce the exact simulated message, synthetic verified signature, durable envelope/claim and fake HTTP observation. The public Evidence adapter then ingests that same signed wire into Ledger. Healthy and source-gap cycles each acquire 3,240,589,165 actual units, sell 1,080,196,388, preserve 2,160,392,777, then sell the remainder and reconcile retirement. Each continuous send loses its response; missing public transaction/status observations remain UNKNOWN across reopen before later exact finality arrives. Actual fees, retained protection, original root/amount/grant and native funding remain checked through the existing settlement consumers.
+
+Additional cases cover finalized failed BUY/SELL fees without fabricated inventory changes, source-gap ENTRY denial, SELL hard-stop, wrong genesis/profile/wire/membership, stale and concurrent Ledger fences, timeout and sanitized clock errors. Public reconciliation also works from a durable signed envelope with no send observation. A fixture identity/timestamp mismatch was corrected using the actual Q1 plan; no existing production behavior was changed for Q4.
+
+Commands use the isolated Python interpreter recorded for Q1:
+
+| Script | Checks | Exit |
+|---|---:|---:|
+| `scripts/live_execution_composition_selftest_v0_1.py` | 212/212, worker and independent CHIEF run | 0 |
+| `scripts/live_transaction_evidence_selftest_v0_1.py` | 170/170 | 0 |
+| `scripts/live_ledger_finality_selftest_v0_1.py` | 113/113 | 0 |
+
+Logs: `C:\Users\Mari1\AppData\Local\Temp\meme-live-q4-validation` (`execution-composition.log`, `transaction-evidence.log`, `ledger-finality.log`). Composition check digest: `326970769ecde1404c1f13f75251aa367243d17bbcf5d4749f0476591c0a9e2e`. Runtime handoff, due-obligation/SELL decisions and retirement input remain explicit fixtures. Continuous production scheduling and Operations recovery remain unbuilt. No new required downstream transition was discovered. No broad regression was run between items.
+
+Independent output: `q4-chief.log`, SHA256 `0d23b1c230013abe402419ac8d33501b791c2c4120637d233c452ca924208fe6`; exit 0, all 212 checks true, zero real network requests/broadcasts. Source parsing, whitespace and exact staged-scope checks accompany the checkpoint.
