@@ -72,12 +72,18 @@ def fixture(directory, name, route="pump", program=venue.TOKEN_PROGRAM_ID, allow
     return f, settlement, scenario, action
 
 
-def evidence(f, action, scenario, *, route="pump", at=NOW+9, context_slot=101, intent=None):
+def evidence(f, action, scenario, *, route="pump", at=NOW+9, context_slot=101, intent=None,
+             wallet_floor=None, recent_blockhash=sf.RECENT, last_valid_height=200, validity_height=100, original_accounts=None):
     context = capture_message_context(f.repo, action.action_id)
     intent = intent or _entry_intent(context)
     program = action.token_program
     fx, raw = sf.plans.fx, {}
+    originals = original_accounts or {}
+    def public(value, lamports=1000000000):
+        return originals.get(value.pubkey) or original_public(value, lamports)
     def remember(value):
+        if originals.get(value.pubkey) is not None:
+            value = originals[value.pubkey].account
         raw[value.pubkey] = value
         return value
     curve = remember(fx.account(venue.derive_bonding_curve_pda(action.mint), venue.PUMP_PROGRAM_ID,
@@ -102,7 +108,16 @@ def evidence(f, action, scenario, *, route="pump", at=NOW+9, context_slot=101, i
     qp = venue.QuotePolicyV01(100)
     quote = venue.create_executable_quote(intent,state,route_decision,qp)
     actor = plans.PublicShadowActorV01(f.domain.wallet)
-    support = a3.wallet(f,scenario=scenario,at=at-4,program=program)
+    if wallet_floor is None:
+        support = a3.wallet(f,scenario=scenario,at=at-4,program=program)
+    else:
+        expected={item.pubkey:(item.mint,item.program) for item in f.repo.consumer_snapshot()["accounts"]}
+        expected.update({plans.derive_associated_token_address(f.domain.wallet,action.mint,program):(action.mint,program),
+            plans.derive_associated_token_address(f.domain.wallet,venue.WSOL_MINT,venue.TOKEN_PROGRAM_ID):(venue.WSOL_MINT,venue.TOKEN_PROGRAM_ID)})
+        request=a3.WalletEvidenceRequest(f.domain.wallet,f.domain.genesis_hash,wallet_floor,
+            tuple(a3.ExpectedTokenAccount(key,mint,pid) for key,(mint,pid) in sorted(expected.items())))
+        scenario.initial_slot=wallet_floor;scenario.slot_calls=scenario.genesis_calls=0
+        support=a3.WalletSupportInput(a3.observe(scenario,request=request,at=at-4),a3.utc(at-4),wallet_floor)
     explicit = dict(zip(support.observation.explicit_read.requested_keys,support.observation.explicit_read.accounts))
     base = plans.derive_associated_token_address(f.domain.wallet,action.mint,program)
     wsol = plans.derive_associated_token_address(f.domain.wallet,venue.WSOL_MINT,venue.TOKEN_PROGRAM_ID)
@@ -114,14 +129,14 @@ def evidence(f, action, scenario, *, route="pump", at=NOW+9, context_slot=101, i
     plan = plans.build_unsigned_transaction_plan(intent,state,route_decision,quote,actor,pp,recipients,account_snapshot)
     primary_keys = (curve.pubkey,venue.derive_pumpswap_pool_pda(action.mint))
     cut = PublicReadCut(f.domain.genesis_hash,f.domain.expected_profile_fingerprint,context_slot,(at-5)*1000000,"confirmed")
-    primary = OriginalAccountBatch(cut,primary_keys,(original_public(curve),None if pool is None else original_public(pool)))
+    primary = OriginalAccountBatch(cut,primary_keys,(public(curve),None if pool is None else public(pool)))
     dependencies = tuple(sorted(set(raw)-set(primary_keys)))
-    dep = OriginalAccountBatch(cut,dependencies,tuple(original_public(raw[key],20000000000+R if key==fx.QUOTE_VAULT else 1000000000) for key in dependencies))
+    dep = OriginalAccountBatch(cut,dependencies,tuple(public(raw[key],20000000000+R if key==fx.QUOTE_VAULT else 1000000000) for key in dependencies))
     reads = OriginalVenueRead(primary,dep,primary)
     # External fixture serialization only. No private keys or real signatures.
     instructions = [Instruction(COMPUTE_BUDGET_ID,b"\x02"+struct.pack("<I",250000),[]),
         Instruction(COMPUTE_BUDGET_ID,b"\x03"+struct.pack("<Q",1000),[])]+[ix.materialize() for ix in plan.instructions]
-    lease = plans.BlockhashLeaseV01(plan.plan_id,sf.RECENT,context_slot,200,"confirmed",(at-3)*1000000)
+    lease = plans.BlockhashLeaseV01(plan.plan_id,recent_blockhash,context_slot,last_valid_height,"confirmed",(at-3)*1000000)
     message = Message.new_with_blockhash(instructions,Pubkey.from_string(f.domain.wallet),Hash.from_string(lease.blockhash))
     message_bytes = to_bytes_versioned(message)
     keys = tuple(map(str,message.account_keys)); indexes = {key:i for i,key in enumerate(keys)}
@@ -130,7 +145,7 @@ def evidence(f, action, scenario, *, route="pump", at=NOW+9, context_slot=101, i
     envelope = plans.SimulationEnvelopeV01(plan.plan_id,plan.fingerprint,lease.lease_id,lease.fingerprint,config.fingerprint,
         canonical_json(config.payload()),message_bytes.hex(),base64.b64encode(wire).decode(),1,1,
         hashlib.sha256(message_bytes).hexdigest(),hashlib.sha256(wire).hexdigest())
-    validity = plans.BlockhashValidityEvidenceV01(lease.lease_id,100,context_slot,True,context_slot,(at-2)*1000000)
+    validity = plans.BlockhashValidityEvidenceV01(lease.lease_id,validity_height,context_slot,True,context_slot,(at-2)*1000000)
     attempt = plans.SimulationAttemptV01(plan.plan_id,lease.lease_id,envelope.envelope_id,config.fingerprint,validity.fingerprint,0,(at-2)*1000000)
     def inner(pid, accounts, data, stack=2):
         return {"programIdIndex":indexes[pid],"accounts":[indexes[key] for key in accounts],"data":sf.b58(data),"stackHeight":stack}
@@ -138,7 +153,7 @@ def evidence(f, action, scenario, *, route="pump", at=NOW+9, context_slot=101, i
         return [inner(pid,(mint,),b"\x15\x07\x00",stack),
             inner(plans.SYSTEM_PROGRAM_ID,(f.domain.wallet,key),struct.pack("<IQQ",0,R,165)+bytes(Pubkey.from_string(pid)),stack),
             inner(pid,(key,),b"\x16",stack),inner(pid,(key,mint),b"\x12"+bytes(Pubkey.from_string(owner)),stack)]
-    pre = {key:original_public(raw.get(key,fx.account(key,plans.SYSTEM_PROGRAM_ID,b""))) for key in keys}
+    pre = {key:public(raw.get(key,fx.account(key,plans.SYSTEM_PROGRAM_ID,b""))) for key in keys}
     pre.update((key,explicit[key]) for key in (f.domain.wallet,base,wsol))
     groups=[]
     selected_program = venue.PUMP_PROGRAM_ID if route=="pump" else venue.PUMPSWAP_PROGRAM_ID
@@ -152,17 +167,18 @@ def evidence(f, action, scenario, *, route="pump", at=NOW+9, context_slot=101, i
             roles={name:key for (name,_,_),key in zip(schema,accounts)}
             pool_key=roles["bonding_curve"] if route=="pump" else roles["pool"]
             pool_base=roles["associated_base_bonding_curve"] if route=="pump" else roles["pool_base_token_account"]
-            pre[pool_base]=original_public(fx.account(pool_base,program,a3.token_data(action.mint,pool_key,500000000000)),R)
+            default_base=fx.account(pool_base,program,a3.token_data(action.mint,pool_key,500000000000))
+            pre[pool_base]=public(raw.get(pool_base,default_base),R) if original_accounts is not None else original_public(default_base,R)
             if route=="pump":
                 for name in ("associated_quote_bonding_curve","associated_quote_fee_recipient","associated_quote_buyback_fee_recipient",
                              "associated_creator_vault","associated_user_volume_accumulator"):
                     if name in roles:
                         pre[roles[name]]=None
             else:
-                pre[roles["pool_quote_token_account"]]=original_public(quote_vault,20000000000+R)
+                pre[roles["pool_quote_token_account"]]=public(quote_vault,20000000000+R)
                 for key,owner in ((roles["protocol_fee_recipient_token_account"],roles["protocol_fee_recipient"]),
                                   (roles["coin_creator_vault_ata"],roles["coin_creator_vault_authority"]),(accounts[-1],accounts[-2])):
-                    pre[key]=original_public(fx.account(key,venue.TOKEN_PROGRAM_ID,a3.token_data(venue.WSOL_MINT,owner,0,reserve=R)),R)
+                    pre[key]=public(fx.account(key,venue.TOKEN_PROGRAM_ID,a3.token_data(venue.WSOL_MINT,owner,0,reserve=R)),R)
             rows=[]
             if action.side=="BUY":
                 volume=roles["user_volume_accumulator"];pre[volume]=None

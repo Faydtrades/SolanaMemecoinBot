@@ -16,7 +16,7 @@ from dataclasses import replace
 from pathlib import Path
 
 from solders.hash import Hash
-from solders.instruction import Instruction
+from solders.instruction import Instruction, AccountMeta
 from solders.message import Message, to_bytes_versioned
 from solders.pubkey import Pubkey
 
@@ -25,7 +25,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from phase5.shadow_domain_v0_1 import IntentSide, canonical_json, content_fingerprint
 from phase5.shadow_unsigned_plan_simulation_v0_1 import BlockhashLeaseV01
 from live.ledger_domain_v0_1 import LedgerDomain
-from live.ledger_actions_v0_1 import PendingAction, AttemptPreparation, position_identity
+from live.ledger_actions_v0_1 import PendingAction, AttemptPreparation, position_identity, decode_message
 from live.ledger_repository_v0_1 import LedgerRepository
 from live.ledger_settlement_v0_1 import (
     attribute_settlement, WalletSupportInput, ANCHOR_EVENT_TAG, GET_FEES_TAG, PUMP_TRADE_EVENT_TAG,
@@ -69,21 +69,40 @@ def b58(data):
 
 class Fixture:
     def __init__(self, venue="pump", side="BUY", *, retained=False, failed=False,
-                 token_program=TOKEN_PROGRAM_ID, extra_output=17, compute=True, volume_setup=True, outer_transform=None):
+                 token_program=TOKEN_PROGRAM_ID, extra_output=17, compute=True, volume_setup=True, outer_transform=None,
+                 external_plan=None, external_message_hex=None, external_wire=None, external_pre_accounts=None):
         self.venue, self.side, self.failed, self.token_program = venue, side, failed, token_program
-        self.plan_tuple = plans.make_plan(venue, IntentSide(side), quote_exists=retained, token_program=token_program)
-        self.plan = self.plan_tuple[-1]
-        # Materialization is confined to this inert fixture. Production settlement
-        # only reads the persisted exact message and never builds transactions.
-        instructions = [item.materialize() for item in self.plan.instructions]
-        if compute:
-            instructions = [Instruction(COMPUTE_BUDGET_ID, b"\x02"+struct.pack("<I", 250000), []),
-                            Instruction(COMPUTE_BUDGET_ID, b"\x03"+struct.pack("<Q", 11111), [])]+instructions
-        if outer_transform:
-            instructions = outer_transform(instructions)
-        self.message = Message.new_with_blockhash(instructions, Pubkey.from_string(WALLET), Hash.from_string(RECENT))
-        self.message_bytes = to_bytes_versioned(self.message)
-        self.wire = b"\x01"+bytes([49])*64+self.message_bytes
+        supplied = (external_plan, external_message_hex, external_wire, external_pre_accounts)
+        if all(value is None for value in supplied):
+            self.plan_tuple = plans.make_plan(venue, IntentSide(side), quote_exists=retained, token_program=token_program)
+            self.plan = self.plan_tuple[-1]
+            # Materialization is confined to this inert fixture. Production
+            # settlement only reads the persisted exact message.
+            instructions = [item.materialize() for item in self.plan.instructions]
+            if compute:
+                instructions = [Instruction(COMPUTE_BUDGET_ID, b"\x02"+struct.pack("<I", 250000), []),
+                                Instruction(COMPUTE_BUDGET_ID, b"\x03"+struct.pack("<Q", 11111), [])]+instructions
+            if outer_transform:
+                instructions = outer_transform(instructions)
+            self.message = Message.new_with_blockhash(instructions, Pubkey.from_string(WALLET), Hash.from_string(RECENT))
+            self.message_bytes = to_bytes_versioned(self.message)
+            self.wire = b"\x01"+bytes([49])*64+self.message_bytes
+        else:
+            assert all(value is not None for value in supplied) and outer_transform is None
+            self.plan_tuple, self.plan = None, external_plan
+            self.message = decode_message(external_message_hex)
+            assert type(self.message) is Message
+            self.message_bytes = bytes.fromhex(external_message_hex)
+            self.wire = external_wire
+            assert type(self.wire) is bytes and self.wire[:1] == b"\x01" and self.wire[65:] == self.message_bytes
+            # Decode the supplied message's exact indices/flags for CPI fixtures;
+            # do not materialize its plan or reconstruct the public message.
+            h = self.message.header
+            required, ro_signed, ro_unsigned = h.num_required_signatures, h.num_readonly_signed_accounts, h.num_readonly_unsigned_accounts
+            keys = self.message.account_keys
+            instructions = [Instruction(keys[ix.program_id_index], bytes(ix.data),
+                [AccountMeta(keys[i], i < required, i < required-ro_signed or required <= i < len(keys)-ro_unsigned)
+                 for i in ix.accounts]) for ix in self.message.instructions]
         self.keys = tuple(map(str, self.message.account_keys))
         self.index = {key: i for i, key in enumerate(self.keys)}
         self.base = derive_associated_token_address(WALLET, MINT, token_program)
@@ -129,6 +148,16 @@ class Fixture:
                     self.pre_token.pop(key)
                     self.pre_native[key] = 0
         self.token(self.pool_base, MINT, self.pool, 100_000_000_000_000, token_program)
+        if external_pre_accounts is not None:
+            assert set(external_pre_accounts) == set(self.keys)
+            self.pre_native = {key: 0 if value is None else value.lamports for key, value in external_pre_accounts.items()}
+            self.pre_token = {}
+            for key, value in external_pre_accounts.items():
+                if value is not None and value.account.owner in (TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID) and len(value.account.data) >= 165:
+                    from phase5.shadow_venue_route_quote_v0_1 import decode_token_account
+                    mint = str(Pubkey.from_bytes(value.account.data[:32]))
+                    decoded = decode_token_account(value.account, mint)
+                    self.pre_token[key] = self.token_row(key, mint, decoded.authority, decoded.amount, value.account.owner)
         self.post_native = dict(self.pre_native)
         self.post_token = copy.deepcopy(self.pre_token)
         self.post_native[WALLET] -= FEE
@@ -137,6 +166,9 @@ class Fixture:
             pid, accounts = str(instruction.program_id), tuple(str(meta.pubkey) for meta in instruction.accounts)
             if pid == ASSOCIATED_TOKEN_PROGRAM_ID:
                 ata, mint, owner, tprog = accounts[1], accounts[3], accounts[2], accounts[5]
+                if external_pre_accounts is not None and external_pre_accounts[ata] is not None:
+                    self.groups.append({"index": outer_index, "instructions": []})
+                    continue
                 rows = [self.inner(tprog, (mint,), b"\x15\x07\x00"),
                         self.inner(SYSTEM_PROGRAM_ID, (WALLET, ata), struct.pack("<IQQ", 0, R, 165)+bytes(Pubkey.from_string(tprog))),
                         self.inner(tprog, (ata,), b"\x16"),
@@ -151,7 +183,7 @@ class Fixture:
             elif pid == self.program:
                 rows = []
                 self.venue_index = outer_index
-                if side == "BUY" and volume_setup:
+                if side == "BUY" and volume_setup and (external_pre_accounts is None or external_pre_accounts[self.roles["user_volume_accumulator"]] is None):
                     volume = derive_user_volume_accumulator(self.program, WALLET)
                     self.pre_native[volume] = self.post_native[volume] = 0
                     self.move(WALLET, volume, 1_844_400)
@@ -159,6 +191,8 @@ class Fixture:
                         struct.pack("<IQQ", 0, 1_844_400, 137 if venue == "pump" else 256)+bytes(Pubkey.from_string(self.program))))
                 if venue == "swap" and side == "BUY":
                     for ata, owner in zip(self.fee_accounts[:2], owners[:2]):
+                        if external_pre_accounts is not None and external_pre_accounts[ata] is not None:
+                            continue
                         rows.append(self.inner(ASSOCIATED_TOKEN_PROGRAM_ID,
                             (WALLET, ata, owner, WSOL_MINT, SYSTEM_PROGRAM_ID, TOKEN_PROGRAM_ID), b"\x01"))
                         nested = [self.inner(TOKEN_PROGRAM_ID, (WSOL_MINT,), b"\x15\x07\x00"),
