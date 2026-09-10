@@ -141,3 +141,33 @@ Results: **256 settlement checks**, **113 finality checks**, all true. Actual Mo
 Only the new Ledger reducer/selftest and this evidence document changed. No Evidence/P4/P5/P6 implementation, signer/send, mutation RPC, real-chain request or runtime action was added. The M16 attribution boundary has concrete proof; actual settlement application and position/funding output still belong to L5. No lifecycle row or package is self-accepted. Broader regression remains scheduled for the final Ledger freeze.
 
 NEXT: L5 — atomic whole settlement application, real position/funding reconstruction and original wallet comparison/quarantine.
+
+## L5 implementation evidence
+
+L4 was checkpointed at `c3ff5366a8c517da961ffcb42174d46b7f2f141f`. L5 is `IMPLEMENTED_PENDING_PROJECT_REVIEW`. Storage/schema v4 adds original Wallet support inputs, immutable application/comparison receipts and balanced postings, with rebuildable native/account/position/resolution projections. The repository calls the actual L4 reducer with original stored action/attempt/chain evidence and original support; callers cannot inject a settlement proposal or precomputed custody state.
+
+A complete successful or fee-only failed transaction applies all supported effects, its actual position/funding projection and its own lane disposition in one SQL transaction. Repeated receipt keys converge; another key cannot settle the same attempt/signature again. Original positive nonlanding can be explicitly resolved without economic postings or retry authority. UNKNOWN, incomplete attribution, divergent prior balances, unsupported account identity or position-specific oversell cannot partially post fees or release custody. A failed attempted oversell may still post complete evidenced fee-only effects. Positive acquisitions remain `OWNED_PROTECTION_PENDING` and unusable until L6 supplies the durable external protective handoff. A full reduction is `FLAT_PENDING_RECONCILIATION`, not capacity retirement.
+
+Native SOL, retained WSOL units, WSOL native reserve, observed account locked lamports, venue/network fees and external setup outflow remain separate exact integers. Accounts may aggregate several independently identified positions; a SELL cannot consume another position's units. Explicit create/close/absence proof remains necessary, including a durable absent WSOL tombstone after transient wrapping. Original wallet observations are compared to one named Ledger cut. Positive/negative/unattributed differences are retained and quarantined, never imported as capital or fabricated external-transfer/PnL classifications. A pending attempt leaves differences `PENDING_EFFECTS_UNKNOWN`; incomplete, stale or unsupported account coverage never overwrites owned balances.
+
+Qualified finalized block identity survives independently of incomplete account coverage or pending balance effects. Original baseline, comparison and application-support anchor claims are cross-checked with retained L3 chain claims in both arrival orders and with new attempt preparations. Wrong domain/profile claims cannot seed this history. A later contradiction quarantines current custody while preserving immutable applied receipts and another attempt's held lane. This is bounded reconciliation of retained original Evidence, without a new RPC/indexing layer.
+
+Consumer views expose current common revision/digest, funding, accounts, position facts and current unresolved attempt, explicitly without current Authority permission. Historical receipts and positions remain addressable. Reads reject unverified outside commits; lost acknowledgement cannot pair a trusted new head with old in-memory projections. Replay re-derives original decisions, postings and projection at their recorded evaluation time, so receipt age does not invalidate applied effects.
+
+Worker and CHIEF independently ran the following from the isolated checkout with `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe -B`. Each command exited `0`, with all **872 checks** true:
+
+| Script | Checks |
+|---|---:|
+| `scripts/live_ledger_custody_selftest_v0_1.py` | 279 |
+| `scripts/live_ledger_settlement_selftest_v0_1.py` | 256 |
+| `scripts/live_ledger_finality_selftest_v0_1.py` | 113 |
+| `scripts/live_ledger_actions_selftest_v0_1.py` | 98 |
+| `scripts/live_ledger_baseline_selftest_v0_1.py` | 126 |
+
+The custody suite covers actual Pump/PumpSwap acquisition and partial/full reductions, native recycling/retained WSOL, two mints and multiple roots sharing an account, exact u64 movement, failed fee-only application, nullable evidence enrichment, duplicate application, unknown/nonlanding distinction, wallet mismatch/pending/coverage states, historical and late contradictory claims, and preparation/replay parity. Tampered original inputs/postings/projections, stale fences, competing processes, outside commits and lost commit acknowledgements fail closed.
+
+Application and comparison subprocess cuts exit `91` before commit and `92` after commit, recovering zero/all effects and converging after retry. Application receipt digest: `5b4e54ec1deeb59135a11c851f4ab1b421808a38841bd4ad39b0e18314053076`; custody digest: `0b7084c1ae18996dc8359e561f7c0b8bb461128d3e04b2dc49925b1666fa7acb`. Comparison receipt digest: `732b23fd5ecd25999cb5465d18ba18891ecbc77d36455ea8be14d3d214d34b8e`; custody digest: `bd764187ffcb66a42bb89a3cff2b0850024d6e0bc6e700e58e1cc445a5a10228`. All test databases are temporary; real RPC and signing operations are zero. `git diff --check` exits `0`.
+
+The actual composed path is MockTransport Wallet/Transaction/Coverage adapters -> accepted Evidence ports -> original Ledger baseline/action/attempt/finality -> whole attribution -> atomic application -> actual scoped position/funding -> original wallet comparison -> durable reopen. No Ledger economic oracle is injected. M16–M18/M32/M33 now have additional real Ledger evidence; actual Authority/Runtime/Execution/Operations consumers and project review remain pending. No lifecycle row or package is self-accepted. No Evidence/P4/P5/P6 source or signer/send/mutation/real-capital capability changed. The separate Token-2022 Evidence scope question remains pending. Broader regression remains scheduled for the final Ledger freeze.
+
+NEXT: L6 — concrete atomic admission/reservation/inbox, protective handoff, retirement and DRY/NON_SUBMITTED storage ports; no policy or runtime orchestration.

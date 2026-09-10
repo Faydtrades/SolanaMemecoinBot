@@ -369,6 +369,10 @@ class StoredAttempt:
     lane_held: bool
     chain_finality: str = "UNOBSERVED"
     chain_quarantined: bool = False
+    economic_disposition: str = "UNAPPLIED"
+    economically_applied: bool = False
+    custody_quarantined: bool = False
+    current_disposition: str = "UNOBSERVED"
     admission_status: str = field(init=False, default=PENDING_ADMISSION)
     has_real_authority_grant: bool = field(init=False, default=False)
     may_send: bool = field(init=False, default=False)
