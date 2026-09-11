@@ -1,6 +1,6 @@
 # MEME-LIVE Runtime Foundation v1
 
-Status: **STEP 8A LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION; STEP 8B PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS; STEP 8C AUTHORIZED_IN_PROGRESS**. [Step-8C Q0 owner acceptance](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8c-q0--owner-acceptance-and-bounded-runtime-completion-authorization) promotes only M34/M35/M36/M38/M41 within B5's documented proofs. Existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection) governs Runtime; no new architecture or roadmap is introduced. Step 9 and later steps remain NOT AUTHORIZED. Earlier records below retain their historical checkpoint scope.
+Status: **STEP 8A LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION; STEP 8B PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS; STEP 8C LOCAL_PASS / bounded SYSTEM TRANSITION PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**. [Step-8C Q0 owner acceptance](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-8c-q0--owner-acceptance-and-bounded-runtime-completion-authorization) promotes only M34/M35/M36/M38/M41 within B5's documented proofs. Existing [Architecture v2 section 4.6](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#46-runtime--continuous-producer-real-positions-and-protection) governs Runtime; no new architecture or roadmap is introduced. Step 9 and later steps remain NOT AUTHORIZED. Earlier records below retain their historical checkpoint scope.
 
 ## Step 8C Q0 — Acceptance record and bounded queue
 
@@ -113,6 +113,108 @@ Commands use the existing isolated Python interpreter with `-B`:
 Artifacts: `C:\Users\Mari1\AppData\Local\Temp\meme-live-c4-reconstruction-evidence`, including exact static source, compatibility logs and byte-identical `c4-reconstruction.log`/`c4-chief.log`, SHA256 `3f1050e34a0e5e3ab347e4b16ff0de4b464524dbf5408c469a1553ffaa1ac7d5`. Frozen SHA256: LIVE root `a8e7a62d36cb959a3110e6c474bf52a53612bfc3be9e8bc80bf8a444c73cda13`; LIVE reconstruction `56e0ea8cf7a930c4d4dae4829a801b31038919d06cbed6f01cfffea1be00a94a`; DRY reconstruction `7df9f838432b9e1c3a0078656ebb43ec4bccc085c13f98e49655004c32399a23`; test `98dc2b2dacb8fcd3302c3f1c60113640c688a846b363e6a99b9593bf19b0f47d`. Before final freeze, the corruption fixture's table name and its nondecreasing UNKNOWN/positive-read clock sequence were corrected. The final candidate-replay correction reran only C4/static; unchanged C1-C3 compatibility remained valid. No broad regression ran before C5.
 
 This supplies Runtime-side M47/M49 evidence only. Their integrated Operations/startup/dossier boundaries remain unbuilt; M48 is not assessed for promotion. No machine ownership, readiness, restart budget, watchdog, alert, production key or real-capital action is implemented.
+
+## Step 8C C5 — Frozen Runtime SYSTEM review and bounded handoff
+
+**LOCAL PASS / bounded SYSTEM TRANSITION PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW.** C1-C4 are individually reviewed and normally published. CHIEF reviewed the final Runtime composition, durable-owner reconstruction, actual consumer transitions, focused/static evidence and frozen affected regression. This records the owner's authorized bounded engineering result; it does not record Step-8C project acceptance or Operations readiness.
+
+| Checkpoint | Revision | Worker routing |
+|---|---|---|
+| Q0: owner Step-8B acceptance, five exact promotions | `d4a321bbb665481419c8c88110bf38d1d1506109` | CHIEF; no worker/tests |
+| C1: isolated DRY and NON_SUBMITTED | `44aa1d2896c6e8e1e46d088d941bc46a2eb92a74` | Fresh Astra High |
+| C2: actual root and priority scheduler | `b5288d3dd970cf3440181e5707a7d62f162c0458` | Fresh attempt hit agent thread limit; owner-authorized new C2-only assignment to completed C1 Astra High worker |
+| C3: actual retirement and fresh second admission | `d7310fe15da80996b6d051f52309d74a6693f5b3` | Fresh Astra High |
+| C4: cold Runtime reconstruction | `d99f1a7680edd34470349ac330274545f8df3639` | Fresh Astra High |
+
+All C1-C4 results are LOCAL PASS. One consequential worker ran at a time; same-item corrections stayed within that item, and each checkpoint was normally published before advancing. C5's narrowly scoped test-fixture correction used a further fresh Astra High worker. No worker escalation was needed. CHIEF used the requested High review policy; the tool-visible worker configurations above are the observable routing record.
+
+### Actual SYSTEM boundary
+
+The actual accepted A2 source/producer and A3 canonical handoff feed real Ledger/Authority admission. The LIVE root invokes accepted exact plan/message/simulation, guarded signing/send adapters, public finality and Ledger application with deterministic fake external I/O. Actual acquired units activate the original selected B1 controller; B2 knowledge cuts/original fallback feed B3 obligations and B4 actual-unit SELL outcomes. Actual settlement and fresh supported wallet evidence reach Ledger retirement before a new original candidate can obtain another admission/action. No injected economic/admission/protection verdict substitutes for these production consumers.
+
+Protection that is legally actionable has priority; held/UNKNOWN work yields to required public truth without granting replacement or capacity. Occupied, reserved or uncertain V1 capacity prevents another acquisition while distinct candidate/mint identities remain distinct. Source continuity is refreshed through the actual Evidence/Authority consumers; a gap or unavailable reconstruction cannot grant ENTRY. Due fallback remains usable when source reconstruction fails. The cold active-position path defers candidate replay until protective/truth/application/retirement work allows it.
+
+The first lifecycle reaches actual retirement at sequence 33 before the fresh second admission at sequence 35. Reconciled native funding is 4,995,596,359 lamports; no prior native reservation or WSOL is reused. The second canonical candidate retains its original signal/deadline, distinct root/mint and existing recurring grant. Duplicate delivery, Ledger reopen and expired-candidate checks cannot manufacture a second economic root, renewed eligibility or restart-created trade. The authorized C3 finish line is the second legitimate admission/action; a full second BUY/SELL S02 dossier is not claimed.
+
+The separate DRY graph constructs/simulates exact supported bytes and persists existing L6 NON_SUBMITTED with atomic tentative-capacity release. No production signer, signed envelope, send claim, mutation transport, chain application or actual position is reachable in that graph. Original candidate/root/action/preparation/simulation lineage survives interruption before preparation, after preparation and after simulation; duplicate terminal calls and cold reopen return original dispositions. Its independent cold module reuses C1/L6 rather than adding accounting semantics.
+
+Cold LIVE reconstruction reads accepted durable owners for producer identity/checkpoint/pending delivery, Ledger funding/reservations/attempts/applications, original actual position/controller/cuts/obligations/residuals, and consumed/retired candidates. Representative no-position, pending handoff, acquired/open, already-due, partial SELL, UNKNOWN, satisfied-before-retirement, retired-next-candidate and terminal/interrupted DRY states are exercised. Economic corruption rejects reopen; unavailable/corrupt source state retains intact economics/protection and blocks entry. Missing journals are not initialized as healthy history. Historical continuity, matched funding or elapsed time cannot confer current permission. An unsigned attempt with a consumed SIGN stage remains HELD under existing recovery authority; this run does not invent a recovery grant.
+
+### Frozen regression and exact correction boundary
+
+Production source was frozen at clean local/remote `d99f1a7680edd34470349ac330274545f8df3639` before the one broad run. The scoped checks compiled all 24 Python files changed across Step 8 in memory. Phase-4/5/6 production sources and the protected collector remained unchanged against the Step-8 input. Existing per-item structural/import checks cover DRY capability separation and direct accepted consumer reuse.
+
+No accepted single broad Runtime command covered this final surface. The retained finite runner explicitly selected 37 existing self-tests covering the actual producer/strategy/timer, Evidence, Ledger, Authority, Execution, position/protection, Runtime and reused route/plan/simulation contracts. It excludes unrelated research, Operations, live network/capital activity and the exhaustive Step-10 dossier. Exact frozen Git Python blobs were exported to a disposable directory, with working-copy equivalence checked allowing only CRLF/LF differences, so locked byte guards run against canonical source. All tests use temporary stores and deterministic external fixtures.
+
+```powershell
+& 'C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe' -B 'C:\Users\Mari1\AppData\Local\Temp\meme-live-step8c-regression.py' d99f1a7680edd34470349ac330274545f8df3639 live_runtime_continuation_selftest_v0_1.py live_runtime_reconstruction_selftest_v0_1.py
+```
+
+The first broad attempt exited 1: 33 suites qualified with 4,220 reported checks, while four older Authority suites failed at intended no-op external-write/reopen fixtures. Each wrote literal schema version 8, but the already accepted Ledger uses STORAGE_VERSION 9. Ledger correctly rejected the mismatch. The retained original logs and failure result are not relabelled as passing. A single bounded correction changes only those four fixture imports/no-op writes to the accepted current constant; intentional obsolete-version corruption negatives and every production source file remain unchanged. Only the four invalidated suites are rerun. No second broad run or repeated successful suite is required, and the production freeze remains `d99f1a7`.
+
+Final qualification: **37 suites / 4,982 reported checks, every qualifying execution exit 0**, comprising 33 unchanged original results and four corrected-fixture reruns (150 + 84 + 230 + 298 = 762). Counts use the retained suite reports; C3/C4 separately emitted reused C1/C2 counters are not added again. The four Runtime composed suites report C1 198, C2 49, C3 27 and C4 36 primary checks, plus their documented reused assertions. All 24 frozen-file syntax checks passed. Four corrected-test compiles and 13 CHIEF static/boundary checks passed, including AST equivalence after removing only the intended constant imports/no-op substitutions, and equality of every production source's original working hash. `git diff --check` exited 0.
+
+The exact four correction commands use the same interpreter and `-B`, from the isolated checkout, with script arguments `scripts/live_authority_controls_selftest_v0_1.py`, `scripts/live_authority_economics_selftest_v0_1.py`, `scripts/live_authority_admission_selftest_v0_1.py` and `scripts/live_authority_message_evidence_selftest_v0_1.py`. They each ran once; no other suite was rerun. The original broad `summary.json` remains `passed=false`, exit 1, as an immutable first-attempt record. The final combined manifest attributes each qualified result to its exact original or corrected command, raw log, hash and source boundary.
+
+Original artifacts and reproducible runner: `C:\Users\Mari1\AppData\Local\Temp\meme-live-step8c-final-regression-0k36yohg` and `C:\Users\Mari1\AppData\Local\Temp\meme-live-step8c-regression.py`. Original scope SHA256 `ffd167caaa7461799f4e5b8d9bc0a101544e9c9ab6990efcff089216cf83f2fa`; canonical source manifest `202e53acbef574ebfceaa02e4f0ee6cb035a9d2469f88b05d338047131333be2`; 24-file static manifest `0b1c82ab1a796d581daff5970e7ec4f3805a4d9fb8f2dd71b7f1b623d14ba906`.
+
+Correction artifacts: `C:\Users\Mari1\AppData\Local\Temp\meme-live-step8c-c5-correction-egd34o4q`. `summary.json` SHA256 `5f0192c9511aa62827257a5af58ee7463f35cef7244e3e9c940f4552c2bca423`; independently checked `chief-static.json` SHA256 `313bbedbb68202588d6fa2cde2dbdd625833874eaf629845d6f13442e55a905a`; final `qualified-summary.json` SHA256 `ee66872b52a81d99406c994258b41ef9559eec1b883f126d236d78b0b0cbcfac`. These retain exact corrected fixture hashes, before/after evidence, commands/environment and raw logs. CHIEF static source is `C:\Users\Mari1\AppData\Local\Temp\meme-live-c5-chief-static.py`. Qualification stores are disposable and are not production state.
+
+| Existing script under `scripts/` | Reported checks | Qualified exit | Evidence |
+|---|---:|---:|---|
+| `live_continuous_producer_selftest_v0_1.py` | 45 | 0 | Frozen broad run |
+| `live_continuous_producer_selftest_v0_2.py` | 98 | 0 | Frozen broad run |
+| `live_candidate_handoff_selftest_v0_1.py` | 83 | 0 | Frozen broad run |
+| `phase4_continuous_market_source_selftest_v0_2.py` | 14 | 0 | Frozen broad run |
+| `phase4_continuous_firstpullback_binding_selftest_v0_1.py` | 59 | 0 | Frozen broad run |
+| `phase4_timer_fence_throughput_selftest_v0_1.py` | 29 | 0 | Frozen broad run |
+| `phase4_continuous_firstpullback_multihour_run_selftest_v0_5.py` | 5 | 0 | Frozen broad run |
+| `phase4_4a_exit_track_orchestrator_selftest_v0_1.py` | 58 | 0 | Frozen broad run |
+| `live_source_health_selftest_v0_1.py` | 67 | 0 | Frozen broad run |
+| `live_wallet_evidence_selftest_v0_1.py` | 88 | 0 | Frozen broad run |
+| `live_transaction_evidence_selftest_v0_1.py` | 170 | 0 | Frozen broad run |
+| `live_ledger_baseline_selftest_v0_1.py` | 126 | 0 | Frozen broad run |
+| `live_ledger_actions_selftest_v0_1.py` | 98 | 0 | Frozen broad run |
+| `live_ledger_finality_selftest_v0_1.py` | 113 | 0 | Frozen broad run |
+| `live_ledger_settlement_selftest_v0_1.py` | 256 | 0 | Frozen broad run |
+| `live_ledger_custody_selftest_v0_1.py` | 279 | 0 | Frozen broad run |
+| `live_ledger_ports_selftest_v0_1.py` | 372 | 0 | Frozen broad run |
+| `live_authority_controls_selftest_v0_1.py` | 150 | 0 | Four-suite correction |
+| `live_authority_economics_selftest_v0_1.py` | 84 | 0 | Four-suite correction |
+| `live_authority_admission_selftest_v0_1.py` | 230 | 0 | Four-suite correction |
+| `live_authority_message_evidence_selftest_v0_1.py` | 298 | 0 | Four-suite correction |
+| `live_authority_message_control_selftest_v0_1.py` | 362 | 0 | Frozen broad run |
+| `live_authority_composition_selftest_v0_1.py` | 131 | 0 | Frozen broad run |
+| `live_execution_message_selftest_v0_1.py` | 81 | 0 | Frozen broad run |
+| `live_execution_signer_selftest_v0_1.py` | 275 | 0 | Frozen broad run |
+| `live_execution_send_selftest_v0_1.py` | 355 | 0 | Frozen broad run |
+| `live_execution_composition_selftest_v0_1.py` | 212 | 0 | Frozen broad run |
+| `live_position_controller_selftest_v0_1.py` | 80 | 0 | Frozen broad run |
+| `live_exit_observation_selftest_v0_1.py` | 102 | 0 | Frozen broad run |
+| `live_protective_obligation_selftest_v0_1.py` | 43 | 0 | Frozen broad run |
+| `live_protective_outcome_selftest_v0_1.py` | 93 | 0 | Frozen broad run |
+| `live_runtime_dry_selftest_v0_1.py` | 198 | 0 | Frozen broad run |
+| `live_runtime_composition_selftest_v0_1.py` | 49 | 0 | Frozen broad run |
+| `live_runtime_continuation_selftest_v0_1.py` | 27 | 0 | Frozen broad run |
+| `live_runtime_reconstruction_selftest_v0_1.py` | 36 | 0 | Frozen broad run |
+| `phase5_shadow_venue_route_quote_selftest_v0_1.py` | 100 | 0 | Frozen broad run |
+| `phase5_shadow_unsigned_plan_simulation_selftest_v0_1.py` | 116 | 0 | Frozen broad run |
+
+
+### Matrix assessment and retained owners
+
+Q0 promoted exactly M34/M35/M36/M38/M41 under explicit owner acceptance. C5 changes proof descriptions only; counts remain **40 VERIFIED / 15 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. No Step-8C classification is self-promoted.
+
+| Row | Evidence-based C5 assessment |
+|---|---|
+| M45 | Bounded project-review promotion candidate: actual scheduler priority and occupied/uncertain capacity denial, distinct mints/roots, actual retirement before fresh admission; policy remains V1 one open position with scoped core identity. |
+| M54/M55 | Bounded project-review promotion candidates: actual Authority -> separate Runtime DRY -> Ledger NON_SUBMITTED/release, exact lineage, process cuts, replay/cold reconstruction and safe fresh-candidate continuation. Exhaustive later scenario packaging is not claimed. |
+| M44 | Authorized Runtime finish line demonstrated through first complete lifecycle/retirement and second original admission/action. Full-row promotion is withheld because its explicit full second BUY/SELL S02 proof remains in Step 10; this is not an unimplemented Step-8C requirement. |
+| M47/M49 | Runtime-side reconstruction/protective-priority evidence delivered. Remain OWNED_NOT_BUILT for exact later integrated startup/Operations consumers and S11/S12 acceptance; no full promotion recommended here. |
+
+M48 is not assessed for promotion; C4's recorded funding/attempt/application reconstruction is available to its later Runtime/Operations startup consumer. M46/M50/M51/M53 stay Operations-owned. Full M52 requires the integrated measured operating envelope. M56/M57 and exhaustive S01-S12/E01-E05 qualification remain with the existing later acceptance/gate owners. The Completion Plan and Architecture v2 remain unchanged; no new required downstream transition was discovered.
+
+No Step-9 implementation, OS ownership/fencing, boot readiness, PROTECTIVE_READY/ENTRY_READY, watchdog/restart budget/autostart, alarms/runbooks or operating-envelope qualification occurred. No real track selection, production key, mainnet mutation, T010/T011 or capital action occurred. The protected runtime checkout, active production databases/processes and flat workspace checkout were not modified. Final normal publication and verified remote HEAD are recorded in the task handoff. **STOP after Step 8C.** The next decision is project review of this bounded handoff; Step 9 requires separate authorization.
 
 ## Step 8B Q0 — Acceptance record and bounded queue
 

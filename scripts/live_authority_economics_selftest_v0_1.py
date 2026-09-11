@@ -22,7 +22,7 @@ from phase5.shadow_venue_route_quote_v0_1 import TOKEN_PROGRAM_ID
 from live.authority_economics_v0_1 import propose_fixed_entry, fixed_size_reasons
 from live.authority_controls_v0_1 import EntrySizeLimits
 from live.ledger_domain_v0_1 import LedgerContractError
-from live.ledger_repository_v0_1 import LedgerRepository, LedgerJournalError
+from live.ledger_repository_v0_1 import STORAGE_VERSION, LedgerRepository, LedgerJournalError
 from live.ledger_actions_v0_1 import PendingAction
 from live.ledger_ports_v0_1 import AdmissionInput, NativeReservationVector, RetirementInput
 from live.ledger_settlement_v0_1 import WalletSupportInput
@@ -277,7 +277,7 @@ def guarded_cuts(directory):
     gap_result=propose(f,"current-gap",at=NOW+5)
     check("new_request_selects_latest_actual_gap",gap_result.proposal is None and "CURRENT_SOURCE_NOT_USABLE" in gap_result.reasons)
     with closing(sqlite3.connect(f.path)) as conn,conn:
-        conn.execute("PRAGMA user_version=8")
+        conn.execute(f"PRAGMA user_version={STORAGE_VERSION}")
     check("outside_commit_blocks_guarded_economics_snapshot",raises(lambda:f.repo.authority_candidate_economics(f.root)))
     check("outside_commit_blocks_public_proposal_path",raises(lambda:propose(f,"outside",at=NOW+6)))
     f.reopen()

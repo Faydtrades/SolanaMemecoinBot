@@ -23,7 +23,7 @@ from live.authority_controls_v0_1 import (
     OperatorProvenance, EntrySizeLimits, CostLimits, ClockPolicy, AuthorityPolicy, ArmingGrant,
     ControlCommand, TrustedClockSample, ClockReconciliation, authority_receipt_from_record,
 )
-from live.ledger_repository_v0_1 import LedgerRepository, LedgerConflict, LedgerJournalError, _DDL
+from live.ledger_repository_v0_1 import STORAGE_VERSION, LedgerRepository, LedgerConflict, LedgerJournalError, _DDL
 from live.ledger_domain_v0_1 import LedgerContractError, ZERO_DIGEST
 from live.ledger_actions_v0_1 import utc_microseconds
 from live.evidence_store_v0_1 import SourceEvidenceStore
@@ -422,7 +422,7 @@ def faults(directory):
     command=ControlCommand("stale",f.domain.economic_domain_id,"DISARM_ENTRY",operator())
     check("common_cas_fences_stale_control",raises(lambda:f.repo.record_authority_control(command,fence=fence)))
     with closing(sqlite3.connect(f.path)) as outside, outside:
-        outside.execute("PRAGMA user_version=8")
+        outside.execute(f"PRAGMA user_version={STORAGE_VERSION}")
     check("outside_noop_commit_invalidates_public_read",raises(lambda:f.repo.authority_snapshot()))
     check("outside_noop_commit_invalidates_control_write",raises(lambda:control(f.repo,"HARD_STOP","outside-stop")))
     f.reopen()

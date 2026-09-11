@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 8C / Runtime Composition, DRY, Continuous Next Trade and Runtime Reopen** are attributed below. Step 8A remains LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION. Step 8B is **PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS** within its documented Runtime boundaries. Step 8C only is **AUTHORIZED_IN_PROGRESS**. Step 9 and later steps remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE — STEP 8C / Runtime Composition, DRY, Continuous Next Trade and Runtime Reopen** are attributed below. Step 8A remains LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION. Step 8B is **PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS** within its documented Runtime boundaries. Step 8C is **LOCAL_PASS / bounded SYSTEM TRANSITION PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**; project acceptance remains pending. Step 9 and later steps remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,20 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 8C C5 — Bounded Runtime implementation handoff
+
+CHIEF records C1-C4 **LOCAL PASS** and C5 **LOCAL PASS / bounded SYSTEM TRANSITION PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**, under the supplied item-status/checkpoint authorization. This is not Step-8C project acceptance. [Runtime foundation C5](MEME_LIVE_RUNTIME_FOUNDATION_V1.md#step-8c-c5--frozen-runtime-system-review-and-bounded-handoff) retains exact transitions, commands, source hashes, first-run failures/correction evidence and remaining owners.
+
+Published checkpoints are Q0 `d4a321b`, C1 `44aa1d2`, C2 `b5288d3`, C3 `d7310fe` and C4 `d99f1a7`. Production source remains frozen at `d99f1a7680edd34470349ac330274545f8df3639`. One broad 37-suite run qualified 33 suites; four stale Authority fixture no-op writes used schema version 8 instead of accepted version 9. Only those four test imports/writes were corrected and their four suites rerun. Final evidence is **37 suites / 4,982 reported checks**, all qualifying exits 0, with 24 frozen-file compiles and focused correction/static checks. The original failed attempt remains recorded; no production defect/change or second broad run occurred.
+
+C1/C3/C4 used fresh Astra High workers. Fresh C2 creation hit capacity, so the owner-authorized fallback received a new C2-only assignment from published C1. Every subsequent item again attempted fresh creation. One consequential worker ran at a time, no escalation occurred, and C5 used one further fresh Astra High worker only for the exact four-fixture correction. CHIEF retained package review and publication authority.
+
+The actual transition is continuous canonical production -> admission -> Execution/public finality/application -> actual selected position/protection -> SELL/settlement -> lawful retirement -> fresh original second admission/action, plus isolated DRY NON_SUBMITTED, duplicates, cold reconstruction, protective priority and fail-closed uncertainty. Full second BUY/SELL S02 and exhaustive cross-package acceptance remain Step 10; Operations startup/readiness/envelope remain Step 9.
+
+M45/M54/M55 are bounded evidence-based project-review promotion candidates. M44 has the authorized Runtime finish-line proof, but full-row promotion is withheld pending its listed full S02 proof. M47/M49 retain Runtime-side evidence without Operations-dependent promotion. M48 is not assessed for promotion; its later startup consumer can use C4's recorded facts. No classifications change in C5: **40 VERIFIED / 15 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. No new required downstream transition was discovered. Completion Plan and Architecture v2 remain unchanged.
+
+No Step-9 implementation, readiness grants, production key, real mainnet mutation, T010/T011 or capital action occurred. Protected runtime, active databases/processes and the flat workspace checkout were not modified. Final normal publication/remote HEAD is verified in the task handoff. **STOP after Step 8C. Step 9 remains NOT AUTHORIZED.**
 
 ### Step 8C — Worker-capacity policy amendment
 

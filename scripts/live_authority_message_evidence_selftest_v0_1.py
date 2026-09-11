@@ -31,6 +31,7 @@ from live.authority_message_evidence_v0_1 import (
 )
 from live.authority_message_codec_v0_1 import encode_validation_input, decode_validation_input, simulation_run_digest
 from live.public_rpc_v0_1 import PublicAccount
+from live.ledger_repository_v0_1 import STORAGE_VERSION
 from live.ledger_domain_v0_1 import LedgerContractError
 from live.ledger_settlement_v0_1 import PUMP_BUY_ACCOUNTS, PUMP_SELL_ACCOUNTS, PUMPSWAP_BUY_ACCOUNTS, PUMPSWAP_SELL_ACCOUNTS
 from phase5 import shadow_unsigned_plan_simulation_v0_1 as plans
@@ -523,7 +524,7 @@ def main():
             deny(route+"_new_evaluation_does_not_reuse_aged_context",replace(value,clock=a3.clock(f.repo,NOW+100)),True)
             check(route+"_validator_no_journal_mutation",f.repo.audit()==old_audit)
             with closing(sqlite3.connect(f.path)) as outside:
-                outside.execute("PRAGMA user_version=8")
+                outside.execute(f"PRAGMA user_version={STORAGE_VERSION}")
             check(route+"_guarded_capture_rejects_unverified_outside_commit",raises(lambda:capture_message_context(f.repo,action.action_id)))
             f.reopen()
             check(route+"_explicit_reopen_reverifies_unchanged_history",capture_message_context(f.repo,action.action_id)==value.context)

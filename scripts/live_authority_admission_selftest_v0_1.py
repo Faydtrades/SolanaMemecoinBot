@@ -25,7 +25,7 @@ from live.authority_controls_v0_1 import AuthorityPolicyV02, LOCKED_SELECTION_SH
 from live.ledger_actions_v0_1 import PendingAction, position_identity
 from phase2.strategy_first_pullback_v0_2 import FirstPullbackStrategyV02
 from live.ledger_domain_v0_1 import LedgerContractError
-from live.ledger_repository_v0_1 import LedgerRepository, LedgerJournalError, _DDL
+from live.ledger_repository_v0_1 import STORAGE_VERSION, LedgerRepository, LedgerJournalError, _DDL
 from live.ledger_settlement_v0_1 import WalletSupportInput
 from live.wallet_evidence_v0_1 import ExpectedTokenAccount, WalletEvidenceRequest
 from live.evidence_store_v0_1 import SourceEvidenceStore
@@ -551,7 +551,7 @@ def fault_cases(directory):
     fence=f.repo.write_fence();f.evaluate("clock")
     check("stale_common_cut_cannot_admit",raises(lambda:f.repo.admit_authority_entry(EntryRequest(f.root,"PUMP",TOKEN_PROGRAM_ID,"FINAL-A"),
         clock(f.repo,NOW+5),f.source,wallet(f,at=NOW+5),command_id="stale",fence=fence)))
-    with closing(sqlite3.connect(f.path)) as conn,conn:conn.execute("PRAGMA user_version=8")
+    with closing(sqlite3.connect(f.path)) as conn,conn:conn.execute(f"PRAGMA user_version={STORAGE_VERSION}")
     check("outside_structurally_valid_commit_invalidates_reads",raises(lambda:f.repo.authority_acceptance(f.root)))
     check("outside_structurally_valid_commit_invalidates_admission",raises(lambda:admit(f,"outside")))
     f.reopen();check("reopen_reverifies_unchanged_journal",f.repo.authority_acceptance(f.root) is None)
