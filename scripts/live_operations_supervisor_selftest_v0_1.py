@@ -53,15 +53,25 @@ def resources(started):
         stamp = (datetime.fromisoformat(value.utc_upper_utc)+timedelta(microseconds=len(calls))).isoformat(timespec='microseconds')
         return replace(value, utc_lower_utc=stamp, utc_upper_utc=stamp,
                        monotonic_ns=value.monotonic_ns+1000*len(calls))
-    return dict(clock=clock, source_cut_utc=rt.a3.utc(NOW+1))
+    return dict(clock=clock, source_cut_utc=rt.a3.utc(NOW+1),
+        operations_resources=lambda: a2.host(SimpleNamespace(runtime=started.runtime,
+            startup_monitor_config=started.runtime._operations_degradation.configuration), NOW+6))
 
 
 @dataclass
 class Inputs:
     directory: Path
     behavior: str = 'normal'
+    calls: int = 0
 
     def __call__(self, started):
+        self.calls += 1
+        if (self.directory/'pause-request').exists():
+            (self.directory/'paused-input').write_text('outside original Runtime.step')
+            wait_file(self.directory/'release-input')
+        if self.behavior == 'pause-before-second-step' and self.calls == 2:
+            (self.directory/'before-second-step').write_text('outside original Runtime.step')
+            wait_file(self.directory/'release-second-step')
         path = self.directory/('owner-'+str(os.getpid())+'.json')
         if not path.exists():
             path.write_text(json.dumps({'pid': os.getpid(), 'generation': started.audit.owner_fence.generation,
@@ -99,7 +109,11 @@ class FinalFenceInputs:
         def clock():
             value = rt.a3.clock(f.repo, NOW+6)
             calls.append(None)
-            caller = sys._getframe(1).f_code.co_name
+            caller_frame = sys._getframe(1)
+            if (caller_frame.f_code.co_name == 'clock'
+                    and caller_frame.f_code.co_filename == rt.RuntimeCompositionV01._monitored_step.__code__.co_filename):
+                caller_frame = caller_frame.f_back
+            caller = caller_frame.f_code.co_name
             if caller == '_last_call':
                 last.append(None)
             target = caller == 'sign_exact' if self.stage == 'sign' else caller == '_last_call' and len(last) == 2
@@ -109,7 +123,8 @@ class FinalFenceInputs:
             stamp = (datetime.fromisoformat(value.utc_upper_utc)+timedelta(microseconds=len(calls))).isoformat(timespec='microseconds')
             return replace(value, utc_lower_utc=stamp, utc_upper_utc=stamp,
                            monotonic_ns=value.monotonic_ns+1000*len(calls))
-        f.step = lambda at, **kwargs: f.runtime.step(clock=clock, source_cut_utc=rt.a3.utc(NOW+1), **kwargs)
+        f.step = lambda at, **kwargs: f.runtime.step(clock=clock, source_cut_utc=rt.a3.utc(NOW+1),
+            operations_resources=resources(started)['operations_resources'], **kwargs)
         original = rt.q3.Boundary.__call__
         def boundary(instance, request):
             dispatched.append(True)
@@ -154,7 +169,7 @@ def fixture(directory, name, *, profile=RestartProfile(4, 100, 10), inputs=None)
     f = a2.installed(rt.Fixture(place, name), profile=profile)
     f.candidate_ready()
     config = dict(operations_path=f.operations_path, ledger_path=f.path, domain=f.domain,
-        expected_identity=f.expected, **c4.cold_args(f))
+        expected_identity=f.expected, degradation_config=a2.healthy_monitor_config(f), **c4.cold_args(f))
     a2.close(f)
     sup = supervisor.OperationsSupervisor(config, inputs or Inputs(place), supervisor.HealthProfile(20000000, 20000000, 1000000))
     return f, config, sup, Driver(sup)
@@ -177,6 +192,36 @@ def cleanup(sup):
 
 def running(driver):
     return driver.until(lambda result: result.completed_steps >= 1)
+
+
+def pause_inputs(f, tick):
+    (f.directory/'pause-request').write_text('pause before original control')
+    end = time.monotonic()+20
+    while not (f.directory/'paused-input').exists():
+        if time.monotonic() >= end:
+            raise AssertionError('external-input pause timeout')
+        tick()
+        time.sleep(.01)
+
+
+def starting_observation(directory):
+    from live import operations_degradation_monitor_v0_1 as monitor
+    f, config, sup, driver = fixture(directory, 'starting-observation')
+    try:
+        sup.process = SimpleNamespace(pid=12345)
+        with patch.object(sup.store, '_connection', side_effect=AssertionError('control access')), \
+                patch.object(monitor, 'observe_supervisor', side_effect=AssertionError('alert observation')) as observe, \
+                patch.object(sqlite3, 'connect', side_effect=AssertionError('SQLite access')) as connect:
+            facts = sup._facts('STARTING')
+            alerts = sup.alert_snapshot()
+        check('unproven_starting_facts_no_sqlite_or_observation_no_fresh_health',
+            facts.state == 'STARTING' and facts.generation is None and not facts.grants_permission
+            and observe.call_count == connect.call_count == 0
+            and alerts.unavailable_code == 'OPERATIONS_CURRENT_EVIDENCE_UNAVAILABLE'
+            and alerts.entry_held and not alerts.grants_permission)
+    finally:
+        sup.process = None
+        cleanup(sup)
 
 
 def recovery(directory):
@@ -212,6 +257,7 @@ def recovery(directory):
         driver.until(lambda result: sup.fence is not None and sup.fence.generation > second and result.completed_steps >= 3)
         check('original_nonexhausted_window_rollover_retains_budget', sup.store.snapshot()['attempts'] == 1
               and sup.store.snapshot()['window_start_us'] == 100 and sup.store.snapshot()['budget_id'] == budget)
+        pause_inputs(f, driver.tick)
         with closing(sqlite3.connect(f.operations_path, isolation_level=None)) as conn:
             conn.execute('BEGIN IMMEDIATE')
             failed = False
@@ -274,13 +320,16 @@ def unproven_and_identity(directory):
               and driver.tick().state == 'HELD_LAUNCH_UNPROVEN' and sup.store.snapshot()['attempts'] == 0)
     finally:
         cleanup(sup)
-    f, config, sup, driver = fixture(directory, 'generation')
+    f, config, sup, driver = fixture(directory, 'generation',
+        inputs=Inputs(directory/'generation', 'pause-before-second-step'))
     try:
         running(driver)
+        wait_file(f.directory/'before-second-step')
         other = supervisor.OperationsSupervisor(config, Inputs(f.directory), sup.health)
         check('new_supervisor_does_not_adopt_existing_owner', other.poll(now_us=1, monotonic_us=0).state == 'HELD_EXISTING_OWNER')
         stale = sup.fence
         replacement = sup.store.acquire('explicit-host-takeover', now_us=10, replace_generation=stale.generation)
+        (f.directory/'release-second-step').write_text('takeover committed')
         check('retained_full_fence_owner_change_holds', driver.sup.poll(now_us=10, monotonic_us=driver.mono+1000).state == 'HELD_OWNER_CHANGED')
         replacement.close()
         cleanup(sup)
@@ -309,7 +358,10 @@ def handshake_race(directory):
                 raise AssertionError('handshake timeout')
             time.sleep(.01)
         original = sup.store.snapshot
-        with patch.object(sup.store, 'snapshot', side_effect=[stale, original()]):
+        initial_reads = [stale, original()]
+        def snapshot():
+            return initial_reads.pop(0) if initial_reads else original()
+        with patch.object(sup.store, 'snapshot', side_effect=snapshot):
             check('handshake_refreshes_control_after_child_acquisition_race', driver.tick().state == 'RUNNING' and sup.fence is not None)
         actual = original()
         forged = dict(actual, nonce='f'*32 if actual['nonce'] != 'f'*32 else 'e'*32)
@@ -328,7 +380,7 @@ def final_fencing(directory):
             f = a2.installed(rt.Fixture(place, stage), profile=RestartProfile(4, 100, 0))
             f.admit()
             config = dict(operations_path=f.operations_path, ledger_path=f.path, domain=f.domain,
-                expected_identity=f.expected, **c4.cold_args(f))
+                expected_identity=f.expected, degradation_config=a2.healthy_monitor_config(f), **c4.cold_args(f))
             inputs = FinalFenceInputs(place, stage, f.public, f.lower, bytes(key))
             a2.close(f)
             sup = supervisor.OperationsSupervisor(config, inputs, supervisor.HealthProfile(20000000, 20000000, 1000000))
@@ -382,7 +434,7 @@ def retained_authority(directory):
           and f.repo.consumer_snapshot()['reservations'] and f.repo.audit()['attempt_count'] == 0)
     expected_authority = hashlib.sha256(repr(authority).encode()).hexdigest()
     config = dict(operations_path=f.operations_path, ledger_path=f.path, domain=f.domain,
-        expected_identity=f.expected, **c4.cold_args(f))
+        expected_identity=f.expected, degradation_config=a2.healthy_monitor_config(f), **c4.cold_args(f))
     a2.close(f)
     original = digest(f.path)
     sup = supervisor.OperationsSupervisor(config, Inputs(place, 'hang'), supervisor.HealthProfile(20000000,20000000,1000000))
@@ -448,6 +500,7 @@ def bounded_driver(directory):
         result = sup.run(max_polls=1000, interval_seconds=.005)
         check('actual_bounded_watchdog_driver_launches_and_steps_frozen_configuration',
               result.state == 'RUNNING' and result.completed_steps > 0 and not result.grants_permission)
+        pause_inputs(f, lambda: sup.poll(now_us=time.time_ns()//1000, monotonic_us=time.monotonic_ns()//1000))
         stopped = sup.operator_stop(now_us=time.time_ns()//1000)
         check('bounded_driver_returns_immediately_when_stopped', sup.run(max_polls=1000).state == stopped.state == 'OPERATOR_STOPPED')
     finally:
@@ -457,6 +510,7 @@ def bounded_driver(directory):
 def main():
     with tempfile.TemporaryDirectory(prefix='live-operations-b1-') as tmp:
         directory = Path(tmp)
+        starting_observation(directory)
         recovery(directory)
         faults(directory)
         unproven_and_identity(directory)

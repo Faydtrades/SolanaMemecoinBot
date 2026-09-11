@@ -169,6 +169,11 @@ def policy_and_projections():
             'EXISTING_EXPOSURE_REQUIRES_PROTECTION_AND_RETIREMENT_FIRST', 'CURRENT_CAPACITY_OR_MUTATION_LANE_HELD')),
         (), None, None)
     check('ordinary_waiting_and_position_not_incidents', readiness_conditions(ordinary) == ())
+    missing_policy = replace(ordinary, entry=replace(ordinary.entry,
+        reasons=('CURRENT_AUTHORITY_POLICY_REQUIRED',)))
+    check('unselected_policy_remains_original_entry_hold', missing_policy.entry.state == 'HELD'
+        and not missing_policy.entry.ready and missing_policy.entry.reasons == ('CURRENT_AUTHORITY_POLICY_REQUIRED',))
+    check('unselected_policy_not_economic_integrity_incident', readiness_conditions(missing_policy) == ())
     pending = replace(ordinary, protective=replace(ordinary.protective, state='TRUTH_REQUIRED',
         reasons=('ORIGINAL_PENDING_ATTEMPT_REQUIRES_TRUTH',), due=True))
     check('pending_attempt_alone_not_unknown_alert', readiness_conditions(pending) == ())

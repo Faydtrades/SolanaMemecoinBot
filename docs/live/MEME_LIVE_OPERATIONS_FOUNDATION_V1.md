@@ -1,6 +1,6 @@
 # MEME-LIVE Operations Foundation v1
 
-Status: **STEP 9B PROJECT_ACCEPTED_IMPLEMENTATION / BOUNDED LOCAL PASS; STEP 9C C1 OWNER-ACCEPTED BOUNDED LOCAL PASS; C2 BOUNDED LOCAL PASS; C3 DEFERRED**. The owner accepted Step 9B at `181d0258518b561ce9c348a7b3fe9396daeae537`. [Step-9C authorization](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-9c---accepted-input-and-bounded-c1-implementation) governs the current work. Final Step-9 SYSTEM acceptance remains unclaimed. Existing Architecture v2 and T008/T009 remain governing controls; earlier sections retain their historical scope.
+Status: **STEP 9B PROJECT_ACCEPTED_IMPLEMENTATION / BOUNDED LOCAL PASS; STEP 9C C1/C2 OWNER-ACCEPTED BOUNDED LOCAL PASS; C3 BOUNDED LOCAL PASS; STEP 9 PARTIAL / FULL SYSTEM TRANSITION PASS NOT ESTABLISHED**. The [final authorized closeout](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-9c-c3---final-bounded-closeout) and final review below supersede earlier deferred-work statements. Existing Architecture v2 and T008/T009 remain governing controls; earlier sections retain their historical checkpoint scope. Full integrated engineering and separately authorized host/profile gates remain open; Step 10 and real production actions remain unauthorized.
 
 ## Q0 — Accepted input and bounded queue
 
@@ -673,3 +673,81 @@ Failed child attempts r1/r2 triggered the mandatory pause and deterministic diag
 One Astra High worker was reused through three explicit new bounded assignments; CHIEF retained review and publication authority. No escalation or unexplained long-running measurement occurred. Only the natural package is checkpointed. M53 receives bounded evidence without full-row promotion; counts remain **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. C3 retains the final dossier, integrated measured profile and current-source monitoring/latency qualification, broad Operations regression and SYSTEM/matrix review. M52's accepted C1 measurements retain their original revision scope. Host/HUMAN_EXTERNAL gates and Step-10 exhaustive integration remain separately owned. No new downstream owner or automated recovery transition was added.
 
 Both protected checkouts, production/raw/live data and unrelated processes remained untouched. All stores, child processes and external execution I/O were disposable synthetic fixtures/mocks. No real service/task installation, production key, mainnet signing/send/broadcast or capital action occurred. **STOP after C2. C3 remains deferred; Step 10 remains NOT AUTHORIZED.**
+
+## Step 9C C3 - Final bounded Operations review and Step-9 closeout
+
+CHIEF records **remaining C3 work: bounded LOCAL PASS** and **Step 9: PARTIAL / full SYSTEM TRANSITION PASS NOT ESTABLISHED**. This is the one final review authorized from owner-accepted C2 92a9eab3ac8a2c4d19ffbf0a7fb968316f2bbafd. The authorized work reaches its closeout boundary; production readiness is not granted. The [minimal versioned dossier](MEME_LIVE_OPERATIONS_STEP9_CLOSEOUT_V0_1.json) links accepted 9A/9B/C1/C2 evidence, source freezes, commands, corrections and remaining owners. Earlier statements retain their historical checkpoint scope.
+
+### Final current-source observations
+
+The new scripts/live_operations_current_measurement_v0_1.py consumes the accepted loaded fixture and actual owned startup/supervisor/Runtime/monitor. One initial child and one exact-handle replacement preserve source/cursor, acquired position/binding/due obligation, admission count 1 and **382 retained / 256 hot / 33 unfinished** shape. Results: PROTECTIVE_ACTION_STAGED, then NEED_EXECUTION; ENTRY stays held. Neither measured child has execution/network ports. Both exact handles were cleaned up; seven disposable databases passed integrity/FK checks.
+
+The exact command is linked in the dossier: existing evidence-venv Python with -B, script above and --output C:\Users\Mari1\AppData\Local\Temp\meme-live-c3-final-92a9eab-c8e61a, from the isolated checkout. Exit **0**, elapsed **21.1555881 seconds**.
+
+| Real observed seconds | Initial | Replacement |
+|---|---:|---:|
+| Parent initiation to protected Runtime result | 5.9290807 | 5.4128026 |
+| Exact original start_live | 2.3548586 | 2.3351446 |
+| Monitored original Runtime step | 0.8914303 | 0.6264330 |
+| First timed monitor call | 0.2960727 | 0.3016332 |
+| Second timed monitor call | 0.5414160 | 0.2873068 |
+
+Timings use real perf_counter/process_time, not the synthetic truth clock. Four monitor observations include normal parent/journal activity, without deliberate contention. The readiness helper also observes before each timed step; initial creation of unresolved alerts is included in endpoint timing but not separately timed. These are **observed nested monitor costs, not a causal A/B overhead estimate**.
+
+The measured child policy remains unresolved: no deployment thresholds or protective qualification are invented. Accepted synthetic parent policy inputs only establish the acquired/due fixture. Child boundary maxima: RSS **78,348,288 bytes**, lifetime peak **85,684,224 bytes**, inventoried database lengths **3,883,504 bytes**; minimum disk reserve **270,398,083,072 bytes**. Samples do not establish healthy-policy latency, configured-capacity limits, sustained rate, percentile/worst-case/total protective latency or production-host suitability.
+
+Earlier valid delta f3a7c9 remains historical. The supervisor correction directly changed startup/replacement, so one short final-source delta superseded it. The C1 campaign was not repeated. Two failed early measurement attempts remain excluded. Final verification checked 154 production/9 test freeze hashes, 124 measured-source/13 fixture-file/16 artifact hashes and in-memory compilation.
+
+### Frozen broad Operations regression and corrections
+
+The initial 154-production-file freeze preceded the one serial broad campaign: SOURCE_FREEZE.json, SHA256 45ba87f51251879898969a8946358387ef0a28908a9fe295d2ad2442696505e9. Scope covers Operations components and actual Runtime DRY/composition/continuation/reconstruction consumers. Accepted C1/C2/B2/B3 campaigns were reused, not regenerated; the Step-10 dossier is excluded.
+
+Concrete failures justified two small production corrections:
+
+- Removing the mapping from ordinary missing Authority policy to a human-latched economic-integrity incident restores the original candidate-then-policy flow. Original ENTRY denial and genuine persisted integrity incidents remain; no permission or recovery shortcut was added.
+- Supervisor STARTING observations now preserve the original no-SQLite-read window while the child acquires ownership with its zero-timeout contract. Until the fence is proven, the view is unavailable/non-authorizing; post-handshake observation remains original. Ownership, timeout, restart budget, retry and stop semantics are unchanged.
+
+Only these two production files changed; **152 are unchanged**. Each correction was frozen before affected runs. Final source/test map: C3_2_FINAL_SOURCE_FREEZE.json, SHA256 3d5181c9e913d7f5de7beff55ff28b46912a7e17406ab1af891dd57e7bbd76ef. All initial/superseding freezes remain linked; not every successful run preceded all corrections.
+
+Fixture changes supply current C2 typed configuration/resources while preserving explicit missing/custom-input cases. A future-time negative proof probe now ends in its own fixture rather than advancing the ongoing lifecycle journal watermark. Supervisor fixtures synchronize ordinary stop/takeover outside Runtime steps, recognize the exact clock wrapper, and allow original post-handshake reads after the intended stale/fresh mock pair. Deliberate busy-stop denial, final signing/send fencing, original assertions and production locking remain.
+
+Commands used the same isolated checkout and evidence-venv Python -B with no arguments. Evidence root: C:\Users\Mari1\AppData\Local\Temp\meme-live-step9-final-92a9eab-20260911.
+
+| Script | Primary | Reused helpers | Exit | Seconds |
+|---|---:|---:|---:|---:|
+| scripts/live_operations_ownership_selftest_v0_1.py | 72 | 0 | 0 | 11.865 |
+| scripts/live_operations_startup_selftest_v0_1.py | 53 | 10 | 0 | 48.523 |
+| scripts/live_operations_readiness_selftest_v0_1.py | 47 | 21 | 0 | 59.365 |
+| scripts/live_operations_supervisor_selftest_v0_1.py | 40 | 9 | 0 | 81.917 |
+| scripts/live_runtime_dry_selftest_v0_1.py | 198 | 0 | 0 | 14.831 |
+| scripts/live_runtime_composition_selftest_v0_1.py | 49 | 0 | 0 | 10.381 |
+| scripts/live_runtime_continuation_selftest_v0_1.py | 27 | 7 | 0 | 6.502 |
+| scripts/live_runtime_reconstruction_selftest_v0_1.py | 36 | 31 | 0 | 21.520 |
+
+Totals: **522 primary checks** (startup includes 50 parent + 3 child), **78 reused helper checks**, **254.904326 seconds** summed valid-suite runtime. Diagnosis/correction wall time is separate. The directly affected degradation contract adds **64 checks, exit 0, 2.038456 seconds**, counted separately. Eleven failed suite attempts and five diagnostics are preserved and excluded.
+
+Ownership results remain applicable because that scope does not consume the corrected projector/supervisor. Startup/readiness passed after the projector fix and do not consume the later supervisor fix. Supervisor and four Runtime suites passed on final production source. Only failed/affected scope was repeated; no successful broad campaign was restarted. Supervisor stderr contains only expected three restart-exhaustion/two startup-identity child denials. The new STARTING test proves no SQLite observation or fresh-health grant before ownership.
+
+Regression manifest SHA256: 41f2558f3014ef7ec3a548e5f340b0853bf294f626419d29a7d8e829c948d562. CHIEF verified all **75 linked artifact hashes**, 154 current production hashes, successful outputs and the diff. Final scoped static validation covers seven changed/new Python files, documentation/diff and matrix consistency; documentation does not require another test run.
+
+### One final SYSTEM and matrix assessment
+
+Combined accepted/current evidence supports bounded owned reconstruction, original protection/uncertainty retention, actual DRY/next-admission compatibility, durable degradation/runbooks and numerical current-source observations. **Architecture v2 section 4.7 requires every S01-S12/E01-E05 through the full graph, process replacement and machine-reboot-equivalent reconstruction, with no required pre-gate engineering still unbuilt. That full contract is not met.**
+
+No full-row promotion candidates. Counts remain **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Zero matrix BLOCKED rows does not mean no unmet acceptance gates.
+
+| Existing owner / rows | Remaining contract |
+|---|---|
+| Evidence M13 | Existing bound public-wallet/chain producer-to-consumer qualification; not reassessed by this Operations task. |
+| Runtime/Authority M44/M51 | Full second BUY/SELL S02 and ordered S11/S12 continuation, beyond second distinct admission/action. |
+| Operations/Runtime/Evidence/Ledger M46-M50 | Full respective S03/S07/S11/S12 and E04/E05 integrated recovery/platform/fencing/protection contracts. |
+| Runtime/Operations M52/M53 | Reviewed complete deployed limits, host/config/source binding, freshness and same-host/code/config protective timing; healthy-policy envelope and full integrated S11/S12/E04/E05 proof. Observed values are not deployment defaults. |
+| Operations / External gates M56/M57 | Step-10 exhaustive integrated dossier and later reviewed gate/preflight artifact. |
+| Separately authorized host qualification | Deployment-host and Windows service/ScheduledTask autostart/reboot qualification; no installation or such qualification occurred. |
+| HUMAN_EXTERNAL M09/M10/M58-M61 | Track/capital policy, T010/T011 permission/environment/evidence, owner readiness and later operating-capital authorization remain unchanged. |
+
+Engineering gaps are not relabeled human inputs. T010/T011 cannot supply missing deterministic engineering and are not circular prerequisites to deterministic Step 9. No new transition/owner was introduced. Completion Plan, Architecture, accepted C1 profile, strategy/research and economic owners are unchanged.
+
+Two fresh compact Astra High contexts handled measurement and regression, one consequential worker at a time. The healthy measurement worker then received a new bounded final-source delta assignment. Repeated startup/readiness/control-fixture failures triggered diagnosis before affected continuation. Substantive progress continued; no unexplained long wait, Ultra escalation or repeated broad campaign occurred.
+
+The natural final checkpoint contains the two fixes, fixture compatibility, measurement script and closeout records. Publication/clean local-remote zero divergence are verified in the final task handoff. Both protected checkouts were left untouched by this work. Stores/children were disposable synthetic fixtures; no real services/tasks, production keys, mainnet sign/send/broadcast, capital action or Step-10 work occurred. **STOP after Step-9 closeout. Full Operations SYSTEM/production readiness is not granted.**

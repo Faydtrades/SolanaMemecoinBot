@@ -381,8 +381,9 @@ def readiness_conditions(facts):
         "GLOBAL_HARD_STOP_LATCHED": "OPERATOR_STOPPED",
         "CURRENT_RECONSTRUCTED_SOURCE_REQUIRED": "SOURCE_TRUTH_UNAVAILABLE",
         "CURRENT_PRODUCER_CHECKPOINT_UNAVAILABLE": "PRODUCER_INTEGRITY_UNAVAILABLE",
-        "CURRENT_AUTHORITY_POLICY_REQUIRED": "ECONOMIC_INTEGRITY_UNAVAILABLE",
     }
+    # An unselected original policy is an ENTRY prerequisite, not corrupt economic evidence.
+    # The original readiness barrier retains CURRENT_AUTHORITY_POLICY_REQUIRED.
     found.update(code for reason, code in mapping.items() if reason in reasons)
     clock_codes = {"CLOCK_POLICY_MISSING", "CLOCK_PROVIDER_UNSUPPORTED", "CLOCK_UNKNOWN",
         "CLOCK_UNCERTAINTY_EXCEEDED", "CLOCK_CHECKPOINT_DIGEST_CONFLICT", "CLOCK_UNEXPECTED_RECONCILIATION",

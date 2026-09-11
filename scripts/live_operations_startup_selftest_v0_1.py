@@ -8,7 +8,7 @@ import subprocess
 import sys
 import tempfile
 from contextlib import closing
-from dataclasses import replace
+from dataclasses import asdict, replace
 from pathlib import Path
 from unittest.mock import patch
 
@@ -18,6 +18,10 @@ import live_runtime_reconstruction_selftest_v0_1 as c4
 from live import operations_startup_v0_1 as startup
 from live.operations_ownership_v0_1 import OperationsStore, RestartProfile
 from live.runtime_reconstruction_v0_1 import ColdRuntimeV01
+from live.operations_degradation_v0_1 import DegradationPolicy, DegradationStore, ResourceLimit, METRICS
+from live.operations_degradation_monitor_v0_1 import (
+    MonitorConfiguration, HostObservations, HostMetric, content_fingerprint, monitor_configuration_digest,
+)
 
 rt, a3, sf, NOW = c4.c2, c4.a3, c4.sf, c4.NOW
 CHECKS = {}
@@ -48,6 +52,32 @@ def installed(f, *, profile=RestartProfile(100, 1000000, 0)):
     return f
 
 
+def healthy_monitor_config(f):
+    if hasattr(f, 'startup_monitor_config'):
+        return f.startup_monitor_config
+    # Explicit synthetic C2 prerequisites for these healthy owned-runtime fixtures.
+    digest = lambda n: format(n, '064x')
+    alert_path = str(f.directory/(f.name+'-startup-alerts.sqlite'))
+    reviewed = monitor_configuration_digest(f.expected, path=alert_path, host_identity_digest=digest(91),
+        resource_max_age_us=1000000, protective_qualification_digest=digest(92))
+    limits = tuple(ResourceLimit(metric, 10 if metric == 'HOST_DISK_RESERVE_BYTES' else 10**12)
+        for metric in sorted(METRICS))
+    policy = DegradationPolicy(reviewed, 100, 1000000, limits)
+    f.startup_monitor_config = MonitorConfiguration(alert_path, policy, digest(91),
+        f.expected.runtime_code_digest, 1000000, digest(92))
+    DegradationStore.initialize(alert_path, f.domain, policy, now_us=0)
+    return f.startup_monitor_config
+
+
+def host(f, at=NOW+4):
+    config = f.startup_monitor_config
+    metrics = tuple(HostMetric(metric, 100, at*1000000,
+        config.protective_qualification_digest if metric == 'PROTECTIVE_STEP_US' else format(93, '064x'))
+        for metric in ('HOST_RSS_BYTES', 'HOST_DISK_RESERVE_BYTES', 'STARTUP_US', 'PROTECTIVE_STEP_US'))
+    return HostObservations(config.host_identity_digest, config.policy.reviewed_configuration_digest,
+        content_fingerprint(asdict(f.runtime._ownership.fence)), metrics)
+
+
 def close(f):
     if f.started is not None:
         f.started.close()
@@ -61,6 +91,14 @@ def restart(f, *, damage=None, expected=None, startup_now_us=None, **overrides):
     if damage:
         damage()
     args = c4.cold_args(f)
+    if 'degradation_config' not in overrides:
+        args['degradation_config'] = healthy_monitor_config(f)
+        if getattr(f.step, '__func__', None) is rt.Fixture.step:
+            original_step = f.step
+            def owned_step(at=NOW+4, **kwargs):
+                kwargs.setdefault('operations_resources', lambda: host(f, at))
+                return original_step(at, **kwargs)
+            f.step = owned_step
     args.update(overrides)
     control = f.operations.snapshot()
     f.started = startup.start_live(f.operations_path, f.path, f.domain,

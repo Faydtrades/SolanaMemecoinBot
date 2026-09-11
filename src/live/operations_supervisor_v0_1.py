@@ -104,7 +104,12 @@ class OperationsSupervisor:
     def _facts(self, state):
         facts = SupervisionFacts(state, None if self.process is None else self.process.pid,
             None if self.fence is None else self.fence.generation, self.completed_steps, self.last_work)
-        from .operations_degradation_monitor_v0_1 import observe_supervisor
+        from .operations_degradation_monitor_v0_1 import observe_supervisor, unavailable
+        if state == "STARTING" and self.fence is None:
+            # A1 acquisition commits with timeout=0. Preserve its existing no-read
+            # window; this unavailable view neither clears nor refreshes incidents.
+            self._alerts = unavailable("OPERATIONS_CURRENT_EVIDENCE_UNAVAILABLE")
+            return facts
         self._alerts = observe_supervisor(self._configuration, self.store, facts, now_us=self._now_us)
         return facts
 

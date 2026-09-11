@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE - STEP 9C / C2** are attributed below. C1 at `4dd1e267d7335158e440c0967df822cb46974f2e` is owner-accepted **BOUNDED LOCAL PASS**. C2 degradation/alerts/runbooks is **BOUNDED LOCAL PASS** after CHIEF review; publication is the single natural C2 checkpoint. C3 final dossier/SYSTEM qualification/broad regression is deferred; Step 10 and real production/external actions remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE - remaining Step 9C / Step-9 closeout** are attributed below. C1 at `4dd1e267d7335158e440c0967df822cb46974f2e` is owner-accepted **BOUNDED LOCAL PASS**. C2 at `92a9eab3ac8a2c4d19ffbf0a7fb968316f2bbafd` is owner-accepted **BOUNDED LOCAL PASS**. Remaining Step 9C has **bounded LOCAL PASS** at its authorized closeout boundary. Final Step-9 review records **PARTIAL / full SYSTEM TRANSITION PASS NOT ESTABLISHED**; integrated engineering and separately authorized host/profile gates remain open. Step 10 and real production/external actions remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,24 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 9C C3 - Final bounded closeout
+
+CHIEF records **C3 bounded LOCAL PASS; Step 9 PARTIAL / full SYSTEM TRANSITION PASS NOT ESTABLISHED** under the explicit authorization below. [Final Operations review](MEME_LIVE_OPERATIONS_FOUNDATION_V1.md#step-9c-c3---final-bounded-operations-review-and-step-9-closeout) and the [dossier](MEME_LIVE_OPERATIONS_STEP9_CLOSEOUT_V0_1.json) bind the source freeze, two reviewed integration fixes, current measurements and one eight-suite regression.
+
+Evidence: 522 primary + 78 reused broad checks; 64 separately counted targeted checks; all exit 0. Final initial/replacement protected-result timings: 5.9290807 / 5.4128026 seconds, with four monitor observations. These are unresolved-policy engineering observations, not qualified deployed limits or healthy-policy timing. Earlier campaigns were reused; only concretely affected suites and one changed-startup delta were repeated.
+
+No full-row promotion candidates: **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Full integrated scenarios/second BUY-SELL dossier and existing Evidence transition retain their owners. Deployed limits/timing/host-autostart qualification remains separate. T010/T011 cannot close missing engineering; no production readiness/capital permission is granted.
+
+One natural reviewed checkpoint is authorized for normal publication; verified local/remote equality is recorded in the task handoff. Both protected checkouts were untouched by this work. **STOP. Step 10, real service/task installation, production keys, mainnet and capital actions remain NOT AUTHORIZED.**
+
+### Step 9C remaining work - C2 owner acceptance and final closeout authorization
+
+The owner accepts **Step 9C / C2 BOUNDED LOCAL PASS** at `92a9eab3ac8a2c4d19ffbf0a7fb968316f2bbafd`, including its 139 focused checks, 10 compiles, 15 verified artifacts and actual supervised-child degradation/recovery boundary. Steps 4-8, 9A, 9B, C1 and C2 remain accepted established inputs. The isolated LIVE branch was verified clean, with local/remote HEAD equal to that checkpoint and zero divergence before this run.
+
+The instruction `fab88706-4a92-4553-a21b-ca3f040a0ad1/pasted-text.txt` (SHA256 `75b3d443ceb714f153e56556d6c637188671e28e39f30b61ea3096274ac7f4e7`) authorizes all remaining Step-9C work and final Step-9 review in this same CHIEF run: current-source profile/latency and monitor-overhead delta measurements, one final frozen-source broad Operations regression, minimal dossier, one substantive SYSTEM review, evidence-based matrix assessment and a normal final checkpoint/push. No separate ceremonial C2-acceptance checkpoint is required.
+
+CHIEF delegates bounded task-local assignments to one consequential Astra High worker at a time, with compact context and fresh contexts when semantic scope changes. Accepted unchanged evidence is reused; old campaigns are not regenerated. The per-assignment progress/repeated-failure watchdog remains mandatory. Only affected scope is rerun after concrete fixture or production corrections. The full matrix contracts remain controlling; synthetic evidence cannot replace separately authorized host/HUMAN_EXTERNAL gates. Step 10, real service/task installation, production keys, mainnet mutation, capital action and both protected-checkout modifications remain unauthorized. **STOP after the honest Step-9 closeout; do not start Step 10.**
 
 ### Step 9C C2 - C1 owner acceptance and bounded authorization
 

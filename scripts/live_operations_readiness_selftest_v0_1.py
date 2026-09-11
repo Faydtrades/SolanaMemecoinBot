@@ -32,6 +32,7 @@ def check(name, value):
 
 
 def read(f, at=NOW+4, **kwargs):
+    kwargs.setdefault('operations_resources', lambda: a2.host(f, at))
     return barriers.evaluate(f.started, clock=lambda: a3.clock(f.repo, at), **kwargs)
 
 
@@ -177,8 +178,6 @@ def lifecycle(directory):
             check('current_actual_partial_SELL_protective_ready', ready.protective.ready)
             check('positive_protection_bound_actual_partial_and_due', ready.protective.action_id == partial.action_id
                 and ready.protective.due and not ready.entry.ready and f.repo.write_fence() == before)
-            old = barriers.evaluate(f.started, clock=lambda: a3.clock(f.repo, NOW+100), reduction=proof.evidence)
-            check('stale_exact_venue_wallet_clock_evidence_cannot_keep_protective_ready', not old.protective.ready)
             submitted, _, sends = rt.execution(f, key, partial, at=NOW+20, number=142)
             check('actual_Runtime_Authority_Execution_independently_dispatch_original', submitted.work == 'SUBMISSION_OBSERVED'
                 and len(sends.requests) == 1)
@@ -226,7 +225,8 @@ def lifecycle(directory):
             fresh_rows = [(n+48, rt.hf.MINT_C, kind, price) for n, _, kind, price in rt.hf.FIRST if n not in (5, 7)]
             f.append(fresh_rows)
             for _ in range(128):
-                candidate = f.runtime.step(clock=lambda: a3.clock(f.repo, NOW+52), source_cut_utc=a3.utc(NOW+48))
+                candidate = f.runtime.step(clock=lambda: a3.clock(f.repo, NOW+52), source_cut_utc=a3.utc(NOW+48),
+                    operations_resources=lambda: a2.host(f, NOW+52))
                 if candidate.work == 'NEED_ENTRY_FACTS': break
             item = f.repo.candidate(candidate.root_id)
             facts = rt.EntryFacts('PUMP', sf.TOKEN_PROGRAM_ID, c3.wallet(f, NOW+52, mint=item.mint))
@@ -234,9 +234,31 @@ def lifecycle(directory):
             check('legal_eventual_current_entry_after_truth_retirement_source', ready.entry.ready
                 and ready.entry.root_id == candidate.root_id and ready.entry.root_id != original.root_id
                 and ready.entry.deadline_us == item.generated_at_us+15000000 and ready.protective.state == 'NOT_REQUIRED')
-            admitted = f.runtime.step(clock=lambda: a3.clock(f.repo, NOW+52), source_cut_utc=a3.utc(NOW+48), entry=facts)
+            admitted = f.runtime.step(clock=lambda: a3.clock(f.repo, NOW+52), source_cut_utc=a3.utc(NOW+48), entry=facts,
+                operations_resources=lambda: a2.host(f, NOW+52))
             check('eventual_entry_actual_Authority_independently_admits_no_second_execution', admitted.work == 'ENTRY_ADMITTED'
                 and f.repo.authority_acceptance(item.trade_root(f.domain)).accepted and f.repo.audit()['attempt_count'] == 3)
+        finally:
+            a2.close(f)
+
+
+def stale_proof(directory):
+    # The future-time probe has its own durable monitor; this timeline ends here.
+    key = rt.Keypair()
+    with patch.object(sf, 'WALLET', str(key.pubkey())), patch.object(sf.plans, 'ACTOR', str(key.pubkey())):
+        f = a2.installed(rt.Fixture(directory, 'a3-stale-proof'))
+        try:
+            a2.restart(f)
+            acquired = rt.acquisition(f, key)
+            f.step(NOW+14)
+            original = f.runtime.position_binding
+            a2.c4.commit_exit_evaluation(f.repo, original, command_id='stale-due', timer_fence_utc=a3.utc(NOW+16))
+            a2.c4.ensure_protective_obligation(f.repo, original, recorded_at_utc=a3.utc(NOW+16))
+            partial = a2.c4.stage_protective_sell(f.repo, original, max_units=acquired.actual_base//3)
+            proof = public_reduction(f, partial, NOW+20, 145)
+            check('fresh_exact_proof_before_isolated_future_probe', read(f, NOW+20, reduction=proof.evidence).protective.ready)
+            old = read(f, NOW+100, reduction=proof.evidence)
+            check('stale_exact_venue_wallet_clock_evidence_cannot_keep_protective_ready', not old.protective.ready)
         finally:
             a2.close(f)
 
@@ -292,6 +314,7 @@ def main():
         directory = Path(temporary)
         normal(directory)
         lifecycle(directory)
+        stale_proof(directory)
         source_failure(directory)
         structural()
     print(json.dumps({'status': 'IMPLEMENTED_PENDING_PROJECT_REVIEW', 'checks': len(CHECKS),
