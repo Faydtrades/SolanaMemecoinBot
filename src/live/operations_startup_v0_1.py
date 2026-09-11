@@ -150,7 +150,7 @@ def _source_preflight(expected, producer_path, source_path, binding, profile):
 def start_live(operations_path, ledger_path, domain, *, process_identity, now_us,
                expected_identity, producer_path, market_source, producer_profile,
                source_path, source_binding, source_profile, database_identity,
-               replace_generation=None, batch_rows=32, page_rows=32, queued_roots=64):
+               replace_generation=None, batch_rows=32, page_rows=32, queued_roots=64, degradation_config=None):
     """Acquire -> audit -> original cold reconstruction -> historical typed facts.
 
     Failed startup consumes the acquired restart attempt; it never resets or
@@ -231,7 +231,11 @@ def start_live(operations_path, ledger_path, domain, *, process_identity, now_us
                     state, grants, pending, source_audit, unresolved)
         # Ownership may change after lock release; every eventual Runtime and
         # Execution action still checks A1. Historical audit never defeats that.
-        return StartedRuntime(runtime, audit)
+        started = StartedRuntime(runtime, audit)
+        from .operations_degradation_monitor_v0_1 import OperationsMonitor
+        runtime._operations_degradation = OperationsMonitor(started, degradation_config,
+            source_binding=source_binding, source_profile=source_profile, producer_profile=producer_profile)
+        return started
     except BaseException:
         owner.close()
         if runtime is not None:

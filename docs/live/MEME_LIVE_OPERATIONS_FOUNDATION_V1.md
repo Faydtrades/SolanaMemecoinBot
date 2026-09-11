@@ -1,6 +1,6 @@
 # MEME-LIVE Operations Foundation v1
 
-Status: **STEP 9B PROJECT_ACCEPTED_IMPLEMENTATION / BOUNDED LOCAL PASS; STEP 9C AUTHORIZED_IN_PROGRESS; C1 bounded LOCAL PASS**. The owner accepted Step 9B at `181d0258518b561ce9c348a7b3fe9396daeae537`. [Step-9C authorization](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-9c---accepted-input-and-bounded-c1-implementation) governs the current work. Final Step-9 SYSTEM acceptance remains unclaimed. Existing Architecture v2 and T008/T009 remain governing controls; earlier sections retain their historical scope.
+Status: **STEP 9B PROJECT_ACCEPTED_IMPLEMENTATION / BOUNDED LOCAL PASS; STEP 9C C1 OWNER-ACCEPTED BOUNDED LOCAL PASS; C2 BOUNDED LOCAL PASS; C3 DEFERRED**. The owner accepted Step 9B at `181d0258518b561ce9c348a7b3fe9396daeae537`. [Step-9C authorization](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-9c---accepted-input-and-bounded-c1-implementation) governs the current work. Final Step-9 SYSTEM acceptance remains unclaimed. Existing Architecture v2 and T008/T009 remain governing controls; earlier sections retain their historical scope.
 
 ## Q0 — Accepted input and bounded queue
 
@@ -554,3 +554,122 @@ CHIEF reviewed only the new measurement contracts, workload/owned composition, c
 C1 supplies bounded M52 measurement evidence only; M52 remains OWNED_NOT_BUILT. No rows are promoted: **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. C2 retains numerical-limit consumption, degradation/alerts and runbooks; C3 retains final dossier, frozen-source broad Operations regression and SYSTEM review. Production-host/HUMAN_EXTERNAL qualification and exhaustive Step-10 integration remain separate. No full S11/S12/E05 or hard worst-case claim is made.
 
 Both protected checkouts and production/raw/live state remained untouched. No production key, real service/task, mainnet signing/send/broadcast or capital action occurred. C1 uses disposable synthetic stores, fixture state and fake external I/O. The package stops at its natural reviewed checkpoint; C2 has not started.
+
+## Step 9C C2 operator procedures (bounded implementation; project review pending)
+
+This section describes the C2 interfaces implemented after the accepted C1 source freeze. It does not change original economic ownership, grant host deployment permission, qualify production limits, or promote matrix rows. C1 timings remain measurements of their original frozen sources. These procedures were exercised only with disposable synthetic stores and external ports.
+
+### Reviewed configuration prerequisite
+
+Actual owned `start_live` now installs the degradation monitor. Its optional Python argument `degradation_config=None` is a fail-closed missing-configuration condition, not a legacy production bypass. Pass the same typed configuration through the existing supervisor configuration dictionary. Operations readiness exposes `CURRENT_DEGRADATION_ENTRY_HOLD` when the additional gate holds; original protection and reconciliation remain controlled by their original owners.
+
+Before starting a host, the authorized reviewer supplies all of the following from an explicit reviewed record:
+
+- The canonical alert-journal path and original domain/StartupIdentity; host identity, original Runtime code digest, and the exact C2 source/configuration binding.
+- Every metric in `operations_degradation_v0_1.METRICS` with an explicit positive integer limit. `HOST_DISK_RESERVE_BYTES` is a minimum; other metrics are maxima. No C1 observed maximum is a default or qualified deployment cap.
+- `persistent_unknown_alert_us`, `recovery_evidence_max_age_us`, and rolling `resource_max_age_us`; these are policy, not release timers.
+- Current-owner startup evidence and prior same-host/config/code protective timing qualification. Qualification is required before first ENTRY; a future protective action is not required merely to manufacture or refresh timing evidence.
+
+In the existing trusted host configuration procedure, construct the following from those reviewed inputs (the named inputs are required; there are deliberately no example numerical limits):
+
+```python
+from live.operations_degradation_v0_1 import DegradationPolicy, ResourceLimit, METRICS
+from live.operations_degradation_monitor_v0_1 import MonitorConfiguration, monitor_configuration_digest
+
+assert set(reviewed_limits) == METRICS
+binding = monitor_configuration_digest(
+    expected_identity, path=alert_path, host_identity_digest=reviewed_host_digest,
+    resource_max_age_us=reviewed_resource_age_us,
+    protective_qualification_digest=reviewed_protective_qualification_digest,
+)
+assert binding == reviewed_monitor_binding  # Computing a digest is not approval.
+policy = DegradationPolicy(binding, reviewed_unknown_alert_us, reviewed_recovery_age_us,
+    tuple(ResourceLimit(metric, reviewed_limits[metric]) for metric in sorted(METRICS)))
+degradation_config = MonitorConfiguration(alert_path, policy, reviewed_host_digest,
+    expected_identity.runtime_code_digest, reviewed_resource_age_us,
+    reviewed_protective_qualification_digest)
+configuration["degradation_config"] = degradation_config
+```
+
+`monitor_configuration_digest` explicitly binds monitor/condition source bytes, original configuration and Runtime identity, canonical path, host, freshness and qualification; `policy.content_digest` additionally binds numerical limits and intervals. A source/config/path/policy change requires a new explicit review and incident-preserving migration decision. C2 supplies no migration/reset shortcut. Initial provisioning uses the original `DegradationStore.initialize` API once for an explicitly authorized new canonical journal; never call it as recovery from an unreadable/missing existing journal, and never substitute a new path to lose an active episode.
+
+The host's existing `operations_resources` callable must return typed `HostObservations` with this host/configuration and the exact current owner-fence digest. `HostMetric` covers RSS, disk reserve, current-owner startup and reviewed protective timing. Missing, unsupported, stale or wrongly bound values remain unresolved. RSS/disk samples must precede the monitor's captured clock and remain within reviewed age. Startup evidence remains tied to that owner; protective timing must carry the reviewed qualification digest. A current observation may reference prior timing qualification; neither is a periodic protective-work requirement.
+
+Producer/checkpoint/resource and Ledger facts are captured by the actual monitor. Do not supply substitute economic measurements. Every resource dimension requires configured coverage. Backlog age is unknown/null and inapplicable only when the same source cut positively proves exactly zero backlog; positive backlog requires a fresh measured age and its configured limit. Missing backlog evidence cannot assert inapplicability. Original `ContinuationProfile` controls remain in force independently.
+
+### Inspect sanitized status without changing state
+
+Run in the existing trusted host Python environment, where `configuration` and `domain` are the already reviewed objects. This is executable read-only inspection, with no argument parser accepting arbitrary provider payloads:
+
+```python
+import json
+from live.operations_degradation_status_v0_1 import recorded_status
+print(json.dumps(recorded_status(configuration["degradation_config"], domain,
+    configuration["expected_identity"]), sort_keys=True))
+```
+
+This returns `HISTORICAL_RECORDED_ALERTS`, fixed conditions/actions, episode timestamps, scope and subject digest. Resource rows identify the exact fixed `metric`, `configured_limit` and `limit_direction`; missing metric coverage has `profile_code=REQUIRED_METRIC_COVERAGE`. It prints no paths, raw exceptions, provider parameters or payloads. `OPERATIONS_ALERT_STATUS_UNAVAILABLE` is a held/unavailable result, never an empty healthy result. All permission fields remain false. `entry_held=false` in this historical view is not a current readiness or trade grant; inspect the original current `operations_readiness_v0_1.evaluate` and supervisor facts through the existing host controls. `supervisor.alert_snapshot()` is the sanitized snapshot from its most recent real poll, not an independent fresh observation.
+
+Normal no-candidate/no-entry-facts waiting, an ordinary active position, monitoring and restart backoff do not create incidents. An ACTIVE condition persists across missing observations, store reopen, owner restart or changed subject identity. RECOVERED is a recorded positive transition, not permission. Unchanged active observations retain first-seen age and the episode's `active_digest`, update the latest real active sample timestamp, and do not append per-poll receipts. Delayed UNKNOWN alerts escalate at the explicit policy interval without releasing anything.
+
+### Respond using the original owner
+
+| Fixed condition/family | Operator procedure and positive resolution boundary |
+|---|---|
+| `SOURCE_TRUTH_UNAVAILABLE` | Restore the existing collector/source access and same lineage continuity. Let the original adapter/checkpoint validate a fresh positive cut. Generic availability can recover automatically; missing samples cannot. Price-dependent work still obeys original source rules. |
+| `SOURCE_IDENTITY_OR_HISTORY_BROKEN`, `PRODUCER_INTEGRITY_UNAVAILABLE` | Retain the hold. Have the authorized original owner establish the exact original anchors, lineage, repaired history, checkpoint/tail and accepted profile. A new anchor/database identity is not recovery. These human conditions require the manual audit boundary below; irreparable original evidence remains held. |
+| `PROFILE_UNRESOLVED`, `RESOURCE_EXCEEDED` | Inspect the fixed metric/limit mapping. Restore supported, fresh, correctly bound evidence and the reviewed resource envelope. The monitor recovers the same metric/subject only on fresh positive facts; reducing backlog to proven empty can make age inapplicable. Restored resources do not resolve other incidents or release retained attempts. |
+| `OPERATOR_STOPPED`, `RESTART_EXHAUSTED`, `OWNER_FENCE_UNPROVEN`, `SUPERVISOR_HELD` | Inspect original `OperationsStore.snapshot()` and actual supervisor facts. Use the previously authorized host stop/recovery procedure. Original `operator_reset(expected_generation=..., now_us=...)` changes only its documented stop/budget state; it neither acquires a new owner nor clears Authority. Require an exact exclusive current owner, original full restart barriers and absence of original Authority hard stop before manual incident recovery. Lost fence, unreadable control or child failure never grants mutation. |
+| `SEND_UNKNOWN`, `FINALITY_UNRESOLVED` | Continue original public reconciliation when its owner permits. Only an actual positive exact classified final outcome/nonlanding proof can recover the matching incident; NULL/aged lookup, absent pending row or a restart is not evidence. Original pending attempt, lane and capacity disposition remain authoritative even when an alert recovers. |
+| `SETTLEMENT_UNKNOWN`, `CUSTODY_TRUTH_UNAVAILABLE`, `ECONOMIC_INTEGRITY_UNAVAILABLE` | Use original Ledger application/reconciliation and custody classification. Exact applied balanced settlement can resolve its own alert. Quarantined/unsupported custody or broken economic replay remains a human condition until original owner proof establishes classification and intact policy/replay. C2 makes no new financial adjudication. |
+| `PROTECTIVE_ACTION_UNAVAILABLE`, `CLOCK_UNPROVEN` | Inspect original due-action/readiness and trusted-clock reasons. Restore the original action's prerequisites or prove original satisfaction; establish original qualified clock continuity. C2 does not skip due work, substitute a price, or stage a new recovery trade. Original owners decide whether protection/reconciliation may proceed while ENTRY is held. |
+| `UNSENT_ATTEMPT_RECOVERY_REQUIRED` | Inspect the exact original attempt and capacity. A C2-gated unsigned attempt can remain PREPARED/EXACT_SIMULATED/AUTHORIZED with its lane held; later Runtime returns `HELD / UNSIGNED_OR_CONSUMED_ATTEMPT_REQUIRES_LATER_RECOVERY`. A `SIGNED_DURABLE` but unsent attempt remains retained and later requests `NEED_RECONCILIATION`. Neither automatically resumes, retries, sends, retires or releases when resources recover. Keep action `REVIEW_ORIGINAL_UNSENT_ATTEMPT_NO_AUTOMATIC_RETRY`; absent original attempt/capacity adjudication proof, this condition remains irreducible. |
+| Alert storage/config/current evidence unavailable | Retain ENTRY restriction, inspect the original canonical journal and reviewed binding using the authorized host procedure, and restore readable intact storage. Do not initialize another store, delete files/receipts, change policy/path or silence the condition. A failed journal cannot guarantee a new durable alert; current Runtime/supervisor unavailable output is the required signal. Original protection/truth work still follows original permissions. |
+
+### Privileged manual audit boundary
+
+This is a bounded authorized human audit, not acknowledgement or an automatic monitor reset. First perform the applicable **original** recovery procedure above. If the original contracts do not provide the necessary proof, stop with the incident held and escalate to the project owner. In particular, C2 supplies no unsigned-attempt adjudicator and no history-repair authority.
+
+An authorized reviewer may use existing `DegradationStore.record` only while holding the **current** `OperationsOwnership.mutation_guard(domain)`. Revalidate the exact fence/domain/configuration, original source/attempt/action/control subject, and fresh original owner proof under that guard. Read the latest ACTIVE row from the canonical journal there; retain its `active_digest`. Bind the evidence digest to that original proof and read cut, not a free-text review receipt. The recording operation is:
+
+```python
+from live.operations_degradation_v0_1 import ConditionEvidence, CONDITIONS
+# Inside the current owner's mutation_guard, after the owner-specific proof
+# checks above, with row from this same canonical journal/current read cut:
+journal.record(ConditionEvidence(
+    row.condition, row.subject_digest, proof_observed_us, original_proof_digest,
+    "RECOVERED", CONDITIONS[row.condition][1], row.active_digest,
+), now_us=current_observation_us)
+```
+
+The trusted reviewer must establish that `original_proof_digest` represents positive same-owner/same-subject state. The journal validates identities, the exact episode witness, strictly newer evidence than the latest active sample, no future evidence and reviewed evidence age; a syntactically valid digest alone establishes none of the original facts. Re-read after any intervening active observation or owner change. No acknowledgement, timeout, monitor reset, new anchor, row deletion or resource recovery substitutes for original proof.
+
+Independent parent and child clock samples may be ingested out of capture order. Journal metadata is a monotonic ingestion watermark; recorded observation/first-seen/recovery timestamps remain their real sampled values. An older observation cannot overwrite a newer active/recovered episode, and recovery age is measured against the watermark. Original Authority/owner clock regression guards remain controlling.
+
+The alert journal allows at most one second of SQLite contention waiting within a Runtime step's monitor window. After an unavailable observation, that step stays conservatively unavailable without repeating waits; the next step samples again. Healthy ENTRY boundaries still get fresh observations. This allowance can delay original due work by up to that contention budget; it is not a measured hard bound on filesystem I/O, owner checks, producer validation or total protective latency. Standalone status/supervisor calls have their own finite journal waits. Final host/timing qualification belongs to the remaining integration review; C1 timing samples have not been requalified for this changed composition.
+
+## Step 9C C2 - Bounded package review and closeout
+
+CHIEF records **C2.1 / C2.2 / C2.3: bounded LOCAL PASS**, following the short task reviews and final review of actual composition, durable evidence and the runbooks above. Accepted starting local/remote HEAD was `4dd1e267d7335158e440c0967df822cb46974f2e` on `live/meme-production-readiness`. The natural C2 checkpoint adds three production modules (`operations_degradation_v0_1.py`, `operations_degradation_monitor_v0_1.py`, `operations_degradation_status_v0_1.py`), integrates existing `operations_startup_v0_1.py`, `operations_readiness_v0_1.py`, `operations_supervisor_v0_1.py` and `runtime_composition_v0_1.py`, and adds three focused standalone self-tests. No original Ledger, Authority, Execution, producer, collector or economic recovery semantics were changed.
+
+The contract preserves durable condition/subject identity, first-seen age, fixed scope/action codes and UNKNOWN escalation. Missing data or elapsed time never recovers an incident. Actual owned startup requires reviewed complete resource/configuration coverage; current Runtime ENTRY, BUY preparation, signing and send boundaries consume its additional hold. Existing protection, reconciliation, original hard-stop/fence and capacity rules remain controlling. Positive resource recovery cannot resolve the new explicit human alert for an unsigned or signed-unsent durable attempt. No automated unsent-attempt recovery was added.
+
+The composed qualification uses real owned startup, Runtime, supervisor and one disposable child with deterministic external inputs: normal waiting -> resource exceeded -> repeated exceeded -> positive recovery. The actual historical status port identifies the fixed metric/limit; parent polling sees the same durable conditions. Repeated active polling preserves one episode receipt. Independent captured parent/child times remain original observations while metadata advances monotonically; old evidence cannot clear newer conditions. Current storage failure remains a visible non-authorizing unavailable state, because a damaged journal cannot promise new durable recording.
+
+All final commands used the isolated checkout and `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe -B`. Evidence root: `C:\Users\Mari1\AppData\Local\Temp\meme-live-c2-evidence-4dd1e26`.
+
+| Command suffix | Checks | Exit | Seconds | Final artifact prefix |
+|---|---:|---:|---:|---|
+| `scripts/live_operations_degradation_selftest_v0_1.py` | 62 | 0 | 2.31 | `c2-3-contract-final` |
+| `scripts/live_operations_degradation_integration_selftest_v0_1.py` | 52 | 0 | 22.61 | `c2-3-integration-final` |
+| `scripts/live_operations_degradation_status_selftest_v0_1.py --ordering` | 10 | 0 | 3.20 | `c2-3-ordering-final` |
+| `scripts/live_operations_degradation_status_selftest_v0_1.py --contention` | 3 | 0 | 4.89 | `c2-3-contention-final` |
+| `scripts/live_operations_degradation_status_selftest_v0_1.py` | 12 | 0 | 8.34 | `c2-3-composed-final` |
+
+These **139 reported checks** are focused C2 evidence, not the broad Operations campaign. Earlier C2.1/C2.2 successes remain historical; final contract/integration evidence supersedes paths affected by the journal corrections. The final source was held unchanged after these runs. CHIEF verified all 10 Python source hashes, compiled those files with `compile(bytes, path, 'exec')` without bytecode writes, verified 15 linked command/stdout/stderr hashes and all reported check booleans, then reviewed the final scope/diff. The final Python source manifest and qualification records are aggregated in `c2-chief-manifest.json`; its source-map SHA256 is `fd84fe2993812b1948e60df9ee612fc7ffd4dbb4d8fa229f35b13d4d1c306b37`.
+
+Failed child attempts r1/r2 triggered the mandatory pause and deterministic diagnosis: an earlier captured child sample was rejected after a later parent advance; repeated active samples also appended unnecessary receipts. The ordering/coalescing correction passed focused checks. r3 still held, so another pause and fixed-code-only diagnostic identified independent SQLite timeout-zero contention. A successful intermediate child run followed the bounded wait correction; final qualification followed the shared step contention window. Failed/diagnostic runs remain retained and excluded. The one-second journal contention allowance was exercised by a locked step taking 1.156 seconds including ordinary overhead; it is not a total I/O/protection latency guarantee. No repeated broad suite or old fault campaign occurred.
+
+One Astra High worker was reused through three explicit new bounded assignments; CHIEF retained review and publication authority. No escalation or unexplained long-running measurement occurred. Only the natural package is checkpointed. M53 receives bounded evidence without full-row promotion; counts remain **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. C3 retains the final dossier, integrated measured profile and current-source monitoring/latency qualification, broad Operations regression and SYSTEM/matrix review. M52's accepted C1 measurements retain their original revision scope. Host/HUMAN_EXTERNAL gates and Step-10 exhaustive integration remain separately owned. No new downstream owner or automated recovery transition was added.
+
+Both protected checkouts, production/raw/live data and unrelated processes remained untouched. All stores, child processes and external execution I/O were disposable synthetic fixtures/mocks. No real service/task installation, production key, mainnet signing/send/broadcast or capital action occurred. **STOP after C2. C3 remains deferred; Step 10 remains NOT AUTHORIZED.**

@@ -7,6 +7,7 @@ Runtime, Authority and Execution still independently select/approve every action
 from __future__ import annotations
 
 import sqlite3
+import copy
 from dataclasses import dataclass, field, replace
 
 from . import authority_controls_v0_1 as authority
@@ -115,7 +116,7 @@ def _entry(runtime, sample, entry, blockers):
         None if selected is None else selected[1].content_digest
 
 
-def evaluate(started, *, clock, entry=None, reduction=None):
+def evaluate(started, *, clock, entry=None, reduction=None, operations_resources=None):
     """Sample original current owners/evidence, without any economic mutation.
 
     A2 audit proves the startup path only. Its historical controls, funding,
@@ -131,7 +132,15 @@ def evaluate(started, *, clock, entry=None, reduction=None):
         authority.require(type(owner) is OperationsOwnership and owner.fence == started.audit.owner_fence,
             "OPERATIONS_ACTUAL_STARTUP_OWNER_REQUIRED")
         with owner.mutation_guard(repo.domain), repo._trusted_read():
-            return _current(runtime, sample, entry, reduction)
+            result = _current(runtime, sample, entry, reduction)
+        monitor = runtime._operations_degradation
+        if monitor is not None:
+            alerts = monitor.observe(sample, entry=entry, reduction=reduction, resources=operations_resources,
+                readiness=result)
+            if alerts.entry_held:
+                result = replace(result, entry=replace(result.entry, state="HELD", ready=False,
+                    reasons=tuple(sorted(set((*result.entry.reasons, "CURRENT_DEGRADATION_ENTRY_HOLD"))))))
+        return result
     except (ValueError, RuntimeError, sqlite3.DatabaseError, OSError, TypeError):
         # Neither a lost owner nor a failed current read can resurrect A2 facts.
         return ReadinessFacts(sample, None, None,
@@ -163,7 +172,9 @@ def _current(runtime, sample, entry, reduction):
                 "OPERATIONS_CURRENT_PRODUCER_READ_BOUNDARY_REQUIRED")
             producer.conn.execute("BEGIN")
             try:
-                manifest = producer._validate_checkpoint()
+                observer = copy.copy(producer)
+                observer.metrics = dict(producer.metrics)
+                manifest = observer._validate_checkpoint()
                 authority.require(manifest["generation"] == producer._generation,
                     "OPERATIONS_CURRENT_PRODUCER_GENERATION_REQUIRED")
             finally:

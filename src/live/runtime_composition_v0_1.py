@@ -84,6 +84,7 @@ class RuntimeCompositionV01:
     """
     # Accepted pre-Operations cold factory bypasses __init__; it remains unowned.
     _ownership = None
+    _operations_degradation = None
 
     def __init__(self, producer, handoff, ledger, source_store, *, batch_rows=32, page_rows=32, queued_roots=64,
                  ownership=None):
@@ -217,9 +218,16 @@ class RuntimeCompositionV01:
         except (OperationsOwnershipError, sqlite3.DatabaseError, OSError):
             return False
 
-    def _execute(self, action, ports, clock, *, fence, ordinal):
+    def _entry_degradation(self, clock, entry, resources, source_cut_utc=None):
+        monitor = self._operations_degradation
+        return monitor is not None and monitor.observe(clock(), entry=entry, resources=resources,
+            source_cut_utc=source_cut_utc).entry_held
+
+    def _execute(self, action, ports, clock, *, fence, ordinal, entry=None, operations_resources=None):
         if not self._owner_current():
             return self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED", action=action)
+        if action.side == "BUY" and self._entry_degradation(clock, entry, operations_resources):
+            return self._result("OPERATIONS_ENTRY_HELD", "CURRENT_DEGRADATION_ENTRY_HOLD", action=action)
         if ports is None:
             return self._result("NEED_EXECUTION", "ORIGINAL_ACTION_AWAITS_EXTERNAL_PORTS", action=action)
         require(type(ports) is ExecutionPorts, "RUNTIME_CONCRETE_EXECUTION_PORTS_REQUIRED")
@@ -236,6 +244,8 @@ class RuntimeCompositionV01:
                 None if stage == "SIGN" else attempt.primary_signature)
             return self.ledger.consume_authority_message_stage(request, sample, source, production.original.evidence,
                 fence=self.ledger.write_fence())
+        if action.side == "BUY" and self._entry_degradation(clock, entry, operations_resources):
+            return self._result("OPERATIONS_ENTRY_HELD", "CURRENT_DEGRADATION_ENTRY_HOLD", action=action, attempt=prep.attempt_id)
         sign = consume("SIGN")
         if type(sign) is not FreshStageConsumption:
             return self._result("HELD", "AUTHORITY_SIGN_NOT_FRESHLY_GRANTED", action=action, attempt=prep.attempt_id,
@@ -243,6 +253,8 @@ class RuntimeCompositionV01:
         envelope = ports.signer.sign_exact(self.ledger, production, sign, source_store=source, clock=clock,
             ownership=self._ownership)
         persist_signed_envelope(self.ledger, envelope, fence=self.ledger.write_fence())
+        if action.side == "BUY" and self._entry_degradation(clock, entry, operations_resources):
+            return self._result("OPERATIONS_ENTRY_HELD", "CURRENT_DEGRADATION_ENTRY_HOLD", action=action, attempt=prep.attempt_id)
         send = consume("SEND")
         if type(send) is not FreshStageConsumption:
             return self._result("HELD", "AUTHORITY_SEND_NOT_FRESHLY_GRANTED", action=action, attempt=prep.attempt_id,
@@ -306,8 +318,38 @@ class RuntimeCompositionV01:
             ":".join(receipt.retirement_reasons) or "ACTUAL_LEDGER_CAPACITY_RELEASED",
             action=action, attempt=terminal.attempt_id, key=key)
 
-    def step(self, *, clock, entry=None, execution=None, truth_rpc=None, application_wallet=None,
-             retirement_wallet=None, exit_proofs=None, source_cut_utc=None):
+    def step(self, *, clock, entry=None, operations_resources=None, **resources):
+        monitor = self._operations_degradation
+        if monitor is None:
+            return self._monitored_step(clock=clock, entry=entry, operations_resources=operations_resources, **resources)
+        with monitor.step_window():
+            return self._monitored_step(clock=clock, entry=entry, operations_resources=operations_resources, **resources)
+
+    def _monitored_step(self, *, clock, entry=None, operations_resources=None, **resources):
+        """Observe current degradation around original work; it only gates ENTRY."""
+        monitor = self._operations_degradation
+        original_clock = clock
+        if monitor is not None:
+            initial_sample = original_clock()
+            monitor.observe(initial_sample, entry=entry, resources=operations_resources,
+                source_cut_utc=resources.get("source_cut_utc"))
+            first = True
+            def clock():
+                nonlocal first
+                if first:
+                    first = False
+                    return initial_sample
+                return original_clock()
+        result = self._step(clock=clock, entry=entry, operations_resources=operations_resources, **resources)
+        if monitor is not None:
+            final_sample = clock()
+            monitor.observe(final_sample, entry=entry, resources=operations_resources,
+                source_cut_utc=resources.get("source_cut_utc"))
+            monitor.note_work(result, final_sample)
+        return result
+
+    def _step(self, *, clock, entry=None, execution=None, truth_rpc=None, application_wallet=None,
+             retirement_wallet=None, exit_proofs=None, source_cut_utc=None, operations_resources=None):
         """One bounded next legal work unit. Resource presence never sets priority."""
         sample = clock()
         require(type(sample) is TrustedClockSample and sample.status == "QUALIFIED", "RUNTIME_QUALIFIED_CLOCK_REQUIRED")
@@ -339,8 +381,12 @@ class RuntimeCompositionV01:
             # A failed/previously resolved BUY is never silently retried by C2.
             if self.ledger._root_attempts(action.root_id):
                 return self._result("HELD", "ENTRY_OUTCOME_REQUIRES_LATER_RETIREMENT", action=action)
-            self._source_health(sample, source_cut_utc)
-            return self._execute(action, execution, clock, fence=snapshot["fence"], ordinal=1)
+            try:
+                self._source_health(sample, source_cut_utc)
+            except (ValueError, RuntimeError, sqlite3.DatabaseError, OSError):
+                return self._result("SOURCE_HELD", "CURRENT_SOURCE_UNAVAILABLE", action=action)
+            return self._execute(action, execution, clock, fence=snapshot["fence"], ordinal=1,
+                entry=entry, operations_resources=operations_resources)
         source_state = self._source_page(sample, source_cut_utc)
         snapshot = self.ledger.consumer_snapshot()
         if snapshot["positions"] or snapshot["reservations"] or snapshot["funding"].quarantine_reasons:
@@ -348,6 +394,8 @@ class RuntimeCompositionV01:
             return self._result("ENTRY_HELD", reason)
         if source_state == "SOURCE_UNAVAILABLE_OR_PROFILE_EXHAUSTED":
             return self._result("SOURCE_HELD", source_state)
+        if self._entry_degradation(clock, entry, operations_resources, source_cut_utc):
+            return self._result("OPERATIONS_ENTRY_HELD", "CURRENT_DEGRADATION_ENTRY_HOLD")
         if not self._queue:
             return self._result("SOURCE_ADVANCED", source_state)
         root = self._queue[0]

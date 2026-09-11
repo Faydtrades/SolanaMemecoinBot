@@ -92,6 +92,8 @@ class OperationsSupervisor:
         self._failed = False
         self._latched = None
         self.completed_steps, self.last_work = 0, None
+        self._now_us = self.store.snapshot()["last_control_us"]
+        self._alerts = None
         state = self.store.snapshot()
         if expected_generation is not None and (type(expected_generation) is not int
                                                 or expected_generation != state["generation"]):
@@ -100,8 +102,16 @@ class OperationsSupervisor:
             self._latched = "HELD_EXISTING_OWNER"
 
     def _facts(self, state):
-        return SupervisionFacts(state, None if self.process is None else self.process.pid,
+        facts = SupervisionFacts(state, None if self.process is None else self.process.pid,
             None if self.fence is None else self.fence.generation, self.completed_steps, self.last_work)
+        from .operations_degradation_monitor_v0_1 import observe_supervisor
+        self._alerts = observe_supervisor(self._configuration, self.store, facts, now_us=self._now_us)
+        return facts
+
+    def alert_snapshot(self):
+        """Sanitized read-only consumer view; no PID/provider/child payload text."""
+        from .operations_degradation_monitor_v0_1 import unavailable
+        return self._alerts if self._alerts is not None else unavailable("OPERATIONS_CURRENT_EVIDENCE_UNAVAILABLE")
 
     def _hold(self, reason):
         self._latched = reason
@@ -146,6 +156,7 @@ class OperationsSupervisor:
 
     def poll(self, *, now_us, monotonic_us):
         OperationsStore._time(now_us)
+        self._now_us = now_us
         if type(monotonic_us) is not int or monotonic_us < 0:
             raise ValueError("OPERATIONS_MONOTONIC_CLOCK_REQUIRED")
         if self._last_mono is not None and monotonic_us < self._last_mono:
@@ -248,6 +259,7 @@ class OperationsSupervisor:
         # A busy in-flight mutation raises here; do not claim a committed stop
         # and do not signal/restart before the durable transition succeeds.
         self.store.operator_stop(now_us=now_us)
+        self._now_us = now_us
         self._latched = "OPERATOR_STOPPED"
         if self.process is not None and self.process.exitcode is None:
             self.process.terminate()

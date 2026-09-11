@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 9C**, its continuation and direct C1 clarification are attributed below. Step 9B is **PROJECT_ACCEPTED_IMPLEMENTATION / BOUNDED LOCAL PASS** at `181d0258518b561ce9c348a7b3fe9396daeae537`. Step 9C is **AUTHORIZED_IN_PROGRESS**. Step-9 final SYSTEM acceptance remains unclaimed; Step 10 and external gates remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE - STEP 9C / C2** are attributed below. C1 at `4dd1e267d7335158e440c0967df822cb46974f2e` is owner-accepted **BOUNDED LOCAL PASS**. C2 degradation/alerts/runbooks is **BOUNDED LOCAL PASS** after CHIEF review; publication is the single natural C2 checkpoint. C3 final dossier/SYSTEM qualification/broad regression is deferred; Step 10 and real production/external actions remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,24 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 9C C2 - C1 owner acceptance and bounded authorization
+
+The owner explicitly accepts **Step 9C / C1 BOUNDED LOCAL PASS** at `4dd1e267d7335158e440c0967df822cb46974f2e`. Its qualified engineering measurements, exclusions and limitations are established inputs. Steps 4-8, 9A, 9B and C1 are not reopened or requalified absent a concrete C2 invalidation. M52 retains evidence only; matrix remains **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**.
+
+The C2 instruction (`7cd88c52-f658-4aa6-b84d-bf621bbff6f9/pasted-text.txt`, SHA256 `90406e95e74ec53fe47f070c28302e1d50716587ab0f2b7b5b03a2a8bc0717e9`) authorizes only degradation behavior, production-relevant sanitized alerts, concise human recovery runbooks and necessary narrow compatibility corrections. It authorizes CHIEF review/status and one normal package commit/push after composed C2 qualification, scoped checks and evidence aggregation. No broad Operations regression, C1 measurement repeat or accepted-suite rerun for reassurance occurs.
+
+CHIEF assigns three dependency-ordered bounded tasks: durable degradation/alert state; actual Operations/Runtime integration; then runbooks and composed C2 qualification. One Astra High implementation worker runs at a time and may receive new related assignments while healthy. CHIEF performs short task sanity reviews and one natural package acceptance/checkpoint. The mandatory progress watchdog inspects 30-45 minutes without substantive results, pauses unexplained 60-90 minute work, and requires diagnosis after 2-3 same-family failures. Known long commands require a stated purpose and expected duration before waiting.
+
+Accepted ownership/fence, Authority, Ledger, protection, UNKNOWN and readiness semantics remain controlling. Alerts/acknowledgement cannot grant mutation, clear economic ambiguity or invent recovery. Host/HUMAN_EXTERNAL qualification, C3 final dossier/SYSTEM review/broad regression and Step 10 remain outside this run. Both protected checkouts and real production resources remain untouched; no services/tasks, production keys, mainnet mutation or capital action. **STOP after C2.**
+
+### Step 9C C2 - Bounded package review and closeout
+
+CHIEF records **C2.1 / C2.2 / C2.3 and the natural C2 package: BOUNDED LOCAL PASS**, under the explicit C2 authorization above. Durable fixed-code conditions, actual owned Runtime/readiness/supervisor integration, sanitized historical operator status and concise human recovery procedures are delivered. [C2 Operations closeout](MEME_LIVE_OPERATIONS_FOUNDATION_V1.md#step-9c-c2---bounded-package-review-and-closeout) records the exact frozen source, commands, limitations and reviewed corrections. Final focused evidence is **139 reported checks across five commands, all exit 0**, plus 10 scoped Python compiles and linked-artifact/hash verification. No broad regression or C1 measurement repeat occurred.
+
+One fresh Astra High worker received three new bounded assignments in the same healthy context. The repeated-failure watchdog paused child retries and required deterministic diagnosis of shared journal observation ordering and lock contention; both were corrected and only affected C2 evidence was rerun. No reasoning escalation occurred. CHIEF reviewed the actual changes and qualification boundaries, then authorized this one normal package checkpoint. No completed prior package was reopened for general review.
+
+M53 gains bounded degradation/alert/runbook evidence only; no row is promoted. Matrix remains **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. C3 retains final Operations dossier, current-source integrated profile/latency qualification (including C2 monitoring overhead), broad Operations regression and SYSTEM/matrix review. C1 measurements remain valid for their original source revision, not proof of current production limits. Original unsent-attempt adjudication, human integrity recovery and host/external qualification are not invented by C2. **STOP after C2; C3 is deferred and Step 10 is NOT AUTHORIZED.** Both protected checkouts, production/raw/live resources and unrelated processes remained untouched; no real services/tasks, production keys, mainnet mutation or capital action occurred.
 
 ### Step 9C - Accepted input and bounded C1 implementation
 
