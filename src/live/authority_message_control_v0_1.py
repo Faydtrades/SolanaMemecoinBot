@@ -299,18 +299,18 @@ def _current_source(state, candidate, policy, supplied):
     return tuple(reasons), checkpoints
 
 
-def assess_message_stage(original, state, custody, attempt, selection, comparison, *, generation, lane,
-                         grant, grant_revoked, consumed_grant_root, accepted, policies, applications, actions,
-                         stage_history, inbox_disposition):
-    """Only original inputs + chronological Ledger facts; no current DB reads."""
-    request, validation = original.request, original.validation
+def assess_current_action(validation, state, custody, *, grant, grant_revoked,
+                          consumed_grant_root, accepted, policies, applications, actions,
+                          inbox_disposition):
+    """Pure current action prerequisites, independent of attempt/stage claims.
+
+    Shared by actual stage assessment and Operations' dispatch classification.
+    Input must contain the real stored immutable action/context and original
+    public evidence. No action, attempt, grant or stage permission is created.
+    The caller still owns current context, wallet comparison and lane checks.
+    """
     context, clock = validation.context, validation.clock
     policy, action = context.original_policy, context.action
-    require(context.domain.mode == "LIVE" and request.action_id == action.action_id
-        and attempt is not None and request.attempt_id == attempt.preparation.attempt_id,
-        "AUTHORITY_MESSAGE_ACTUAL_ATTEMPT_REQUIRED")
-    require(original.selection_digest == selection.content_digest and validation.profile == selection.command.profile,
-        "AUTHORITY_MESSAGE_SELECTED_PROFILE_CONFLICT")
     checked = validate_message_evidence(validation)
     reasons = list(checked.reasons)
     if checked.disposition != "SUPPORTED_CONTEXT_ONLY":
@@ -326,6 +326,69 @@ def assess_message_stage(original, state, custody, attempt, selection, compariso
         reasons.append("ORIGINAL_SCOPE_GRANT_MISSING_OR_HARD_REVOKED")
     if grant is not None and grant.scope == "ENTRY_ONCE" and consumed_grant_root != action.root_id:
         reasons.append("ORIGINAL_ONE_TIME_ROOT_CONSUMPTION_REQUIRED")
+    if custody.quarantined or inbox_disposition != "ACCEPTED":
+        reasons.append("CURRENT_CUSTODY_OR_INBOX_NOT_MUTABLE")
+    reservation = next((item for item in custody.reservations if item.root_id == action.root_id), None)
+    if reservation is None or reservation.retired_sequence is not None:
+        reasons.append("ORIGINAL_HELD_RESERVATION_REQUIRED")
+    remaining = None if context.position is None else context.position.remaining_units
+    if action.side == "BUY":
+        if context.position is not None and context.position.acquired_units:
+            reasons.append("SUCCESSFUL_ROOT_CANNOT_REACQUIRE")
+    elif (context.position is None or context.protection is None or not context.position.usable
+            or not 0 < action.input_units <= context.position.remaining_units
+            or context.protection.obligation_state not in ("DUE", "MONITORING")):
+        reasons.append("ACTUAL_PROTECTED_REMAINING_REDUCTION_SCOPE_REQUIRED")
+    rows = root_encumbrances(custody, accepted, policies, applications, actions)
+    if action.side == "BUY":
+        if any(row.root_id != action.root_id for row in rows) or any(position.root_id != action.root_id and position.status != "RETIRED" for position in custody.positions):
+            reasons.append("V1_OTHER_ECONOMIC_ROOT_OCCUPIED")
+        if sum(row.exposure_quote_cap_lamports for row in rows) > policy.size.max_global_exposure_lamports:
+            reasons.append("CURRENT_GLOBAL_ORIGINAL_CAP_EXPOSURE_EXCEEDED")
+    own = next((item for item in rows if item.root_id == action.root_id), None)
+    other = sum(item.outstanding_lamports for item in rows if item.root_id != action.root_id)
+    future = failure = required = None
+    if own is None or own.failure_budget_remaining_lamports is None or own.remaining_failed_attempt_count is None:
+        reasons.append("ORIGINAL_ROOT_COST_HISTORY_UNPROVEN")
+    else:
+        failure = own.failure_budget_remaining_lamports
+        if own.remaining_failed_attempt_count == 0:
+            reasons.append("ACTUAL_FAILURE_ATTEMPT_BUDGET_EXHAUSTED")
+        costs = policy.costs
+        future = (costs.protective_network_fee_lamports+costs.protective_setup_lamports+costs.protective_refundable_lock_lamports
+            if action.side == "BUY" or remaining is not None and action.input_units < remaining else 0)
+        if checked.costs is not None:
+            if checked.costs.network_total_fee_lamports > failure:
+                reasons.append("CURRENT_EXACT_FEE_EXCEEDS_REMAINING_FAILURE_ALLOWANCE")
+            required = other+checked.costs.gross_upfront_native_lamports+failure+future
+            if required > (1<<64)-1 or other > (1<<64)-1 or future > (1<<64)-1:
+                reasons.append("CURRENT_RESOURCE_AGGREGATE_U64_OVERFLOW")
+            elif custody.native_lamports is None or custody.native_lamports < required:
+                reasons.append("CURRENT_GROSS_COST_FAILURE_AND_RESIDUAL_EXIT_HEADROOM_INSUFFICIENT")
+    risk = CurrentMessageRisk(custody.native_lamports, sum(item.units for item in custody.accounts if item.mint == "So11111111111111111111111111111111111111112"),
+        sum(item.observed_locked_lamports for item in custody.accounts), custody.network_fees_paid_lamports, other,
+        None if checked.costs is None else checked.costs.gross_upfront_native_lamports, failure, future, required, remaining,
+        None if own is None else own.failed_attempt_count, None if own is None else own.remaining_failed_attempt_count)
+    return checked, reasons, clock_denials, risk
+
+
+def assess_message_stage(original, state, custody, attempt, selection, comparison, *, generation, lane,
+                         grant, grant_revoked, consumed_grant_root, accepted, policies, applications, actions,
+                         stage_history, inbox_disposition):
+    """Only original inputs + chronological Ledger facts; no current DB reads."""
+    request, validation = original.request, original.validation
+    context, clock = validation.context, validation.clock
+    policy, action = context.original_policy, context.action
+    require(context.domain.mode == "LIVE" and request.action_id == action.action_id
+        and attempt is not None and request.attempt_id == attempt.preparation.attempt_id,
+        "AUTHORITY_MESSAGE_ACTUAL_ATTEMPT_REQUIRED")
+    require(original.selection_digest == selection.content_digest and validation.profile == selection.command.profile,
+        "AUTHORITY_MESSAGE_SELECTED_PROFILE_CONFLICT")
+    checked, reasons, clock_denials, risk = assess_current_action(validation, state, custody,
+        grant=grant, grant_revoked=grant_revoked, consumed_grant_root=consumed_grant_root,
+        accepted=accepted, policies=policies, applications=applications, actions=actions,
+        inbox_disposition=inbox_disposition)
+    original_grant = context.acceptance.eligibility.decision.grant_id
     checkpoints = state.source_checkpoints
     if action.side == "BUY":
         if state.policy is None or state.policy.content_digest != policy.content_digest:
@@ -349,11 +412,6 @@ def assess_message_stage(original, state, custody, attempt, selection, compariso
         reasons.extend(source_reasons)
     else:
         require(original.source is None, "AUTHORITY_REDUCTION_CANNOT_REUSE_ENTRY_SOURCE_DECISION")
-    if custody.quarantined or inbox_disposition != "ACCEPTED":
-        reasons.append("CURRENT_CUSTODY_OR_INBOX_NOT_MUTABLE")
-    reservation = next((item for item in custody.reservations if item.root_id == action.root_id), None)
-    if reservation is None or reservation.retired_sequence is not None:
-        reasons.append("ORIGINAL_HELD_RESERVATION_REQUIRED")
     if (comparison.disposition not in ("MATCHED_AT_ORIGINAL_CUT", "PENDING_EFFECTS_UNKNOWN")
             or comparison.differences or comparison.reasons
             or comparison.target_custody_digest != custody.content_digest
@@ -404,44 +462,6 @@ def assess_message_stage(original, state, custody, attempt, selection, compariso
                 reasons.append("SAME_MESSAGE_REBROADCAST_STAGE_UNPROVEN")
             if request.rebroadcast_ordinal != (1 if previous_broadcast is None else previous_broadcast.original.request.rebroadcast_ordinal+1):
                 reasons.append("REBROADCAST_ORDINAL_NOT_NEXT")
-    remaining = None if context.position is None else context.position.remaining_units
-    if action.side == "BUY":
-        if context.position is not None and context.position.acquired_units:
-            reasons.append("SUCCESSFUL_ROOT_CANNOT_REACQUIRE")
-    elif (context.position is None or context.protection is None or not context.position.usable
-            or not 0 < action.input_units <= context.position.remaining_units
-            or context.protection.obligation_state not in ("DUE", "MONITORING")):
-        reasons.append("ACTUAL_PROTECTED_REMAINING_REDUCTION_SCOPE_REQUIRED")
-    rows = root_encumbrances(custody, accepted, policies, applications, actions)
-    if action.side == "BUY":
-        if any(row.root_id != action.root_id for row in rows) or any(position.root_id != action.root_id and position.status != "RETIRED" for position in custody.positions):
-            reasons.append("V1_OTHER_ECONOMIC_ROOT_OCCUPIED")
-        if sum(row.exposure_quote_cap_lamports for row in rows) > policy.size.max_global_exposure_lamports:
-            reasons.append("CURRENT_GLOBAL_ORIGINAL_CAP_EXPOSURE_EXCEEDED")
-    own = next((item for item in rows if item.root_id == action.root_id), None)
-    other = sum(item.outstanding_lamports for item in rows if item.root_id != action.root_id)
-    future = failure = required = None
-    if own is None or own.failure_budget_remaining_lamports is None or own.remaining_failed_attempt_count is None:
-        reasons.append("ORIGINAL_ROOT_COST_HISTORY_UNPROVEN")
-    else:
-        failure = own.failure_budget_remaining_lamports
-        if own.remaining_failed_attempt_count == 0:
-            reasons.append("ACTUAL_FAILURE_ATTEMPT_BUDGET_EXHAUSTED")
-        costs = policy.costs
-        future = (costs.protective_network_fee_lamports+costs.protective_setup_lamports+costs.protective_refundable_lock_lamports
-            if action.side == "BUY" or remaining is not None and action.input_units < remaining else 0)
-        if checked.costs is not None:
-            if checked.costs.network_total_fee_lamports > failure:
-                reasons.append("CURRENT_EXACT_FEE_EXCEEDS_REMAINING_FAILURE_ALLOWANCE")
-            required = other+checked.costs.gross_upfront_native_lamports+failure+future
-            if required > (1<<64)-1 or other > (1<<64)-1 or future > (1<<64)-1:
-                reasons.append("CURRENT_RESOURCE_AGGREGATE_U64_OVERFLOW")
-            elif custody.native_lamports is None or custody.native_lamports < required:
-                reasons.append("CURRENT_GROSS_COST_FAILURE_AND_RESIDUAL_EXIT_HEADROOM_INSUFFICIENT")
-    risk = CurrentMessageRisk(custody.native_lamports, sum(item.units for item in custody.accounts if item.mint == "So11111111111111111111111111111111111111112"),
-        sum(item.observed_locked_lamports for item in custody.accounts), custody.network_fees_paid_lamports, other,
-        None if checked.costs is None else checked.costs.gross_upfront_native_lamports, failure, future, required, remaining,
-        None if own is None else own.failed_attempt_count, None if own is None else own.remaining_failed_attempt_count)
     reasons = tuple(sorted(set(reasons)))
     decision = MessageStageDecision("CURRENT_STAGE_DENIED_OR_UNRESOLVED" if reasons else "CONSUMED_AT_ORIGINAL_CURRENT_CUT",
         reasons, clock_denials, checked.content_digest, checked.disposition, risk,
