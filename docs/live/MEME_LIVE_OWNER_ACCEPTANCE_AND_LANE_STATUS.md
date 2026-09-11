@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 9B / Deterministic Fault / Recovery Campaign** are attributed below. Step 9A is **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL PASS** within its documented bounded Operations scope. This is not Step-9 final SYSTEM TRANSITION PASS. Step 9B only is **AUTHORIZED_IN_PROGRESS**. Step 9C, Step 10 and external gates remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE — STEP 9B / Deterministic Fault / Recovery Campaign** are attributed below. Step 9A is **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL PASS** within its documented bounded Operations scope. This is not Step-9 final SYSTEM TRANSITION PASS. Step 9B is **bounded LOCAL PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**, following the direct B3.4-publication/B4-closeout authorization below. Step 9C, Step 10 and external gates remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,17 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 9B B4 - Direct closeout authorization and bounded handoff
+
+The direct owner message **OWNER AUTHORIZATION — STEP 9B B3.4 PUBLICATION + B4 CLOSEOUT** accepts B3.4 LOCAL PASS for publication, identifies its exact two reviewed files and established 9 cases / 166 focused / 212 scoped checks / 18 disposable children, and authorizes normal publication followed by CHIEF-only B4 documentation/control closeout. It resolved the prior automatic approval rejection through the normal review path. B3.4 published at `814ffc43d5b01e3787b06171966b004f3bac566f`; clean local/remote equality and zero divergence were verified.
+
+The same direct instruction replaces the previously planned B4 qualification rerun with review of existing evidence: no new worker, broad regression or ceremonial rerun; targeted rerun only for concrete evidence invalidation. None was found. CHIEF records **B4 LOCAL PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW** and **Step 9B bounded LOCAL PASS**, with B1-B3.4 outcomes retained. This is not Step-9 final SYSTEM TRANSITION PASS or full Operations project acceptance.
+
+[Operations Foundation B4](MEME_LIVE_OPERATIONS_FOUNDATION_V1.md#b4---bounded-step-9b-chief-review-and-closeout) records the frozen source, exact existing fault-cut manifest index, 1,356 reported primary checks / 148 disposable children, 120 unchanged Python source hashes, complete checkpoint/routing record, bounded composed recovery findings and remaining owners. B4 ran no qualification suite and created no worker.
+
+M46-M50 have bounded recovery evidence ready for project consideration; no unconditional full-row promotion is recommended pending their exact later S/E acceptance. M51 remains pending S11/S12 -> full S02; M52/M53 are not assessed complete. Matrix remains **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. No new required downstream transition was found. Step 9C retains envelope/resource/restart measurements, degradation/alerts, runbooks, dossier, final broad regression and separately authorized real-host qualification; Step 10 retains exhaustive integrated acceptance. Both protected checkouts and production/runtime data remain untouched. No real service/task, production key, mainnet mutation or capital action. **STOP after Step 9B; Step 9C/10 and external gates remain NOT AUTHORIZED.**
+
 
 ### Step 9B Q0 - Owner acceptance and bounded recovery authorization
 
