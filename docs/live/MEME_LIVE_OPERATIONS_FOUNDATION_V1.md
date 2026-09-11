@@ -1,6 +1,6 @@
 # MEME-LIVE Operations Foundation v1
 
-Status: **STEP 9A PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL PASS; STEP 9B BOUNDED LOCAL PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**. The owner accepted the bounded A4 scope without row promotion or Step-9 final SYSTEM acceptance. [Step-9B authorization](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-9b-q0---owner-acceptance-and-bounded-recovery-authorization) governs the new queue below. Existing Architecture v2 and T008/T009 remain governing controls. Earlier sections retain their historical scope; this remains the single Operations evidence record.
+Status: **STEP 9B PROJECT_ACCEPTED_IMPLEMENTATION / BOUNDED LOCAL PASS; STEP 9C AUTHORIZED_IN_PROGRESS; C1 bounded LOCAL PASS**. The owner accepted Step 9B at `181d0258518b561ce9c348a7b3fe9396daeae537`. [Step-9C authorization](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-9c---accepted-input-and-bounded-c1-implementation) governs the current work. Final Step-9 SYSTEM acceptance remains unclaimed. Existing Architecture v2 and T008/T009 remain governing controls; earlier sections retain their historical scope.
 
 ## Q0 — Accepted input and bounded queue
 
@@ -505,3 +505,52 @@ M51 remains withheld pending its full ordered S11/S12 -> S02 composition, includ
 Step 9C retains measured aggregate/hottest-mint operating envelope, peak memory/disk/resource limits, final restart-latency qualification, degradation/alerts, human recovery runbooks, final Operations dossier, final broad Operations regression and any separately authorized real-host autostart qualification. Step 10 retains exhaustive S01-S12/E01-E05 acceptance and full second BUY/SELL S02. Real wallet/track/key/environment bindings and T010/T011 remain later external gates. None is started here.
 
 B4 changes only this existing Operations record, Owner/Lane Status and lifecycle evidence notes. Completion Plan, Architecture v2, production/test source, locked research, both protected checkouts and real runtime/data remain unchanged. No real service/task installation, production key loading, mainnet sign/send/broadcast or capital action occurred. Normal final publication and clean local/remote zero divergence are verified in the final task handoff. **STOP: Step 9C, Step 10 and external gates remain NOT AUTHORIZED.**
+
+## Step 9C C1 - Bounded operating/resource/restart measurements
+
+Status: **LOCAL PASS**, limited to the measured engineering workloads below. Accepted production input is `181d0258518b561ce9c348a7b3fe9396daeae537`. No production source changes. This supplies C2 with explicit numerical observations and unresolved dimensions; it does not qualify configured maximum capacities, a production host, hard latency guarantees or the final Operations SYSTEM transition.
+
+The previous interrupted C1 attempt produced no deliverables and was not reused. CHIEF split the new C1 into three dependency-ordered assignments: C1.1 measurement records/collection, C1.2 original producer workloads, and C1.3 actual owned cold startup/replacement with loaded producer and due protection. One Astra High worker was reused across these related assignments; CHIEF retained package review. No escalation, renewed Steps 4-8/9A/9B review or broad regression occurred.
+
+C1.1 distinguishes MEASURED, CONFIGURED and UNKNOWN with units, definitions and provenance. Collection is read-only, preserves producer metrics/counters/checkpoint identity, and rejects invented or malformed observations. C1.2 measures original raw-source/producer operations; it does not divide batch time into a claimed per-input measurement. Raw retained feature payload bytes, original serialized profile usage, immutable identity/tombstones and pending records are separate quantities. Point-sampled current working set, OS process-lifetime peak working set and explicit SQLite/WAL/SHM logical file lengths retain their scopes.
+
+C1.2 lower/upper runs consumed 112/413 actual source rows, with 64/256 hottest-mint retained events and 15x1/31x4 additional no-t0 LAUNCH events. The hot mint is one LAUNCH followed by dense alternating BUY/SELL at the original builder's flat price. The original fixture also produces canonical candidate/tombstone evidence. Each run samples 16 actual single-row operations separately from bounded batches and an original timer tick. No locked strategy, expiry, identity, candidate or economic semantics were changed.
+
+| Observed producer metric | Lower | Upper |
+|---|---:|---:|
+| Maximum retained feature events | 81 | 382 |
+| Hottest-mint retained events | 64 | 256 |
+| Maximum unfinished feature mints | 17 | 33 |
+| Maximum pending rows | 621 | 2,427 |
+| Maximum pending payload bytes | 574,885 | 2,275,640 |
+| Maximum sampled single-input wall time | 55.43 ms | 222.49 ms |
+| Maximum sampled batch wall time | 161.03 ms | 551.77 ms |
+| Process-lifetime OS peak working set | 45,621,248 B | 56,385,536 B |
+| Maximum sampled workload logical file size | 2,302,680 B | 7,066,064 B |
+
+The upper case additionally observed 248,074 retained feature payload bytes, 166,275 hottest-mint payload bytes, 38 identity/tombstone rows and 19,485 identity/tombstone payload bytes. Configuration caps remain CONFIGURED, not qualified operating capacity. Backlog counts use actual source rows through an explicit fence, not rowid arithmetic. Backlog age is in the declared fixed synthetic UTC domain; an empty backlog has UNKNOWN age. Checkpoint age is bounded by a witnessed successful publication interval. Free disk is an observed volume sample, not a selected minimum-reserve policy.
+
+C1.3 rebuilt the upper producer shape through original fixture/source interfaces around one actual synthetic acquired position and committed due obligation. The rebuilt fixture retains its own canonical source binding; no copied database was rebound. Actual owned cold startup and two exact-handle replacements reconstructed the original source, position, selected binding, obligation, remaining quantity, admissions and cached producer profile. Each of the three children performed one original Runtime unit: `PROTECTIVE_ACTION_STAGED`, then `NEED_EXECUTION`, then `NEED_EXECUTION`. No Execution ports were supplied to measured children. ENTRY was HELD for original exposure/capacity and absent current candidate; a source-reconstruction blocker was absent.
+
+Initial owned startup to the first confirmed protective result was **5.02846 s**; actual replacement endpoints were **4.78977 s** and **4.67479 s**. These parent wall-clock samples include termination where applicable, spawn/import, original reconstruction, measurement callbacks, IPC and polling. The maximum observed replacement is not a worst-case guarantee. Separate first-callback and Runtime-step interval samples are retained. Original handoff and ColdRuntime each publish a checkpoint on startup; age evidence witnesses the combined publication interval and verifies the two-generation advance.
+
+The composed state had **382 feature events / 256 hottest-mint events / 33 unfinished mints**, **2,346 pending rows / 2,210,889 pending bytes**, and healthy source reconstruction throughout. The original Ledger replay tail is explicitly genesis-exclusive seq 0 through captured head revision 19 then 20: maximum **20 commits / 10,292 UTF-8 payload_json bytes**. Referenced economic tables and SQLite allocation are excluded from that logical tail. Sampled child working set peaked at **77,905,920 B**; OS child-lifetime peak was **84,910,080 B**. Parent setup resource samples remain separately scoped. Three final-run child handles were retained, previous replacements joined dead and final cleanup cleared the process/channel. No second admission, residual change or replacement economic identity occurred.
+
+The final command exited 0. Failed measurement attempts remain preserved: r1 failed before children on tuple-row collection; r2's incorrect one-publication assertion produced four disposable children and is invalid; r3 reached valid original protective work but its parent comparison rejected tuple/list JSON representation, leaving timing qualification incomplete with one child. Retrying paused for diagnosis. The harness now stops callback failures and caps launch attempts before the original process factory. Two zero-child guard checks and a zero-child saved-artifact comparison preflight passed before final r4. Only r4's three samples qualify. These were measurement-harness corrections, with no accepted production change or repeated old recovery campaign. C1.2 measurements were retained unchanged.
+
+The frozen [C1 engineering profile](MEME_LIVE_OPERATIONS_C1_ENGINEERING_PROFILE_V0_1.json) binds exact source/artifact hashes, fixture identities, measured dimensions, configured caps, limits and C2 consumer requirements. Its implementation-status field preserves the worker's submission status; this section records CHIEF's subsequent bounded LOCAL PASS. Evidence roots are `C:\Users\Mari1\AppData\Local\Temp\meme-live-c1-measurements-181d025-c12-a4e91c` and `C:\Users\Mari1\AppData\Local\Temp\meme-live-c1-measurements-181d025-c13-d28b4a`. Only `composed-r4` is the qualifying composed run.
+
+All commands used isolated checkout `C:\Users\Mari1\AppData\Local\Temp\meme-live-audit-e6b9a4b` and interpreter `C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Scripts\python.exe` with `-B`:
+
+| Command suffix | Result / evidence |
+|---|---|
+| `scripts/live_operations_measurement_selftest_v0_1.py` | Exit 0; initial retained-feature fixture correction qualified in 1.12 s; adding OS lifetime peak collection justified the final affected smoke, exit 0 in 0.91 s, recorded under C1.2 `c11-smoke.command-exit.json` |
+| `scripts/live_operations_producer_measurement_v0_1.py --case lower --output C:\Users\Mari1\AppData\Local\Temp\meme-live-c1-measurements-181d025-c12-a4e91c\lower` | Exit 0; 2.07 s command observation; exact command/exit and raw stdout retained |
+| `scripts/live_operations_producer_measurement_v0_1.py --case upper --output C:\Users\Mari1\AppData\Local\Temp\meme-live-c1-measurements-181d025-c12-a4e91c\upper` | Exit 0; 6.55 s command observation; exact command/exit and raw stdout retained |
+| `scripts/live_operations_owned_measurement_v0_1.py --output C:\Users\Mari1\AppData\Local\Temp\meme-live-c1-measurements-181d025-c13-d28b4a\composed-r4 --c12-evidence C:\Users\Mari1\AppData\Local\Temp\meme-live-c1-measurements-181d025-c12-a4e91c` | Exit 0; three measured endpoints above; exact command/exit and raw stdout retained; whole shell-command elapsed time was not separately recorded |
+
+CHIEF reviewed only the new measurement contracts, workload/owned composition, correction logic, numerical profile and output boundaries. Final scoped validation used Python `compile(bytes, path, 'exec')` on the four new scripts without bytecode writes, JSON parsing and SHA256 verification: **4 compiles, 32 linked artifacts, source-manifest entries 41/41/121 and fixture-manifest entries 2/2/11**, all successful. These are manifest entries, not additional test cases. Final diff/source-scope and unchanged matrix counts were checked before the one natural package commit. No production source was edited, and no broad regression was run.
+
+C1 supplies bounded M52 measurement evidence only; M52 remains OWNED_NOT_BUILT. No rows are promoted: **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. C2 retains numerical-limit consumption, degradation/alerts and runbooks; C3 retains final dossier, frozen-source broad Operations regression and SYSTEM review. Production-host/HUMAN_EXTERNAL qualification and exhaustive Step-10 integration remain separate. No full S11/S12/E05 or hard worst-case claim is made.
+
+Both protected checkouts and production/raw/live state remained untouched. No production key, real service/task, mainnet signing/send/broadcast or capital action occurred. C1 uses disposable synthetic stores, fixture state and fake external I/O. The package stops at its natural reviewed checkpoint; C2 has not started.

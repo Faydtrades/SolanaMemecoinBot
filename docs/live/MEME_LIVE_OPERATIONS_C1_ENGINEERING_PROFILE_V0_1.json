@@ -1,0 +1,373 @@
+{
+  "accepted_base_head": "181d0258518b561ce9c348a7b3fe9396daeae537",
+  "age_observations": {
+    "checkpoint": "Original successful publication UTC intervals are retained. Each healthy owned cold startup publishes twice through original handoff and reconstruction transactions; age is an upper bound from that startup interval, never generation or mtime interpreted as UTC.",
+    "source_backlog": "C1.2 counted actual raw rows through explicit fences113/414; initial oldest age2059s uses the fixed synthetic UTC reference, not live ingestion delay. Final empty backlog has unknown/null age. C1.3 source backlog remained0 through fence394."
+  },
+  "configured_continuation_profile": {
+    "interpretation": "Configuration only. These caps were not exercised to exhaustion and are not qualified capacities.",
+    "state": "CONFIGURED",
+    "type": "ContinuationProfileV02",
+    "values": {
+      "active_mints": 64,
+      "batch_rows": 32,
+      "checkpoint_bytes": 1048576,
+      "delivery_page_rows": 256,
+      "history_bytes": 8388608,
+      "history_rows": 256,
+      "hot_mint_bytes": 2097152,
+      "hot_mint_events": 512,
+      "pending_bytes": 16777216,
+      "pending_rows": 8192,
+      "record_bytes": 1048576,
+      "retained_bytes": 8388608,
+      "retained_events": 1024
+    }
+  },
+  "discarded_C1_3_runs": [
+    {
+      "cleanup": "Original setup owner closed in finally; no measured child existed.",
+      "command": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed.command-exit.json",
+        "sha256": "d1a3e97425fa3453db6fe1b0fbbb77982693bc4cc620b089dc77bbc04673b490"
+      },
+      "directory": "composed",
+      "exit": 1,
+      "measured_children": 0,
+      "reason": "Tuple-returning Ledger row incorrectly treated as sqlite3.Row in collector.",
+      "stdout": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed.stdout.txt",
+        "sha256": "3cb9a29c4b3714cef7baa62ae4d6c02c9fc3028b741102933bb5dbc68e2d4c53"
+      }
+    },
+    {
+      "cleanup": "Original B1 finally cleanup returned without error. Old exact handles had been confirmed dead by original supervisor; no per-child PID manifest existed before correction.",
+      "command": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r2.command-exit.json",
+        "sha256": "a6d1df91d9d2bdd69b51cf397ff9ef44c56b141f8574f79cc6ca92f36a072dbf"
+      },
+      "directory": "composed-r2",
+      "exit": 1,
+      "measured_children": 4,
+      "reason": "Collector incorrectly expected one startup publication; original handoff plus ColdRuntime publish twice. Original supervisor retried the broken callback before watchdog. Intended three-child cap exceeded; no timings accepted.",
+      "stdout": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r2.stdout.txt",
+        "sha256": "7b94abf1e9a503d1089675343ccc3ab28e630877076ee4f950037081525874f1"
+      }
+    },
+    {
+      "cleanup": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r3\\child-cleanup.json",
+        "sha256": "1b30bf6fbe4a1544acdb05b06642fce97c489451051ed37dcff280b05bffa753"
+      },
+      "command": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r3.command-exit.json",
+        "sha256": "3def66020ad486aac9cf4d52eecd655305a63968393f2f7187418810c2c1b5b9"
+      },
+      "directory": "composed-r3",
+      "exit": 1,
+      "measured_children": 1,
+      "reason": "First protective stage was valid, but tuple-rich in-memory SourceBinding.anchors compared to JSON list. Parent endpoint package was incomplete; no timing accepted."
+    }
+  ],
+  "evidence": {
+    "C1.2": {
+      "lower": {
+        "config.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\lower\\config.json",
+          "sha256": "7dd30e77c79bf4c15230b2af90c8ad9d80e3daa96cabd24449a4220c685ac877"
+        },
+        "environment.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\lower\\environment.json",
+          "sha256": "889a13dc3446437d3ac8d8f74cc27a05bf9fc13aa6dc3bd98cd96fd3c06625f9"
+        },
+        "fixture_hashes.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\lower\\fixture_hashes.json",
+          "sha256": "db425130eaecc809ca23ecc98e48d77afff467ffba26a9049e968845170b1cbd"
+        },
+        "result.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\lower\\result.json",
+          "sha256": "1a7099266079232627134ba8b43ad6f58ebbeabb5290b8eec8b60ab3e3ae4282"
+        },
+        "samples.jsonl": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\lower\\samples.jsonl",
+          "sha256": "e1c5434d0bb970ca8cbab99d008485d85436940c931b9c17df41ff3859fd85ef"
+        },
+        "source_hashes.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\lower\\source_hashes.json",
+          "sha256": "bb55d3eeeb68909500de79d3a2f92e64bc7b633d1d48fba443dd4d94d33e6b3f"
+        }
+      },
+      "upper": {
+        "config.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\upper\\config.json",
+          "sha256": "b50c949b1594ab1906c04e8db47c9ea9b9fa8cd687765b25bddb575d3f6ef7a4"
+        },
+        "environment.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\upper\\environment.json",
+          "sha256": "d94fd2650b9d8af98c9c35d07f4068f55907cabadd2c484d23ffae758bd32e10"
+        },
+        "fixture_hashes.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\upper\\fixture_hashes.json",
+          "sha256": "612d0dfee6ba9f119769365ce55f9dc17a75fe8cca3dd24e02fce27ff40e4b1d"
+        },
+        "result.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\upper\\result.json",
+          "sha256": "a7f91bfc3744513f88014ef6c12c5bf05821d9f29db54f583a2f7a4a0eb5a5f4"
+        },
+        "samples.jsonl": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\upper\\samples.jsonl",
+          "sha256": "3e8ae0f1e504c8afb4996fe95f09e4a4788a64a0c38a3699383f8a20ce12448f"
+        },
+        "source_hashes.json": {
+          "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\upper\\source_hashes.json",
+          "sha256": "bb55d3eeeb68909500de79d3a2f92e64bc7b633d1d48fba443dd4d94d33e6b3f"
+        }
+      }
+    },
+    "C1.3": {
+      "c12_artifact_hashes.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\c12_artifact_hashes.json",
+        "sha256": "e4164255cd5ff50699cfc41e0d96aa9f40604102ba5dc7755df9a3d388fd6983"
+      },
+      "child-cleanup.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\child-cleanup.json",
+        "sha256": "41f47e28f71ded84a7506128d08ccb203bbf906da8266c67e9a570b5c013794e"
+      },
+      "config.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\config.json",
+        "sha256": "e175e88342ad709315ed200d5575837a6bdb34712e641dc378711e728637a80c"
+      },
+      "environment.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\environment.json",
+        "sha256": "b11f39e73d87d8227b9cea12a22d1ace7593e4da2a2ffc34c4ec394dae41d0d4"
+      },
+      "fixture_hashes.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\fixture_hashes.json",
+        "sha256": "be9f5a9fdbb61d6001e3466c51b37c42a5a88e1881f68b3ef09cf2c90bccd585"
+      },
+      "loaded-boundary.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\loaded-boundary.json",
+        "sha256": "3d35fb8ba8c8b6a61562d99802cd0a338fe429375c4cedbb339a2bad626b3d6f"
+      },
+      "owned-sample-1.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\owned-sample-1.json",
+        "sha256": "22d62c132949cf6e0f956ddca8f8c9c475347b9fe3444f0789cf9031026cbfbe"
+      },
+      "owned-sample-2.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\owned-sample-2.json",
+        "sha256": "7359ad9f226e8a5ebdbf6571c9f84a16781c0810d2342a2b32b0379ba55a758e"
+      },
+      "owned-sample-3.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\owned-sample-3.json",
+        "sha256": "23c4277dc6552bddad7fffea0e36e4f9f133a505365c87c57fdac3af6f9ae3f9"
+      },
+      "result.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\result.json",
+        "sha256": "67e7c2bf6d93d7100e162d04c2de851ee20a02ecf71df40d601a1c6709bf7cf4"
+      },
+      "source_hashes.json": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4\\source_hashes.json",
+        "sha256": "cbdb7ed7b7e434267e8e88a14e83c3f8cd644acb49213a8980ea83415e4cf168"
+      }
+    },
+    "commands": {
+      "C1.2_lower": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\lower.command-exit.json",
+        "sha256": "3345c68ccfb6c48863d3be6671b8d1cdeeb64c211c33e20fa93dacb61f042b3d"
+      },
+      "C1.2_upper": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c12-a4e91c\\upper.command-exit.json",
+        "sha256": "889f86c37c3138dc8efd01b6d10ae3808954eef03ba78bba688f5ea5c23a1d16"
+      },
+      "C1.3_valid": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-c1-measurements-181d025-c13-d28b4a\\composed-r4.command-exit.json",
+        "sha256": "552642e8e6324c78aa90453c41d0b7fa70dca9940d7b138af6d3015287de3987"
+      }
+    }
+  },
+  "implementation_status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "journal_tail_definition": "Original Ledger ledger_commits seq>0 through captured ledger_head.revision: full replay from genesis including resolved history. Bytes sum UTF-8 payload_json only. Excludes referenced indexed-table payloads, schema, writer-generation rows and SQLite allocation. Producer pending rows/bytes are separate.",
+  "max_observed_state_dimensions": {
+    "active_feature_events": {
+      "observed_at_record": "C1.2/upper/sample-29",
+      "state": "MEASURED",
+      "unit": "events",
+      "value": 382
+    },
+    "active_feature_payload_bytes": {
+      "observed_at_record": "C1.3/loaded-boundary",
+      "state": "MEASURED",
+      "unit": "bytes",
+      "value": 248125
+    },
+    "hottest_mint_events": {
+      "observed_at_record": "C1.2/upper/sample-29",
+      "state": "MEASURED",
+      "unit": "events",
+      "value": 256
+    },
+    "hottest_mint_payload_bytes": {
+      "observed_at_record": "C1.2/upper/sample-29",
+      "state": "MEASURED",
+      "unit": "bytes",
+      "value": 166275
+    },
+    "identity_rows": {
+      "observed_at_record": "C1.2/upper/sample-13",
+      "state": "MEASURED",
+      "unit": "rows",
+      "value": 35
+    },
+    "identity_tombstone_bytes": {
+      "observed_at_record": "C1.2/upper/sample-30",
+      "state": "MEASURED",
+      "unit": "bytes",
+      "value": 19485
+    },
+    "identity_tombstone_rows": {
+      "observed_at_record": "C1.2/upper/sample-30",
+      "state": "MEASURED",
+      "unit": "rows",
+      "value": 38
+    },
+    "journal_tail_bytes": {
+      "observed_at_record": "C1.3/child-1/after",
+      "state": "MEASURED",
+      "unit": "bytes",
+      "value": 10292
+    },
+    "journal_tail_rows": {
+      "observed_at_record": "C1.3/child-1/after",
+      "state": "MEASURED",
+      "unit": "rows",
+      "value": 20
+    },
+    "pending_bytes": {
+      "observed_at_record": "C1.2/upper/sample-30",
+      "state": "MEASURED",
+      "unit": "bytes",
+      "value": 2275640
+    },
+    "pending_rows": {
+      "observed_at_record": "C1.2/upper/sample-30",
+      "state": "MEASURED",
+      "unit": "rows",
+      "value": 2427
+    },
+    "retained_state_bytes": {
+      "observed_at_record": "C1.3/loaded-boundary",
+      "state": "MEASURED",
+      "unit": "bytes",
+      "value": 410065
+    },
+    "tombstone_rows": {
+      "observed_at_record": "C1.2/lower/sample-20",
+      "state": "MEASURED",
+      "unit": "rows",
+      "value": 3
+    },
+    "unfinished_mints": {
+      "observed_at_record": "C1.2/upper/sample-13",
+      "state": "MEASURED",
+      "unit": "mints",
+      "value": 33
+    }
+  },
+  "meaning": "Observed finite engineering workload measurements. Not deployment capacity, a hard latency guarantee, a Runtime guard policy, or project acceptance.",
+  "observed_owned_durations_seconds": {
+    "actual_replacements": [
+      4.78976870002225,
+      4.674790100019891
+    ],
+    "initial_owned_startup": 5.028457699983846,
+    "max_actual_replacement": 4.78976870002225,
+    "max_all_three_different_endpoints": 5.028457699983846,
+    "scope": "Parent perf_counter from explicit initial launch or retained-child termination initiation through supervisor receipt of first protective Runtime result; includes spawn/import/OS cache, callback instrumentation, IPC and polling. Whole shell-command duration was not separately recorded."
+  },
+  "observed_processing_seconds": {
+    "C1.2_upper_batch_cpu_max": 0.515625,
+    "C1.2_upper_batch_wall_max": 0.5517671999987215,
+    "C1.2_upper_individual_cpu_max": 0.21875,
+    "C1.2_upper_individual_wall_max": 0.2224868999910541,
+    "scope": "Original producer invocation includes normalization/features/transaction/checkpoint work. Batch times are not individual-input averages or worst-case guarantees; process_time granularity can exceed short wall samples."
+  },
+  "observed_resources": {
+    "C1.2_upper_current_process_rss_max_bytes": 51019776,
+    "C1.2_upper_database_file_lengths_max_bytes": 7066064,
+    "C1.2_upper_os_process_lifetime_peak_rss_bytes": 56385536,
+    "C1.3_child_current_rss_max_bytes": 77905920,
+    "C1.3_child_os_lifetime_peak_rss_bytes": 84910080,
+    "C1.3_database_file_lengths_max_bytes": 5035840,
+    "all_samples_min_disk_free_bytes": 270898991104,
+    "scope": "Windows engineering workstation point samples and OS lifetime peaks, including imports. File lengths include inventoried SQLite sidecars, not allocated blocks or I/O. Free disk is an observed value, not an approved minimum reserve."
+  },
+  "protection_boundary": {
+    "entry_hold_reasons": [
+      "CURRENT_CANONICAL_CANDIDATE_REQUIRED",
+      "CURRENT_CAPACITY_OR_MUTATION_LANE_HELD",
+      "EXISTING_EXPOSURE_REQUIRES_PROTECTION_AND_RETIREMENT_FIRST"
+    ],
+    "evidence": "All measured children reconstructed healthy original source, exact binding/open exposure/due obligation and producer lineage/cursor/profile facts. Initial handoff replay deferred; admission count stayed1. Children received entry facts but no execution ports. No send/settlement lifecycle was measured.",
+    "first_runtime_results": [
+      "PROTECTIVE_ACTION_STAGED",
+      "NEED_EXECUTION",
+      "NEED_EXECUTION"
+    ]
+  },
+  "recorded_shapes": {
+    "C1.2_lower": {
+      "batch_rows_at_most": 32,
+      "batch_samples": 3,
+      "hot_events": 64,
+      "hot_trade_events": 63,
+      "individual_input_samples": 16,
+      "no_t0_events_per_mint": 1,
+      "no_t0_mints": 15,
+      "raw_inputs": 112
+    },
+    "C1.2_upper": {
+      "batch_rows_at_most": 32,
+      "batch_samples": 13,
+      "hot_events": 256,
+      "hot_trade_events": 255,
+      "individual_input_samples": 16,
+      "no_t0_events_per_mint": 4,
+      "no_t0_mints": 31,
+      "raw_inputs": 413
+    },
+    "C1.3_composed": {
+      "actual_replacements": 2,
+      "added_feature_events": 380,
+      "hot_events": 256,
+      "hot_trade_events": 255,
+      "identity_rows": 34,
+      "initial_owned_startups": 1,
+      "maximum_child_launch_attempts": 3,
+      "no_t0_mints": 31,
+      "producer_cursor_and_source_fence_rowid": 394,
+      "producer_pending_bytes": 2210889,
+      "producer_pending_rows": 2346,
+      "retained_feature_events": 382,
+      "timing_shape": "Original acquired/due position; no-t0 events at fixture NOW+12, hot launch NOW+13, dense flat BUY/SELL burst NOW+14, due Runtime work NOW+16.",
+      "tombstone_rows": 1,
+      "unfinished_mints": 33
+    }
+  },
+  "required_future_C2_ports": [
+    "Read this versioned record plus exact ContinuationProfileV02/configuration identity. C2 must define and review enforcement thresholds and degradation actions within the existing authorization; measured maxima are not automatically limits.",
+    "Obtain fresh committed producer usage and cumulative counters with checkpoint-generation/publication witnesses; collecting must not mutate checkpoints or counters.",
+    "Obtain aggregate/hottest feature payload bytes, unfinished/no-t0 counts, immutable identity/tombstone counters and producer pending accounting using the recorded exact definitions.",
+    "Obtain Ledger genesis-to-head tail rows and payload bytes with head digest; do not substitute producer pending, database length or referenced-table bytes.",
+    "Capture raw source fence/cursor and oldest unconsumed observed timestamp in an explicit real UTC clock domain; empty or unavailable age stays unknown.",
+    "Supply host-specific RSS/disk-reserve observations and original owned startup/protective result timings; unsupported metrics stay unknown and cannot imply qualification.",
+    "Apply any later approved guard at original ownership/readiness boundaries, retaining original occupied/protective priority; this artifact supplies no admission, signing or sending permission."
+  ],
+  "unsupported": [
+    "Larger or different shapes, including configured64 unfinished mints,512 hottest events,1024 retained events,256 history rows and byte caps, have not been capacity-qualified.",
+    "No sustained arrival rate, long hot-mint age, arbitrary price dynamics, large Ledger history, percentile latency or hard worst-case bound was measured.",
+    "These are engineering workstation measurements; production-host resource qualification, C2 degradation/guard policy, C3 work and project acceptance remain separate.",
+    "No measured-child network/execution ports, wallet deployment, mainnet funds or live capital. Original setup uses existing synthetic mock acquisition APIs only."
+  ],
+  "version": "operations_c1_engineering_measurements_v0.1"
+}

@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 9B / Deterministic Fault / Recovery Campaign** are attributed below. Step 9A is **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL PASS** within its documented bounded Operations scope. This is not Step-9 final SYSTEM TRANSITION PASS. Step 9B is **bounded LOCAL PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**, following the direct B3.4-publication/B4-closeout authorization below. Step 9C, Step 10 and external gates remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE — STEP 9C**, its continuation and direct C1 clarification are attributed below. Step 9B is **PROJECT_ACCEPTED_IMPLEMENTATION / BOUNDED LOCAL PASS** at `181d0258518b561ce9c348a7b3fe9396daeae537`. Step 9C is **AUTHORIZED_IN_PROGRESS**. Step-9 final SYSTEM acceptance remains unclaimed; Step 10 and external gates remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,20 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 9C - Accepted input and bounded C1 implementation
+
+The owner accepts Step 9B **PROJECT_ACCEPTED_IMPLEMENTATION / BOUNDED LOCAL PASS** at `181d0258518b561ce9c348a7b3fe9396daeae537`, including Q0-B3.4 and B4, without full-row promotion or Step-9 final SYSTEM acceptance. The Step-9C instruction (`0f2f6a42-0644-45d3-b658-93363a22da74/pasted-text.txt`, SHA256 `34bbb3c52db9aacbe4d0a700b4e75ba1b83e2b4e492ba70143196cd00c7ffc78`) authorizes remaining Operations measurements, degradation/alerts/runbooks and final dossier/regression/review. Accepted Steps 4-8/9A/9B are established inputs, not subjects for renewed audit or ceremonial qualification. Matrix classifications remain unchanged pending actual evidence.
+
+The continuation and direct **OWNER CLARIFICATION — C1 HAD NO COMPLETED HANDOFF** establish that the prior C1 worker was interrupted after two read-only commands and produced no implementation, measurements or handoff. Its termination is not completion. CHIEF found a clean unchanged isolated checkout and no reusable C1 deliverables; no further artifact search or reconstruction of a supposed completed run is required.
+
+CHIEF starts C1 from that accepted checkpoint as dependency-ordered bounded tasks: measurement contract/collection, producer/resource workloads, then composed owned restart/protection measurements and numerical profile freeze. One suitable Astra High worker runs at a time, with a new assignment for each task and healthy context reuse. No broad regression occurs inside C1. Its actual package evidence is reviewed once, recorded in the existing Operations Foundation, then normally committed/pushed with clean local/remote zero-divergence verification. C2 degradation/alerts/runbooks cannot begin before C1 acceptance. C3 owns final frozen-source broad Operations regression and closeout.
+
+The mandatory progress watchdog inspects work around 30-45 minutes without substantive output and pauses unexplained work around 60-90 minutes for diagnosis/rescoping. A long deterministic command is exempt only after its exact work and justified expected duration are identified before waiting. Two or three substantially repeated failures require diagnosis rather than continued retries. Natural package checkpoints avoid per-task evidence/Git ceremony. CHIEF may stop at a clean package boundary if scope/context becomes heavy.
+
+Both protected checkouts, collector/runtime processes and production/raw/live databases remain untouched. Host-specific/HUMAN_EXTERNAL qualification remains deferred and cannot be replaced by synthetic evidence. No real service/task installation, production key, mainnet sign/send/broadcast, capital action, Step 10, unrelated strategy/research or concurrent-position work is authorized.
+
+CHIEF records **C1.1/C1.2/C1.3 and natural C1 package bounded LOCAL PASS**, after review of the actual new measurements, frozen numerical profile and scoped/static/hash checks. [C1 Operations evidence](MEME_LIVE_OPERATIONS_FOUNDATION_V1.md#step-9c-c1---bounded-operatingresourcerestart-measurements) retains measured shapes, commands, failed collector attempts/diagnoses and accepted boundaries. No production source change, older-package re-review or broad regression occurred. Matrix remains **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**, with M52 measurement evidence only. C1 is published as one natural package checkpoint. CHIEF stops at this context boundary; **C2 degradation/alerts/runbooks is the exact next authorized package and has not started**. C3 final dossier/regression/SYSTEM review and separately authorized host/external qualification remain pending. No Step-9 final SYSTEM acceptance is claimed.
 
 ### Step 9B B4 - Direct closeout authorization and bounded handoff
 
