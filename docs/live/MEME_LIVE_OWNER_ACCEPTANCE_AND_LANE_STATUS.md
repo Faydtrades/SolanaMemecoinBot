@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 8C / Runtime Composition, DRY, Continuous Next Trade and Runtime Reopen** are attributed below. Step 8A remains LOCAL_PASS / PROJECT_ACCEPTED_IMPLEMENTATION. Step 8B is **PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS** within its documented Runtime boundaries. Step 8C is **LOCAL_PASS / bounded SYSTEM TRANSITION PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**; project acceptance remains pending. Step 9 and later steps remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE — STEP 9A / Ownership, Startup Integrity and Readiness Barriers** are attributed below. Step 8C is **PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS** within its documented Runtime boundaries. Step 9A only is **AUTHORIZED_IN_PROGRESS**. Step 9B/9C, Step 10 and external gates remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,16 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 9A Q0 — Owner acceptance and bounded Operations authorization
+
+The owner supplied `c7e02246-10cb-4276-9fb2-1066d97dd4ef/pasted-text.txt`, SHA256 `8ab41f843327646dfcec915dc1283250ebdd0fa089bbc494f089f0449b17f519`, explicitly accepting Step 8C as **PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS** within its [C5 Runtime boundaries](MEME_LIVE_RUNTIME_FOUNDATION_V1.md#step-8c-c5--frozen-runtime-system-review-and-bounded-handoff). Clean isolated local and remote `live/meme-production-readiness` HEAD both matched `c38acf36b4d91b3aac5acfc9e3bcc860f1d498e5`; production source freeze `d99f1a7` and final 37-suite/4,982-check evidence remain authoritative. Only **M45/M54/M55** become VERIFIED. M44/M47/M48/M49 remain pending under their existing exact contracts. Matrix: **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Q0 is control/documentation only: no worker, production source change, tests or regression; normal publication precedes A1.
+
+Step 9A authorizes A1 exclusive current ownership/fencing with durable operator stop and finite restart-control facts; A2 startup integrity/identity audit and ordered reuse of accepted cold reconstruction; A3 typed PROTECTIVE_READY/ENTRY_READY classifications that do not grant SIGN/SEND; A4 one bounded CHIEF review and focused/static validation. [Operations foundation](MEME_LIVE_OPERATIONS_FOUNDATION_V1.md) records the bounded queue and evidence. Existing economic owners retain their semantics. Completion Plan and Architecture v2 remain unchanged.
+
+CHIEF may record reviewed bounded LOCAL PASS, commit/push normally and advance without another owner confirmation. This overrides AGENTS.md only for those authorized statuses/checkpoints. CHIEF/worker routing is Astra High; Extra High requires a concrete difficult ownership, stop/restart, startup or barrier problem; Ultra requires critical ambiguity or failed lower-level resolution. Attempt a fresh context for each A1-A3 item. Actual capacity failure permits a new current-item-only assignment to the most recently completed suitable worker from the published prior checkpoint. Exactly one consequential worker runs at a time; no future-item preparation or broad re-audit.
+
+Only disposable/synthetic state and process fixtures are authorized. Protected checkout `D:\Tradingbot\solana_memecoin_bot_phase1_v0_1` and the previously protected nested runtime checkout must remain untouched. No production process/collector modification, production key, mainnet sign/send/broadcast, capital action, real Windows service/task installation, watchdog loop, fault campaign, measured operating envelope, alarms/runbooks, Step-9 final SYSTEM acceptance or exhaustive Step-10 dossier is authorized. M52/M53 are not assessed for completion. **STOP after Step 9A; Step 9B/9C, Step 10 and external gates remain NOT AUTHORIZED.**
 
 ### Step 8C C5 — Bounded Runtime implementation handoff
 
