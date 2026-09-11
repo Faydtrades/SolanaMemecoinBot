@@ -5,6 +5,7 @@ observations grant nothing and never settle funds. No scheduler, automatic
 retry, replacement decision, key loading or arbitrary mutating RPC is exposed.
 """
 from __future__ import annotations
+from .operations_ownership_v0_1 import mutation_guard
 
 import time
 from dataclasses import asdict, dataclass, field
@@ -352,7 +353,7 @@ def _last_call(repository, receipt, envelope, fence, source_store, source_expect
     return attempt, sample
 
 
-def send_exact(repository, delivery, transport, *, source_store, clock):
+def send_exact(repository, delivery, transport, *, source_store, clock, ownership=None):
     """Fresh A4b SEND/next REBROADCAST -> durable claim -> one exact call.
 
     Both journals stay writer fenced through the final current-clock recheck
@@ -410,10 +411,13 @@ def send_exact(repository, delivery, transport, *, source_store, clock):
             attempt, fence = _record(repository, uncertain, key+"-unknown", attempt.revision, fence)
         attempt, final_clock = _last_call(repository, receipt, envelope, fence, source_store, source_expected, clock, sample)
         ticket = _ClaimedSend(envelope, receipt, content_fingerprint(original), _token=_CLAIM_TOKEN)
-        try:
-            outcome, acknowledged = transport._send_claimed(ticket)
-        except Exception:
-            outcome, acknowledged = "TRANSPORT_UNRESOLVED", None
+        # Same current guard for SEND and REBROADCAST, after the final clock.
+        # Stop/takeover cannot commit between this recheck and dispatch.
+        with mutation_guard(ownership, repository.domain):
+            try:
+                outcome, acknowledged = transport._send_claimed(ticket)
+            except Exception:
+                outcome, acknowledged = "TRANSPORT_UNRESOLVED", None
         observation = SendObservation(request.attempt_id, envelope.primary_signature, envelope.signed_wire_digest,
             receipt.content_digest, request.stage, request.rebroadcast_ordinal, ticket.digest,
             transport.profile.fingerprint, final_clock.utc_upper_utc, outcome, acknowledged)

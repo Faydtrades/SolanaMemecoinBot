@@ -34,6 +34,7 @@ from .position_controller_v0_1 import bind_actual_position
 from .exit_observation_v0_1 import capture_exit_evidence, enrich_exit_evidence, commit_exit_evaluation, EVIDENCE, EVALUATION
 from .protective_obligation_v0_1 import ensure_protective_obligation, stage_protective_sell
 from .protective_outcome_v0_1 import protective_outcome
+from .operations_ownership_v0_1 import OperationsOwnership, mutation_guard, OperationsOwnershipError
 
 VERSION = "live_runtime_composition_v0.1"
 
@@ -81,7 +82,11 @@ class RuntimeCompositionV01:
     claim occurs here. A caller supplies only external evidence/resources for
     the work selected by step; omitting a resource holds that priority intact.
     """
-    def __init__(self, producer, handoff, ledger, source_store, *, batch_rows=32, page_rows=32, queued_roots=64):
+    # Accepted pre-Operations cold factory bypasses __init__; it remains unowned.
+    _ownership = None
+
+    def __init__(self, producer, handoff, ledger, source_store, *, batch_rows=32, page_rows=32, queued_roots=64,
+                 ownership=None):
         require(type(producer) is LiveContinuousProducerV02 and type(handoff) is CandidateHandoffV01
             and type(ledger) is LedgerRepository and ledger.domain.mode == "LIVE"
             and type(source_store) is SourceEvidenceStore and handoff.producer is producer
@@ -97,6 +102,11 @@ class RuntimeCompositionV01:
         self._entry_action_id = None
         self._binding = None
         self._chain_key = None
+        require(ownership is None or type(ownership) is OperationsOwnership
+            and ownership.fence.domain_id == ledger.domain.economic_domain_id
+            and ownership.fence.binding_digest == ledger.domain.binding_digest,
+            "RUNTIME_OPERATIONS_DOMAIN_OWNER_REQUIRED")
+        self._ownership = ownership
 
     @property
     def queued_roots(self):
@@ -200,7 +210,16 @@ class RuntimeCompositionV01:
         ensure_protective_obligation(self.ledger, binding, recorded_at_utc=at)
         return protective_outcome(self.ledger, binding)
 
+    def _owner_current(self):
+        try:
+            with mutation_guard(self._ownership, self.ledger.domain):
+                return True
+        except (OperationsOwnershipError, sqlite3.DatabaseError, OSError):
+            return False
+
     def _execute(self, action, ports, clock, *, fence, ordinal):
+        if not self._owner_current():
+            return self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED", action=action)
         if ports is None:
             return self._result("NEED_EXECUTION", "ORIGINAL_ACTION_AWAITS_EXTERNAL_PORTS", action=action)
         require(type(ports) is ExecutionPorts, "RUNTIME_CONCRETE_EXECUTION_PORTS_REQUIRED")
@@ -221,13 +240,15 @@ class RuntimeCompositionV01:
         if type(sign) is not FreshStageConsumption:
             return self._result("HELD", "AUTHORITY_SIGN_NOT_FRESHLY_GRANTED", action=action, attempt=prep.attempt_id,
                 key=sign.original.request.command_id)
-        envelope = ports.signer.sign_exact(self.ledger, production, sign, source_store=source, clock=clock)
+        envelope = ports.signer.sign_exact(self.ledger, production, sign, source_store=source, clock=clock,
+            ownership=self._ownership)
         persist_signed_envelope(self.ledger, envelope, fence=self.ledger.write_fence())
         send = consume("SEND")
         if type(send) is not FreshStageConsumption:
             return self._result("HELD", "AUTHORITY_SEND_NOT_FRESHLY_GRANTED", action=action, attempt=prep.attempt_id,
                 key=send.original.request.command_id)
-        observation = send_exact(self.ledger, send, ports.transport, source_store=source, clock=clock)
+        observation = send_exact(self.ledger, send, ports.transport, source_store=source, clock=clock,
+            ownership=self._ownership)
         return self._result("SUBMISSION_OBSERVED", observation.outcome, action=action, attempt=prep.attempt_id)
 
     def _truth(self, attempt_id, sample, truth_rpc, wallet):
@@ -290,6 +311,8 @@ class RuntimeCompositionV01:
         """One bounded next legal work unit. Resource presence never sets priority."""
         sample = clock()
         require(type(sample) is TrustedClockSample and sample.status == "QUALIFIED", "RUNTIME_QUALIFIED_CLOCK_REQUIRED")
+        if not self._owner_current():
+            return self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED")
         protection = None
         if self._binding is not None:
             protection = self._protect(sample, exit_proofs)
@@ -334,6 +357,8 @@ class RuntimeCompositionV01:
         policy = self.ledger.authority_snapshot()["policy"]
         if policy is None:
             return self._result("ENTRY_HELD", "EXTERNAL_AUTHORITY_POLICY_REQUIRED", root=root)
+        if not self._owner_current():
+            return self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED", root=root)
         key = self._key("admission", root, sample.utc_upper_utc)
         receipt = self.ledger.admit_authority_entry(EntryRequest(root, entry.venue, entry.token_program, policy.selected_track),
             sample, self.source, entry.wallet, command_id=key, fence=snapshot["fence"])

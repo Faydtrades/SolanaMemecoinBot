@@ -7,6 +7,7 @@ holds the existing Ledger writer fence and a no-write source-journal lock; this
 is a finite last-call critical section, not a cross-database commit protocol.
 """
 from __future__ import annotations
+from .operations_ownership_v0_1 import mutation_guard
 
 import base64
 import hashlib
@@ -170,7 +171,7 @@ class AutonomousLocalSigner:
     def __reduce_ex__(self, protocol):
         raise TypeError("isolated signer cannot be serialized")
 
-    def sign_exact(self, repository, production, delivery, *, source_store, clock):
+    def sign_exact(self, repository, production, delivery, *, source_store, clock, ownership=None):
         """Spend fresh A4b SIGN once, guard continuation, then call local crypto.
 
         Clock is a fresh, bounded local trusted provider call, never the old
@@ -236,7 +237,9 @@ class AutonomousLocalSigner:
                      and source_store.latest_record() == expected_source), "EXECUTION_LAST_CALL_GUARD_INTERRUPTED")
             with repository._trusted_read():
                 _fresh_clock(repository, receipt, sample)
-            signature = self.__key.sign_message(raw)
+            # Acquire after the final callback; retain across the actual key call.
+            with mutation_guard(ownership, repository.domain):
+                signature = self.__key.sign_message(raw)
             # The primitive returns public signature bytes only. Verify against
             # the exact original message and expected wallet before transferring.
             return VerifiedSignedEnvelope(preparation, production.content_digest, receipt,
