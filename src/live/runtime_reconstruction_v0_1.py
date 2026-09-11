@@ -177,7 +177,7 @@ class ColdRuntimeV01(RuntimeCompositionV01):
 
 def reopen_live(ledger_path, domain, *, producer_path, market_source, producer_profile,
                 source_path, source_binding, source_profile, database_identity,
-                batch_rows=32, page_rows=32, queued_roots=64):
+                batch_rows=32, page_rows=32, queued_roots=64, source_preflight=None):
     """Open existing owners and reconstruct economics before candidate replay.
 
     Supplied configuration is checked by the original factories. No candidate,
@@ -185,6 +185,8 @@ def reopen_live(ledger_path, domain, *, producer_path, market_source, producer_p
     Active economic work defers A3 replay to priority-ordered Runtime steps.
     Otherwise initial replay is bounded by the finite pending profile and queue;
     SOURCE_RECONSTRUCTED describes owner reconstruction, not a drained outbox.
+    Operations may supply a read-only source preflight. Its failure uses the
+    same independent source hold, after economics and before source factories.
     """
     require(domain.mode == "LIVE", "RUNTIME_COLD_LIVE_DOMAIN_REQUIRED")
     require(type(producer_profile) is ContinuationProfileV02
@@ -204,6 +206,8 @@ def reopen_live(ledger_path, domain, *, producer_path, market_source, producer_p
     try:
         root._restore_economics()  # Economic failure is never converted to a source hold.
         try:
+            if source_preflight is not None:
+                source_preflight()
             _existing(producer_path, ("live_producer_checkpoint_v0_1", COUNTERS, CONFIG),
                 "live_producer_checkpoint_v0_1")
             _existing(source_path, ("source_domain", "source_evidence", "source_domain_no_update",
