@@ -1,6 +1,6 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
-Owner instructions through **MEME-LIVE — STEP 9A / Ownership, Startup Integrity and Readiness Barriers** are attributed below. Step 8C is **PROJECT_ACCEPTED_IMPLEMENTATION / bounded SYSTEM TRANSITION PASS** within its documented Runtime boundaries. Step 9A is **LOCAL PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW** after its bounded A4 CHIEF review; this is not Step-9 final SYSTEM TRANSITION PASS. Step 9B/9C, Step 10 and external gates remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
+Owner instructions through **MEME-LIVE — STEP 9B / Deterministic Fault / Recovery Campaign** are attributed below. Step 9A is **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL PASS** within its documented bounded Operations scope. This is not Step-9 final SYSTEM TRANSITION PASS. Step 9B only is **AUTHORIZED_IN_PROGRESS**. Step 9C, Step 10 and external gates remain NOT AUTHORIZED. Historical records below retain their checkpoint scope.
 
 ## Historical planning and Step-4 delivery baseline
 
@@ -15,6 +15,16 @@ The following delivery status predates the supplied Step-5 and Step-6 decisions 
 The G000 owner instruction supplied acceptance and authorized the bounded documentation/Git/control-plane task, its minimal commits and normal LIVE-branch push. That instruction did not authorize G001/T001. The later Step 4 instruction now supplies the separate bounded Evidence implementation/test/checkpoint authorization from remote `1d0c27ae26425835aecf3dcd5cca440128ad0448`. No soak, key access, transaction mutation or capital authority is authorized. Earlier audit and locked planning records remain historical controls.
 
 ## Locked owner decisions
+
+### Step 9B Q0 - Owner acceptance and bounded recovery authorization
+
+The owner supplied `2f346a41-523a-40ea-a386-06c7c34ba96a/pasted-text.txt`, SHA256 `067818a812968099cf0c038f531860ee1c33478268e0fa4ebfc1ee4107456b81`, explicitly accepting Step 9A **PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL PASS** within its [bounded Operations A4 scope](MEME_LIVE_OPERATIONS_FOUNDATION_V1.md#a4---frozen-step-9a-bounded-chief-review-and-handoff). This is not Step-9 final SYSTEM TRANSITION PASS. Clean isolated local and remote `live/meme-production-readiness` HEAD both matched `13d9b9bfd6509f3445acc7e8aadc3c00b68549c2`. M46/M50/M51 remain unpromoted; every matrix classification remains unchanged: **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Q0 is documentation/control only, with no worker, production source change, test or regression.
+
+Step 9B alone authorizes B1 actual bounded process supervision/watchdog recovery, then separate B2.1 pre-send/sign/claim, B2.2 send/acknowledgement loss/UNKNOWN, B2.3 finality/non-landing, B2.4 settlement/fees/partial/retirement, B3.1 entry/BUY fresh-process recovery, B3.2 open-position/protection recovery, B3.3 SELL/finality/partial recovery, B3.4 retirement/source/stop/fence recovery, and B4 one bounded CHIEF recovery review. [Operations foundation](MEME_LIVE_OPERATIONS_FOUNDATION_V1.md#step-9b-q0---accepted-input-and-bounded-recovery-queue) retains the queue and evidence. Authoritative truth resolves uncertainty when sufficient; otherwise original ambiguity and encumbrance survive.
+
+CHIEF may record each reviewed bounded LOCAL PASS/PARTIAL/BLOCKED, commit/push normally and advance sequentially. Exactly one consequential worker runs at a time; prefer fresh Astra High contexts, allowing controlled capacity reuse only through a new current-item assignment from the published checkpoint. Ultra requires a concrete critical/difficult ambiguity that High cannot safely resolve within a bounded correction loop. No automatic escalation. No future-item bundling or Step-9C preparation. Accepted Steps 4-8/9A are reused without broad audit or ceremonial reruns. A strictly necessary narrow compatibility correction preserving an accepted contract must be recorded; a required change to accepted economic/Authority/Execution semantics is a BLOCKED stop, not silent redesign.
+
+Only disposable state, synthetic process fixtures and deterministic fake external ports are authorized. Both protected runtime checkouts and real collector/runtime/data remain untouched. No service/task installation, production key, mainnet sign/send/broadcast, capital, measured-load/envelope, alerts/runbooks/final dossier, final broad Operations regression, exhaustive Step-10 acceptance or full second BUY/SELL S02 occurs here. No row self-promotion; M52/M53 are not assessed as complete. **STOP after Step 9B. Step 9C, Step 10 and external gates remain NOT AUTHORIZED.**
 
 ### Step 9A Q0 — Owner acceptance and bounded Operations authorization
 

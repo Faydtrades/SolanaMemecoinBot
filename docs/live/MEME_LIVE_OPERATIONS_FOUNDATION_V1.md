@@ -1,6 +1,6 @@
 # MEME-LIVE Operations Foundation v1
 
-Status: **STEP 9A LOCAL PASS / IMPLEMENTED_PENDING_PROJECT_REVIEW**, after the bounded A4 CHIEF transition review. This is not Step-9 final SYSTEM TRANSITION PASS or owner acceptance of Step 9A. Governing controls are [Architecture v2 section 4.7](MEME_LIVE_PRODUCTION_CLOSURE_ARCHITECTURE_V2.md#47-operations--recovery-and-unattended-qualification), existing T008/T009 and [Step-9A owner authorization](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-9a-q0--owner-acceptance-and-bounded-operations-authorization). This is the single focused Operations evidence record, not a replacement architecture, roadmap, ledger or Runtime state model.
+Status: **STEP 9A PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL PASS; STEP 9B AUTHORIZED_IN_PROGRESS**. The owner accepted the bounded A4 scope without row promotion or Step-9 final SYSTEM acceptance. [Step-9B authorization](MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md#step-9b-q0---owner-acceptance-and-bounded-recovery-authorization) governs the new queue below. Existing Architecture v2 and T008/T009 remain governing controls. Earlier sections retain their historical scope; this remains the single Operations evidence record.
 
 ## Q0 — Accepted input and bounded queue
 
@@ -187,3 +187,24 @@ M47/M48/M49 receive real Operations startup-consumer evidence, replacing the for
 Step 9B retains the deterministic Operations fault campaign, wider crash-before/after durable/external cuts, takeover/stop/restart interruption qualification and full supported integrated recovery cases. Step 9C retains measured aggregate/hot-mint/resource/disk/restart operating envelope, final restart latency, degradation/alerts, human recovery runbooks, final Operations dossier and final broad Operations regression/review. Real watchdog/autostart integration, if later authorized, is not supplied here. Step 10 retains exhaustive integrated S01-S12/E01-E05 acceptance and full S02; external gates retain real configuration/key/environment bindings and T010/T011. No new downstream owner or transition was invented.
 
 Both protected runtime checkouts remained untouched; no real collector/process was inspected, stopped, restarted or changed. All tests used disposable state and controlled child fixtures. No real service/task installation, production key loading, mainnet signing/send/broadcast, capital action, Step 9B/9C or Step 10 implementation occurred. Completion Plan and Architecture v2 remain unchanged. **STOP after Step 9A. Step 9B/9C, Step 10 and external gates remain NOT AUTHORIZED.**
+
+## Step 9B Q0 - Accepted input and bounded recovery queue
+
+Verified clean isolated local/remote input: `13d9b9bfd6509f3445acc7e8aadc3c00b68549c2`. Owner accepts Step 9A PROJECT_ACCEPTED_IMPLEMENTATION / LOCAL PASS within A4's bounded scope, not Step-9 final SYSTEM TRANSITION PASS. No matrix promotions: **43 VERIFIED / 12 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Q0 changes only controls/documentation; no worker, source edits, tests or regression.
+
+| Item | Current bounded assignment |
+|---|---|
+| B1 | Actual finite process supervision/watchdog recovery over accepted ownership/startup/restart controls; disposable real children |
+| B2.1 | Interruption at admission/reservation, action/message preparation, SIGN consumption, envelope save, send claim and pre-send |
+| B2.2 | External ACK loss/timeout/RPC failure and possible-send UNKNOWN retaining original identities |
+| B2.3 | Finality observation/retention, positive truth and existing complete/incomplete non-landing contract |
+| B2.4 | Settlement/application, failed fees, partial residuals and retirement/capacity cuts |
+| B3.1 | Fresh-process no-position, admission/reservation, possible-send BUY and finalized-before-application recovery |
+| B3.2 | Fresh-process acquired position, protective obligation and already-due fallback |
+| B3.3 | Fresh-process SELL UNKNOWN, failed fee, partial residual and finalized-before-application recovery |
+| B3.4 | Retirement, source/checkpoint corruption/replacement, durable stop and stale-generation recovery |
+| B4 | Frozen bounded CHIEF recovery review and one affected recovery qualification set; no final broad Operations regression |
+
+One consequential Astra High worker at a time; fresh where practical. Capacity fallback receives a new current-item assignment from the latest published checkpoint. Every item receives focused/directly affected tests, CHIEF review, only required bounded corrections, recorded outcome, and normal checkpoint/push before advancing. Ultra escalation requires a concrete unresolved recovery-critical ambiguity; none is assumed. Workers do not inspect/prepare later Step-9C work. Accepted owners remain the source of economics and permissions; no direct state fabrication. Stop if a required correction changes accepted economic/Authority/Execution semantics.
+
+Qualification uses disposable stores, controlled real child processes where practical, and fake external I/O. No real runtime/collector/data manipulation or protected-checkout edits, service/task installation, production keys/mainnet/capital, measured-load/envelope, final restart latency, alerts/runbooks/dossier, full S02 or exhaustive Step-10 suite. M46-M50 evidence is assessed only after the actual campaign; no self-promotion, no M51 promotion from readiness alone, and no M52/M53 completion assessment. **STOP after Step 9B; Step 9C, Step 10 and external gates remain NOT AUTHORIZED.**
