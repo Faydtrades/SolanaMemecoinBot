@@ -1,0 +1,161 @@
+{
+  "schema": "MEME_LIVE_STEP12A_CONTROL_INDEX_V1",
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "purpose": "Record supplied project/owner decisions only; no completed T010 policy, grant, public profile or launch.",
+  "recorded_at_utc": "2026-09-12T21:55:18.676536+00:00",
+  "starting_head": "3fccf8828b4f7f41ceda0cfdaef3beceecfd69c9",
+  "branch": "live/meme-production-readiness",
+  "instruction": {
+    "path": "docs/live/MEME_LIVE_STEP12A_OWNER_INSTRUCTION_V1.txt",
+    "sha256": "07ed165c7fc76cc7d9f675a936464b68274810472d404eb604721d6590163cf1",
+    "source_attachment": "c5d3795d-7534-410a-b72b-db0750955e2f/pasted-text.txt",
+    "source_attachment_sha256": "71571f63e0f3471d5dff9a1c4954b4b40c57a1a1e96dee07407e62bb69cf3896",
+    "persistence": "Original instruction content with CRLF normalized to LF for a stable committed-byte digest."
+  },
+  "operator_provenance": {
+    "operator_id": "PROJECT_OWNER",
+    "approval_reference": "MEME_LIVE_STEP12A_OWNER_INSTRUCTION_V1",
+    "approval_record_digest": "07ed165c7fc76cc7d9f675a936464b68274810472d404eb604721d6590163cf1",
+    "recorded_at_utc": "2026-09-12T21:55:18.676536+00:00",
+    "origin": "HUMAN_EXTERNAL"
+  },
+  "provenance_boundary": "Original OperatorProvenance shape records the supplied overarching instruction. PROJECT_OWNER is its stated role, not independently authenticated identity. The digest covers actual persisted LF instruction bytes; original attachment SHA256 is retained separately. Only line endings were normalized. This is not MEME_LIVE_M09_M10_APPROVAL_V1 or MEME_LIVE_M58_T010_APPROVAL_V1: their exact complete approved_input, actual dossier/source/profile bindings and launch-relative windows do not yet exist.",
+  "supplied_project_decision": {
+    "authority": "CHATGPT_PROJECT_REVIEW",
+    "decision": [
+      "PASS",
+      "ACCEPTED",
+      "CHECKPOINTED"
+    ],
+    "accepted_revision": "3fccf8828b4f7f41ceda0cfdaef3beceecfd69c9",
+    "reviewed_rows": {
+      "M56": "VERIFIED",
+      "M57": "VERIFIED"
+    },
+    "matrix": {
+      "VERIFIED": 55,
+      "OWNED_NOT_BUILT": 0,
+      "HUMAN_EXTERNAL": 6,
+      "BLOCKED": 0,
+      "total": 61
+    },
+    "evidence_reused_unchanged": true,
+    "accepted_index": {
+      "path": "docs/live/MEME_LIVE_STEP11C_REVIEW_V1.json",
+      "sha256": "0888c5383ff25df7d093f60f99f536d21b0ae4475a0ddbf493d00b8a1f96b821"
+    },
+    "accepted_source_content_digest": "2e1874dabc144faf91fcb8d5a1895af76102a8a5269e657cef4ee823f3c61296",
+    "accepted_M56_artifact": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-refreeze\\M56-dossier.json",
+      "sha256": "cc2a2b55d60ec8043fbae86bbedc552c21a18b0b63a0af738a7c00c5e9d16002"
+    },
+    "accepted_M57_artifact": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-refreeze\\M57-default-denied.json",
+      "sha256": "e0f31173bd0644ba4f3c87a3f40c441dc8565824c1b65a74ee6f0e245e4b04e7"
+    },
+    "accepted_freeze_receipt": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-refreeze\\freeze-receipt.json",
+      "sha256": "aa6983014e239c0c03066122a64d339b6e3a86f6e1ef68dbfad809a53cba3481"
+    }
+  },
+  "gate_contract": {
+    "path": "docs/live/MEME_LIVE_STEP11C_GATE_CONTRACT_V1.md",
+    "sha256": "a6db31ff6a75894630ad32cfcf37b2d692b1e446a2663f11e09b44980a3973b3",
+    "immutable": true
+  },
+  "supplied_owner_constraints": {
+    "M09": {
+      "selected_track": "FINAL-A",
+      "winner_role": "CONTROL",
+      "scope": "T010 qualification only",
+      "research_binding": "Exact existing locked research/selection bindings; no tuning or reselection."
+    },
+    "M10": {
+      "size": {
+        "fixed_quote_lamports": 100000000,
+        "minimum_quote_lamports": 100000000,
+        "ceiling_quote_lamports": 100000000,
+        "max_trade_notional_lamports": 100000000,
+        "max_global_exposure_lamports": 100000000,
+        "max_mint_exposure_lamports": 100000000,
+        "max_open_positions": 1
+      },
+      "failed_attempt_count": 2,
+      "allowed_venues": [
+        "PUMP",
+        "PUMPSWAP"
+      ],
+      "real_expenditure_authorized_lamports": 0,
+      "remaining_cost_fields": "Not assigned. Derive uniquely from accepted contracts and fresh read-only public evidence, with conservative T010-only headroom up to 2x observed required amounts; never exceed or loosen accepted limits; no synthetic fixture values. Unsupported or ambiguous required value means STOP.",
+      "failed_attempt_network_budget": "May be 2 * network_total_fee_lamports only within existing accepted limits.",
+      "impact_slippage": "Existing accepted constraints unchanged; no optimization or loosening."
+    },
+    "clock": "Exact accepted provider/profile identity and clock limits with fresh observations; no replacement or loosening; incompatibility means STOP.",
+    "M58": {
+      "authorized_run_count": 1,
+      "purpose": "T010",
+      "mode": "DRY",
+      "submission": "NO_BROADCAST",
+      "terminal": "NON_SUBMITTED",
+      "environment": [
+        "Real mainnet-beta read-only RPC",
+        "Real public wallet state",
+        "Real accepted collector/source",
+        "Real unsigned final-message construction",
+        "Real zero-signature simulation",
+        "Separate isolated T010 DRY stores",
+        "Existing Runtime/Operations/supervisor mechanisms"
+      ],
+      "signer_and_send_capability": "Physically absent from the T010 graph.",
+      "observation_target_hours": 12,
+      "maximum_validity_hours_from_actual_launch": 14,
+      "actual_launch_utc": null,
+      "target_utc": null,
+      "expiry_utc": null,
+      "launch_conditions": "Existing preflight, actual environment/profile/policy/grant bindings and safe unattended ownership must all be established first."
+    }
+  },
+  "not_authorized": [
+    "T011",
+    "M59",
+    "M60",
+    "M61",
+    "Private keys or seeds",
+    "Signing",
+    "Send/broadcast/submission",
+    "Wallet or mainnet mutation",
+    "Real BUY/SELL",
+    "Real capital"
+  ],
+  "execution_state": {
+    "T010": "NOT_STARTED",
+    "preflight": "BLOCKED_BEFORE_ACTUAL_PACKAGE",
+    "blocker": "Accepted src/live/acceptance_dossier_v0_1.py lifecycle_disposition requires M56/M57 OWNED_NOT_BUILT via PENDING_ROWS. The supplied required promotion to VERIFIED conflicts with build_dossier reading the current matrix, yielding UNEXPECTED_LIFECYCLE_DISPOSITION:M56. No source/contract change or bypass is authorized.",
+    "actual_public_profile": null,
+    "actual_policy": null,
+    "actual_grant": null,
+    "final_policy_approval_record": null,
+    "final_gate_approval_record": null,
+    "exact_dossier_project_preflight_record": null,
+    "runtime_actions_performed": false,
+    "disposition": "STOP before launch; supplied Step11-C project acceptance remains authoritative. This is a tooling compatibility blocker, not a reopened Step11-C review.",
+    "blocker_check": {
+      "scope": "Pure current lifecycle-disposition check only; not a full preflight.",
+      "performed_by": "CHIEF",
+      "input": "In-memory current matrix with only M56/M57 status cells promoted to VERIFIED.",
+      "result": "Caught ValueError: UNEXPECTED_LIFECYCLE_DISPOSITION:M56",
+      "exit_status": 0,
+      "source_path": "src/live/acceptance_dossier_v0_1.py",
+      "source_sha256": "84618c3ab2510ba5efc2404c7bfc21c56344f066c04a650a9b780483c90ff422",
+      "source_locations": [
+        "PENDING_ROWS:20",
+        "lifecycle_disposition:165-177",
+        "build_dossier:389-390",
+        "verify_dossier:427-431",
+        "src/live/t010_preflight_v0_1.py:234"
+      ],
+      "full_preflight_executed": false,
+      "public_environment_observed": false
+    }
+  }
+}

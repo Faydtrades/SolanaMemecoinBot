@@ -1,5 +1,18 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
+## Step12-A - supplied Step11-C acceptance and one-run owner decision
+
+The supplied ChatGPT project decision accepts Step11-C at exact revision `3fccf8828b4f7f41ceda0cfdaef3beceecfd69c9` as **PASS / ACCEPTED / CHECKPOINTED** and promotes **M56 and M57 to VERIFIED**. Current matrix: **55 VERIFIED / 0 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Historical accepted evidence, generated artifacts, source/selection bindings and the gate contract remain unchanged. This records the supplied decision; it does not independently re-review Step11-C.
+
+The [Step12-A control index](MEME_LIVE_STEP12A_CONTROL_INDEX_V1.json) binds the [exact supplied instruction](MEME_LIVE_STEP12A_OWNER_INSTRUCTION_V1.txt) to original-format HUMAN_EXTERNAL OperatorProvenance with actual recording UTC and persisted-byte SHA256. M09 selects **FINAL-A / CONTROL** for this T010 qualification only. M10 fixes minimum/fixed/ceiling quote, maximum trade notional, maximum mint exposure and maximum global exposure at **100000000 lamports**, with **one** open position, **two** failed attempts and venues **PUMP/PUMPSWAP**. Remaining cost fields require fresh read-only evidence under existing accepted limits and at most 2x observed required amounts; no fixture values or guesses. Accepted impact/slippage and clock provider/profile/limits remain unchanged.
+
+M58 supplies authorization for exactly **one T010 DRY / NO_BROADCAST / NON_SUBMITTED** run using real public reads, unsigned construction, zero-signature simulation and separate isolated DRY stores. Signer/send capability must be physically absent. The observation target is 12 hours and authorization is limited to 14 hours from actual launch; launch and expiry times are not yet assigned. The overarching instruction is not a completed policy/grant approval record: actual policy, grant, profile, cost derivations, dossier binding and original Authority control application remain absent. **T011 / M59 / M60 / M61 / real-capital authority remain NOT AUTHORIZED.**
+
+**T010 NOT_STARTED; STOP before launch.** The accepted lifecycle validator in `src/live/acceptance_dossier_v0_1.py` requires M56/M57 to remain OWNED_NOT_BUILT. The required supplied promotion to VERIFIED therefore conflicts with the current-matrix dossier path (`UNEXPECTED_LIFECYCLE_DISPOSITION:M56`). Proceeding would require an accepted source/contract change or bypass, neither authorized by this task. No runtime, public RPC, database or scheduler action was performed by this bookkeeping delta. The matrix rows remain VERIFIED by the supplied project decision; the tooling compatibility blocker does not reopen accepted review.
+
+The following Step11-C implementation handoff is historical at its stated checkpoint. Its pending project classifications and missing-owner-input statements are superseded by the supplied decision above; its retained evidence remains unchanged.
+
+
 ## Step11-C - IR-C1/IR-C2 engineering closure
 
 Status: **IMPLEMENTED_PENDING_PROJECT_REVIEW; M56 VERIFIED_CANDIDATE / M57 VERIFIED_CANDIDATE**. These are independently reviewed implementation classifications, not project acceptance or lifecycle verification. This delta starts at published `430a9b056b38f9181e3973679310c270302859fb`. The matrix remains **53 VERIFIED / 2 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**; M56/M57 retain OWNED_NOT_BUILT until project review promotes them.

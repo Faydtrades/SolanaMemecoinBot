@@ -1,0 +1,300 @@
+# MEME-LIVE STEP12-A — PREPARE + LAUNCH T010
+
+Act as CHIEF for the existing MEME-LIVE production-readiness lane.
+
+## Objective
+
+Complete only the active Step12-A delta:
+
+**record the supplied Step11-C/project-owner decisions -> construct the actual T010 public-environment DRY configuration -> pass existing preflight -> prove the run can continue unattended through existing Runtime/Operations -> launch T010 -> verify early health -> hand off and STOP.**
+
+Do **not** remain active for the 12-hour soak.
+Do **not** perform the final Step12 review.
+Do **not** start T011.
+
+---
+
+## Start state
+
+Repository: `Faydtrades/SolanaMemecoinBot`
+Branch: `live/meme-production-readiness`
+Expected HEAD:
+
+`3fccf8828b4f7f41ceda0cfdaef3beceecfd69c9`
+
+Verify branch, clean worktree/index, exact HEAD, fetched remote equality and zero divergence.
+
+If the expected start state is not true, STOP and report the exact discrepancy. Do not reset/rebase/force/discard user work.
+
+---
+
+## Governance / context rule
+
+`AGENTS.md`, the accepted production-closure controls and `docs/live/MEME_LIVE_STEP11C_GATE_CONTRACT_V1.md` remain authoritative.
+
+Follow the established CHIEF + bounded-worker method. One consequential worker at a time; Astra High by default for consequential work. Use targeted validation and natural task boundaries.
+
+**Already accepted/reviewed/checkpointed work is DONE and is input, not a new task.**
+
+Do not broadly reconstruct history, rereview Step10/11A/11B, rerun accepted campaigns, rerun the Step11-C 157-check regression, reopen strategy research, or perform an unrelated broad regression.
+
+Read only the current files/interfaces required for the unresolved Step12-A delta.
+
+---
+
+## Supplied Step11-C project decision
+
+ChatGPT project accepts Step11-C at the exact starting revision as:
+
+**PASS / ACCEPTED / CHECKPOINTED**
+
+Record minimally:
+
+* M56 -> VERIFIED
+* M57 -> VERIFIED
+* matrix -> **55 VERIFIED / 0 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED**
+* historical accepted evidence remains unchanged
+
+Do not independently re-review this decision.
+
+---
+
+## Owner inputs for this T010 run
+
+### M09
+
+Use:
+
+* `selected_track = FINAL-A`
+* `winner_role = CONTROL`
+
+Use the exact existing locked research/selection bindings. No tuning, reselection or profitability research.
+
+This is a T010 qualification choice, not permanent future strategy authorization.
+
+### M10
+
+T010 DRY simulated quote:
+
+`100,000,000 lamports = 0.10 SOL`
+
+Use:
+
+* fixed/minimum/ceiling quote = `100000000`
+* max trade notional = `100000000`
+* max mint exposure = `100000000`
+* max global exposure = `100000000`
+* max open positions = `1`
+* failed attempt count = `2`
+* allowed venues = `PUMP`, `PUMPSWAP`
+
+This authorizes **zero real expenditure**.
+
+For the remaining required fee/setup/network/protection/refundable-lock policy fields:
+
+* use the existing accepted contracts and fresh read-only public evidence;
+* choose conservative T010-only headroom up to `2x` the observed required amount;
+* never exceed or loosen an existing accepted limit;
+* do not reuse synthetic Step11-C fixture values as real policy;
+* do not optimize or loosen existing accepted impact/slippage constraints;
+* if a required value cannot be uniquely supported by the accepted contract + current evidence, STOP rather than guess.
+
+The failed-attempt network budget may be `2 * network_total_fee_lamports` only if valid within the existing accepted limits.
+
+### Clock
+
+Use the exact accepted provider/profile identity and existing accepted clock limits with fresh current observations.
+
+No loosening or replacement provider. Incompatible provider/profile -> STOP.
+
+### M58
+
+Owner authorizes exactly **one T010 run**:
+
+* DRY
+* NO_BROADCAST
+* NON_SUBMITTED
+* real mainnet-beta read-only RPC
+* real public wallet state
+* real accepted collector/source
+* real unsigned final-message construction
+* real zero-signature simulation
+* separate isolated T010 DRY stores
+* existing Runtime/Operations/supervisor mechanisms
+
+Not authorized:
+
+**private keys/seeds, signing, send/broadcast/submission, wallet/mainnet mutation, real BUY/SELL, real capital, T011 or M59-M61.**
+
+Signer/send capability must be physically absent from the T010 graph.
+
+---
+
+## Execute the Step12-A delta
+
+CHIEF should decompose the following into the smallest **natural** bounded assignments needed; do not create artificial worker fragmentation.
+
+### 1. Record owner/project decisions
+
+Update only the minimal current project-control/status surfaces needed to record:
+
+* Step11-C acceptance
+* M56/M57 promotion
+* matrix counts
+* M09/M10/M58 owner decisions
+* T011/M59-M61 remain unauthorized
+
+Create the required existing-format HUMAN_EXTERNAL approval/provenance record with real current UTC and a digest derived from the actual persisted record.
+
+No secrets.
+
+Review the documentation/control delta, run the appropriate lightweight diff validation, then create one natural reviewed checkpoint and normal push.
+
+No regression campaign is required for this bookkeeping.
+
+### 2. Construct the actual T010 profile/package
+
+Use the **existing Step11-C interfaces**, not replacement tooling.
+
+The synthetic qualification profile is not tonight's real profile.
+
+Construct the actual `PUBLIC_ENVIRONMENT_REVIEWED` profile against the already accepted deployment using the current real:
+
+* mainnet-beta identity
+* accepted public wallet
+* wallet/account observations and baseline
+* accepted RPC/provider profile
+* canonical source read path/database identity
+* accepted source/producer identity and retained continuation
+* source health
+* trusted clock evidence
+* required host/profile observations
+
+Use the accepted no-repair/explicit-continuation semantics.
+
+Create the required new run-specific isolated DRY stores through the existing authorized initialization path. They must not alias canonical LIVE, PAPER/Shadow, collector/source or one another.
+
+Prefer an already-running compatible accepted collector/source. Do not restart, duplicate or reconfigure it merely for T010.
+
+Construct `AuthorityPolicyV02` and the DRY grant through the existing original Authority control path using the owner inputs above.
+
+Grant scope is `DRY`.
+
+Bind the actual policy/grant authorization to the T010 run with a maximum validity of **14 hours from actual launch**.
+
+### 3. Run existing preflight
+
+Use the already-built Step11-C profile/dossier/T010 preflight.
+
+Validate the actual:
+
+* frozen source
+* public profile
+* project acceptance
+* M09/M10
+* M58 provenance
+* policy/grant binding
+* chain/wallet/provider/source identity
+* isolated stores
+* DRY capability graph
+* physical absence of signer/send
+* absence of canonical-store mutation
+
+A structural `ready=true`/exit 0 is not transaction or capital permission; M58 above is the only authorization supplied here.
+
+Correct only bounded environment/profile/package-input issues through existing interfaces.
+
+**If proceeding requires changing accepted production source/code/contracts, STOP. Do not patch and continue T010 under the old qualification.**
+
+### 4. Prove unattended handoff before launch
+
+Before starting the overnight run, establish through existing accepted Runtime/Operations behavior that T010 can safely continue after this Codex/CHIEF session ends.
+
+At minimum establish that:
+
+* Runtime/supervisor ownership does not depend on the Codex terminal remaining alive;
+* state/evidence/logging persists and is discoverable tomorrow;
+* ownership/fencing remains valid;
+* policy/grant expiry is enforced independently;
+* signer/send remain absent;
+* Step12-B has an existing supported way to identify, inspect and cleanly stop/reconcile the run.
+
+Do **not** build a new daemon/scheduler/watchdog merely to make tonight work.
+
+If existing accepted infrastructure cannot support unattended handoff, STOP before launch and report the exact missing capability.
+
+### 5. Launch and verify early health
+
+If all preceding gates pass, launch T010 using the same accepted production Runtime/Operations composition in fixed DRY.
+
+Observation target: **12 hours**
+Authorization hard limit: **14 hours**
+
+This CHIEF run does not wait for either.
+
+Immediately verify:
+
+* correct run/profile/policy/grant identities
+* correct source/wallet/chain/provider binding
+* correct isolated stores
+* singleton ownership/fencing
+* valid current source/clock/public truth or correct fail-closed behavior
+* signer absent
+* sender/broadcast transport absent
+* no fabricated settlement/inventory
+* no unexpected canonical-store mutation
+* run remains safely owned for unattended continuation
+
+Do not fabricate candidates or relax strategy rules to force activity.
+
+Long-soak evidence analysis, controlled fault exercises and final Step12 disposition belong to the later Step12-B review unless they are already natively scheduled by the accepted runtime. Do not create new infrastructure tonight just to schedule them.
+
+---
+
+## Stop boundaries
+
+STOP safely and report rather than improvising if:
+
+* required current profile/policy input cannot be established;
+* wallet/source/provider identity is incompatible;
+* ownership/fence is ambiguous;
+* signer/send/mutation capability appears in DRY;
+* canonical stores would need modification;
+* a production source/code/contract change is required;
+* unattended operation depends on keeping Codex alive;
+* another accepted safety contract is violated.
+
+Do not loosen guards or proceed to T011.
+
+---
+
+## Handoff
+
+After successful launch + early-health + unattended-handoff verification, stop active CHIEF work and return only the useful Step12-A delta:
+
+* start/final Git SHA and publication checkpoint
+* T010 run/process/supervisor identity
+* launch UTC
+* 12h target UTC
+* 14h expiry UTC
+* actual profile hash
+* policy/grant/authorization digests
+* exact final M10 values with brief derivation provenance
+* source/provider/wallet bindings
+* isolated DRY-store identities
+* preflight result
+* early-health result
+* proof signer/send are absent
+* durable evidence/log location
+* exact existing procedure Step12-B should use to inspect and cleanly stop/reconcile the run
+* any blocker/limitation
+
+If successfully launched, report:
+
+`STEP12_A_PASS_T010_RUNNING_PENDING_SOAK_EVIDENCE_AND_PROJECT_REVIEW`
+
+Do not declare Step12 complete.
+
+`T011 / M59 / M60 / M61 / real-capital authority remain NOT AUTHORIZED.`
+
+STOP.
