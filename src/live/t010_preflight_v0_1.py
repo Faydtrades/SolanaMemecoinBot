@@ -1,8 +1,8 @@
 """Offline exact-M56 T010 package preflight; no runtime or permission issuance.
 
 Structurally valid owner records are not authenticated approvals. The current
-frozen production root is LIVE-only: this version always denies T010 readiness,
-even for a complete synthetic package or an asserted project acceptance.
+profile must include actual same-root qualification. Structural public records
+never authenticate approvals or grant execution permission.
 """
 from __future__ import annotations
 
@@ -79,6 +79,13 @@ def deployment_binding(dossier):
 
 
 def _dry_config(value, dossier, profile):
+    if dossier.get("supported_dry") is not None:
+        from .runtime_dry_profile_v0_1 import load_profile
+        supported = load_profile(value)
+        require(supported.record["content_digest"] == dossier["supported_dry"]["profile_content_digest"],
+            "DRY_CONFIGURATION_QUALIFIED_PROFILE_CONFLICT")
+        configured = supported.configuration()
+        return configured["domain"], configured["source_binding"], configured["source_profile"]
     _keys(value, ("domain", "store_paths", "source_binding", "source_profile", "start_after_p1_rowid",
                   "database_identity", "producer_profile", "dispatch", "restart_profile", "reviewed_guard_limits"),
           "EXPLICIT_DRY_CONFIGURATION_REQUIRED")
@@ -211,7 +218,7 @@ def validate_package_structure(dossier, package, *, evaluated_at_utc, profile):
             "policy_digest": policy.content_digest, "grant_id": grant.grant_id,
             "authenticated_owner_or_project_approval": False,
             "store_state_examined": False, "current_source_or_wallet_health_established": False,
-            "source_binding_scope": "EXACT_ACCEPTED_QUALIFICATION_BINDING; activation start remains unselected"}
+            "source_binding_scope": "EXACT_QUALIFIED_PROFILE; current public environment remains external" if dossier.get("supported_dry") else "EXACT_ACCEPTED_QUALIFICATION_BINDING; activation start remains unselected"}
 
 
 def preflight(repo_root, dossier, package=None, *, evaluated_at_utc):
@@ -226,6 +233,8 @@ def preflight(repo_root, dossier, package=None, *, evaluated_at_utc):
         at = ledger_utc(evaluated_at_utc)
         verified = dossier_api.verify_dossier(repo_root, dossier)
         source_digest = verified["source"]["content_digest"]
+        if verified.get("supported_dry") is not None:
+            reasons = []
         if package is None:
             reasons += [{"class": "HUMAN_EXTERNAL", "row": row, "reason": reason} for row, reason in (
                 ("M09", "EXPLICIT_SELECTED_TRACK_NOT_SUPPLIED"),
@@ -236,14 +245,18 @@ def preflight(repo_root, dossier, package=None, *, evaluated_at_utc):
         else:
             profile = dossier_api.read_json(verified["deployment"]["profile"]["path"])
             structure = validate_package_structure(verified, package, evaluated_at_utc=at, profile=profile)
+
     except (ValueError, TypeError, KeyError, OSError, OverflowError) as exc:
         reasons.append({"class": "INVALID_INPUT_OR_EVIDENCE", "reason": str(exc)})
     return {"schema": SCHEMA, "implementation_status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
             "dossier_sha256": frozen_digest, "source_content_digest": source_digest,
             "package_sha256": package_digest,
             "evaluated_at_utc": evaluated_at_utc if type(evaluated_at_utc) is str else None, "structural_validation": structure,
-            "readiness": "DENIED", "ready": False, "reasons": reasons,
+            "readiness": "DENIED" if reasons else "STRUCTURALLY_READY_PENDING_EXTERNAL_AUTHORIZATION",
+            "ready": not reasons, "readiness_scope":"STRUCTURAL_PREFLIGHT_ONLY", "reasons": reasons,
+            "authenticated_approval":False, "current_environment_proven":False,
+            "external_execution_boundary":"Separate explicit user/project T010 authorization and original current runtime source/clock/wallet evidence are required; structural readiness alone authorizes nothing.",
             "grants_permission": False, "capital_authority": False,
             "t010_executed": False, "capabilities": CAPABILITIES,
-            "boundary": "Record validation is not authentication, runtime execution, store initialization or an Authority command. Frozen static engineering gaps remain decisive.",
+            "boundary": "Record validation is not authentication, runtime execution, store initialization or an Authority command. Engineering coverage requires exact supported profile and qualification; actual public environment and approvals remain external.",
             "downstream_human_rows_not_prerequisites_to_t010": ["M59", "M60", "M61"]}

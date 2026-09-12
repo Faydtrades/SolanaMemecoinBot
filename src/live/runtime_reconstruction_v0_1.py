@@ -1,4 +1,4 @@
-"""C4 finite LIVE cold reconstruction. Durable owners remain the only truth.
+"""C4 finite fixed-domain cold reconstruction. Durable owners remain the only truth.
 
 No installation, recovery verdict, readiness grant, process loop or ownership
 protocol lives here. A failed source reopen cannot erase intact economics.
@@ -65,7 +65,7 @@ def _existing(path, names, singleton):
 
 
 class ColdRuntimeV01(RuntimeCompositionV01):
-    """Created only by reopen_live; owns and closes its reopened local handles."""
+    """Created only by the common reopen factory; owns and closes its reopened local handles."""
 
     def __init__(self):
         raise TypeError("RUNTIME_COLD_REOPEN_REQUIRED")
@@ -139,6 +139,9 @@ class ColdRuntimeV01(RuntimeCompositionV01):
                     and self.ledger.authority_acceptance(action.root_id) is not None,
                     "RUNTIME_COLD_ORIGINAL_AUTHORITY_ACTION_REQUIRED")
                 self._entry_action_id = action.action_id
+            if self.capability == "NO_BROADCAST":
+                require(not positions and not snapshot["protections"], "RUNTIME_DRY_NO_LIVE_ECONOMICS_REQUIRED")
+                self._dry_recovery = action is not None
             if positions:
                 position = positions[0]
                 require(action is not None and action.position_id == position.position_id,
@@ -175,7 +178,7 @@ class ColdRuntimeV01(RuntimeCompositionV01):
                 "RUNTIME_COLD_COMMON_CUT_CHANGED")
 
 
-def reopen_live(ledger_path, domain, *, producer_path, market_source, producer_profile,
+def reopen_runtime(ledger_path, domain, *, producer_path, market_source, producer_profile,
                 source_path, source_binding, source_profile, database_identity,
                 batch_rows=32, page_rows=32, queued_roots=64, source_preflight=None):
     """Open existing owners and reconstruct economics before candidate replay.
@@ -188,13 +191,15 @@ def reopen_live(ledger_path, domain, *, producer_path, market_source, producer_p
     Operations may supply a read-only source preflight. Its failure uses the
     same independent source hold, after economics and before source factories.
     """
-    require(domain.mode == "LIVE", "RUNTIME_COLD_LIVE_DOMAIN_REQUIRED")
+    require(domain.mode in ("LIVE", "DRY"), "RUNTIME_COLD_FIXED_DOMAIN_REQUIRED")
     require(type(producer_profile) is ContinuationProfileV02
         and type(batch_rows) is int and 1 <= batch_rows <= producer_profile.batch_rows
         and type(page_rows) is int and 1 <= page_rows <= producer_profile.delivery_page_rows
         and type(queued_roots) is int and page_rows <= queued_roots <= 1024,
         "RUNTIME_FINITE_DISPATCH_PROFILE_REQUIRED")
     root = object.__new__(ColdRuntimeV01)
+    root._fixed_domain = domain
+    root._dry_recovery = False
     root.ledger = LedgerRepository.reopen(ledger_path, domain)
     root.producer = root.handoff = root.source = root._producer_conn = None
     root._entry_action_id = root._binding = root._chain_key = None
@@ -254,3 +259,9 @@ def reopen_live(ledger_path, domain, *, producer_path, market_source, producer_p
     except BaseException:
         root.close()
         raise
+
+
+def reopen_live(ledger_path, domain, **configuration):
+    """Compatibility boundary retains fixed LIVE semantics."""
+    require(domain.mode == "LIVE", "RUNTIME_COLD_LIVE_DOMAIN_REQUIRED")
+    return reopen_runtime(ledger_path, domain, **configuration)

@@ -6,6 +6,7 @@ Only retained exact child handles are signalled; PID lookup/adoption is absent.
 """
 from __future__ import annotations
 
+from contextlib import nullcontext
 import multiprocessing
 import os
 from dataclasses import dataclass
@@ -13,7 +14,7 @@ from time import monotonic_ns, sleep, time_ns
 from uuid import uuid4
 
 from .operations_ownership_v0_1 import OperationsStore, OwnerFence
-from .operations_startup_v0_1 import StartupIdentity, start_live
+from .operations_startup_v0_1 import StartupIdentity, start_runtime
 
 VERSION = "live_operations_supervisor_v0.1"
 
@@ -44,13 +45,15 @@ def _runtime_child(channel, launch_id, configuration, external_inputs, now_us, g
     """No inherited owner: the original startup acquires inside the new process."""
     started = None
     try:
-        started = start_live(**configuration, process_identity=launch_id+":"+str(os.getpid()),
+        started = start_runtime(**configuration, process_identity=launch_id+":"+str(os.getpid()),
                              now_us=now_us, replace_generation=generation)
         channel.send(("STARTED", started.audit.owner_fence))
         while channel.recv() == "STEP":
             # Host supplies external resources only. Original Runtime selects and
             # authorizes every work unit; no supervisor economic decision exists.
-            result = started.runtime.step(**external_inputs(started))
+            inputs = external_inputs(started)
+            with nullcontext(inputs) if type(inputs) is dict else inputs as resources:
+                result = started.runtime.step(**resources)
             channel.send(("PROGRESS", result.work))
     except EOFError:
         pass

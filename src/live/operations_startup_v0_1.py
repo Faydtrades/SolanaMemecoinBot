@@ -1,4 +1,4 @@
-"""Finite owned LIVE startup audit; original durable owners retain all truth.
+"""Finite owned fixed-domain startup audit; original durable owners retain all truth.
 
 The trusted host supplies a previously reviewed identity, including exact
 producer/Evidence schema fingerprints. It must not discover/approve that identity
@@ -29,6 +29,7 @@ from .ledger_actions_v0_1 import StoredAttempt
 
 VERSION = "live_operations_startup_v0.1"
 CAPABILITY = "LIVE_SINGLE_POSITION_OWNED"
+DRY_CAPABILITY = "DRY_SINGLE_POSITION_OWNED_NO_BROADCAST"
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,6 +43,7 @@ class StartupIdentity:
     configuration_digest: str
     producer_schema_digest: str
     evidence_schema_digest: str
+    dry_monitor_digest: str | None = None
 
 
 def _schema_digest(conn):
@@ -56,16 +58,44 @@ def schema_fingerprint(path):
         return _schema_digest(conn)
 
 
+def _distinct_dry_paths(paths, live_paths, raw_path):
+    """Explicit reviewed LIVE exclusions; reject lexical and hard-link aliases."""
+    authority.require(type(live_paths) is tuple and 4 <= len(live_paths) <= 16
+        and all(isinstance(path, (str, Path)) and Path(path).is_absolute() for path in live_paths),
+        "OPERATIONS_EXPLICIT_LIVE_PATH_EXCLUSIONS_REQUIRED")
+    mutable = tuple(Path(path).resolve() for path in paths)
+    excluded = tuple(Path(path).resolve() for path in (*live_paths, raw_path))
+    authority.require(all(Path(path).is_absolute() for path in paths), "OPERATIONS_ABSOLUTE_DRY_PATHS_REQUIRED")
+    def aliases(left, right):
+        return left == right or (left.exists() and right.exists() and left.samefile(right))
+    authority.require(not any(aliases(left, right) for i, left in enumerate(mutable)
+        for right in (*mutable[i+1:], *excluded)), "OPERATIONS_DISTINCT_DRY_STORES_REQUIRED")
+
+
+def dry_monitor_fingerprint(configuration):
+    """Bind guard dimensions independently of the identity-dependent review seal."""
+    from .operations_degradation_monitor_v0_1 import MonitorConfiguration
+    authority.require(type(configuration) is MonitorConfiguration,
+        "OPERATIONS_DRY_MONITOR_CONFIGURATION_REQUIRED")
+    return content_fingerprint((str(Path(configuration.path).resolve()),
+        configuration.policy.persistent_unknown_alert_us,
+        configuration.policy.recovery_evidence_max_age_us,
+        tuple(asdict(limit) for limit in configuration.policy.resource_limits),
+        configuration.host_identity_digest, configuration.resource_max_age_us,
+        configuration.protective_qualification_digest))
+
+
 def configured_identity(domain, *, operations_path, ledger_path, producer_path,
                         market_source, producer_profile, source_path, source_binding,
                         source_profile, database_identity, producer_schema_digest,
-                        evidence_schema_digest, restart_profile, batch_rows=32, page_rows=32, queued_roots=64):
+                        evidence_schema_digest, restart_profile, batch_rows=32, page_rows=32, queued_roots=64,
+                        dry_live_paths=None, dry_monitor_digest=None, expected_baseline_observation_digest=None):
     """Describe concrete loaded interfaces/config for comparison to reviewed input.
 
     Schema digests must come from the reviewed installation/configuration. This
     function neither opens stores nor validates durable history or grants access.
     """
-    authority.require(type(domain) is ledger_domain.LedgerDomain and domain.mode == "LIVE"
+    authority.require(type(domain) is ledger_domain.LedgerDomain and domain.mode in ("LIVE", "DRY")
         and type(market_source) is ContinuousMarketSourceV02
         and type(producer_profile) is producer.ContinuationProfileV02
         and type(restart_profile) is ownership.RestartProfile
@@ -73,6 +103,14 @@ def configured_identity(domain, *, operations_path, ledger_path, producer_path,
         "OPERATIONS_STARTUP_CONCRETE_LIVE_CONFIGURATION_REQUIRED")
     authority.require(database_identity == market_source.database_identity,
         "OPERATIONS_STARTUP_DATABASE_IDENTITY_CONFLICT")
+    if domain.mode == "DRY":
+        ledger_domain.digest_value(dry_monitor_digest)
+        _distinct_dry_paths((operations_path, ledger_path, producer_path, source_path),
+            dry_live_paths, market_source.db_path)
+    else:
+        authority.require(dry_live_paths is None and dry_monitor_digest is None, "OPERATIONS_LIVE_DRY_CONFIGURATION_DENIED")
+    if expected_baseline_observation_digest is not None:
+        ledger_domain.digest_value(expected_baseline_observation_digest)
     for digest in (producer_schema_digest, evidence_schema_digest):
         ledger_domain.digest_value(digest)
     contracts = (("operations", ownership.VERSION), ("startup", VERSION),
@@ -92,9 +130,19 @@ def configured_identity(domain, *, operations_path, ledger_path, producer_path,
     # version labels can stay unchanged across concrete implementation changes.
     code_digest = content_fingerprint(tuple((module.__name__, hashlib.sha256(
         Path(module.__file__).read_bytes()).hexdigest()) for module in (cold, composition, ownership, signer, sender)))
+    if domain.mode == "DRY":
+        # Bind the actual shared owners and their transitive local implementation,
+        # including the public driver. Frozen labels alone cannot detect drift.
+        root = Path(__file__).resolve().parents[1]
+        code_digest = content_fingerprint(tuple((str(path.relative_to(root)).replace("\\", "/"),
+            hashlib.sha256(path.read_bytes()).hexdigest())
+            for folder in ("live", "phase4", "phase5") for path in sorted((root/folder).glob("*.py"))))
+        config["dry_live_paths"] = tuple(str(Path(path).resolve()) for path in dry_live_paths)
+        config["capability"] = DRY_CAPABILITY
+        config["baseline_observation_digest"] = expected_baseline_observation_digest
     return StartupIdentity(cold.ColdRuntimeV01.__module__+"."+cold.ColdRuntimeV01.__qualname__,
-        composition.VERSION, code_digest, CAPABILITY, restart_profile, contracts, content_fingerprint(config),
-        producer_schema_digest, evidence_schema_digest)
+        composition.VERSION, code_digest, DRY_CAPABILITY if domain.mode == "DRY" else CAPABILITY, restart_profile, contracts, content_fingerprint(config),
+        producer_schema_digest, evidence_schema_digest, dry_monitor_digest)
 
 
 @dataclass(frozen=True, slots=True)
@@ -147,10 +195,11 @@ def _source_preflight(expected, producer_path, source_path, binding, profile):
             "OPERATIONS_EVIDENCE_DOMAIN_PROFILE_CONFLICT")
 
 
-def start_live(operations_path, ledger_path, domain, *, process_identity, now_us,
+def start_runtime(operations_path, ledger_path, domain, *, process_identity, now_us,
                expected_identity, producer_path, market_source, producer_profile,
                source_path, source_binding, source_profile, database_identity,
-               replace_generation=None, batch_rows=32, page_rows=32, queued_roots=64, degradation_config=None):
+               replace_generation=None, batch_rows=32, page_rows=32, queued_roots=64, degradation_config=None,
+               dry_live_paths=None, expected_baseline_observation_digest=None):
     """Acquire -> audit -> original cold reconstruction -> historical typed facts.
 
     Failed startup consumes the acquired restart attempt; it never resets or
@@ -158,6 +207,11 @@ def start_live(operations_path, ledger_path, domain, *, process_identity, now_us
     Source failure retains intact economic/protective Runtime with source held.
     Audit facts are a historical common cut, never current readiness/permission.
     """
+    if domain.mode == "DRY":
+        paths = (operations_path, ledger_path, producer_path, source_path)
+        if degradation_config is not None:
+            paths += (degradation_config.path,)
+        _distinct_dry_paths(paths, dry_live_paths, market_source.db_path)
     store = ownership.OperationsStore(operations_path, domain)
     owner = store.acquire(process_identity, now_us=now_us, replace_generation=replace_generation)
     runtime = None
@@ -180,7 +234,9 @@ def start_live(operations_path, ledger_path, domain, *, process_identity, now_us
                 evidence_schema_digest=expected_identity.evidence_schema_digest,
                 restart_profile=ownership.RestartProfile(*(control[key] for key in
                     ("max_attempts", "window_us", "backoff_us"))),
-                batch_rows=batch_rows, page_rows=page_rows, queued_roots=queued_roots)
+                batch_rows=batch_rows, page_rows=page_rows, queued_roots=queued_roots, dry_live_paths=dry_live_paths,
+                dry_monitor_digest=dry_monitor_fingerprint(degradation_config) if domain.mode == "DRY" else None,
+                expected_baseline_observation_digest=expected_baseline_observation_digest)
             authority.require(actual == expected_identity, "OPERATIONS_STARTUP_IDENTITY_CONFLICT")
             with closing(sqlite3.connect(Path(ledger_path).resolve().as_uri()+"?mode=ro", uri=True)) as conn:
                 repository._schema_and_domain(conn, domain)
@@ -192,12 +248,15 @@ def start_live(operations_path, ledger_path, domain, *, process_identity, now_us
                 _source_preflight(expected_identity, producer_path, source_path, source_binding, source_profile)
                 source_audit = "SOURCE_PREFLIGHT_VERIFIED"
 
-            runtime = cold.reopen_live(ledger_path, domain, producer_path=producer_path,
+            runtime = cold.reopen_runtime(ledger_path, domain, producer_path=producer_path,
                 market_source=market_source, producer_profile=producer_profile, source_path=source_path,
                 source_binding=source_binding, source_profile=source_profile, database_identity=database_identity,
                 batch_rows=batch_rows, page_rows=page_rows, queued_roots=queued_roots, source_preflight=audit_sources)
             authority.require(type(runtime) is cold.ColdRuntimeV01 and runtime.ledger.domain == domain,
                 "OPERATIONS_ACTUAL_COLD_RUNTIME_REQUIRED")
+            if expected_baseline_observation_digest is not None:
+                authority.require(runtime.ledger.baseline().observation.content_digest == expected_baseline_observation_digest,
+                    "OPERATIONS_ORIGINAL_BASELINE_OBSERVATION_CONFLICT")
             # C4 bypasses __init__: bind the actual root explicitly, including a
             # degraded source root. Never inherit its engineering None default.
             runtime._ownership = owner
@@ -241,3 +300,15 @@ def start_live(operations_path, ledger_path, domain, *, process_identity, now_us
         if runtime is not None:
             runtime.close()
         raise
+
+
+def start_live(operations_path, ledger_path, domain, **configuration):
+    """Existing fixed LIVE startup boundary."""
+    authority.require(domain.mode == "LIVE", "OPERATIONS_LIVE_DOMAIN_REQUIRED")
+    return start_runtime(operations_path, ledger_path, domain, **configuration)
+
+
+def start_dry(operations_path, ledger_path, domain, **configuration):
+    """Fixed NO_BROADCAST startup through the same owned cold graph."""
+    authority.require(domain.mode == "DRY", "OPERATIONS_DRY_DOMAIN_REQUIRED")
+    return start_runtime(operations_path, ledger_path, domain, **configuration)

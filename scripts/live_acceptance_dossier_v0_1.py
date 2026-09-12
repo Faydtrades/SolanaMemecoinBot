@@ -17,12 +17,17 @@ def main():
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--output", type=Path, help="New manifest path; existing files are never overwritten")
     action.add_argument("--verify", type=Path, help="Verify existing manifest against exact source and retained proof")
+    parser.add_argument("--dry-profile", type=Path, help="Exact supported DRY profile JSON; requires qualification")
+    parser.add_argument("--dry-qualification", type=Path, help="Exact same-profile qualification JSON")
     args = parser.parse_args()
     try:
         if args.verify:
             dossier = verify_dossier(ROOT, read_json(args.verify))
         else:
-            dossier = build_dossier(ROOT)
+            import hashlib
+            def reference(path):
+                return None if path is None else {"path":str(path.resolve()),"sha256":hashlib.sha256(path.read_bytes()).hexdigest()}
+            dossier = build_dossier(ROOT, dry_profile=reference(args.dry_profile), dry_qualification=reference(args.dry_qualification))
             with args.output.open("xb") as stream:
                 stream.write(canonical_bytes(dossier))
         print(json.dumps({"result": "CONSISTENT_PENDING_PROJECT_REVIEW", "sha256": digest(dossier),

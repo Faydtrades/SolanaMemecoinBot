@@ -196,6 +196,11 @@ def _current(runtime, sample, entry, reduction):
 def _protection(runtime, facts, sample, reduction):
     repo, binding = runtime.ledger, runtime.position_binding
     safe = ("SAFE_READ_AUDIT_ONLY",)
+    if runtime.capability == "NO_BROADCAST":
+        authority.require(facts.position_id is None and facts.binding_id is None
+            and facts.chain_receipt_key is None, "OPERATIONS_DRY_NO_LIVE_ECONOMICS_REQUIRED")
+        return _barrier("PROTECTIVE_READY", "NOT_REQUIRED"), safe + (("ORIGINAL_DRY_NON_SUBMITTED_RECOVERY",)
+            if facts.entry_action_id is not None else ())
     if facts.pending_attempt_id is not None:
         safe += ("ORIGINAL_RECONCILIATION_OR_APPLICATION_REQUIRED",)
     if facts.position_id is None:

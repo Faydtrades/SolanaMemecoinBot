@@ -68,7 +68,7 @@ class OperationsStore:
     """
     def __init__(self, path, domain):
         self.path = _journal_path(path)
-        _require(type(domain) is LedgerDomain and domain.mode == "LIVE", "OPERATIONS_LIVE_DOMAIN_REQUIRED")
+        _require(type(domain) is LedgerDomain and domain.mode in ("LIVE", "DRY"), "OPERATIONS_LIVE_DOMAIN_REQUIRED")
         self.domain_id, self.binding_digest = domain.economic_domain_id, domain.binding_digest
         self._file_identity = (self.path.stat().st_dev, self.path.stat().st_ino)
         with self._connection() as conn:
@@ -77,7 +77,7 @@ class OperationsStore:
     @classmethod
     def initialize(cls, path, domain, profile, *, now_us):
         _require(type(profile) is RestartProfile, "OPERATIONS_RESTART_PROFILE_REQUIRED")
-        _require(type(domain) is LedgerDomain and domain.mode == "LIVE", "OPERATIONS_LIVE_DOMAIN_REQUIRED")
+        _require(type(domain) is LedgerDomain and domain.mode in ("LIVE", "DRY"), "OPERATIONS_LIVE_DOMAIN_REQUIRED")
         cls._time(now_us)
         path = _journal_path(path)
         # Exclusive file creation distinguishes initialization from reopen.

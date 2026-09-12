@@ -1,201 +1,221 @@
 {
-  "schema": "MEME_LIVE_STEP11C_REVIEW_V1",
-  "starting_head": "d7993c4dfaff62ac87ed777f8f48366186c5848f",
-  "branch": "live/meme-production-readiness",
-  "instruction_sha256": "abf438ddec5242fdefb515b6361ddd91bc5b50cfbb6a1f64e8692f5610c57975",
-  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
-  "M56": "PARTIAL",
-  "M57": "PARTIAL",
-  "project_verification_promotions": [],
-  "assignments": [
-    {
-      "worker": "step11c_worker",
-      "model": "Astra",
-      "reasoning": "High",
-      "bounded_delta": "M56 immutable deterministic dossier and focused tests",
-      "chief_review": "No blocking defect in the bounded dossier slice; full closure depends on M57 engineering."
+  "IR_C1": {
+    "chief_review": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc1-chief-review.json",
+      "sha256": "fc060fcb5bbde7d6a237f5108dc95a23404f36899f0977e73e52339277403a4f"
     },
-    {
-      "worker": "step11c_worker",
-      "model": "Astra",
-      "reasoning": "High",
-      "bounded_delta": "M57 exact-freeze preflight, explicit public input validation, runbook and focused tests",
-      "chief_review": "Concrete static continuous DRY ownership/startup/profile gap retained; no alternate gate-only runtime or claim of readiness."
+    "initial_targeted_checks": 71,
+    "initial_targeted_receipt": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc1-targeted\\validation-receipt.json",
+      "sha256": "7bf553bb59367774a8c7d2be3e5681c262a513fb0c7cd29f27fec96184d96931"
     },
-    {
-      "worker": "step11c_independent_review",
-      "model": "Astra",
-      "reasoning": "High",
-      "bounded_delta": "Fresh independent review of exact final Step11-C diff, dossier/preflight artifacts and linked evidence",
-      "result": "NO_ADDITIONAL_TOOLING_DEFECT_FOUND; TWO_DECLARED_ENGINEERING_GAPS_REMAIN"
-    }
-  ],
-  "accepted_work_reused": {
-    "Step10": "accepted internal S01-S12/E01-E05",
-    "Step11A": "accepted M52/M53",
-    "Step11B": "accepted M46; qualification task untouched",
-    "binding_rule": "Exact immutable indexes/evidence and current source content; no accepted campaign rerun."
+    "result": "IMPLEMENTED_AND_QUALIFIED_PENDING_PROJECT_REVIEW"
   },
-  "source_identity": {
-    "accepted_revision": "d7993c4dfaff62ac87ed777f8f48366186c5848f",
-    "content_digest": "128ef4f3381041e177bae03ff32e2255bf971a101cdd56e6bc5d3136e883b547",
-    "publication_rule": "The final containing Git commit binds this review index and source overlay; it is not a self-referential artifact input.",
-    "source_files": 243,
-    "step11c_source_sha256": {
-      "docs/live/MEME_LIVE_STEP11C_GATE_CONTRACT_V1.md": "7981ece18d7c9568e23cd85292f7d311793a597ce4186039617daba1600cada0",
-      "scripts/live_acceptance_dossier_selftest_v0_1.py": "7f5994b461aab9d4385e807fdb49424b477bf2033b38ceb32f7757be42812af1",
-      "scripts/live_acceptance_dossier_v0_1.py": "562a853d4443fad3b036fb375177146f9e56bdc62aeb837e17d89de0097697d9",
-      "scripts/live_t010_preflight_selftest_v0_1.py": "dd7c60bf7da7ab0c224b774efe6c52239ddb754409bcaec120f656d7d6ff8c81",
-      "scripts/live_t010_preflight_v0_1.py": "21ce2612235d4b3bb5ed9c72a5c291f62b3b4d6c5a3b7900692a155d0a145de6",
-      "src/live/acceptance_dossier_v0_1.py": "e5e66a762bbd5a3064f83ff68b7047bbee7f6ea5812c1ea0759b90eb44b74321",
-      "src/live/t010_preflight_v0_1.py": "979f8edc224ab1c64656055221f94376acf84093b818e7e4ca3378e30eca5e07"
-    }
+  "IR_C2": {
+    "freeze_checks": 21,
+    "guard_amendment": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-dry-guard-amendment.json",
+      "sha256": "81284158078f36c151a0b7bcda38257306eea0ad6f4ca6989539922d346235e4"
+    },
+    "limitations": "Explicit deterministic synthetic public observations/source path, two simulations and prepared recovery; actual environment unproven; no sustained capacity claim.",
+    "profile": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-final-profile\\supported-profile.json",
+      "sha256": "e8539246c335918afdfbb27f5a7c4adb5b013d0ccc56a336516d88647dbb8b53"
+    },
+    "profile_checks": 26,
+    "qualification": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-final-profile\\profile-qualification.json",
+      "sha256": "b31a8accfa51ebf81edbd4f60078ec255f494960079a10e5686f2d8936c7be22"
+    },
+    "result": "IMPLEMENTED_AND_QUALIFIED_PENDING_PROJECT_REVIEW"
   },
+  "M56": "VERIFIED_CANDIDATE",
   "M56_artifact": {
-    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-d7993c4-20260912\\M56-dossier.json",
-    "sha256": "c6d584da696378b1ccecfa4ccf8c9d2cc3a57b1747ac792e4eff1fcddffe816d"
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-refreeze\\M56-dossier.json",
+    "sha256": "cc2a2b55d60ec8043fbae86bbedc552c21a18b0b63a0af738a7c00c5e9d16002"
   },
+  "M57": "VERIFIED_CANDIDATE",
   "M57_artifact": {
-    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-d7993c4-20260912\\M57-preflight.json",
-    "sha256": "0432882d8d06c1393e6eb9cf0a209e31e929fbea2768046e6950984d29e1fe58"
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-refreeze\\M57-default-denied.json",
+    "sha256": "e0f31173bd0644ba4f3c87a3f40c441dc8565824c1b65a74ee6f0e245e4b04e7"
   },
-  "positive_synthetic_fixture": {
-    "package": {
-      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-d7993c4-20260912\\synthetic-package\\package.json",
-      "sha256": "8d5716f7be7688888a1e7ee4dc5689807fb57f47cbce236f24f6d615144b8619"
-    },
-    "result": {
-      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-d7993c4-20260912\\synthetic-package\\preflight-result.json",
-      "sha256": "feddfc566fb52d6c173d62ce483dec4aaba153f5114c3d7f4a69a95831455ff0"
-    },
-    "structural_validation": "STRUCTURALLY_COMPLETE",
-    "readiness": "DENIED",
-    "permission_granted": false,
-    "approval_authentication_claimed": false
+  "T010_readiness": "DENIED",
+  "accepted_work_reused": {
+    "Step10": "Immutable accepted hash inputs",
+    "Step11A": "M52/M53 unchanged",
+    "Step11B": "M46 unchanged",
+    "accepted_campaigns_rerun": false
   },
-  "validation": {
-    "receipt": {
-      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-d7993c4-20260912\\validation-receipt.json",
-      "sha256": "07d0a193e0ea69bb279aa87f582f62f407af5b99586a536d4a6b13929d594e20"
-    },
-    "focused_results": [
-      {
-        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-d7993c4-20260912\\m56-selftest.stdout.json",
-        "sha256": "95992197d615e01f54d1b8527dd886ea2df2b39ae3b7c1d4eb44a4d53c70275d"
-      },
-      {
-        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-d7993c4-20260912\\m57-selftest.final.stdout.json",
-        "sha256": "33af0d86eba63834b96929d8b180f7f6e091988c8763fc642f4fbf40566d770e"
-      }
-    ],
-    "commands": [
-      {
-        "checks": 28,
-        "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_acceptance_dossier_selftest_v0_1.py",
-        "exit_code": 0,
-        "result": "m56-selftest.stdout.json"
-      },
-      {
-        "checks": 62,
-        "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_t010_preflight_selftest_v0_1.py",
-        "exit_code": 0,
-        "result": "m57-selftest.final.stdout.json"
-      }
-    ],
-    "scoped_static": "Six added Python files AST/compile and seven-file whitespace checks; exit 0.",
-    "git_diff_check_exit_code": 0,
-    "broad_regression_performed": false,
-    "reason": "Only additive dossier/preflight tooling and documentation changed; existing runtime/production behavior and accepted evidence unchanged. Original policy/domain constructors are consumed directly by focused tests."
-  },
-  "evidence_scope": {
-    "immutable_files": 2029,
-    "historical_database_observations": 684,
-    "database_access": false,
-    "historical_sources": "Original accepted assertions remain historical, distinct from current exact source; no new qualification inferred."
+  "branch": "live/meme-production-readiness",
+  "changed_files": [
+    "docs/live/MEME_LIVE_OPERATIONS_FOUNDATION_V1.md",
+    "docs/live/MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md",
+    "docs/live/MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md",
+    "docs/live/MEME_LIVE_STEP11C_GATE_CONTRACT_V1.md",
+    "docs/live/MEME_LIVE_STEP11C_REVIEW_V1.json",
+    "scripts/live_acceptance_dossier_v0_1.py",
+    "scripts/live_runtime_dry_profile_selftest_v0_1.py",
+    "scripts/live_runtime_dry_profile_v0_1.py",
+    "scripts/live_runtime_owned_dry_selftest_v0_1.py",
+    "scripts/live_step11c_affected_regression_v0_1.py",
+    "scripts/live_step11c_profile_freeze_selftest_v0_1.py",
+    "scripts/live_t010_preflight_v0_1.py",
+    "src/live/acceptance_dossier_v0_1.py",
+    "src/live/operations_degradation_v0_1.py",
+    "src/live/operations_ownership_v0_1.py",
+    "src/live/operations_readiness_v0_1.py",
+    "src/live/operations_startup_v0_1.py",
+    "src/live/operations_supervisor_v0_1.py",
+    "src/live/runtime_composition_v0_1.py",
+    "src/live/runtime_dry_profile_v0_1.py",
+    "src/live/runtime_dry_public_driver_v0_1.py",
+    "src/live/runtime_reconstruction_v0_1.py",
+    "src/live/t010_preflight_v0_1.py"
+  ],
+  "freeze_receipt": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-refreeze\\freeze-receipt.json",
+    "sha256": "aa6983014e239c0c03066122a64d339b6e3a86f6e1ef68dbfad809a53cba3481"
   },
   "independent_review": {
-    "status": "NO_ADDITIONAL_TOOLING_DEFECT_FOUND; TWO_DECLARED_ENGINEERING_GAPS_REMAIN",
-    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-d7993c4-20260912\\independent-review.json",
-    "sha256": "a23e7522b50d415c7fbb2a608fb4b520c7f34dc0fec6d74a186dbf1145161783",
-    "checks": 25,
-    "exit_code": 0,
-    "known_engineering_findings": [
-      "IR-C1",
-      "IR-C2"
-    ],
-    "human_input_finding": "IR-H1",
-    "additional_tooling_defects": [],
     "classification": {
-      "M56": "PARTIAL",
-      "M57": "PARTIAL"
-    }
-  },
-  "remaining_engineering": [
-    {
-      "id": "M57_CONTINUOUS_OWNED_DRY_COMPOSITION_AND_RECOVERY_MISSING",
-      "classification": "CODE/COVERAGE DEFECT",
-      "required_before_t010": true,
-      "description": "Extend the identical original continuous Runtime/cold reconstruction/Operations startup/durable ownership graph to fixed DRY capability, original source and Authority admission, NON_SUBMITTED interruption recovery, stop/restart/monitoring and public-input driver; no alternate gate-only assembly.",
-      "source_boundaries": [
-        "src/live/runtime_composition_v0_1.py",
-        "src/live/runtime_reconstruction_v0_1.py",
-        "src/live/operations_startup_v0_1.py",
-        "src/live/operations_ownership_v0_1.py",
-        "src/live/operations_supervisor_v0_1.py"
-      ]
+      "M56": "VERIFIED_CANDIDATE",
+      "M57": "VERIFIED_CANDIDATE"
     },
-    {
-      "id": "M56_M57_SAME_PRODUCTION_DRY_ARTIFACT_PROFILE_QUALIFICATION_MISSING",
-      "classification": "CODE/COVERAGE DEFECT",
-      "required_before_t010": true,
-      "description": "Review/rebind the actual supported DRY configuration/profile/source start and qualify the affected continuous capability/startup/recovery path before a new ready freeze. Accepted finite LIVE profile is not proof of an unbuilt DRY path."
-    }
-  ],
+    "model": "Astra",
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\independent-review.json",
+    "reasoning": "High",
+    "sha256": "0d0b3bdb54e1e24bc279d0a33d833195b73a6f412cb4816332acd3e3da61c08c"
+  },
+  "instruction": {
+    "path": "C:\\Users\\Mari1\\.codex\\attachments\\37fa9fd1-f85d-4822-bafa-1d7b47b933da\\pasted-text.txt",
+    "sha256": "0179c852635c189dd1063a9f3a161e61d8b8b90f100391508a22e5d728690f9f"
+  },
   "intentionally_missing_inputs": {
     "HUMAN_EXTERNAL": [
-      "M09 selected accepted track",
-      "M10 explicit size/cost/clock/count policy",
-      "M58 separate T010 approval and public environment",
-      "M59 later separate T011 grant/evidence",
-      "M60 project production-readiness decision",
-      "M61 later operating-capital authorization"
+      "M09",
+      "M10",
+      "M58",
+      "M59",
+      "M60",
+      "M61"
     ],
-    "engineering_review": "External project acceptance of M56/M57 is pending; not a seventh HUMAN_EXTERNAL row.",
-    "configuration": "Explicit reviewed DRY domain/store paths/source start is absent; no canonical stores initialized."
+    "actual_configuration": "Explicit current public baseline/source observations and actual profile rebind/review via implemented constructor; synthetic profile is qualification-only.",
+    "engineering_review": "M56/M57 project acceptance remains pending; no seventh HUMAN_EXTERNAL row."
   },
   "matrix": {
-    "VERIFIED": 53,
-    "OWNED_NOT_BUILT": 2,
-    "HUMAN_EXTERNAL": 6,
     "BLOCKED": 0,
+    "HUMAN_EXTERNAL": 6,
+    "OWNED_NOT_BUILT": 2,
+    "VERIFIED": 53,
     "total": 61
   },
+  "project_verification_promotions": [],
+  "publication_status": "REVIEWED_CANDIDATE_PACKAGE_FOR_SINGLE_PUBLICATION",
+  "remaining_engineering": [],
   "safety": {
-    "existing_executable_production_runtime_changed": false,
+    "M46_task_touched": false,
     "T010_executed": false,
     "T011_started": false,
-    "signing": false,
-    "sending": false,
-    "broadcast": false,
-    "mainnet_mutation": false,
-    "capital_action": false,
-    "canonical_stores_initialized": false,
-    "M46_task_touched": false
-  },
-  "publication_status": "REVIEWED_PARTIAL_PACKAGE_FOR_SINGLE_PUBLICATION",
-  "chief_final_package_review": {
-    "status": "SUPPORTED_PARTIAL_PACKAGE_PENDING_PROJECT_REVIEW",
-    "M56": "PARTIAL",
-    "M57": "PARTIAL",
-    "full_engineering_closure_established": false,
-    "T010_readiness": "DENIED",
-    "reviewed_source_content_digest": "128ef4f3381041e177bae03ff32e2255bf971a101cdd56e6bc5d3136e883b547",
-    "decision": "Publish the coherent partial tooling/evidence package with both closure-blocking engineering findings explicit. Both must be corrected and requalified before full closure or a T010-ready artifact; no project row promotion.",
-    "remaining_defects": [
-      "IR-C1 same-root continuous owned DRY integration",
-      "IR-C2 actual DRY artifact/profile qualification and freeze"
-    ],
     "accepted_work_reopened": false,
-    "additional_implementation_corrections_required_for_partial_tooling": []
+    "broadcast": false,
+    "canonical_stores_initialized": false,
+    "capital_action": false,
+    "existing_executable_production_runtime_changed": true,
+    "mainnet_mutation": false,
+    "sending": false,
+    "signing": false
+  },
+  "schema": "MEME_LIVE_STEP11C_REVIEW_V1",
+  "source_identity": {
+    "accepted_revision": "d7993c4dfaff62ac87ed777f8f48366186c5848f",
+    "accepted_runtime_changed": true,
+    "authorized_core_overlay": {
+      "src/live/operations_degradation_v0_1.py": {
+        "accepted_git_lf_sha256": "3367b35d07bf6348241601d2bc726caddb3d0fb7f6529d7eaaa3c437512c6b67",
+        "current_sha256": "72c19343b0e6379d2c6a7bfc08f5b70113b2418d6d6f8695076f83e7c7a101b4"
+      },
+      "src/live/operations_ownership_v0_1.py": {
+        "accepted_git_lf_sha256": "873ba9bc78120aa3b789698af7319566ddf06bb813fd06d49cb8cbdac7628088",
+        "current_sha256": "45e1c7cf2c4126573ed38aa4c8f4041c42c89b3de87f1b121ccc7daa306343cf"
+      },
+      "src/live/operations_readiness_v0_1.py": {
+        "accepted_git_lf_sha256": "64ce863df96cc874b81f937848bcfd3542a223e18f9eaea451af35b780888926",
+        "current_sha256": "3ce2ea594dec79c275c506a5736aa230648c54e797c5a323ba1802af699be19e"
+      },
+      "src/live/operations_startup_v0_1.py": {
+        "accepted_git_lf_sha256": "cc9cb018f2746ea3d1dc6f775b2ec38f0ad12176180463f04b4c1a56441b5322",
+        "current_sha256": "93d00bd5f509bd448b98d831dd6323473eb757024145e7317cb5e48afae34be4"
+      },
+      "src/live/operations_supervisor_v0_1.py": {
+        "accepted_git_lf_sha256": "67201181d6e594263a965b9a27de31d083ce5d85829237e9989e3619a8e814cb",
+        "current_sha256": "9406119c8a3ef6d709f982cc3bc7bd923d886ea3e0454b62eb53d6c9b0859a4b"
+      },
+      "src/live/runtime_composition_v0_1.py": {
+        "accepted_git_lf_sha256": "4b090655c993c4a3ecd571e6fd00cf75dae476e1fde23b82675ef8b43bf68f53",
+        "current_sha256": "34edec8798fa368fe3c66f832156adb1b491714dddb11fa7d6243b573e60b97d"
+      },
+      "src/live/runtime_reconstruction_v0_1.py": {
+        "accepted_git_lf_sha256": "516b3cd50a003ccc18cff1d4d6f006e9f1d7769a1aba684b770ecea091afc756",
+        "current_sha256": "7158a67e6bcb8594eb89e5ade4fea9e2bfd3def8efbcf521d9c71d95842dd27e"
+      }
+    },
+    "changed_executable_sha256": {
+      "scripts/live_acceptance_dossier_v0_1.py": "ddd93c3ea3e9c16fe706f76e703d069eba44d8c6708129720224e71815f08b6a",
+      "scripts/live_runtime_dry_profile_selftest_v0_1.py": "edda6364053fdbc7d521fead59d646c7f3ef9354b62f8e6cf631f0d3e771b238",
+      "scripts/live_runtime_dry_profile_v0_1.py": "0505c902711ff659c1968bf5b185a05043a8db543bb75b5df5c48d15bedc0f55",
+      "scripts/live_runtime_owned_dry_selftest_v0_1.py": "7f686960e2a3c211c8a1b5be3aae24f21b35f101b4bca0b1a0cba8f190b68e3b",
+      "scripts/live_step11c_affected_regression_v0_1.py": "eb4dc655a9c03baa9bb7d1da1bf0bd189d02cff70408590b017ac501e606a8fd",
+      "scripts/live_step11c_profile_freeze_selftest_v0_1.py": "1d382167c56849ca192690013fced145a61c326d7f09cf8ad14968453198a205",
+      "scripts/live_t010_preflight_v0_1.py": "f7e8e56a577887c465fdb56bf2910bf4f522ac6affa891900c89424fb48b6b89",
+      "src/live/acceptance_dossier_v0_1.py": "84618c3ab2510ba5efc2404c7bfc21c56344f066c04a650a9b780483c90ff422",
+      "src/live/operations_degradation_v0_1.py": "72c19343b0e6379d2c6a7bfc08f5b70113b2418d6d6f8695076f83e7c7a101b4",
+      "src/live/operations_ownership_v0_1.py": "45e1c7cf2c4126573ed38aa4c8f4041c42c89b3de87f1b121ccc7daa306343cf",
+      "src/live/operations_readiness_v0_1.py": "3ce2ea594dec79c275c506a5736aa230648c54e797c5a323ba1802af699be19e",
+      "src/live/operations_startup_v0_1.py": "93d00bd5f509bd448b98d831dd6323473eb757024145e7317cb5e48afae34be4",
+      "src/live/operations_supervisor_v0_1.py": "9406119c8a3ef6d709f982cc3bc7bd923d886ea3e0454b62eb53d6c9b0859a4b",
+      "src/live/runtime_composition_v0_1.py": "34edec8798fa368fe3c66f832156adb1b491714dddb11fa7d6243b573e60b97d",
+      "src/live/runtime_dry_profile_v0_1.py": "fdea21ac90c25469772a353ca11fd9d602a7ae6dccf6f7536baa0ee00525172d",
+      "src/live/runtime_dry_public_driver_v0_1.py": "0e41c22150dd64bb1903e95dee2f2a1232a0519a39d215357368d65bf2d2773b",
+      "src/live/runtime_reconstruction_v0_1.py": "7158a67e6bcb8594eb89e5ade4fea9e2bfd3def8efbcf521d9c71d95842dd27e",
+      "src/live/t010_preflight_v0_1.py": "0a95619f0c0df461cc676364e0753cd85694f79390c8ccc3e09123ffe1e51859"
+    },
+    "content_digest": "2e1874dabc144faf91fcb8d5a1895af76102a8a5269e657cef4ee823f3c61296",
+    "publication_rule": "The containing Git commit binds this index; no self-referential commit hash is a freeze input.",
+    "source_files": 250
+  },
+  "starting_head": "430a9b056b38f9181e3973679310c270302859fb",
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "structural_success_is_authorization": false,
+  "synthetic_structural_artifact": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-refreeze\\M57-SYNTHETIC-structural-only.json",
+    "sha256": "cfe4c34619be337ac25cb6c7990b8d13e43df62c4009451888755876655d20e9"
+  },
+  "validation": {
+    "affected_tooling_checks": {
+      "M56": 28,
+      "M57": 62
+    },
+    "affected_tooling_receipt": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-tooling-validation\\validation-receipt.json",
+      "sha256": "7645b9bae72bd1494ba91a9ee83342b0e3c8d4bb73368e3a1652318c016be112"
+    },
+    "exit_code": 0,
+    "final_affected_regression": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\final-affected-regression-receipt.json",
+      "sha256": "ab6b600afebecec95a1e04089bd55e9e61da044e28fbede0e25122767e0e08d3"
+    },
+    "final_regression_checks": 157,
+    "final_regression_runs": 1,
+    "freeze_command": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-freeze-command-result.json",
+      "sha256": "fddf0689d8b3ad8cbcd92dbdc2e60add53f100e30502a0159fd9eaba3d9d4660"
+    },
+    "git_diff_check_exit_code": 0,
+    "profile_command": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11c-closure-430a9b0-20260912\\irc2-profile-command-result.json",
+      "sha256": "365391875087765ea96789e8dabdef9a9b416072d4e74b584418bf4eb54d18d9"
+    },
+    "scoped_static_python_files": 18,
+    "source_unchanged_during_regression": true
   }
 }

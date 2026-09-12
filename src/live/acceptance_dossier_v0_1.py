@@ -28,11 +28,24 @@ NEW_CODE = frozenset({
     "src/live/acceptance_dossier_v0_1.py",
     "src/live/t010_preflight_v0_1.py",
     "src/live/t010_driver_v0_1.py",
+    "src/live/runtime_dry_public_driver_v0_1.py",
+    "src/live/runtime_dry_profile_v0_1.py",
+    "scripts/live_runtime_owned_dry_selftest_v0_1.py",
+    "scripts/live_runtime_dry_profile_selftest_v0_1.py",
+    "scripts/live_runtime_dry_profile_v0_1.py",
+    "scripts/live_step11c_affected_regression_v0_1.py",
+    "scripts/live_step11c_profile_freeze_selftest_v0_1.py",
     "scripts/live_acceptance_dossier_v0_1.py",
     "scripts/live_acceptance_dossier_selftest_v0_1.py",
     "scripts/live_t010_preflight_v0_1.py",
     "scripts/live_t010_preflight_selftest_v0_1.py",
     "scripts/live_t010_driver_v0_1.py",
+})
+CORE_OVERLAY = frozenset({
+    "src/live/runtime_composition_v0_1.py", "src/live/runtime_reconstruction_v0_1.py",
+    "src/live/operations_startup_v0_1.py", "src/live/operations_ownership_v0_1.py",
+    "src/live/operations_supervisor_v0_1.py", "src/live/operations_readiness_v0_1.py",
+    "src/live/operations_degradation_v0_1.py",
 })
 ASSEMBLY = {
     "producer": "src/live/continuous_producer_v0_2.py",
@@ -40,7 +53,9 @@ ASSEMBLY = {
     "authority": "src/live/authority_admission_v0_1.py",
     "normal_live_composition": "src/live/runtime_composition_v0_1.py",
     "dry_execution": "src/live/runtime_dry_v0_1.py",
-    "dry_reconstruction": "src/live/runtime_dry_reconstruction_v0_1.py",
+    "dry_reconstruction": "src/live/runtime_reconstruction_v0_1.py",
+    "public_dry_driver": "src/live/runtime_dry_public_driver_v0_1.py",
+    "supported_dry_profile": "src/live/runtime_dry_profile_v0_1.py",
     "exact_message": "src/live/execution_message_v0_1.py",
     "non_submitted_ledger": "src/live/ledger_repository_v0_1.py",
     "ownership": "src/live/operations_ownership_v0_1.py",
@@ -136,13 +151,15 @@ def source_freeze(root):
         actual = (root / path).read_bytes()
         if path in selected:
             base = tracked[path]
-            require(_lf(actual) == base, "ACCEPTED_SOURCE_CHANGED:" + path)
+            require(path in CORE_OVERLAY or _lf(actual) == base, "ACCEPTED_SOURCE_CHANGED:" + path)
         rows[path] = {"sha256": sha256(actual), "git_lf_sha256": sha256(_lf(actual)),
-                      "provenance": "STEP11C_OVERLAY" if path in NEW_CODE else BASE_REVISION}
+                      "provenance": "STEP11C_OVERLAY" if path in NEW_CODE else "STEP11C_CORE_OVERLAY" if path in CORE_OVERLAY else BASE_REVISION}
     return {"accepted_revision": BASE_REVISION,
             "identity_rule": "accepted_revision_plus_exact_content; publication commit is a containing reference",
             "files": rows, "content_digest": digest(rows),
-            "accepted_runtime_changed": False}
+            "accepted_runtime_changed": any(path in tracked and _lf((root/path).read_bytes()) != tracked[path] for path in CORE_OVERLAY),
+            "authorized_core_overlay": {path:{"accepted_git_lf_sha256":sha256(tracked[path]),
+                "current_sha256":rows[path]["sha256"]} for path in sorted(CORE_OVERLAY) if path in tracked}}
 
 
 def lifecycle_disposition(text):
@@ -280,7 +297,8 @@ def _deployment(a, graph):
     require(config["paths"] == target["paths"] and config["wallet_public_key"] == target["domain"]["wallet"]
             and config["genesis_hash"] == target["domain"]["genesis_hash"]
             and config["mode"] == target["domain"]["mode"] == "LIVE", "PUBLIC_CONFIG_CONFLICT")
-    return {"accepted_target": target, "host_identity": a["host_identity"],
+    monitor_ref = next(r for r in a["artifacts"] if r["path"].endswith("canonical-monitor-configuration-candidate.json"))
+    return {"accepted_monitor":monitor_ref, "accepted_target": target, "host_identity": a["host_identity"],
             "host_identity_digest": a["host_identity_digest"],
             "profile": profile_ref, "profile_extension": extension_ref,
             "canonical_startup_identity": a["canonical_startup_identity"],
@@ -319,7 +337,51 @@ def _source_provenance(graph):
     return sorted(result, key=lambda row: (row["parent"], row["path"]))
 
 
-def build_dossier(repo_root):
+def _qualified_dry(profile_reference, qualification_reference, source, deployment):
+    if profile_reference is None and qualification_reference is None:
+        return None
+    from .runtime_dry_profile_v0_1 import read_reference, load_profile
+    require(profile_reference is not None and qualification_reference is not None,
+        "DRY_PROFILE_AND_QUALIFICATION_REQUIRED")
+    profile = load_profile(read_reference(profile_reference)).record
+    qualification = read_reference(qualification_reference)
+    require(qualification["schema"] == "MEME_LIVE_DRY_PROFILE_QUALIFICATION_V1"
+        and qualification["profile_content_digest"] == profile["content_digest"]
+        and canonical_bytes(qualification["startup_identity"]) == canonical_bytes(profile["startup_identity"])
+        and qualification["source_content_digest"] == source["content_digest"], "STALE_DRY_PROFILE_QUALIFICATION")
+    required = {"exact_supported_startup", "qualified_actual_exact_dry_terminal",
+        "same_profile_cold_original_non_submitted_recovery", "same_profile_second_original_admission",
+        "amended_guards_fail_closed_above_bound", "monitor-alias", "wrong-source-start", "unknown-baseline"}
+    require(required <= set(qualification["checks"]) and all(value is True for value in qualification["checks"].values())
+        and qualification["simulation_count"] >= 2 and qualification["cold_interruption_recovery_count"] >= 1,
+        "INCOMPLETE_DRY_PROFILE_QUALIFICATION")
+    inputs = profile["inputs"]
+    require(inputs["accepted_profile"] == deployment["profile"] and inputs["accepted_extension"] == deployment["profile_extension"]
+        and inputs["accepted_monitor"] == deployment["accepted_monitor"],
+        "DRY_PROFILE_ACCEPTED_DEPLOYMENT_CONFLICT")
+    from .source_health_v0_1 import SourceBinding, CursorWitness
+    binding_record = inputs["source_start"]["binding"]
+    binding = SourceBinding(**dict(binding_record, anchors=tuple(CursorWitness(**r) for r in binding_record["anchors"])))
+    require(canonical_bytes(qualification["qualification_substitutions"]) == canonical_bytes(inputs["qualification_substitutions"])
+        and canonical_bytes(qualification["domain"]) == canonical_bytes(profile["domain"])
+        and qualification["same_root"] == profile["runtime_type"]
+        and qualification["source_identity"] == profile["source_identity"]
+        and qualification["original_source_mapping"]["market_source_identity"] == profile["source_identity"]
+        and qualification["original_source_mapping"]["source_binding_identity"] == binding.source_identity,
+        "DRY_QUALIFICATION_IDENTITY_OR_SUBSTITUTION_CONFLICT")
+    require(qualification["guard_amendment"] == inputs["guard_amendment"], "DRY_QUALIFICATION_GUARD_AMENDMENT_CONFLICT")
+    for key in ("wallet", "genesis_hash", "expected_profile_fingerprint"):
+        require(profile["domain"][key] == deployment["accepted_target"]["domain"][key], "DRY_PROFILE_PUBLIC_TARGET_CONFLICT")
+    require(qualification["signer_send_broadcast"] is False and qualification["canonical_store_access"] is False
+        and qualification["T010_executed"] is False, "DRY_QUALIFICATION_SAFETY_CONFLICT")
+    return {"profile":profile_reference, "qualification":qualification_reference,
+        "profile_content_digest":profile["content_digest"], "startup_identity":profile["startup_identity"],
+        "scope":qualification["scope"], "qualification_substitutions":qualification["qualification_substitutions"],
+        "engineering_status":"IMPLEMENTED_PENDING_PROJECT_REVIEW", "runtime_executed_by_freeze":False,
+        "current_public_environment_proven":False, "project_acceptance_claimed":False}
+
+
+def build_dossier(repo_root, *, dry_profile=None, dry_qualification=None):
     root = Path(repo_root).resolve()
     source = source_freeze(root)
     graph = EvidenceGraph(root)
@@ -342,6 +404,7 @@ def build_dossier(repo_root):
         if (root / path).exists():
             contracts[path] = {"sha256": sha256((root / path).read_bytes()), "revision": "STEP11C_OVERLAY"}
     deployment = _deployment(a, graph)
+    supported_dry = _qualified_dry(dry_profile, dry_qualification, source, deployment)
     assembly = {role: {"path": path, "sha256": source["files"][path]["sha256"]}
                 for role, path in ASSEMBLY.items()}
     return {"schema": SCHEMA, "implementation_status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
@@ -354,6 +417,7 @@ def build_dossier(repo_root):
             "historical_source_rule": "Original source hash assertions retained under immutable accepted indexes; current source is independently bound to accepted_revision plus Step11-C overlay.",
             "transition_coverage": step10["contract_coverage"], "contracts": contracts,
             "lifecycle": lifecycle, "deployment": deployment, "runtime_components": assembly,
+            "supported_dry": supported_dry,
             "gate_tooling": {p: source["files"][p]["sha256"] for p in sorted(NEW_CODE) if p in source["files"]},
             "review_boundary": "M56/M57 remain engineering review candidates, never HUMAN_EXTERNAL or VERIFIED by this tool.",
             "capabilities": {"execute_t010": False, "sign": False, "send": False, "broadcast": False,
@@ -362,6 +426,8 @@ def build_dossier(repo_root):
 
 def verify_dossier(repo_root, dossier):
     require(isinstance(dossier, dict) and dossier.get("schema") == SCHEMA, "UNSUPPORTED_DOSSIER")
-    expected = build_dossier(repo_root)
+    supported = dossier.get("supported_dry")
+    expected = build_dossier(repo_root, dry_profile=None if supported is None else supported["profile"],
+        dry_qualification=None if supported is None else supported["qualification"])
     require(canonical_bytes(dossier) == canonical_bytes(expected), "STALE_OR_CONFLICTING_DOSSIER")
     return expected

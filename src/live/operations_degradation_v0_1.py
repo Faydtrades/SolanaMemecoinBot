@@ -206,7 +206,7 @@ class DegradationStore:
     with a trusted time even when no fresh owner observation can be obtained.
     """
     def __init__(self, path, domain, policy):
-        require(type(domain) is LedgerDomain and domain.mode == "LIVE")
+        require(type(domain) is LedgerDomain and domain.mode in ("LIVE", "DRY"))
         require(type(policy) is DegradationPolicy)
         self._busy_deadline = None
         self.path, self.policy = _journal_path(path), policy
@@ -221,7 +221,7 @@ class DegradationStore:
 
     @classmethod
     def initialize(cls, path, domain, policy, *, now_us):
-        require(type(domain) is LedgerDomain and domain.mode == "LIVE" and type(policy) is DegradationPolicy)
+        require(type(domain) is LedgerDomain and domain.mode in ("LIVE", "DRY") and type(policy) is DegradationPolicy)
         OperationsStore._time(now_us)
         path = _journal_path(path)
         fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_RDWR, 0o600)

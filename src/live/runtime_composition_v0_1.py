@@ -5,7 +5,7 @@ then entry with actual V1 capacity. Concrete external facts/transports configure
 existing consumers, never replace admission, execution, settlement or protection.
 Satisfied protection retires through Ledger before fresh candidate admission.
 The separate C4 cold factory reconstructs these pointers from durable owners.
-This LIVE root has no DRY switch or service loop.
+The domain fixes LIVE or NO_BROADCAST DRY capability for the lifetime of the root.
 """
 from __future__ import annotations
 
@@ -36,6 +36,7 @@ from .position_controller_v0_1 import bind_actual_position
 from .exit_observation_v0_1 import capture_exit_evidence, enrich_exit_evidence, commit_exit_evaluation, EVIDENCE, EVALUATION
 from .protective_obligation_v0_1 import ensure_protective_obligation, stage_protective_sell
 from .protective_outcome_v0_1 import protective_outcome
+from .runtime_dry_v0_1 import run_dry, finish_interrupted_dry
 from .operations_ownership_v0_1 import OperationsOwnership, mutation_guard, OperationsOwnershipError
 
 VERSION = "live_runtime_composition_v0.1"
@@ -66,6 +67,21 @@ class ExecutionPorts:
 
 
 @dataclass(frozen=True, slots=True)
+class DryExecutionPorts:
+    """Public construction/simulation inputs; no mutation capability exists here."""
+    rpc: ExecutionReadOnlyRpc
+    wallet: object
+    quote_policy: object
+    plan_policy: object
+    compute: object
+    now_us: object
+
+    def __post_init__(self):
+        require(type(self.rpc) is ExecutionReadOnlyRpc and callable(self.now_us),
+            "RUNTIME_DRY_READONLY_PORTS_REQUIRED")
+
+
+@dataclass(frozen=True, slots=True)
 class RuntimeStep:
     work: str
     reason: str
@@ -91,7 +107,7 @@ class RuntimeCompositionV01:
     def __init__(self, producer, handoff, ledger, source_store, *, batch_rows=32, page_rows=32, queued_roots=64,
                  ownership=None):
         require(type(producer) is LiveContinuousProducerV02 and type(handoff) is CandidateHandoffV01
-            and type(ledger) is LedgerRepository and ledger.domain.mode == "LIVE"
+            and type(ledger) is LedgerRepository and ledger.domain.mode in ("LIVE", "DRY")
             and type(source_store) is SourceEvidenceStore and handoff.producer is producer
             and handoff.ledger is ledger and source_store.binding == handoff.binding,
             "RUNTIME_ORIGINAL_COMPONENT_BINDINGS_REQUIRED")
@@ -110,6 +126,12 @@ class RuntimeCompositionV01:
             and ownership.fence.binding_digest == ledger.domain.binding_digest,
             "RUNTIME_OPERATIONS_DOMAIN_OWNER_REQUIRED")
         self._ownership = ownership
+        self._fixed_domain = ledger.domain
+        self._dry_recovery = False
+
+    @property
+    def capability(self):
+        return "NO_BROADCAST" if self._fixed_domain.mode == "DRY" else "LIVE"
 
     @property
     def queued_roots(self):
@@ -222,10 +244,13 @@ class RuntimeCompositionV01:
 
     def _entry_degradation(self, clock, entry, resources, source_cut_utc=None):
         monitor = self._operations_degradation
+        if self.capability == "NO_BROADCAST":
+            return monitor is not None and monitor.snapshot().entry_held
         return monitor is not None and monitor.observe(clock(), entry=entry, resources=resources,
             source_cut_utc=source_cut_utc).entry_held
 
     def _execute(self, action, ports, clock, *, fence, ordinal, entry=None, operations_resources=None):
+        require(self.capability == "LIVE", "RUNTIME_LIVE_EXECUTION_CAPABILITY_REQUIRED")
         if not self._owner_current():
             return self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED", action=action)
         if action.side == "BUY" and self._entry_degradation(clock, entry, operations_resources):
@@ -349,6 +374,15 @@ class RuntimeCompositionV01:
             action=action, attempt=terminal.attempt_id, key=key)
 
     def step(self, *, clock, entry=None, operations_resources=None, **resources):
+        require(self.ledger.domain == self._fixed_domain, "RUNTIME_FIXED_DOMAIN_CHANGED")
+        if self.capability == "NO_BROADCAST":
+            require(all(resources.get(key) is None for key in (
+                "truth_rpc", "application_wallet", "retirement_wallet", "exit_proofs", "protective_max_units"))
+                and (resources.get("execution") is None or type(resources["execution"]) is DryExecutionPorts),
+                "RUNTIME_DRY_CAPABILITY_ESCALATION_DENIED")
+        else:
+            require(not isinstance(resources.get("execution"), DryExecutionPorts),
+                "RUNTIME_LIVE_EXECUTION_PORTS_REQUIRED")
         monitor = self._operations_degradation
         if monitor is None:
             return self._monitored_step(clock=clock, entry=entry, operations_resources=operations_resources, **resources)
@@ -370,7 +404,16 @@ class RuntimeCompositionV01:
                     first = False
                     return initial_sample
                 return original_clock()
-        result = self._step(clock=clock, entry=entry, operations_resources=operations_resources, **resources)
+        if self.capability == "NO_BROADCAST":
+            try:
+                # One bounded DRY unit, including source/admission/terminal writes,
+                # serializes with takeover and STOP. No nested monitor lock.
+                with mutation_guard(self._ownership, self.ledger.domain):
+                    result = self._step(clock=clock, entry=entry, operations_resources=operations_resources, **resources)
+            except OperationsOwnershipError:
+                result = self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED")
+        else:
+            result = self._step(clock=clock, entry=entry, operations_resources=operations_resources, **resources)
         if monitor is not None:
             final_sample = clock()
             monitor.observe(final_sample, entry=entry, resources=operations_resources,
@@ -378,13 +421,52 @@ class RuntimeCompositionV01:
             monitor.note_work(result, final_sample)
         return result
 
+    def _dry_pending(self, sample, ports, clock, entry, resources):
+        """Original DRY terminal owns release; never enter LIVE execution/truth."""
+        snapshot = self.ledger.consumer_snapshot(max_positions=1, max_reservations=1)
+        require(not snapshot["positions"] and not snapshot["protections"]
+            and self._binding is None and self._chain_key is None,
+            "RUNTIME_DRY_NO_LIVE_ECONOMICS_REQUIRED")
+        if self._entry_action_id is None:
+            require(not snapshot["reservations"] and not snapshot["pending_attempts"],
+                "RUNTIME_DRY_ORIGINAL_ACTION_RECONSTRUCTION_REQUIRED")
+            return None
+        action = self.ledger.action(self._entry_action_id)
+        require(action is not None and action.side == "BUY", "RUNTIME_DRY_ORIGINAL_BUY_REQUIRED")
+        reservation = self.ledger.reservation(action.root_id)
+        # A terminal may already be durable when delivery was interrupted.
+        if self._dry_recovery or reservation.retired_sequence is not None:
+            receipt = finish_interrupted_dry(self.ledger, action.action_id, recorded_at_utc=sample.utc_upper_utc)
+        else:
+            if self._entry_degradation(clock, entry, resources):
+                return self._result("OPERATIONS_ENTRY_HELD", "CURRENT_DEGRADATION_ENTRY_HOLD", action=action)
+            if self.producer is None or self.source is None:
+                return self._result("SOURCE_HELD", "COLD_SOURCE_RECONSTRUCTION_UNAVAILABLE", action=action)
+            if ports is None:
+                return self._result("NEED_EXECUTION", "ORIGINAL_DRY_ACTION_AWAITS_PUBLIC_INPUTS", action=action)
+            require(type(ports) is DryExecutionPorts, "RUNTIME_DRY_READONLY_PORTS_REQUIRED")
+            # An exception after admission marks this in-process action for the
+            # same original recovery used on cold reopen, without another read.
+            self._dry_recovery = True
+            receipt = run_dry(self.ledger, action.action_id, ports.rpc, ports.wallet,
+                ports.quote_policy, ports.plan_policy, ports.compute, clock=clock, now_us=ports.now_us)
+        self._entry_action_id = None
+        self._dry_recovery = False
+        return self._result("NON_SUBMITTED", receipt.dry_terminal.reason, action=action,
+            attempt=receipt.dry_terminal.attempt_id, key=receipt.ingestion_key)
+
     def _step(self, *, clock, entry=None, execution=None, truth_rpc=None, application_wallet=None,
              retirement_wallet=None, exit_proofs=None, source_cut_utc=None, operations_resources=None,
              protective_max_units=None):
         """One bounded next legal work unit. Resource presence never sets priority."""
         sample = clock()
         require(type(sample) is TrustedClockSample and sample.status == "QUALIFIED", "RUNTIME_QUALIFIED_CLOCK_REQUIRED")
-        if not self._owner_current():
+        if self.capability == "NO_BROADCAST":
+            dry_result = self._dry_pending(sample, execution, clock, entry, operations_resources)
+            if dry_result is not None:
+                return dry_result
+            return self._admit_next(sample, clock, entry, operations_resources, source_cut_utc)
+        elif not self._owner_current():
             return self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED")
         protection = None
         if self._binding is not None:
@@ -436,6 +518,10 @@ class RuntimeCompositionV01:
                 return self._result("SOURCE_HELD", "CURRENT_SOURCE_UNAVAILABLE", action=action)
             return self._execute(action, execution, clock, fence=snapshot["fence"], ordinal=ordinal,
                 entry=entry, operations_resources=operations_resources)
+        return self._admit_next(sample, clock, entry, operations_resources, source_cut_utc, protection)
+
+    def _admit_next(self, sample, clock, entry, operations_resources, source_cut_utc, protection=None):
+        """Shared original producer/Authority path; capability selects no economics."""
         source_state = self._source_page(sample, source_cut_utc)
         snapshot = self.ledger.consumer_snapshot()
         if snapshot["positions"] or snapshot["reservations"] or snapshot["funding"].quarantine_reasons:
@@ -454,7 +540,7 @@ class RuntimeCompositionV01:
         policy = self.ledger.authority_snapshot()["policy"]
         if policy is None:
             return self._result("ENTRY_HELD", "EXTERNAL_AUTHORITY_POLICY_REQUIRED", root=root)
-        if not self._owner_current():
+        if self.capability == "LIVE" and not self._owner_current():
             return self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED", root=root)
         key = self._key("admission", root, sample.utc_upper_utc)
         receipt = self.ledger.admit_authority_entry(EntryRequest(root, entry.venue, entry.token_program, policy.selected_track),

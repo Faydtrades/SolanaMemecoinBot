@@ -1,4 +1,4 @@
-"""Offline M57 report; current frozen engineering gaps always deny readiness."""
+"""Offline M57 structural report. Exit 0 is structural readiness, never permission."""
 from __future__ import annotations
 
 import argparse
