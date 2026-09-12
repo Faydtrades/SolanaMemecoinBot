@@ -33,7 +33,7 @@ from pathlib import Path
 from phase5.shadow_domain_v0_1 import content_fingerprint
 from . import operations_degradation_v0_1 as condition_contract
 from .operations_degradation_v0_1 import (
-    CONDITIONS, METRICS, ConditionEvidence, DegradationPolicy, DegradationStore,
+    CONDITIONS, REQUIRED_METRICS, ConditionEvidence, DegradationPolicy, DegradationStore,
     digest, require, readiness_conditions, resource_condition, supervision_conditions,
 )
 from .operations_ownership_v0_1 import OperationsOwnership, OperationsStore
@@ -207,9 +207,12 @@ def _producer_cut(producer):
             "NO_T0_MINTS": len(no_t0),
             "IDENTITY_ROWS": usage["launch_rows"], "TOMBSTONE_ROWS": usage["retired_rows"],
             "PRODUCER_PENDING_ROWS": usage["pending_rows"],
+            "RETAINED_EVENTS": usage["retained_events"], "HOTTEST_EVENTS": usage["hottest_events"],
+            "RETAINED_SERIALIZED_BYTES": usage["retained_bytes"],
+            "PRODUCER_PENDING_BYTES": usage["pending_bytes"], "HISTORY_BYTES": usage["history_bytes"],
         }
-        checkpoint_digest = producer.conn.execute(
-            "SELECT manifest_digest FROM live_producer_checkpoint_v0_1 WHERE singleton=1").fetchone()[0]
+        checkpoint_digest, metrics["CHECKPOINT_BYTES"] = producer.conn.execute(
+            "SELECT manifest_digest,length(CAST(manifest_json AS BLOB)) FROM live_producer_checkpoint_v0_1 WHERE singleton=1").fetchone()
         return metrics, manifest, checkpoint_digest
     finally:
         producer.conn.execute("ROLLBACK")
@@ -412,11 +415,12 @@ class OperationsMonitor:
             (cut["consumer_cut"].revision,)).fetchone()
         host, host_witness = self._host_metrics(resources, now_us, owner_digest)
         metrics.update(host)
-        self.last_metrics = tuple(sorted((metric, metrics.get(metric)) for metric in METRICS))
         configured = {item.metric for item in config.policy.resource_limits}
+        observed_metrics = REQUIRED_METRICS | configured
+        self.last_metrics = tuple(sorted((metric, metrics.get(metric)) for metric in observed_metrics))
         coverage = _subject(repo.domain, "PROFILE_COVERAGE", config.policy.content_digest)
-        _record(store, "PROFILE_UNRESOLVED", coverage, common, now_us, healthy=configured == METRICS)
-        for metric in sorted(METRICS):
+        _record(store, "PROFILE_UNRESOLVED", coverage, common, now_us, healthy=REQUIRED_METRICS <= configured)
+        for metric in sorted(observed_metrics):
             subject = _subject(repo.domain, "RESOURCE", (config.policy.content_digest, metric))
             witness = content_fingerprint((common, producer_witness, host_witness, metric, metrics.get(metric), backlog_count))
             if metric == "OLDEST_UNCONSUMED_AGE_US" and backlog_count == 0 and metric in configured:

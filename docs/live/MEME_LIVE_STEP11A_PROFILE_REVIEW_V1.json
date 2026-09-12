@@ -1,0 +1,444 @@
+{
+  "accepted_evidence_reused": [
+    "Initial A host observation and41 unchanged C1 source-manifest entries;12 accepted artifact hashes.",
+    "Accepted C1 retained fixture and finite workload/reconstruction facts; originals byte-copied and unchanged.",
+    "Step9/10 producer, original policy, UNKNOWN, reconstruction and integrated correctness remain accepted at their original scope; no campaign rerun."
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\genesis_public_rpc.json",
+      "sha256": "d64f43d5997faf8fa0344695c8cfcf1f82d6c092b767133092879671796ebfb6"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\config\\deployment_public_v1.json",
+      "sha256": "8d937bb7bc0428d652fca4fd6b53553d72ce49233e9644c3e6807337949be025"
+    },
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11a-m52-3630b2-20260912\\m52-partial.json",
+      "sha256": "0ccdaf122183dfbe144267d59f9335cb424341038cd3d8c6923743023c8771dc"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-retained-current-01\\result.json",
+      "sha256": "651fa506e3cc8f02cf89408e9608d18a3d7ac7f4f90c7086a5003a96e496783a"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-retained-current-01\\command.json",
+      "sha256": "a51444ea8ce87f9bb09780fbd0091f7ac62e7213cc6163e25e0825a849555335"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-profile-02\\profile.json",
+      "sha256": "fc924b5d572211b82a889b6933e9fb191bea9c9e9e2e82c95d2fd7a89fdc6440"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-profile-02\\commands.json",
+      "sha256": "b96dcd16d29e51ae5c0df625b5e7ea3605efebd4a56e8ed87e9c6d1641a99a63"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-profile-02\\frozen-source.json",
+      "sha256": "243bc5907134facb55ab52c3fba6839a050c2554f849fdd207cb0d86adcd617a"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\source-selection-diagnosis.json",
+      "sha256": "9e960846fbf16142d5eedc93f2de93192a306d5357729fd1d1a13053f315fbe0"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-01\\result.json",
+      "sha256": "13332c3151af57fc36e346c89f814b0794f1219ce90593a26a08fc8a3428e799"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-02\\result.json",
+      "sha256": "3a560a7445090fe7a7e9bb0d145221411853b4429d3ecadc3edb073cdd846925"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-03\\result.json",
+      "sha256": "335a2f5bc48460bf6f80736745bcbf127841c8d4b86c9e682d4a0f0e9929f09a"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-03\\profile-extension.json",
+      "sha256": "abeead8a4fc2fbefb28e9df0b7aaabb3f4cce4c1c96f65c33b4c715d1c6a6a95"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-03\\canonical-monitor-configuration-candidate.json",
+      "sha256": "b302ba50a66dddb22a6e115ccf9c640b4a47fdd77043e0e85ba71920712f5c9b"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-diagnostic-01\\diagnostic.json",
+      "sha256": "65cf7b200ff962f26a39fee73ce9e82010ee6c98b58cdc18dd0994f295db2cd6"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-diagnostic-01\\diagnostic-source.py",
+      "sha256": "d77c9976e359c4edc8d88870198f2251457c8484b081f3577b2b615e7a1479c0"
+    },
+    {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-03\\run03-source.py",
+      "sha256": "9ef8a909b1be3843a0cde9888e9d4ef78813a201e692135a1d0dba8dc526e070"
+    }
+  ],
+  "assignments": [
+    "A: fresh Astra High; resumed only deployment-bound delta, measured profile accepted as B input.",
+    "B: fresh Astra High; six additive metric facts, exact profile binding, measured restriction/recovery/timing and targeted diagnostic."
+  ],
+  "authority_sha256": "178b4208a885c64686bd29f64d4d05cbdac4ae4d8942f58ffcef056305e24f4c",
+  "branch": "live/meme-production-readiness",
+  "canonical_startup_identity": {
+    "capability": "LIVE_SINGLE_POSITION_OWNED",
+    "configuration_digest": "c3c512904152a814418af9c8c2797ce3ae2c035a4aa0a62b81f515d60e89de8c",
+    "contracts": [
+      [
+        "operations",
+        "live_operations_ownership_v0.1"
+      ],
+      [
+        "startup",
+        "live_operations_startup_v0.1"
+      ],
+      [
+        "ledger_storage",
+        "9"
+      ],
+      [
+        "ledger_schema",
+        "live_ledger_v0.8"
+      ],
+      [
+        "ledger_domain",
+        "live_ledger_domain_v0.1"
+      ],
+      [
+        "authority",
+        "live_authority_controls_v0.1"
+      ],
+      [
+        "evidence",
+        "live_source_evidence_v0.1"
+      ],
+      [
+        "producer_schema",
+        "live_continuous_producer_v0.1"
+      ],
+      [
+        "producer_storage",
+        "live_producer_continuation_v0.2"
+      ],
+      [
+        "handoff",
+        "live_candidate_handoff_v0.1"
+      ]
+    ],
+    "evidence_schema_digest": "f6f087fab4d0497d7ce26b8818823289e9f10be6b148100c421d0ed39a27a23e",
+    "producer_schema_digest": "f691fe66f54d21b880373abf7c216d5e3d4db59f2a596c3afa0a47a1e77ce970",
+    "restart_profile": {
+      "backoff_us": 0,
+      "max_attempts": 100,
+      "window_us": 1000000
+    },
+    "runtime_code_digest": "d8f7bcef49cda031677b0b30826683e4544c8921f7688adc9df37e2de3de3bc1",
+    "runtime_type": "live.runtime_reconstruction_v0_1.ColdRuntimeV01",
+    "runtime_version": "live_runtime_composition_v0.1"
+  },
+  "chief_review": "Bounded finite-profile evidence reviewed; recommend M52_VERIFIED_CANDIDATE and M53_VERIFIED_CANDIDATE within the explicit limits below.",
+  "explicit_amendments": [
+    {
+      "evidence_path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-02\\result.json",
+      "evidence_sha256": "3a560a7445090fe7a7e9bb0d145221411853b4429d3ecadc3edb073cdd846925",
+      "measured_seconds": 1.4911294000339694,
+      "metric": "PROTECTIVE_STEP_US",
+      "new": 2000000,
+      "old": 100000,
+      "rationale": "Project-reviewed B amendment: 2s guard above observed1.4911294s full monitored protective unit (~34% margin). No worst-case, capacity or preemption guarantee. A remains immutable.",
+      "role": "CALIBRATED_POLICY_GUARD"
+    }
+  ],
+  "extension_content_digest": "1ce618084995c7126a668c7c948784195be3f8afe53901bc9acd95ba10cd3455",
+  "host_identity": {
+    "executable": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe",
+    "executable_sha256": "5fc3c5244b5eef01a82fbefd1932d1382b79c72fe6e64ffe8df1e3ce3643f02f",
+    "logical_cpu_count": 16,
+    "machine": "AMD64",
+    "node": "DESKTOP-SVU1PTT",
+    "os_name": "nt",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 23 Model 113 Stepping 0, AuthenticAMD",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "sqlite": "3.53.1"
+  },
+  "host_identity_digest": "09928edc688fbcf1fee5a3a81f63adcdbfe4e598e26feb66c09ecb34ef0cd93c",
+  "implementation_status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "intervals_us": {
+    "persistent_unknown_alert_us": 60000000,
+    "recovery_evidence_max_age_us": 5000000,
+    "resource_max_age_us": 1000000
+  },
+  "matrix": {
+    "BLOCKED": 0,
+    "HUMAN_EXTERNAL": 6,
+    "OWNED_NOT_BUILT": 5,
+    "VERIFIED": 50,
+    "total": 61
+  },
+  "new_measurements": {
+    "a_unmonitored": {
+      "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-retained-current-01\\result.json",
+      "protective_result": "NEED_EXECUTION",
+      "protective_seconds": 0.03927990002557635,
+      "scope": "Original owned in-process startup and no-execution-port protective work, same source/host D-volume, copied synthetic economics; monitor config absent.",
+      "sha256": "651fa506e3cc8f02cf89408e9608d18a3d7ac7f4f90c7086a5003a96e496783a",
+      "startup_seconds": 3.1476025000447407
+    },
+    "b_monitored": {
+      "baseline_observation_seconds": 0.9604835000354797,
+      "monitored_startup_seconds": 3.6542596999788657,
+      "pressure_monitored_protective_seconds": 1.2086138000013307,
+      "pressure_observation_seconds": 0.6552709000534378,
+      "restart_monitored_startup_seconds": 3.8743237999733537,
+      "restored_fact_recovery_seconds": 1.3056369999540038
+    },
+    "max_actual_monitor_resource_sample_age_seconds": 0.9020772000076249,
+    "pressure": {
+      "allocated_bytes": 28311552,
+      "measured_rss_bytes": 100986880
+    },
+    "restored_sample_rss_bytes": 73166848
+  },
+  "parent_profile_content_digest": "09457b947def64b00e924945188c2710dac35ada379ec87b01fedfe73deea18d",
+  "qualification_limits": [
+    "Finite retained synthetic domain only; canonical LIVE stores remain uninitialized and no ENTRY permission is granted.",
+    "Approved B2s protective guard supersedes A provisional100ms only; A and failed100ms evidence remain immutable.",
+    "Other numerical guard crossings are explicitly external comparator evidence; physical pressure only exercised bounded RSS, not low disk or every workload shape.",
+    "Resource restoration clears only the measured resource incident. Original protective action missing external ports still holds ENTRY.",
+    "UNKNOWN60s test binds exact accepted incident input in isolated incident journal; accepted integration owner retention is reused, no new Ledger UNKNOWN.",
+    "Every workload maximum is the observed finite retained shape; larger ContinuationProfileV02 constructor caps, future growth/all-shape capacity and maximum machine capacity are unqualified.",
+    "96MiB RSS ceiling crossed by bounded actual allocation. 1GiB disk floor is a reserve policy with comparator evidence, not a measured low-disk workload.",
+    "4s startup,2s monitored no-port protective unit,1s resource age and5s restoration are finite observed fits, not future worst-case latency or end-to-end exit guarantees.",
+    "Canonical target identity/path/domain/source witnesses are typed bindings; measured economics remain the original synthetic domain on target D-volume. No canonical LIVE-store reconstruction or current healthy live-source claim.",
+    "Inherited100attempts/1s/zero-backoff profile is qualification configuration only; M46 platform/restart-policy qualification remains outside scope.",
+    "Public deployment config remains immutable binding input with pending activation/qualified_envelope; reviewed profile extension is separate evidence."
+  ],
+  "remaining_bounded_measurement_delta": [],
+  "remaining_owners": {
+    "M46": "Physical host/autostart/platform qualification, unchanged.",
+    "M56/M57": "Existing later integrated/external gate engineering, unchanged.",
+    "project_acceptance": "M52/M53 verification recommendations require existing project classification acceptance; no row promotion in this checkpoint."
+  },
+  "reviewed_guard_limits": {
+    "AGGREGATE_FEATURE_BYTES": 248125,
+    "CHECKPOINT_BYTES": 2239,
+    "HISTORY_BYTES": 9086,
+    "HOST_DISK_RESERVE_BYTES": 1073741824,
+    "HOST_RSS_BYTES": 100663296,
+    "HOTTEST_EVENTS": 256,
+    "HOTTEST_FEATURE_BYTES": 166275,
+    "IDENTITY_ROWS": 34,
+    "LEDGER_TAIL_PAYLOAD_BYTES": 10292,
+    "LEDGER_TAIL_ROWS": 20,
+    "NO_T0_MINTS": 31,
+    "OLDEST_UNCONSUMED_AGE_US": 30000000,
+    "PRODUCER_PENDING_BYTES": 2210889,
+    "PRODUCER_PENDING_ROWS": 2346,
+    "PROTECTIVE_STEP_US": 2000000,
+    "RETAINED_EVENTS": 382,
+    "RETAINED_SERIALIZED_BYTES": 410065,
+    "STARTUP_US": 4000000,
+    "TOMBSTONE_ROWS": 1,
+    "UNFINISHED_MINTS": 33
+  },
+  "safety": {
+    "canonical_live_stores_initialized": false,
+    "capital_action": false,
+    "mainnet_mutation": false,
+    "production_keys": false,
+    "protected_checkouts_modified": false,
+    "real_services_tasks": false,
+    "sending": false,
+    "signing": false
+  },
+  "schema": "MEME_LIVE_STEP11A_PROFILE_REVIEW_V1",
+  "source_git_lf_sha256": {
+    "scripts/live_operations_deployed_measurement_v0_1.py": "2ad44ec581b29b848d00bc3b0c05c087361fa8ba32409e8d158fdd3f435a8d8e",
+    "scripts/live_operations_deployed_profile_v0_1.py": "72eac48e95297aa119613beb20f93623d50619a1e58c5b1b4c5bb9f0591e10a4",
+    "scripts/live_operations_deployed_recovery_v0_1.py": "d77c9976e359c4edc8d88870198f2251457c8484b081f3577b2b615e7a1479c0",
+    "src/live/operations_degradation_monitor_v0_1.py": "7de26224bbf91c908ac0f29c53341a1792752825b4a1df6bbc5483990e00c06e",
+    "src/live/operations_degradation_v0_1.py": "3367b35d07bf6348241601d2bc726caddb3d0fb7f6529d7eaaa3c437512c6b67"
+  },
+  "source_sha256": {
+    "scripts/live_operations_deployed_measurement_v0_1.py": "e6b525ed662d73e2b6d59361fd9ee0b884e8c7e4f5517e0af8d7693da95f6224",
+    "scripts/live_operations_deployed_profile_v0_1.py": "3c28cd32797acf29e0687de193c2484cd2a8cf6cb48a0da78b90b80508138a76",
+    "scripts/live_operations_deployed_recovery_v0_1.py": "d77c9976e359c4edc8d88870198f2251457c8484b081f3577b2b615e7a1479c0",
+    "src/live/operations_degradation_monitor_v0_1.py": "7de26224bbf91c908ac0f29c53341a1792752825b4a1df6bbc5483990e00c06e",
+    "src/live/operations_degradation_v0_1.py": "4a1c6e27a09c9d8177244296155b95a2018fa562a26d5227d4f61824c51bee83"
+  },
+  "starting_head": "3630b2bb5598e894bf7d851a2a2d857ab8dda9e1",
+  "supported_retained_workload": {
+    "aggregate_feature_payload_bytes": 248125,
+    "checkpoint_bytes": 2239,
+    "history_bytes": 9086,
+    "hottest_events": 256,
+    "hottest_feature_payload_bytes": 166275,
+    "identity_rows": 34,
+    "ledger_tail_payload_bytes": 10292,
+    "ledger_tail_rows": 20,
+    "no_t0_mints": 31,
+    "pending_rows": 2346,
+    "pending_serialized_bytes": 2210889,
+    "retained_events": 382,
+    "retained_serialized_bytes": 410065,
+    "tombstone_rows": 1,
+    "unfinished_mints": 33
+  },
+  "target": {
+    "current_code": {
+      "branch": "live/meme-production-readiness",
+      "qualification_checkout": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-audit-e6b9a4b",
+      "repository": "Faydtrades/SolanaMemecoinBot",
+      "source_checkpoint": "3630b2bb5598e894bf7d851a2a2d857ab8dda9e1"
+    },
+    "domain": {
+      "domain_version": "live_ledger_domain_v0.1",
+      "expected_empty_token_accounts": [],
+      "expected_profile_fingerprint": "0b060359cc33a8ccccc85b7583a2ebe48f3d3ecfd49fb581ac3c253b184788ce",
+      "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+      "known_native_wallet_lamports": null,
+      "minimum_context_slot": 0,
+      "mode": "LIVE",
+      "opening_profile": "NATIVE_RECYCLING_V1",
+      "schema_version": "live_ledger_v0.8",
+      "wallet": "B96iU8vKUtV2kAcGNj5zsYWo9GKPEGZo5jDPmJVqC3xp"
+    },
+    "domain_binding_digest": "baf03792173390e3caa802b5a54497c995e1482840736a35ff7013b85f197cf6",
+    "economic_domain_id": "c581a9beb27a6b1b0d69778003feef6c24423cd85fb15c95135e4c989371f8c3",
+    "network": "solana-mainnet-beta",
+    "paths": {
+      "deployment_root": "D:\\Tradingbot\\meme_live",
+      "evidence_root": "D:\\Tradingbot\\meme_live\\evidence",
+      "evidence_store": "D:\\Tradingbot\\meme_live\\data\\evidence.sqlite3",
+      "ledger": "D:\\Tradingbot\\meme_live\\data\\ledger.sqlite3",
+      "market_source": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\data\\db\\tradingbot.sqlite3",
+      "operations": "D:\\Tradingbot\\meme_live\\data\\operations.sqlite3",
+      "producer": "D:\\Tradingbot\\meme_live\\data\\producer.sqlite3",
+      "public_configuration": "D:\\Tradingbot\\meme_live\\config\\deployment_public_v1.json",
+      "runtime_root": "D:\\Tradingbot\\meme_live\\runtime"
+    },
+    "public_configuration_path": "D:\\Tradingbot\\meme_live\\config\\deployment_public_v1.json",
+    "public_configuration_sha256": "8d937bb7bc0428d652fca4fd6b53553d72ce49233e9644c3e6807337949be025",
+    "runtime_code_digest": "d8f7bcef49cda031677b0b30826683e4544c8921f7688adc9df37e2de3de3bc1"
+  },
+  "validation": {
+    "boundary_count": 20,
+    "commands": [
+      {
+        "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_operations_deployed_measurement_v0_1.py --public-manifest D:\\Tradingbot\\meme_live\\config\\deployment_public_v1.json --manifest-sha256 8d937bb7bc0428d652fca4fd6b53553d72ce49233e9644c3e6807337949be025 --output D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-retained-current-01",
+        "exit": 0,
+        "failed_measurement_runs": 0,
+        "result_sha256": "651fa506e3cc8f02cf89408e9608d18a3d7ac7f4f90c7086a5003a96e496783a",
+        "script_sha256": "e6b525ed662d73e2b6d59361fd9ee0b884e8c7e4f5517e0af8d7693da95f6224",
+        "shell_wall_seconds": 5.5063063,
+        "tool_chunk": "d27754",
+        "validation": {
+          "artifact_compatibility_assertions_exit": 0,
+          "assertions": [
+            "source reconstructed",
+            "original due protection NEED_EXECUTION with no execution ports",
+            "producer lineage preserved",
+            "synthetic wallet distinct from target",
+            "monitor unavailable and ENTRY held explicit",
+            "zero production market rows",
+            "script hash bound",
+            "2346 pending rows",
+            "2239 checkpoint bytes",
+            "20 ledger tail commits"
+          ],
+          "compile_without_execution_exit": 0
+        },
+        "working_directory": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-audit-e6b9a4b"
+      },
+      {
+        "artifact_hashes": {
+          "constructor-validation.json": "033861bd862b3eadfadf11be89ab13788dbd583eb42b894d732eceec4038c006",
+          "frozen-source.json": "243bc5907134facb55ab52c3fba6839a050c2554f849fdd207cb0d86adcd617a",
+          "monitor-configuration-candidate.json": "b842e3f23bbbd03dd877bc9b7f94552466acf0d91b8c8323e8391be0428788e2",
+          "profile.json": "fc924b5d572211b82a889b6933e9fb191bea9c9e9e2e82c95d2fd7a89fdc6440"
+        },
+        "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_operations_deployed_profile_v0_1.py --public-manifest D:\\Tradingbot\\meme_live\\config\\deployment_public_v1.json --measurement D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-retained-current-01\\result.json --host-observation C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step11a-m52-3630b2-20260912\\m52-partial.json --output D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-profile-02 --control-anchor-rowid 1815",
+        "diagnosed_selection_input": {
+          "meaning": "CHIEF indexed capped query identified supported collector-start1815. Prior id1 was legacy COLLECTOR_START; tail256 missed supported start. No broad worker scan.",
+          "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\source-selection-diagnosis.json"
+        },
+        "exit": 0,
+        "restart_profile_scope": "Inherited100 attempts/1s window/0 backoff qualification configuration only; no production restart-policy or M46 qualification.",
+        "shell_wall_seconds": 3.3837045,
+        "supersedes": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-profile-01\\profile.json",
+        "tool_chunk": "ee1094",
+        "validation": {
+          "checks": [
+            "exact profile content digest",
+            "typed public anchor witnesses",
+            "canonical target StartupIdentity/MonitorConfiguration binding",
+            "all14 existing resource metrics",
+            "activation/live-start false",
+            "wallet baseline unknown",
+            "both scripts compile without execution"
+          ],
+          "exit": 0,
+          "new_source_reads": 0,
+          "new_workload_runs": 0
+        }
+      },
+      {
+        "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_operations_deployed_recovery_v0_1.py --output D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-01",
+        "disposition": "Missing isolated alert journal; diagnosed before correction.",
+        "exit": 1
+      },
+      {
+        "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_operations_deployed_recovery_v0_1.py --output D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-02",
+        "disposition": "Historical source-file hash assertion; valid measurements retained; 100ms provisional protective guard invalidated.",
+        "exit": 1
+      },
+      {
+        "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_operations_deployed_recovery_v0_1.py --output D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-03 --protective-limit-us 2000000",
+        "disposition": "Two incorrectly scoped harness assertions; raw result unchanged, targeted diagnostic resolves assessment only.",
+        "exit": 1
+      },
+      {
+        "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_operations_deployed_recovery_v0_1.py --audit-existing D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-03 --output D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-diagnostic-01",
+        "disposition": "Read-only journal/callsite diagnosis, zero workload reruns.",
+        "exit": 0
+      }
+    ],
+    "compile_static": "Worker four-file compile, original14 constructor AST and20metric allowlist checks exit0; final five-file scoped compile/hash/diff checks recorded at package checkpoint.",
+    "diagnostic": {
+      "age": "Tag callsites at collection; aggregate only actual monitor callbacks. External compatibility/predicate fixture assembly has distinct scope.",
+      "coverage": "Check exact PROFILE_COVERAGE subject; individual stale metrics remain held."
+    },
+    "final_scoped_static": {
+      "artifacts_verified": 17,
+      "compiled_files": 5,
+      "exit": 0,
+      "no_workload_execution": true,
+      "run03_executed_source_exact": true
+    },
+    "regressions_run": [],
+    "run03_failed_assertions": [
+      "actual_host_sample_age_within_1s",
+      "old14_policy_coverage_unchanged"
+    ],
+    "run03_true_checks": [
+      "accepted_incident_60s_boundary_and_reopen",
+      "actual_rss_crossing_durable_entry_hold",
+      "all20_exact_boundary_comparisons",
+      "economic_obligations_retained",
+      "measured_rss_restored_recovery",
+      "observer_no_producer_mutation",
+      "original_runtime_entry_gate_held",
+      "protective_work_available",
+      "recovery_evidence_5s_edge",
+      "resource_freshness_1s_edge",
+      "restart_alone_retains_condition",
+      "retained_producer_unchanged",
+      "six_exact_measurements",
+      "source_freshness_30s_edge",
+      "status_maps_profile_limit"
+    ],
+    "source_freshness_us": 30000000,
+    "unknown_scope": "Exact accepted C2 condition input,60s escalation and retained hold; not a new Ledger UNKNOWN."
+  }
+}
