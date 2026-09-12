@@ -1,4 +1,4 @@
-"""A3 bounded original producer output -> durable LIVE Ledger inbox.
+"""A3 bounded original producer output -> durable fixed LIVE or DRY Ledger inbox.
 
 Two stores deliberately have separate commits. Ledger receipt precedes the
 producer ACK; replay resolves the intervening crash by exact inbox identity.
@@ -50,8 +50,8 @@ class CandidateHandoffV01:
     def __init__(self, producer, ledger, binding, *, database_identity, initialize=False, failure_injector=None):
         if type(producer) is not LiveContinuousProducerV02 or type(binding) is not SourceBinding:
             raise ProducerConflict("A2 producer and explicit source binding required")
-        if ledger.domain.mode != "LIVE":
-            raise ProducerConflict("A3 requires LIVE inbox domain")
+        if ledger.domain.mode not in ("LIVE", "DRY"):
+            raise ProducerConflict("A3 requires fixed LIVE or DRY inbox domain")
         if type(initialize) is not bool:
             raise ProducerConflict("explicit initial handoff installation flag required")
         self.producer, self.ledger, self.binding = producer, ledger, binding

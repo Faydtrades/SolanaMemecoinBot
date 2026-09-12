@@ -1,0 +1,652 @@
+{
+  "accepted_reuse": {
+    "step9b": {
+      "disposable_children": 148,
+      "index_path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-b4-closeout-evidence\\B4_REVIEW_INDEX.json",
+      "index_sha256": "6a1f6fe699742eec55c98ad2675b97c37c4ffb5ed62733c9cba87addcf0e24aa",
+      "note": "Established facts, no rerun/review; original command/cut/source manifests retained. Three bounded Step10 Runtime connections do not change original fault atomicity/fencing/ownership contracts; precise affected compatibility qualified separately.",
+      "primary_checks": 1356
+    },
+    "step9c": {
+      "helper_checks": 78,
+      "note": "Accepted current-source measurements, C2/runbooks, regression and dossier reused. No reruns.",
+      "primary_checks": 522,
+      "regression_manifest_sha256": "41f2558f3014ef7ec3a548e5f340b0853bf294f626419d29a7d8e829c948d562"
+    }
+  },
+  "base_commit": "3fd8bcbe4cc07bb88fc605944d13d0056c7612b9",
+  "branch": "live/meme-production-readiness",
+  "compatibility_review": [
+    "Only three of 154 directly relevant production files changed. Ledger, Authority, Phase-4/5 decoders, producer semantics and Operations ownership/startup contracts are unchanged.",
+    "Resolved BUY retry/expired no-acquisition retirement uses original resolution application_sequence and original deadline. UNKNOWN, unapplied, quarantine and current-wallet guards remain closed.",
+    "Canonical coverage is requested only after normal UNKNOWN observation with root height beyond the original signed lease; Ledger still owns adjudication and separate application.",
+    "S05 beyond-lease UNKNOWN was concretely affected by coverage reads and was rerun once (56 checks). No accepted Step-9 suite was rerun.",
+    "Explicit protective_max_units forwards the existing immutable sizing ceiling; None preserves the original two-argument default call. E02 exhaustion/explicit partial evidence remains valid; affected default residual staging was separately qualified with 44 checks.",
+    "LIVE handoff predicate is equivalent for existing valid LIVE input; fixed DRY mode adds the missing actual producer bridge without changing schema/payload/ACK/domain identity. S10 tests DRY and both rebind denials; S11/S12 exercise LIVE on the final source.",
+    "Normal S01/S02 lifecycle, S04/S08 identity/capacity, and resolved S06 paths are unchanged by later optional/default calls. Final S11/S12 consume the current composed graph.",
+    "E01/E03 post-run edits only remove EOF blank lines; tested hashes reconstructed and AST equivalence verified. E02 added the compatibility branch after its original exhaustive partial/cost run."
+  ],
+  "contract_coverage": {
+    "E01": [
+      "E01",
+      "S10",
+      "accepted exact lease/resource guards"
+    ],
+    "E02": [
+      "E02",
+      "E02_DEFAULT_CALL_COMPAT",
+      "S06_BUY",
+      "S06_NONLANDING",
+      "S10",
+      "accepted admission/claim/application/retirement atomic cuts and competing reservations"
+    ],
+    "E03": [
+      "E03",
+      "S05_COVERAGE_COMPAT",
+      "S06_NONLANDING",
+      "S09",
+      "S03_S07"
+    ],
+    "E04": [
+      "S03_S07",
+      "S12",
+      "accepted B1-B3.4 and C2 stop/fence/budget/degradation/alerts/runbooks"
+    ],
+    "E05": [
+      "S11",
+      "S03_S07",
+      "accepted A1/A2/B3.4/C1/C3 exact replay/causality/profile guard evidence"
+    ],
+    "S01": [
+      "S01_S02"
+    ],
+    "S02": [
+      "S01_S02"
+    ],
+    "S03": [
+      "S03_S07",
+      "E02",
+      "S12",
+      "accepted B2.4/B3.2"
+    ],
+    "S04": [
+      "S04_S08",
+      "accepted A3/A4b identity conflicts"
+    ],
+    "S05": [
+      "S05_COVERAGE_COMPAT",
+      "S12",
+      "accepted B2.1/B2.2"
+    ],
+    "S06": [
+      "S06_BUY",
+      "S06_NONLANDING",
+      "E02"
+    ],
+    "S07": [
+      "S03_S07",
+      "accepted hard-stop/fence dispatch cases"
+    ],
+    "S08": [
+      "S04_S08",
+      "S01_S02"
+    ],
+    "S09": [
+      "S09",
+      "S01_S02"
+    ],
+    "S10": [
+      "S10",
+      "accepted DRY preparation/simulation interruption contracts"
+    ],
+    "S11": [
+      "S11",
+      "accepted A1/A2 producer aggregate/hot/no-t0 bounds"
+    ],
+    "S12": [
+      "S12",
+      "accepted B1/B2/B3 process/fence/stop facts; physical host qualification remains M46"
+    ]
+  },
+  "evidence_root": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911",
+  "limitations": [
+    "Controlled Runtime-child process loss only; no physical machine/supervisor reboot/autostart claim.",
+    "Full pre-T010 engineering rows must be VERIFIED before that gate; five remain OWNED_NOT_BUILT, not relabelled HUMAN_EXTERNAL.",
+    "Evidence paths are local retained qualification artifacts; this committed index carries source/result hashes and exact commands, not the disposable databases.",
+    "Historical failed/superseded runs are diagnostic only; no count is presented as independent scenario coverage.",
+    "E01 initial diagnostic stderr was overwritten by its worker; exact errors remain in task transcript. Final evidence is retained."
+  ],
+  "matrix_counts": {
+    "BLOCKED": 0,
+    "HUMAN_EXTERNAL": 6,
+    "OWNED_NOT_BUILT": 5,
+    "VERIFIED": 50,
+    "total": 61
+  },
+  "matrix_promotions": [
+    "M44",
+    "M47",
+    "M48",
+    "M49",
+    "M50",
+    "M51"
+  ],
+  "owner_authorization_sha256": "ae233f06f792e37865e030a66bd00e760f0df08008244e4d194a1602dc5ad731",
+  "qualifications": [
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s01_s02_selftest_v0_1.py",
+      "current_script_sha256": "035638e53b7f3b6eed9373c400d6434a5682e63df320ba6f662b85319a28c331",
+      "exit_code": 0,
+      "id": "S01_S02",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S01_S02.command_result.json",
+        "sha256": "d3905874bf2989323759a7e3564951a6d0358beee2303c51cef393e58c07b6c3"
+      },
+      "primary_checks": 99,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY_NOT_HOST_PROFILE_OR_REAL_CAPITAL",
+      "reported_helper_checks": 0,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S01_S02.stdout.json",
+        "sha256": "09496950b9f303cd7ba8e3c54936642a2b14092efb3ffa1d5a4c4ce50e65045c"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s04_s08_selftest_v0_1.py --positive-evidence C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S01_S02.stdout.json",
+      "current_script_sha256": "3d265060fe185e0e428c8ddd2d511bbef401e278f6ccf8d2d1a6d212e0e3995c",
+      "exit_code": 0,
+      "id": "S04_S08",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S04_S08.command_result.json",
+        "sha256": "e63ff2943d1108d0ad30bf2bbbce309a262b6f09475a5463e4b5a39351c0ff93"
+      },
+      "primary_checks": 58,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY_NOT_HOST_PROFILE_OR_REAL_CAPITAL",
+      "reported_helper_checks": 7,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S04_S08.stdout.json",
+        "sha256": "4f50eacad86b1dfde15420eaade9a7cfe9b827b1492310a7cc0e557e63088934"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s05_selftest_v0_1.py",
+      "current_script_sha256": "3331b6b1068535cb04d383b63bf04b815ffd8a6ff7f13a73d6a908061498245f",
+      "exit_code": 0,
+      "id": "S05",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S05.manifest.json",
+        "sha256": "b7d0cb137fa395468cf195494e1d729a10de5b0c61f59955f24de6bceb77e984"
+      },
+      "primary_checks": 50,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY",
+      "reported_helper_checks": 6,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S05.stdout.json",
+        "sha256": "132991a84268fc1ebbd7409867396d4256ead2e9a4a15c9f9815e71b83686f18"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s05_selftest_v0_1.py",
+      "current_script_sha256": "3331b6b1068535cb04d383b63bf04b815ffd8a6ff7f13a73d6a908061498245f",
+      "exit_code": 0,
+      "id": "S05_COVERAGE_COMPAT",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S05.coverage_compat.run.json",
+        "sha256": "225ca72102f6e66c22c9784dec612842fd6db5f00a90a052a7f27257c1ca57a0"
+      },
+      "primary_checks": 50,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY",
+      "reported_helper_checks": 6,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S05.coverage_compat.stdout.json",
+        "sha256": "daef04418674f1b04b2a8c09851fa9b804088c69ff8b843b1a39d452f999bcdb"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s06_buy_recovery_selftest_v0_1.py",
+      "current_script_sha256": "49d96b406706682af925dcd49367257ccbb9e48c9802d0fd18859ce4c1b03d97",
+      "exit_code": 0,
+      "id": "S06_BUY",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S06.buy_recovery.manifest.json",
+        "sha256": "7d6d46e61aa823fbbb1de26b4d9c18a2ca5ab8672323698564cbd1ffa036356e"
+      },
+      "primary_checks": 42,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY",
+      "reported_helper_checks": 14,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S06.buy_recovery.stdout.json",
+        "sha256": "15d48fbe316805548c776079c28ef7c8d89abc02d0efb22842fed38d836ff31c"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s06_nonlanding_protection_selftest_v0_1.py",
+      "current_script_sha256": "3d0c5b6807bda2f684a1e53c86d0bba0c028122035d47dba8d927126b6546489",
+      "exit_code": 0,
+      "id": "S06_NONLANDING",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S06.nonlanding.MANIFEST.json",
+        "sha256": "f4298dd751a962c1050f85156cb436f5295df2da6e24f2510a0209e50c87f8bb"
+      },
+      "primary_checks": 47,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY",
+      "reported_helper_checks": 27,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S06.nonlanding.targeted.stdout.json",
+        "sha256": "60bcc176281b7992423f3f863731ac663648dfefbe2f6e8e71548f640d8ae7f0"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_e02_partial_selftest_v0_1.py",
+      "current_script_sha256": "928fcdd2ab25363851b3b29b58a4a1322e4631344826d91bf5167b45d9ce3f69",
+      "exit_code": 0,
+      "id": "E02",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\e02-partial.manifest.json",
+        "sha256": "9b807ef2ee559a12aad6e075f431e6f384d9d09a6cf37b8c00e12904757362d4"
+      },
+      "primary_checks": 68,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY",
+      "reported_helper_checks": 28,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\e02-partial-targeted-03.stdout.json",
+        "sha256": "591974fda8b53741b6d8eebd4176ffee4b96c64e8563ec571453aa94b53ddee8"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_e02_partial_selftest_v0_1.py --default-call-compat",
+      "current_script_sha256": "928fcdd2ab25363851b3b29b58a4a1322e4631344826d91bf5167b45d9ce3f69",
+      "exit_code": 0,
+      "id": "E02_DEFAULT_CALL_COMPAT",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\e02-default-call-compat.manifest.json",
+        "sha256": "54f1b371515b3864d17cb81198464bbdb81b1715cf6c9543559dda3cb7ed1f1f"
+      },
+      "primary_checks": 30,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY",
+      "reported_helper_checks": 14,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\e02-default-call-compat.stdout.json",
+        "sha256": "6ec25010d08f49611ef8315412c7b39eb026d4f4d9b029f29af7b25de4cb49b0"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s09_selftest_v0_1.py",
+      "current_script_sha256": "e51a289d9a2a0530ed5b3b63dd0b8a63cb6e604c09abafe925e7722dabc5dd01",
+      "exit_code": 0,
+      "id": "S09",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s09.manifest.json",
+        "sha256": "9fcf600458e4f65d7970268dc268032bcd635f736cd8012b3993e737d2af0635"
+      },
+      "primary_checks": 98,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY",
+      "reported_helper_checks": 0,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s09.stdout.json",
+        "sha256": "726ea0dc5dcb3f9019113332d9ee8c7893222aba891c268ec7950fb1497e0e95"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_e01_selftest_v0_1.py",
+      "current_script_sha256": "96e2504e6b3f9a1a5fb6a1e31a96dac48ef84a9ada6c8afa9f7cf15c5fab7d7b",
+      "exit_code": 0,
+      "id": "E01",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\e01-manifest.json",
+        "sha256": "6295f66ba99f38bb7b21763e9c68a2eb9b36a30bee22498a2a56c2fe70e9e2c5"
+      },
+      "primary_checks": 274,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY",
+      "reported_helper_checks": 0,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\e01-final-attempt01.stdout.json",
+        "sha256": "60ba194c249baa7bfcf1a95ba3006cef4375097c5518f81a5e11e7ddf179690d"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_e03_contradiction_selftest_v0_1.py",
+      "current_script_sha256": "4e857c8ec6b79983948474ac7b95ea28266768310526c8fc5e9f6164455a1bc0",
+      "exit_code": 0,
+      "id": "E03",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\e03-manifest.json",
+        "sha256": "3c6b244f6e1aa08ab6fc03e92b6024083ec5dce9ef620dfdda2b92c4c68b5a51"
+      },
+      "primary_checks": 43,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY_NOT_HOST_PROFILE_OR_REAL_CAPITAL",
+      "reported_helper_checks": 2,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\e03-20260912-014146.stdout.json",
+        "sha256": "44eff5116d8b04f4281b5074685b76003b9afe891a96132061b8e5798cd66f84"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s03_s07_selftest_v0_1.py",
+      "current_script_sha256": "60a3e4e049be3b6a449cd7b5115ae44386e922f40ec324c0e38c526155de20bb",
+      "exit_code": 0,
+      "id": "S03_S07",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S03_S07.validation.json",
+        "sha256": "67ca5004d3a48aca5f20604ac277afd804f1fe0a40c1273f4d04d332ac78c850"
+      },
+      "primary_checks": 28,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY_NOT_HOST_OR_REAL_CAPITAL",
+      "reported_helper_checks": 17,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\S03_S07.attempt6.stdout.json",
+        "sha256": "31a001e0bf2d608f52c0b3c57c8a324940e81ad9e2301fc22770bf6c0f264a28"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s10_selftest_v0_1.py --output-dir C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s10-attempt01",
+      "current_script_sha256": "4258aaea4f92bad7ed786f425c6cb1d7aae3cbdb7ed997e623b9c2014bd09d3f",
+      "exit_code": 0,
+      "id": "S10",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s10-attempt01\\validation-manifest.json",
+        "sha256": "d53a9cc4d79856fbe41bbd056050b330d6c20d02fdb006e355b0a2146db5f359"
+      },
+      "primary_checks": 105,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY",
+      "reported_helper_checks": 0,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s10-attempt01\\s10-result.json",
+        "sha256": "21f932c308e8af85c43c9e1222e9f6b72078b86c1451f9ff90c50aa1c8067146"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s11_selftest_v0_1.py",
+      "current_script_sha256": "944f15902b27c14f80658b213af8eb597613d73895f05b1048027814e59f2cac",
+      "exit_code": 0,
+      "id": "S11",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s11_manifest_v01.json",
+        "sha256": "9741d57cd3a3a70c52cb8bc8fb4e3940ddefcfe865906797cb3a896be5d21c8e"
+      },
+      "primary_checks": 42,
+      "qualification_boundary": "SYNTHETIC_ENGINEERING_ONLY_NOT_HOST_OR_REAL_CAPITAL",
+      "reported_helper_checks": 9,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s11-final-attempt08.log",
+        "sha256": "86618d60fdf750de936034809716fb35895d0c72a08b8d46f4d0f470c052cd57"
+      },
+      "review": "LOCAL_PASS"
+    },
+    {
+      "command": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-evidence-venv\\Scripts\\python.exe -B scripts/live_step10_s12_selftest_v0_1.py --evidence-dir C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s12-attempt-05",
+      "current_script_sha256": "be7e0053f46cdd4752bb1e7de4277c527994885c3071eadb166c5de52a5707cd",
+      "exit_code": 0,
+      "id": "S12",
+      "metadata": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s12-attempt-05\\result.json",
+        "sha256": "12d79a3b6ae919596de34240072df11387e0aa3f3172129c0ae2c974477239f6"
+      },
+      "primary_checks": 77,
+      "qualification_boundary": "CONTROLLED_PROCESS_LOSS_ONLY_NOT_PHYSICAL_REBOOT_OR_AUTOSTART",
+      "reported_helper_checks": 0,
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step10-3fd8bcb-20260911\\s12-attempt-05\\result.json",
+        "sha256": "12d79a3b6ae919596de34240072df11387e0aa3f3172129c0ae2c974477239f6"
+      },
+      "review": "LOCAL_PASS"
+    }
+  ],
+  "remaining_existing_owners": {
+    "HUMAN_EXTERNAL": "M09/M10/M58/M59/M60/M61 remain unchanged; real wallet/genesis/provider trust/capacity/history binding and permissioned real gates are not simulated into completion.",
+    "M46": "Operations: real deployment-host/service/task/autostart/platform/reboot qualification; controlled Runtime-child loss does not establish machine or supervisor-process reboot.",
+    "M52": "Runtime/Operations: reviewed deployed aggregate/hot/pending/disk/latency envelope tied to canonical path/domain/host/code/config and same-host protective timing; synthetic engineering maxima are not deployment limits.",
+    "M53": "Operations: deployed numerical degradation/freshness/UNKNOWN recovery intervals and qualified host/profile recovery; accepted C2 state/alerts/runbooks and C1/C3 engineering observations remain valid in their bounded scope.",
+    "M56": "Operations/External gates: this Step-10 internal dossier is supplied; full resource profile, subsequent Step-11 freeze/review and existing external-gates preflight/grant tooling remain.",
+    "M57": "External gates: reviewed frozen T010-ready artifact and missing-evidence/grant/mode preflight tooling; not implemented in Step10."
+  },
+  "review": "One final CHIEF substantive review after bounded task reviews; direct owner-authorized classification and normal checkpoint.",
+  "safety": {
+    "production_keys_used": false,
+    "protected_checkouts_modified": false,
+    "real_capital_action": false,
+    "real_mainnet_mutation": false,
+    "real_services_tasks_installed": false,
+    "step11_or_gate_tooling_implemented": false
+  },
+  "schema": "MEME_LIVE_STEP10_INTERNAL_ACCEPTANCE_V0_1",
+  "source_freeze": {
+    "changed_from_base": {
+      "src/live/candidate_handoff_v0_1.py": {
+        "base_sha256": "8cd450876d28faef54dc7f39ed23198dcdc7bd236f1d77de32db01f763b516be",
+        "final_sha256": "9187d0326866b3fb8aad449097501ffcd9d90c74c286b7a7b627f06878aaef10"
+      },
+      "src/live/execution_reconciliation_v0_1.py": {
+        "base_sha256": "35a68c6930554593aa541d0566059c696f52e866cc86e6ed320349969fea3afc",
+        "final_sha256": "e232091bacf18f70b70fb24b061ff54b20feec0abfa8659ad6210e614f545305"
+      },
+      "src/live/runtime_composition_v0_1.py": {
+        "base_sha256": "75d0da2b8852992d4d599c59e5101719814dd17c1e3125b77816e7738bed8d3f",
+        "final_sha256": "f594224846dfeda249c17af1820ddc849a7acdd6f5f087292c32b6e0e85971f3"
+      }
+    },
+    "description": "Final source bytes mechanically checked at closeout; the three production hashes were already consumed unchanged by final S11/S12 qualification. This is not a new broad regression.",
+    "production_source_sha256": {
+      "src/live/__init__.py": "4c93d29f16e720d0977b4b48833e54bbdb9dec1428bd37983a341e0f8ca583fd",
+      "src/live/authority_admission_v0_1.py": "1a8395e9f2f777211caa14f2cb3044728dbd8a1419522c1e1e064648aab1cf0a",
+      "src/live/authority_controls_v0_1.py": "48e248300c1f953378e5251abb9f03f399e2c6433c816f8aa5dd0d92d7654a29",
+      "src/live/authority_economics_v0_1.py": "a0f414d726d114d5fabd990f058ad91e8dba989e4641ba0ab1f7f705333a07dd",
+      "src/live/authority_message_codec_v0_1.py": "0c935f7aa0ae8fd66cb861d838d27d410e5102602268986900b770ccd088595b",
+      "src/live/authority_message_control_codec_v0_1.py": "fe62e2cf598821d7e913232ac7e12d395abb7b548759015ccccaed85ee25efc2",
+      "src/live/authority_message_control_v0_1.py": "456c615185b0078addb1fcfa6b670d5e7550a708bdad099a658675ed825474e0",
+      "src/live/authority_message_evidence_v0_1.py": "16da538341266d006fe1366986864e07f3fe7641d1e42450bb19851869d1f557",
+      "src/live/candidate_handoff_v0_1.py": "9187d0326866b3fb8aad449097501ffcd9d90c74c286b7a7b627f06878aaef10",
+      "src/live/continuous_producer_v0_1.py": "bcec0114a059acf472cfd6ba35800eca8c3a83eaa105463ce5e229df03bbd9cc",
+      "src/live/continuous_producer_v0_2.py": "da4b6fe58da3158ee5d872ca983ad61fb816806d0f2e5345e7d6b9d4f4fa5fb9",
+      "src/live/evidence_store_v0_1.py": "4cf0f72cd42cc565bcb29e88c03f6f3b2da2405828e469b0604d1edcd21d0ca1",
+      "src/live/execution_message_v0_1.py": "019ef64459758de998be81b82c944f498d69521b066fe6bdddecf3b793388f3e",
+      "src/live/execution_readonly_v0_1.py": "c1575fcb914abc487d10c16bf20d1f5118d8ebf23b4d491766ca4bc57f9b6593",
+      "src/live/execution_reconciliation_v0_1.py": "e232091bacf18f70b70fb24b061ff54b20feec0abfa8659ad6210e614f545305",
+      "src/live/execution_send_v0_1.py": "ccda2936b7d4b7d2cda66ec5d09e4cecdb01b8224fb746c7158d91cabacd06d0",
+      "src/live/execution_signer_v0_1.py": "3f8e2e7c39e24b74a50d33e7cc3fd7e24055e996e9c92f217dd152ba6d5d3d32",
+      "src/live/exit_observation_v0_1.py": "2964b14b09ca8298f3ff6569555635c069b8e896ee8a766b0f325de11be8e2e1",
+      "src/live/ledger_actions_v0_1.py": "169cb32f73b39f141ab71879f1e684312d25a333205a22c81c1d8ae874a4f579",
+      "src/live/ledger_chain_codec_v0_1.py": "cd039cc25c30bc29969caddeb552a1f58402a5021ce7b237b5405d5be39c527f",
+      "src/live/ledger_custody_v0_1.py": "6efc80914e76357315d5d8b344f158f746a06f087211e881d69a28a48824a9fd",
+      "src/live/ledger_domain_v0_1.py": "c0f05608842d76ee69071e67b87feb051b5372c6561382c9564e3371f145d288",
+      "src/live/ledger_evidence_codec_v0_1.py": "0d986a14ea190995786bcfe78bfa980c9666946d83c54fbf9582c81d468c7da4",
+      "src/live/ledger_finality_v0_1.py": "4033349f5b5ad6b2cdbfadeaaf49b44a0e34e183e148e632f9d8c534e960d8e8",
+      "src/live/ledger_ports_v0_1.py": "be3b9d3e9d5538073a67eea96804f5f6039d779f0e7dada6b86dc64b179f4220",
+      "src/live/ledger_repository_v0_1.py": "8d192421bc2e2f682422d4452814ebf5c70968fceb82b223d756b50738d930ac",
+      "src/live/ledger_settlement_v0_1.py": "a687292ff4245fbeaba4d1f6a173e68db72f9c1a66224fa96fc9674720944b3c",
+      "src/live/operations_degradation_monitor_v0_1.py": "b30e5aa33f98e8cc2295b8aff0d1172e78ac2b41ccca184e992f716e48bb04b3",
+      "src/live/operations_degradation_status_v0_1.py": "b8fcfce71be84c08159c95a9d7dc79b7963fd983c5b0201d7d90900ab5c2e1d8",
+      "src/live/operations_degradation_v0_1.py": "73c711edb86013d6d52a579db9582b6cf20a94cf4323c43c49d9da90d6c26090",
+      "src/live/operations_ownership_v0_1.py": "5a2ce07f773a346ef1173aa24f2e79bc73e1589835147b74458d4d3726348e2a",
+      "src/live/operations_readiness_v0_1.py": "64ce863df96cc874b81f937848bcfd3542a223e18f9eaea451af35b780888926",
+      "src/live/operations_startup_v0_1.py": "cc9cb018f2746ea3d1dc6f775b2ec38f0ad12176180463f04b4c1a56441b5322",
+      "src/live/operations_supervisor_v0_1.py": "be0b6e16222ecc9e94bb7fec9e95ef72d098473ed8eda82e8df48a6f7e3d8dbf",
+      "src/live/position_controller_v0_1.py": "42897d278fc247994acfe83483082780c6de59beb06214f27801beac2cdb6498",
+      "src/live/protective_obligation_v0_1.py": "e7e69fe19cc360c35609861d559ed15d5a67b27565779234f3580c9b516e0a68",
+      "src/live/protective_outcome_v0_1.py": "c67bed93e4e06d5f7f79a9a9ec9590f13246e17e4ac8df5887672a415320e9c1",
+      "src/live/public_rpc_v0_1.py": "441e8f7e1ddc9716272690fbf1a6dd738373bbb5486c4410495cb88d7d8855e6",
+      "src/live/runtime_composition_v0_1.py": "f594224846dfeda249c17af1820ddc849a7acdd6f5f087292c32b6e0e85971f3",
+      "src/live/runtime_dry_reconstruction_v0_1.py": "7df9f838432b9e1c3a0078656ebb43ec4bccc085c13f98e49655004c32399a23",
+      "src/live/runtime_dry_v0_1.py": "9eb5d80046cd70cebf28c458e74d8223eb80285648a24a543453145de1dc7144",
+      "src/live/runtime_reconstruction_v0_1.py": "516b3cd50a003ccc18cff1d4d6f006e9f1d7769a1aba684b770ecea091afc756",
+      "src/live/source_health_v0_1.py": "229ba1046d24d8d87708050154711c3dc52aafeb7160fb82b26c9638f47cd426",
+      "src/live/transaction_coverage_v0_1.py": "360f188851a12b6f352ab3b11ef984aa344afa23ed793a026f249d2d0d7621ad",
+      "src/live/transaction_evidence_v0_1.py": "f369869cb504505dc07ea43b0aa637c1b34a63019a4d97046913c57765ae9d21",
+      "src/live/wallet_evidence_v0_1.py": "b7c9d00fa6a61c90434c2662c8f480084814bd8e5f1ab9e322639e39bd271f02",
+      "src/phase2/__init__.py": "fae8713d13877b7767de89977190bd1a6cdffeb5e8a75850d153b117e128ad2b",
+      "src/phase2/audit_orchestrator_v0_1.py": "0555925e8c0502dace1f1ff7f48aa41e18735534bbf0ddee650571a9787e44a4",
+      "src/phase2/data_coverage_root_cause_v0_1.py": "30686cfa37436cbd6d2ba9379cf15bc597b12220d553cce6a785f573e60b87a4",
+      "src/phase2/data_coverage_root_cause_v0_1_1.py": "564c31dfc94e6c057376f6b4ab1f3f79eba725ac9c922ee06e70747715dd170a",
+      "src/phase2/denomination_aware_flow_v0_1.py": "ee64b44c566d0ddba29b4bbb3ca153ccd98fefc4266c86c67861e95719858221",
+      "src/phase2/feature_engine_v0_1.py": "6a6eade5a72ecbe55c5ea6b3e7a093f2b14a880226b6757c46b60a58ff6249cf",
+      "src/phase2/feature_engine_v0_2.py": "23a47822add24fdadb2b1b09b2d066fb0235d873b9f354a6c88640e74a4b9885",
+      "src/phase2/full_universe_audit_v0_1.py": "ba04e68e3181d514e7ec694760ef5b7195abeaf991d5176d8e4f6b89298dd10c",
+      "src/phase2/large_cohort_research_v0_1.py": "9046349e45cec9c6309206cc975ba9da2788a081dae32c73de5b29d23cde7b29",
+      "src/phase2/models_v0_1.py": "0d168e4be30bf272cd92522708b4f565af075d5defb5efe3ece5c1377d9a2d7d",
+      "src/phase2/parameter_search_design_v0_1.py": "c668fe7349f933a65b9a90918ff56238dfa8bc65850a026a6358927e0e7ba15c",
+      "src/phase2/parameter_search_design_v0_1_1.py": "2f89e31959b692a215ffdb0c0ff72150cd0d271a3587dcc8e7e3cf984014b1ee",
+      "src/phase2/phase1_readonly_adapter_v0_1.py": "5477bb75292be13a2c0574e129963b657bbba5153f3783d5fa823ea7ab91ad8d",
+      "src/phase2/quote_aware_price_v0_1.py": "a28080b18f18afe166d5cb2d863086aa6a02790f532b0c8515849889b6a65664",
+      "src/phase2/research_freeze_manifest_v0_1.py": "720e2cc41fa03335142f8a7ff599c10b77e100d43f9f40e99d731668137283cc",
+      "src/phase2/research_replay_v0_1.py": "f1d847a34baae26b85801f6ba09d1ec0d8108df1f709045ac214c7d5dae9620f",
+      "src/phase2/research_replay_v0_2.py": "ae0b5e666320df957bc3214626657ae2fff255092d281521d75bde5a1cdef8e4",
+      "src/phase2/research_replay_v0_3.py": "58bf23df2f9ccd640aaf2253821432820afaeaaacaf416e1a11cb61fad24915f",
+      "src/phase2/strategy_clock_v0_1.py": "e4ad7bec9f73ab0434457e359e4ea8a48809ef49ad61692c19506b463aff6cce",
+      "src/phase2/strategy_clock_v0_2.py": "c6a3d1c564b0862eb560c614d91f99f7c305288a4e7ba03322557ead8133c3eb",
+      "src/phase2/strategy_first_pullback_v0_1.py": "7801b063d1fa9b6a8bc6627a889150ea12969fbba487ad2375505c11d5a0f8e9",
+      "src/phase2/strategy_first_pullback_v0_2.py": "89160a1e00c410956a9018a1a605578dec2c86886192570ab7fd544da058caab",
+      "src/phase3/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/phase3/buyer_response_block_research_v0_1.py": "b99108bf13b493e43a26c4ca89a32027767d54f8e80a7a00aa922f20fad3d9e5",
+      "src/phase3/collector_coverage_v0_1.py": "63c963f843fab6dc0195fa9524261fe52e037ea568ce1d256d9757c0db64b83a",
+      "src/phase3/collector_coverage_v0_2.py": "3d422bd61a8a1dad492fc1c542b5339b05a483754a383d592fe398c9b9034476",
+      "src/phase3/continuous_dev_readiness_v0_1.py": "53474175a675e8d18d6d7b4bd2b5996d13ba5e69ed4ad21b0ad1221f7fc80eb4",
+      "src/phase3/devfreeze0002_closed_prefix_design_v0_2_1.py": "aaa7857e3575efcc4858eb0bc79b9002e0a71e3fe1dd71d98a25696357bd098c",
+      "src/phase3/devfreeze0002_design_v0_1.py": "fabb1801d1a3fa178dd031ab275eae9b72fdc38ffbdeed0b909f8285225c53cc",
+      "src/phase3/devfreeze0002_design_v0_2.py": "f074a22a936b04e56dbf2b6889da466ceb87546cfb33e6a7f93ed66fd121f88b",
+      "src/phase3/devfreeze_postfreeze_audit_v0_1.py": "6ea424294c07f716c6c9f255dab87faed255631cd2ad0ea91c54789d3669ff64",
+      "src/phase3/e1_path_characterization_v0_1.py": "6b30817c6f352fdc73aa1608e7b0f57f1e93564be444316494c9d353a1afb2d7",
+      "src/phase3/e2_coarse_exit_design_v0_1.py": "51fab9f77e3037971c5e9de1bf4dfafbbfdfa43edc2d9f570732cddcc2345f02",
+      "src/phase3/e2_coarse_exit_engine_v0_1.py": "3bd8401e48cc9e30dad17c4e0c789180bff2291499516176d22144bb9eac9000",
+      "src/phase3/e3_profit_taking_design_v0_1.py": "7c3d8e379f35e8ec1b7fd2d297f776ef159ff0f39b287d159febb40be8e3a0ba",
+      "src/phase3/e3_profit_taking_engine_v0_1.py": "c5e5c2c2ce2d3a15a59adbeef86652aad3405f548c91f827b427f1ee465fef17",
+      "src/phase3/e3_profit_taking_selection_v0_1.py": "aff4af7e4790d4b3dec8b3caf7eb72f02d76aaf5523bdf5d9769300338c2ba14",
+      "src/phase3/e4_trailing_design_v0_1.py": "215efab40b097896c8b1b476393c936eb95d4c63b137d5ee17d4080e195b40b0",
+      "src/phase3/e4_trailing_engine_v0_1.py": "d92499f1c5664d2b7f754bb942fa4124de9a26430b58a292dc120c12a263c570",
+      "src/phase3/e4_trailing_selection_v0_1.py": "9b10bbb0e7b20d20ab9259ca34dd9f92c2957d7c6b38ce67056e3de77585ac54",
+      "src/phase3/e5_final_candidate_selection_v0_1.py": "c6d6f5158c47e54493d4ccf85630c846b3d26b6e795100afe7e712a9e944237b",
+      "src/phase3/e5_small_interaction_design_v0_1.py": "8f594d7559b5f98b4c4ef6423c18cdd5ed3a2a1db1ae75f67bd5075433cce8e4",
+      "src/phase3/e5_small_interaction_engine_v0_1.py": "9665ea2b3304f32220667a5870052d0a0749eb4ab2d1493c778b4426985932e1",
+      "src/phase3/exit_path_replay_v0_1.py": "dd2fe9b5bdf9a4ed43281ff64161c2fba4b8cb6719a968b462d8c90110ba5212",
+      "src/phase3/exit_research_design_v0_1.py": "3343ca54e9e9064a971e9480824c5fee3d12a4760e859d40c06567591d05b249",
+      "src/phase3/final_phase3_validation_design_v0_1.py": "a8b5a1a226e5defbb4de5c299cce464bb061f6bd1632fddc242905bf552c9d5e",
+      "src/phase3/final_phase3_validation_engine_v0_1.py": "89c9122e69ea8a8c3b0e090e6dcd52a63b12b297b4896b5c74fa4a330423320b",
+      "src/phase3/impulse_block_research_v0_1.py": "18e4cf9182ed14c5abed260b8add48a2810b78aa2a5ad1f1505385a7c934e0b8",
+      "src/phase3/locked_entry_readiness_v0_1.py": "a010db89641e7063ee26f1bc761b51f427a6a40364c49658b17c340a21f62c5f",
+      "src/phase3/locked_entry_readiness_v0_1_1.py": "c88da16d695ed82877d6eba0018d799830cf64000edb7ea6768dc04632e32dd9",
+      "src/phase3/locked_entry_readiness_v0_1_2.py": "e7daeb28b5c64023b06c00f75c08d0e86a9a82fc870196d47d6c2f36641562fc",
+      "src/phase3/outcome_replay_v0_1.py": "685654390bee15cdddbe52867c33fd311dc682bf52345ca6a47f2400f1d422f0",
+      "src/phase3/outcome_replay_v0_1_1.py": "f6f4d5ccfb29443ddc65acf850fcb851cabb4298f89e35bd2d3581e651706238",
+      "src/phase3/outcome_replay_v0_1_3.py": "14796ee44baae8ab7c7b17b167d68bf3ef927bb4aca521f84a7fcf49d40444b3",
+      "src/phase3/phase2_outcome_adapter_v0_1.py": "389934c6a6c8215d705ed3d8f1ebff6992031b2f819bd4f3729a603b5b9d1d0d",
+      "src/phase3/phase2_outcome_adapter_v0_1_1.py": "e47c59e75973e36adbf333aa073b8efb78e5bdfdf31e232b1e76bf43899ed61c",
+      "src/phase3/phase2_outcome_adapter_v0_1_2.py": "b42c407c22f6591d4ea9bfa28bffcd1223cf717a88f05f5a4aabbbb50aa8f787",
+      "src/phase3/pullback_block_research_v0_1.py": "7833327c457cb82d89e740c9050fd1717853249f6712df9184bcbab68f01818d",
+      "src/phase3/reclaim_runaway_block_research_v0_1.py": "9608f5a394632ff060398f1dd8b27104b2a2485ce08e260b6d867272799fe562",
+      "src/phase4/__init__.py": "ffe472b3adf8ff40a5d571e08a21369273792e919c53915df1650f5dde269e70",
+      "src/phase4/paper_continuous_firstpullback_binding_v0_1.py": "63dd7a3912cb581bdd8db18b82bb5c81dd01fc4b314c14cdf09369a80d00cfff",
+      "src/phase4/paper_continuous_firstpullback_binding_v0_2.py": "bee7cf05c1a187340c04422aa8fe20854e6053624a2fc124b0ea136a264cda53",
+      "src/phase4/paper_continuous_firstpullback_binding_v0_3.py": "25f6e274bbb9ab9c4ebd9a2e914a8a191a35b6a674f8c4d16c574ad6e83310ae",
+      "src/phase4/paper_continuous_firstpullback_binding_v0_4.py": "2fa61f169707ceba95e9ae8b72ff3d19276703315c99f55cbc49345ab84450af",
+      "src/phase4/paper_continuous_firstpullback_binding_v0_5.py": "b32ab5b11bb54066f161402308a83e24a9796a0a1d57de3c7118af3f79c72c39",
+      "src/phase4/paper_continuous_market_source_v0_1.py": "6c37a25d9fb898fe3f3d778789b523c614ccb6dc175a3aaf4bfb95520d2be4da",
+      "src/phase4/paper_continuous_market_source_v0_2.py": "e4db24738a6ccf69e696d879fb0666bdd28e67baa89727755dd23478dd9084ff",
+      "src/phase4/paper_continuous_runner_v0_1.py": "37ce080c5cb4b9912f444da869e9d0dc548192e5716339941ec61abf01e4fd14",
+      "src/phase4/paper_continuous_runner_v0_2.py": "23b901fd4986a5382ecc1f9acb4696590a021b1dd5ac7b316760847118f4df1f",
+      "src/phase4/paper_cost_baseline_v0_1.py": "39de2c89ff609cb4b162a3da0294bc417664dac0624513af083303530a768e18",
+      "src/phase4/paper_cost_model_v0_1.py": "a4fadede47d040f5a062e9440dcece5d479c2b2b6120c40f5999c952148c22c3",
+      "src/phase4/paper_cost_model_v0_2.py": "088aeacff2aee9a4ae7287cf904dc51bcb57c5fd11fc571ef2516908d8f75026",
+      "src/phase4/paper_entry_execution_deadline_v0_1.py": "06dcb0c1347609f28ba5c763ada36d42ca692a139c9aea9fb4ba4726ee1f017a",
+      "src/phase4/paper_entry_router_v0_1.py": "823fbdc78ebec3d0f08d0545ea3101ad816d244a53bd81129d72af28f8661764",
+      "src/phase4/paper_entry_router_v0_2.py": "2549f7247fd26bafb5d396e9178ddac6be47b7003f1ec208eadfb2373cdaae09",
+      "src/phase4/paper_exit_fill_executor_v0_1.py": "17929a25b8f8d2dd3d859da7eba88d7bca7f3fc1954e812ecffe04f722cb3187",
+      "src/phase4/paper_exit_lifecycle_bridge_v0_1.py": "cb4f3fb3e9718ecb976d921cae1de0c4d881fa2d793a5104a96d5c70520c8b3c",
+      "src/phase4/paper_exit_lifecycle_bridge_v0_2.py": "f8340b4e72ce8cc34430e217b5f549fbb2c2c174ffd2aa0655df0d0a7856a59e",
+      "src/phase4/paper_exit_lifecycle_bridge_v0_3.py": "86496c263807a6323761c4d928a2b22261abdb2bd1952f3bb41c63bd0e96a3c6",
+      "src/phase4/paper_exit_orchestrator_v0_1.py": "8f14956e962845dc041832a66c8df7b4cf4ce459686bc7eba9e58ec64bcd6a09",
+      "src/phase4/paper_external_live_observability_v0_1.py": "4e9a423893720636f158c4693cffafc481327318d7767c037ead46a8251d2c70",
+      "src/phase4/paper_lifecycle_v0_1.py": "a84d41a28830da7ed80539a7fc8f1cf290fac24353b040567aa9d9f7fcea445e",
+      "src/phase4/paper_live_observability_binding_v0_1.py": "aeaa992dc20baa43e831b4eead908eb725bfb788c74d1ad1d95c1071c018b508",
+      "src/phase4/paper_live_observability_binding_v0_2.py": "b65bde7f067b67f79d9ae8dd8cc5350545f2f0e7887ac9b33b0ccca35dcfce17",
+      "src/phase4/paper_runtime_observability_v0_1.py": "a02e1f6bdaa3f6ee3ae08b3d7390896076985c8032f48a6d3acf91a842830aaf",
+      "src/phase4/paper_trade_accounting_v0_1.py": "42380d778bdd999bba5ea01bfccdda94fdf58cd718dda69b7e7ba248bcd07364",
+      "src/phase4/phase1_gap_source_compat_v0_1.py": "7c46a3dba79101628de19269a45d12bb360b5175dc585d5257e05458468e00fa",
+      "src/phase4/post24h_counterfactual_replay_v0_1.py": "4953a92d84121ffa513e792efc680f53b8fd20bbb54f392c766993d55c74ecf0",
+      "src/phase4/post24h_frozen_replay_v0_1.py": "aa56a07fc74b581e878d5a0cae7a913d35df7d500f054ec319c31b9f8bc5e27c",
+      "src/phase4/post24h_outcome_analysis_v0_1.py": "70c13de3bd5d99bfa17ed0a5e288e4658e509a298af029a13fe9e244ed19edd3",
+      "src/phase4/runtime_exit_price_impact_v0_1.py": "9724a3f119f40368434cb109b803e4a2faddb561ae0e05d99082b6f52a5d2954",
+      "src/phase4/runtime_price_impact_v0_1.py": "b40e795006c2c940caa8dee49bfd77b7d7e81b550a3bc156e3da028fea947c3d",
+      "src/phase5/__init__.py": "f6564053af65c4cee9ad45de33a12fa1fde561a1fdab0ad81ffc33774d17d41f",
+      "src/phase5/shadow_continuous_execution_v0_1.py": "379edc05cf43d1a9739429f8c7612d200441996e006e297a6b38a40813ddda90",
+      "src/phase5/shadow_continuous_source_bridge_v0_1.py": "907b3f9ea6f5d868e7154d2875a7be71adbe1410b673ff8942bf37dd04fa7c68",
+      "src/phase5/shadow_domain_v0_1.py": "be88a02b6b655b5a94ed946f670a42602e32bcdacdc12c03b4f2bcc781d5d57d",
+      "src/phase5/shadow_lifecycle_bridge_v0_1.py": "fd5a1ae1b7da57c36308c502e6b4240efe2bbc4f5e5d3c088119b125f92a6d91",
+      "src/phase5/shadow_readonly_rpc_v0_1.py": "1e6e458311f22fad2a48b2f3a83a72ac32254bbc01152c1bccb526739f347492",
+      "src/phase5/shadow_repository_v0_1.py": "6b1cf98f42125a29bdb3a84622fe2fed3d11e89a62dae58f62d2635f7d67e3d8",
+      "src/phase5/shadow_simulation_repository_v0_1.py": "6d3ba40338f7748b7d4ca7c4566ffa4b312c1768fd23f475a4fc3569e86fed6f",
+      "src/phase5/shadow_unsigned_plan_simulation_v0_1.py": "1fa1df4bd7ac8fb4faf234b4bbde3b70b45f5b3a8ea52017f65fc7e10f527d6a",
+      "src/phase5/shadow_venue_repository_v0_1.py": "6a389d3c59631e91b41b7dd49cd9e7c5d47bf12171ae29f422ab6ef7f7e0d5df",
+      "src/phase5/shadow_venue_route_quote_v0_1.py": "519154314e7b5e4660e867e2669e3ea652ad5a954f8854477050817fdd4ef6bd",
+      "src/phase6/__init__.py": "3d11b34a9a41ff95fb51c9f41a8a05d2b4604e7a0fd1c777f0f66c7a15df23f0",
+      "src/phase6/frozen_oos_collection_lifecycle_v0_1.py": "96a83ca33f173ddd273ae7dc133d332b04f1898d559295996bdb22b84baa0b7b",
+      "src/phase6/frozen_oos_hypothesis_evaluation_v0_1.py": "bedcb83ce4ddc8376f3e2d26cc41dbc6ac09af2918a10a79d212e8349c5be7db",
+      "src/tradingbot/__init__.py": "6cd557ac41ad4fa908431b0f0da4aaa8d2d988f04eb66af8172360023595972d",
+      "src/tradingbot/config.py": "6c9d833e88fc89bfb249decabc35ccba625f3d76a00de605e415c27b7aa114aa"
+    },
+    "step10_test_sha256": {
+      "scripts/live_step10_e01_selftest_v0_1.py": "96e2504e6b3f9a1a5fb6a1e31a96dac48ef84a9ada6c8afa9f7cf15c5fab7d7b",
+      "scripts/live_step10_e02_partial_selftest_v0_1.py": "928fcdd2ab25363851b3b29b58a4a1322e4631344826d91bf5167b45d9ce3f69",
+      "scripts/live_step10_e03_contradiction_selftest_v0_1.py": "4e857c8ec6b79983948474ac7b95ea28266768310526c8fc5e9f6164455a1bc0",
+      "scripts/live_step10_s01_s02_selftest_v0_1.py": "035638e53b7f3b6eed9373c400d6434a5682e63df320ba6f662b85319a28c331",
+      "scripts/live_step10_s03_s07_selftest_v0_1.py": "60a3e4e049be3b6a449cd7b5115ae44386e922f40ec324c0e38c526155de20bb",
+      "scripts/live_step10_s04_s08_selftest_v0_1.py": "3d265060fe185e0e428c8ddd2d511bbef401e278f6ccf8d2d1a6d212e0e3995c",
+      "scripts/live_step10_s05_selftest_v0_1.py": "3331b6b1068535cb04d383b63bf04b815ffd8a6ff7f13a73d6a908061498245f",
+      "scripts/live_step10_s06_buy_recovery_selftest_v0_1.py": "49d96b406706682af925dcd49367257ccbb9e48c9802d0fd18859ce4c1b03d97",
+      "scripts/live_step10_s06_nonlanding_protection_selftest_v0_1.py": "3d0c5b6807bda2f684a1e53c86d0bba0c028122035d47dba8d927126b6546489",
+      "scripts/live_step10_s09_selftest_v0_1.py": "e51a289d9a2a0530ed5b3b63dd0b8a63cb6e604c09abafe925e7722dabc5dd01",
+      "scripts/live_step10_s10_selftest_v0_1.py": "4258aaea4f92bad7ed786f425c6cb1d7aae3cbdb7ed997e623b9c2014bd09d3f",
+      "scripts/live_step10_s11_selftest_v0_1.py": "944f15902b27c14f80658b213af8eb597613d73895f05b1048027814e59f2cac",
+      "scripts/live_step10_s12_selftest_v0_1.py": "be7e0053f46cdd4752bb1e7de4277c527994885c3071eadb166c5de52a5707cd"
+    }
+  },
+  "status": "EXECUTABLE_INTERNAL_STEP10_PASS",
+  "system_status": "BOUNDED_SYSTEM_TRANSITION_PASS; FULL_OPERATIONS_AND_PRODUCTION_READINESS_NOT_ESTABLISHED",
+  "validation": {
+    "accepted_step9_regression_rerun": false,
+    "documentation_links_and_whitespace": "PASS",
+    "generic_broad_regression_run": false,
+    "historical_e01_eof_reconstruction": "final bytes plus five CRLF sequences; tested SHA256 and AST equivalence verified",
+    "historical_e03_eof_reconstruction": "final bytes stripped only of terminal newlines, plus CRLF CRLF; tested SHA256 and AST equivalence verified",
+    "matrix_exact_delta_verified": true,
+    "new_test_files": 13,
+    "production_changed_files": 3,
+    "qualification_exit_codes": 0,
+    "s12_artifact_hashes_verified": 28,
+    "s12_code_hashes_verified": 55,
+    "scoped_in_memory_compile_ast_files": 16,
+    "tracked_diff_check_exit_code": 0,
+    "unchanged_production_files": 151
+  },
+  "workers": {
+    "consequential_workers": "one at a time",
+    "contexts": "Fresh at semantic changes; healthy related correction reuse, including E02 default-call correction. No Ultra escalation.",
+    "model": "Astra High",
+    "watchdog": [
+      "Early wallet coverage failure family diagnosed before further targeted run; no production gate weakened.",
+      "Worker final sanity identified existing accumulator setup duplication in second-trade public fixture despite assertion pass; CHIEF withheld acceptance and authorized exact continuity correction.",
+      "S04/S08 one same-family receipt timing retry diagnosed: helper +2s receipt lag made first candidate expire before competitor was visible; explicit supported zero-lag external receipt rows passed.",
+      "S04 before_ack_commit nonprogress diagnosed before retry: RuntimeError was deliberately handled as live producer integrity failure, correctly latching PRODUCER_INTEGRITY_UNAVAILABLE. Original root/queue/source were intact. Use dedicated BaseException only at outer crash harness so post-step monitoring does not convert an intended interruption into a different fault scenario; preserve original diagnostic.",
+      "S06 correction fixture timing first rejected future block because inherited wallet evidence at retry_time-4 preceded first settlement root; adjusted actual external failed-tx/root/reconcile/application order while keeping deadline+15/policy unchanged. Later incomplete known absent-account coverage correctly withheld retirement, retained as negative then supplied complete public evidence. No production gate relaxed.",
+      "E02 two runs reached both expected economic outcomes but failed final evidence serialization (nonexistent to_record, then raw dataclass bytes). Repeated-family trigger diagnosed before another retry: original canonical MessageStageReceipt codec is required. CHIEF requested codec-only validation before full targeted rerun where feasible; no production/economic behavior changed.",
+      "E01 targeted test-only diagnostics: pending-attempt IDs mistaken for rich objects; missing UTC utility import; expiry-height guard correctly rejects before simulation, so expected boundary corrected rather than weakening production. Initial raw stderr files were overwritten by worker; exact errors remain in task transcript. CHIEF directed unique per-attempt logs for subsequent/final evidence. No repeated production-family defect.",
+      "S03/S07 fixture-only corrections: import name; whole ProtectiveObligationSnapshot equality across legal staging incorrectly included changing cut/claiming_actions, diagnosed and restricted to original identity/handoff/units; HARD_STOP/RELEASE_STOP intentionally clear ENTRY grant, corrected assertion to None plus retained historical grant. No production gate change. Final exact hardstop-reason assertion rerun had already started when CHIEF suggested saved-output validation instead; no further reruns.",
+      "S11 early CHIEF review corrected qualification provenance before acceptance: old pair helper used dataclass.replace on transaction observations. New integrated same-slot proof must traverse original public RPC adapter per \u00a75.2; bounded fixture correction only.",
+      "S11 repeated-family intervention at ~00:20UTC: attempts3/4/6 reopen/checkpoint observation expectations and attempt5 late-proof assertion. CHIEF paused further full retries pending exact original checkpoint publication sequence and retained late-proof diagnosis, no guessed generation increments or causal relaxation. Preserve valid work/failed logs; bounded diagnostic pause, not production/owner blocker.",
+      "S11 diagnosis resolved: original _publish_checkpoint observed without semantic replacement; handoff constructor + cold validation legitimately publish, exact predecessor chain and unchanged content asserted. Late enrichment initially coincided with new uncaptured C output, so actual _protect first had to capture that output before enrich branch; added ordinary Runtime step, no shortcut. Attempt07 all substantive assertions reached; final JSON public-byte serialization requires original application codec. One final targeted run authorized after codec fix; no production edits.",
+      "S12 initial bounded fixture diagnoses: wrong evidence table name, then original_chain raw public fixture reconstruction outside current mint scope. Actual first retirement and second UNKNOWN EXIT reached; no production gate/semantics change.",
+      "S12 third ENTRY_READY fixture sampled NOW+68.000000 after source monitor NOW+68.000002, correctly causing CURRENT_DEGRADATION_ENTRY_HOLD. Diagnosed via stored monitor timestamp; later explicit readiness69/admission70 stay before original79 deadline, no guard relaxation. Recovered public finality/application replay/retirement already reached.",
+      "S12 second clock/readiness-family pause: attempt04 reached actual ENTRY_READY but actual admission denied only WALLET_ORIGINAL_EVALUATION_KNOWLEDGE_CONFLICT because wallet evaluation69 != action clock70. Worker paused, inspected durable denial; CHIEF approved same fresh69 for pure readiness and original admission with identical EntryFacts, both after68.000002 and before original79 deadline. No clock clamp/gate changes; one bounded corrected run."
+    ]
+  }
+}

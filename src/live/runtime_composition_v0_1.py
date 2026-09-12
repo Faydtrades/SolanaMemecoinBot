@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from phase5.shadow_domain_v0_1 import content_fingerprint
-from .authority_controls_v0_1 import require, TrustedClockSample
+from .authority_controls_v0_1 import require, TrustedClockSample, clock_reasons
 from .authority_admission_v0_1 import EntryRequest
 from .authority_message_control_v0_1 import MessageStageRequest, FreshStageConsumption
 from .candidate_handoff_v0_1 import CandidateHandoffV01
@@ -23,12 +23,14 @@ from .evidence_store_v0_1 import SourceEvidenceStore
 from .source_health_v0_1 import CollectorSourceAdapter, ZERO_DIGEST, utc
 from .ledger_repository_v0_1 import LedgerRepository
 from .ledger_ports_v0_1 import RetirementInput
+from .ledger_custody_v0_1 import REPLACEABLE
+from .ledger_settlement_v0_1 import WalletSupportInput
 from .ledger_actions_v0_1 import utc_microseconds
 from .execution_message_v0_1 import produce_exact_message, prepare_exact_message
 from .execution_readonly_v0_1 import ExecutionReadOnlyRpc
 from .execution_signer_v0_1 import AutonomousLocalSigner
 from .execution_send_v0_1 import SolanaSendTransport, persist_signed_envelope, send_exact
-from .execution_reconciliation_v0_1 import observe_attempt_finality
+from .execution_reconciliation_v0_1 import observe_attempt_coverage, observe_attempt_finality
 from .public_rpc_v0_1 import PublicReadOnlyRpc
 from .position_controller_v0_1 import bind_actual_position
 from .exit_observation_v0_1 import capture_exit_evidence, enrich_exit_evidence, commit_exit_evaluation, EVIDENCE, EVALUATION
@@ -278,6 +280,13 @@ class RuntimeCompositionV01:
             key = self._key("chain", attempt_id, sample.utc_upper_utc)
             chain = observe_attempt_finality(self.ledger, attempt_id, truth_rpc, ingestion_key=key,
                 evaluated_at_utc=sample.utc_upper_utc, clock=lambda: sample.utc_upper_utc, fence=self.ledger.write_fence())
+            if (chain.decision.resulting_state.disposition == "UNKNOWN"
+                    and chain.observation.root is not None
+                    and chain.observation.root.block_height > attempt.preparation.lease.last_valid_block_height):
+                key = self._key("coverage", attempt_id, sample.utc_upper_utc)
+                chain = observe_attempt_coverage(self.ledger, attempt_id, truth_rpc, ingestion_key=key,
+                    evaluated_at_utc=sample.utc_upper_utc, clock=lambda: sample.utc_upper_utc,
+                    fence=self.ledger.write_fence())
             self._chain_key = chain.ingestion_key
             return self._result("RECONCILED", chain.decision.resulting_state.disposition, action=action, attempt=attempt_id, key=key)
         if wallet is None and chain.decision.resulting_state.positive_finality != "PROVEN_NON_LANDED":
@@ -318,6 +327,27 @@ class RuntimeCompositionV01:
             ":".join(receipt.retirement_reasons) or "ACTUAL_LEDGER_CAPACITY_RELEASED",
             action=action, attempt=terminal.attempt_id, key=key)
 
+    def _retire_unacquired(self, action, terminal, sample, wallet, snapshot):
+        if wallet is None:
+            return self._result("NEED_RETIREMENT", "EXPIRED_UNACQUIRED_REQUIRES_CURRENT_WALLET_SUPPORT", action=action)
+        if (type(wallet) is not WalletSupportInput or wallet.evaluated_at_utc != sample.utc_upper_utc
+                or wallet.required_min_context_slot < snapshot["required_wallet_context_slot"]):
+            return self._result("RETIREMENT_WITHHELD", "CURRENT_WALLET_SUPPORT_REQUIRED", action=action)
+        reason = ("FAILED_NO_ACQUISITION" if terminal.decision.disposition == "FINALIZED_FAILURE_APPLIED"
+                  else "PROVEN_NON_LANDED")
+        key = self._key("retirement", action.root_id, sample.utc_upper_utc)
+        intent = RetirementInput(snapshot["consumer_cut"], action.root_id,
+            self.ledger.reservation(action.root_id).reservation_id, action.position_id,
+            terminal.attempt_id, reason, wallet.digest, key,
+            content_fingerprint({"action": action.action_id, "application": terminal.content_digest,
+                "cut": snapshot["consumer_cut"].commit_digest, "wallet": wallet.digest}), sample.utc_upper_utc)
+        receipt = self.ledger.retire(intent, wallet, ingestion_key=key, fence=snapshot["fence"])
+        if receipt.retirement_disposition == "RETIRED":
+            self._entry_action_id = self._chain_key = None
+        return self._result("RETIREMENT_"+receipt.retirement_disposition,
+            ":".join(receipt.retirement_reasons) or "ACTUAL_LEDGER_CAPACITY_RELEASED",
+            action=action, attempt=terminal.attempt_id, key=key)
+
     def step(self, *, clock, entry=None, operations_resources=None, **resources):
         monitor = self._operations_degradation
         if monitor is None:
@@ -349,7 +379,8 @@ class RuntimeCompositionV01:
         return result
 
     def _step(self, *, clock, entry=None, execution=None, truth_rpc=None, application_wallet=None,
-             retirement_wallet=None, exit_proofs=None, source_cut_utc=None, operations_resources=None):
+             retirement_wallet=None, exit_proofs=None, source_cut_utc=None, operations_resources=None,
+             protective_max_units=None):
         """One bounded next legal work unit. Resource presence never sets priority."""
         sample = clock()
         require(type(sample) is TrustedClockSample and sample.status == "QUALIFIED", "RUNTIME_QUALIFIED_CLOCK_REQUIRED")
@@ -360,7 +391,8 @@ class RuntimeCompositionV01:
             protection = self._protect(sample, exit_proofs)
             if protection.mutation_eligible:
                 if protection.state == "STAGE_ACTION":
-                    action = stage_protective_sell(self.ledger, self._binding)
+                    action = (stage_protective_sell(self.ledger, self._binding) if protective_max_units is None
+                              else stage_protective_sell(self.ledger, self._binding, max_units=protective_max_units))
                     return self._result("PROTECTIVE_ACTION_STAGED", protection.reason, action=action)
                 if protection.state in ("PREPARE_ATTEMPT", "REPLACE_ATTEMPT"):
                     return self._execute(protection.action, execution, clock,
@@ -373,19 +405,36 @@ class RuntimeCompositionV01:
             return self._retire(sample, retirement_wallet)
         if self._entry_action_id is not None and self._binding is None:
             action = self.ledger.action(self._entry_action_id)
-            if self.producer is None:
-                return self._result("SOURCE_HELD", "COLD_SOURCE_RECONSTRUCTION_UNAVAILABLE", action=action)
             own = [item for item in snapshot["reservations"] if item.root_id == action.root_id]
             if snapshot["positions"] or len(snapshot["reservations"]) != 1 or len(own) != 1 or snapshot["funding"].quarantine_reasons:
                 return self._result("HELD", "V1_OCCUPIED_OR_QUARANTINED", action=action)
-            # A failed/previously resolved BUY is never silently retried by C2.
-            if self.ledger._root_attempts(action.root_id):
-                return self._result("HELD", "ENTRY_OUTCOME_REQUIRES_LATER_RETIREMENT", action=action)
+            ordinal = 1
+            with self.ledger._trusted_read():
+                attempts = self.ledger._root_attempts(action.root_id)
+                resolution = None if not attempts else self.ledger._custody.resolution(attempts[-1].preparation.attempt_id)
+                terminal = None if resolution is None else next((item for item in self.ledger._applications.values()
+                    if item.attempt_id == resolution.attempt_id and item.sequence == resolution.application_sequence), None)
+                time_denials = clock_reasons(self.ledger._authority, sample) if attempts else ()
+            if attempts:
+                if (terminal is None or terminal.decision.disposition not in REPLACEABLE
+                        or any(item.preparation.action_id != action.action_id or item.lane_held
+                            or item.chain_quarantined or item.economic_disposition not in REPLACEABLE for item in attempts)):
+                    return self._result("HELD", "ENTRY_OUTCOME_REQUIRES_LATER_RETIREMENT", action=action)
+                deadline = action.claimed_entry_deadline_us
+                if time_denials or deadline is None:
+                    return self._result("HELD", "ORIGINAL_ENTRY_CLOCK_UNPROVEN", action=action)
+                if utc_microseconds(sample.utc_lower_utc) > deadline:
+                    return self._retire_unacquired(action, terminal, sample, retirement_wallet, snapshot)
+                if utc_microseconds(sample.utc_upper_utc) > deadline:
+                    return self._result("HELD", "ORIGINAL_DEADLINE_AMBIGUOUS", action=action)
+                ordinal = attempts[-1].preparation.ordinal+1
+            if self.producer is None:
+                return self._result("SOURCE_HELD", "COLD_SOURCE_RECONSTRUCTION_UNAVAILABLE", action=action)
             try:
                 self._source_health(sample, source_cut_utc)
             except (ValueError, RuntimeError, sqlite3.DatabaseError, OSError):
                 return self._result("SOURCE_HELD", "CURRENT_SOURCE_UNAVAILABLE", action=action)
-            return self._execute(action, execution, clock, fence=snapshot["fence"], ordinal=1,
+            return self._execute(action, execution, clock, fence=snapshot["fence"], ordinal=ordinal,
                 entry=entry, operations_resources=operations_resources)
         source_state = self._source_page(sample, source_cut_utc)
         snapshot = self.ledger.consumer_snapshot()
