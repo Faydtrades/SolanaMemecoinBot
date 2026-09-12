@@ -21,7 +21,8 @@ from uuid import uuid4
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = Path(r'D:\Tradingbot\meme_live\evidence\step11b-14c1930\boot-preparation-01')
+PRIOR_PACKAGE = Path(r'D:\Tradingbot\meme_live\evidence\step11b-14c1930\boot-preparation-01')
+PACKAGE = PRIOR_PACKAGE/'retry-effective-defaults-01'
 PINS = PACKAGE/'pins.json'
 TASK = 'MEME-LIVE-M46-BOOT-QUALIFICATION'
 POWERSHELL = r'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'
@@ -72,8 +73,11 @@ def native_facts():
     return facts,result.stdout
 
 
-def task_check(xml, pins):
+def task_check(xml, pins, *, expected_state='Active', pins_sha=None):
+    check(expected_state in ('Active','DisabledRetry'),'BOOT_EXPECTED_TASK_STATE_REQUIRED')
     tree = ET.fromstring(xml)
+    for name in ('Triggers','Actions','Principals','Settings'):
+        check(len(tree.findall('t:'+name,NS)) == 1,'BOOT_EXACT_CONTAINER_REQUIRED')
     check(len(tree.findall('t:Triggers/*',NS)) == 1
         and tree.find('t:Triggers/t:BootTrigger',NS) is not None,'BOOT_EXACT_TRIGGER_REQUIRED')
     check(len(tree.findall('t:Actions/*',NS)) == 1
@@ -86,15 +90,21 @@ def task_check(xml, pins):
         't:Principals/t:Principal/t:RunLevel':'LeastPrivilege',
         't:Settings/t:MultipleInstancesPolicy':'IgnoreNew',
         't:Settings/t:ExecutionTimeLimit':'PT10M',
-        't:Settings/t:Enabled':'true',
+        't:Settings/t:Enabled':'true' if expected_state == 'Active' else 'false',
         't:Settings/t:StartWhenAvailable':'true',
         't:Settings/t:AllowStartOnDemand':'true',
         't:Actions/t:Exec/t:Command':pins['python'],
-        't:Actions/t:Exec/t:Arguments':pins['task_arguments_template'].replace('{PINS_SHA256}',sha(PINS)),
-        't:Actions/t:Exec/t:WorkingDirectory':str(ROOT)}
+        't:Actions/t:Exec/t:Arguments':pins['task_arguments_template'].replace('{PINS_SHA256}',pins_sha or sha(PINS)),
+        't:Actions/t:Exec/t:WorkingDirectory':pins['checkout']}
+    # Task Scheduler schema defaults, not arbitrary missing-node tolerance.
+    defaults = {'t:Triggers/t:BootTrigger/t:Enabled':'true',
+        't:Principals/t:Principal/t:RunLevel':'LeastPrivilege',
+        't:Settings/t:Enabled':'true','t:Settings/t:AllowStartOnDemand':'true'}
     for path,value in expected.items():
-        element = tree.find(path,NS)
-        check(element is not None and element.text == value,'BOOT_NATIVE_TASK_BINDING_CONFLICT')
+        elements = tree.findall(path,NS)
+        check(len(elements) <= 1,'BOOT_DUPLICATE_CRITICAL_NODE')
+        effective = elements[0].text if elements else defaults.get(path)
+        check(effective == value,'BOOT_NATIVE_TASK_BINDING_CONFLICT')
     check(tree.find('t:Settings/t:RestartOnFailure',NS) is None,'BOOT_NO_SCHEDULER_RETRY_REQUIRED')
 
 
@@ -123,6 +133,47 @@ def validate(pins_path, expected_sha):
     check(not any(Path(target['paths'][k]).exists() for k in ('operations','ledger','producer','evidence_store')),
           'BOOT_CANONICAL_STORES_MUST_REMAIN_ABSENT')
     return pins
+
+
+def retry_lineage(lineage_path, expected_sha):
+    """Historical proof stays hash-bound; old driver pins are not current inputs."""
+    check(sha(lineage_path) == expected_sha,'BOOT_RETRY_LINEAGE_HASH_CONFLICT')
+    lineage = read(lineage_path)
+    check(lineage['schema'] == 'MEME_LIVE_M46_DISABLED_RETRY_V1'
+        and lineage['prior_package'] == str(PRIOR_PACKAGE)
+        and lineage['retry_package'] == str(PACKAGE),'BOOT_RETRY_SCOPE_CONFLICT')
+    for name, expected in lineage['prior_files'].items():
+        check(Path(name).name == name and sha(PRIOR_PACKAGE/name) == expected,'BOOT_RETRY_PRIOR_FILE_CONFLICT')
+    required = {'pins.json','task.xml','install-smoke-and-reboot.ps1','preparation-result.json',
+        'install-request.json','owner-failure-3a0df6528d8d42cb94c2bf7947d04805.json','registered-task-actual.xml'}
+    check(set(lineage['prior_files']) == required,'BOOT_RETRY_EXACT_PRIOR_FILES_REQUIRED')
+    old = read(PRIOR_PACKAGE/'pins.json')
+    request = read(PRIOR_PACKAGE/'install-request.json')
+    failure = read(PRIOR_PACKAGE/'owner-failure-3a0df6528d8d42cb94c2bf7947d04805.json')
+    preparation = read(PRIOR_PACKAGE/'preparation-result.json')
+    check(request['request_id'] == lineage['prior_request_id'] == 'b03b73ffa3914beaa0626a4bea277dc4'
+        and request['pins_sha256'] == sha(PRIOR_PACKAGE/'pins.json')
+        and request['task_xml_sha256'] == sha(PRIOR_PACKAGE/'task.xml')
+        and request['sid'] == old['sid'],'BOOT_RETRY_REQUEST_CONFLICT')
+    check(failure['status'] == 'FAILED' and failure['created_this_invocation'] is True
+        and failure['reboot_attempted'] is False and failure['exact_created_task_disabled'] is False
+        and failure['reason'] == 'OWNER_REGISTERED_TASK_BINDING_CONFLICT_TASK_DISABLE_UNCONFIRMED'
+        and datetime.fromisoformat(failure['utc']) >= datetime.fromisoformat(request['requested_utc']),
+        'BOOT_RETRY_FAILED_INSTALL_REQUIRED')
+    for name in ('pins.json','task.xml','install-smoke-and-reboot.ps1'):
+        check(preparation['files'][str(PRIOR_PACKAGE/name)] == sha(PRIOR_PACKAGE/name),'BOOT_RETRY_PREPARATION_CONFLICT')
+    check(old['task_name'] == TASK and old['checkout'] == str(ROOT),'BOOT_RETRY_OLD_SCOPE_CONFLICT')
+    task_check((PRIOR_PACKAGE/'task.xml').read_text(encoding='utf-8-sig'),old,pins_sha=request['pins_sha256'])
+    task_check((PRIOR_PACKAGE/'registered-task-actual.xml').read_text(encoding='utf-16'),old,
+        pins_sha=request['pins_sha256'],expected_state='DisabledRetry')
+    check(not any((PRIOR_PACKAGE/n).exists() for n in
+        ('smoke-result.json','verified-smoke.json','pre-reboot-baseline.json','postboot-result.json')),
+        'BOOT_RETRY_NO_PRIOR_SMOKE_REQUIRED')
+    historical = next(i['sha256'] for i in old['frozen_files'] if i['path'] == str(Path(__file__).resolve()))
+    check(lineage['historical_driver_sha256'] == historical
+        and preparation['files'][str(Path(__file__).resolve())] == historical
+        and lineage['current_driver_sha256'] == sha(__file__),'BOOT_RETRY_DRIVER_HISTORY_CONFLICT')
+    return old
 
 
 def require_existing_stores(manifest):
@@ -288,9 +339,14 @@ def main():
     parser.add_argument('--sha256',required=True)
     parser.add_argument('--validate-only',action='store_true')
     parser.add_argument('--verify-smoke',action='store_true')
+    parser.add_argument('--validate-retry-lineage')
     args = parser.parse_args()
     try:
         pins = validate(args.pins,args.sha256)
+        if args.validate_retry_lineage:
+            retry_lineage(PACKAGE/'retry-lineage.json',args.validate_retry_lineage)
+            print('BOOT_DISABLED_RETRY_LINEAGE_VALIDATED_NO_RUNTIME_LAUNCH')
+            return 0
         if args.validate_only:
             print('BOOT_FIXED_INPUTS_VALIDATED_NO_RUNTIME_LAUNCH')
             return 0
