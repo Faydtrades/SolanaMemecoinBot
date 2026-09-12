@@ -1,0 +1,166 @@
+{
+  "schema": "MEME_LIVE_STEP12A_FIX1_REVIEW_V1",
+  "status": "STEP12A_FIX1_IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "recorded_at_utc": "2026-09-12T23:02:04.101634+00:00",
+  "starting_head": "19e1d795fdb2f716edd9409167554d2c2c168e02",
+  "branch": "live/meme-production-readiness",
+  "root_cause": "Historical Step11-B remaining-owned rows were also used as the current lifecycle policy after project acceptance.",
+  "correction": "Require VERIFIED for every current non-HUMAN_EXTERNAL row; retain exactly M09/M10/M58/M59/M60/M61 as HUMAN_EXTERNAL. Preserve historical Step11-B remainder separately. Dossier metadata requires separate exact-dossier project review and makes no row-promotion or project-acceptance claim.",
+  "changed_files": [
+    "src/live/acceptance_dossier_v0_1.py",
+    "scripts/live_acceptance_dossier_selftest_v0_1.py",
+    "scripts/live_step11c_profile_freeze_selftest_v0_1.py",
+    "docs/live/MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md",
+    "docs/live/MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md",
+    "docs/live/MEME_LIVE_STEP12A_FIX1_REVIEW_V1.json"
+  ],
+  "matrix": {
+    "VERIFIED": 55,
+    "OWNED_NOT_BUILT": 0,
+    "HUMAN_EXTERNAL": 6,
+    "BLOCKED": 0,
+    "total": 61
+  },
+  "historical_project_acceptance": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-audit-e6b9a4b\\docs\\live\\MEME_LIVE_STEP12A_CONTROL_INDEX_V1.json",
+    "sha256": "e1228c861cfa47113700febe5e85622f6064721cea09f09bb0e0a43d0f08e49f"
+  },
+  "historical_step11c_evidence": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-audit-e6b9a4b\\docs\\live\\MEME_LIVE_STEP11C_REVIEW_V1.json",
+    "sha256": "0888c5383ff25df7d093f60f99f536d21b0ae4475a0ddbf493d00b8a1f96b821"
+  },
+  "source_identity": {
+    "old_content_digest": "2e1874dabc144faf91fcb8d5a1895af76102a8a5269e657cef4ee823f3c61296",
+    "candidate_content_digest": "d6a859bbea96263e58be688774544563a01fdc4c9293d8c3765a5c28d7e06f98",
+    "file_count": 250,
+    "changed_source_files": {
+      "scripts/live_acceptance_dossier_selftest_v0_1.py": {
+        "new_sha256": "16a6aee09f7e184768a99a0f7dfc5f9b9560e9089c778c1d71c6b5aac8bb5b96",
+        "old_sha256": "7f5994b461aab9d4385e807fdb49424b477bf2033b38ceb32f7757be42812af1"
+      },
+      "scripts/live_step11c_profile_freeze_selftest_v0_1.py": {
+        "new_sha256": "e4eb6cbf5a088a43245b15b79be5649c6ed94c886eab5c0ac147132efe0d63ee",
+        "old_sha256": "1d382167c56849ca192690013fced145a61c326d7f09cf8ad14968453198a205"
+      },
+      "src/live/acceptance_dossier_v0_1.py": {
+        "new_sha256": "be7aaffe0bf51cc1637c77e7c4fd56e040416d1c2a4c88b5df222192d1171142",
+        "old_sha256": "84618c3ab2510ba5efc2404c7bfc21c56344f066c04a650a9b780483c90ff422"
+      }
+    },
+    "runtime_code_digest": {
+      "new": "dc6c1be1ecc93c4ac7fd069b64a4cbf7d20dcf09570c83253a3e19c66dae82fa",
+      "old": "704aa9ab88f372cbe842ff20172f5530bf3142884210b3e23d89dd9fb7e1d097",
+      "reason": "Existing operations_startup_v0_1.configured_identity DRY digest hashes every Python file in live/phase4/phase5, including the corrected acceptance_dossier_v0_1.py. Runtime/Operations source bytes remain unchanged; aggregate identity correctly changes."
+    }
+  },
+  "freeze_receipt": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step12a-fix1-19e1d79-20260913-nlb9njpd\\refreeze\\freeze-receipt.json",
+    "sha256": "670cf03d42e1acd9dbf3249bdba44086696e0a62ffe2b4ae06298fdb7fe0a5e4"
+  },
+  "candidate_dossier": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step12a-fix1-19e1d79-20260913-nlb9njpd\\refreeze\\M56-dossier.json",
+    "sha256": "0bafe333c9ae5ffe80774acbcf924724a283a64c252f1af4a232a0fbb064d567"
+  },
+  "candidate_profile": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step12a-fix1-19e1d79-20260913-nlb9njpd\\profile\\supported-profile.json",
+    "sha256": "bc31cf1f00fd42745fa60e8df1eb0441b58a42f34cdaa8d96360834c7db6c367"
+  },
+  "candidate_qualification": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step12a-fix1-19e1d79-20260913-nlb9njpd\\profile\\profile-qualification.json",
+    "sha256": "a6ff69345beeb3b18ef99fa110ef04116d072b40cc9402cbf6f3a96593e3012e"
+  },
+  "default_preflight": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step12a-fix1-19e1d79-20260913-nlb9njpd\\refreeze\\M57-default-denied.json",
+    "sha256": "60f15450daf6c5d3069af3256823901c3624165dc3f00684ca793a214a14f010"
+  },
+  "synthetic_structural_preflight": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step12a-fix1-19e1d79-20260913-nlb9njpd\\refreeze\\M57-SYNTHETIC-structural-only.json",
+    "sha256": "b8fc2c308eec218655074384ba628d924ce3430b06ef506bb52ba8c71bf08dc0"
+  },
+  "validation": {
+    "commands_and_exits": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step12a-fix1-19e1d79-20260913-nlb9njpd\\validation-commands.json",
+      "sha256": "eafef2100318cc7495e98e5473cd0e88ac69f4acfe7a615d2469a3a5c4204c24"
+    },
+    "focused_check_count": 161,
+    "results": [
+      {
+        "label": "dossier-selftest",
+        "exit_code": 0,
+        "check_count": 45
+      },
+      {
+        "label": "preflight-selftest",
+        "exit_code": 0,
+        "check_count": 62
+      },
+      {
+        "label": "profile-qualification",
+        "exit_code": 0,
+        "check_count": 26
+      },
+      {
+        "label": "profile-freeze-selftest",
+        "exit_code": 0,
+        "check_count": 28
+      },
+      {
+        "label": "profile-verify",
+        "exit_code": 0
+      },
+      {
+        "label": "dossier-create",
+        "exit_code": 0
+      },
+      {
+        "label": "dossier-verify",
+        "exit_code": 0
+      },
+      {
+        "label": "default-denied",
+        "exit_code": 2
+      },
+      {
+        "label": "SYNTHETIC-structural-only",
+        "exit_code": 0
+      },
+      {
+        "label": "old-dossier-denied",
+        "exit_code": 1
+      }
+    ],
+    "affected_regression_runner_executions": 0,
+    "affected_regression_boundary": "Unchanged Runtime/Operations campaign does not compose dossier/preflight/freeze coverage. Existing focused suites and one exact-source synthetic profile qualification supply affected validation.",
+    "old_freeze_rejection": {
+      "exception": "LedgerContractError",
+      "exit_code": 1,
+      "initially_expected_cli_exit_code": 2,
+      "interpretation": "Existing dossier CLI does not catch LedgerContractError; rejection occurs before the later stale qualification source check. Fail-closed rejection retained without an unrelated exception-handling change. The refreeze wrapper exit 1 reflected its incorrect expected code, not acceptance of stale evidence.",
+      "reason": "DRY_PROFILE_STALE_CODE_CONFIG_DOMAIN_OR_PATH"
+    },
+    "git_diff_check_exit_code": 0
+  },
+  "independent_review": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-step12a-fix1-19e1d79-20260913-nlb9njpd\\independent-review.json",
+    "sha256": "7f1b83c6688181b7e184fe254dcae9da3dcc221175d3b5c8b0d1edc3a464a766",
+    "model": "Astra",
+    "reasoning": "High",
+    "result": "NO_SUBSTANTIVE_FINDINGS",
+    "separate_exact_dossier_project_review_bypassed": false,
+    "real_missing_project_review_probe": "DENIED; verify_dossier not mocked; permission flags false"
+  },
+  "boundaries": {
+    "current_M56_lifecycle_blocker_resolved": true,
+    "separate_exact_dossier_project_review_bypassed": false,
+    "candidate_project_accepted": false,
+    "matrix_rows_promoted_by_tooling": false,
+    "authenticated_approval": false,
+    "capital_authority": false,
+    "T010_executed": false,
+    "T011_started": false,
+    "production_runtime_or_economics_changed": false,
+    "public_RPC_or_canonical_store_mutation": false,
+    "qualification_scope": "Existing isolated synthetic profile qualification only; no actual T010 environment or run."
+  },
+  "remaining_requirements": "Separate project review must accept this changed-source candidate and bind the exact dossier. Actual T010 public-environment profile/policy/grant and unattended handoff remain unestablished; not exercised in FIX1. T011/M59/M60/M61 and real capital remain unauthorized."
+}

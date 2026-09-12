@@ -17,7 +17,9 @@ SCHEMA = "MEME_LIVE_M56_DOSSIER_V1"
 BASE_REVISION = "d7993c4dfaff62ac87ed777f8f48366186c5848f"
 BRANCH = "live/meme-production-readiness"
 HUMAN_ROWS = ("M09", "M10", "M58", "M59", "M60", "M61")
-PENDING_ROWS = ("M56", "M57")
+# Historical accepted Step11-B remainder; never the current matrix policy.
+STEP11B_REMAINING_OWNED_ROWS = ("M56", "M57")
+PROJECT_REVIEW_ROWS = ("M56", "M57")
 INDEX_PATHS = (
     "docs/live/MEME_LIVE_STEP10_INTERNAL_ACCEPTANCE_V0_1.json",
     "docs/live/MEME_LIVE_STEP11A_PROFILE_REVIEW_V1.json",
@@ -172,11 +174,10 @@ def lifecycle_disposition(text):
         rows[cells[0]] = cells[3]
     require(set(rows) == {f"M{n:02}" for n in range(1, 62)}, "INCOMPLETE_LIFECYCLE")
     for row, state in rows.items():
-        expected = "HUMAN_EXTERNAL" if row in HUMAN_ROWS else (
-            "OWNED_NOT_BUILT" if row in PENDING_ROWS else "VERIFIED")
+        expected = "HUMAN_EXTERNAL" if row in HUMAN_ROWS else "VERIFIED"
         require(state == expected, "UNEXPECTED_LIFECYCLE_DISPOSITION:" + row)
     return {"authoritative_rows": rows,
-            "project_review_pending": list(PENDING_ROWS),
+            "exact_dossier_project_review_required": list(PROJECT_REVIEW_ROWS),
             "human_external": list(HUMAN_ROWS),
             "static_engineering_may_be_deferred_to_t010": False,
             "tooling_promotes_rows": False}
@@ -272,7 +273,7 @@ def _accepted_indexes(root, graph):
         require(row["exit_code"] == 0 and row["review"] == "LOCAL_PASS", "FAILED_QUALIFICATION")
     require(step11a["remaining_bounded_measurement_delta"] == [], "M52_M53_ENGINEERING_MISSING")
     require(step11b["final_project_acceptance"]["M46"] == "VERIFIED", "M46_NOT_ACCEPTED")
-    require(step11b["final_project_acceptance"]["remaining_owned_not_built"] == list(PENDING_ROWS),
+    require(step11b["final_project_acceptance"]["remaining_owned_not_built"] == list(STEP11B_REMAINING_OWNED_ROWS),
             "UNEXPECTED_ENGINEERING_REMAINDER")
     return indexes
 
@@ -419,7 +420,7 @@ def build_dossier(repo_root, *, dry_profile=None, dry_qualification=None):
             "lifecycle": lifecycle, "deployment": deployment, "runtime_components": assembly,
             "supported_dry": supported_dry,
             "gate_tooling": {p: source["files"][p]["sha256"] for p in sorted(NEW_CODE) if p in source["files"]},
-            "review_boundary": "M56/M57 remain engineering review candidates, never HUMAN_EXTERNAL or VERIFIED by this tool.",
+            "review_boundary": "M56/M57 VERIFIED is authoritative matrix input, not acceptance by this tool. Positive T010 structural preflight still requires a separate explicit ChatGPT project-review record bound to this exact dossier and source.",
             "capabilities": {"execute_t010": False, "sign": False, "send": False, "broadcast": False,
                              "database_mutation": False, "capital_authority": False}}
 

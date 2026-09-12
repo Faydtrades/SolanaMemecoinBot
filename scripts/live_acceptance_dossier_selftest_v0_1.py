@@ -74,10 +74,34 @@ def main():
     matrix = (ROOT / d.MATRIX_PATH).read_text(encoding="utf-8-sig")
     disposition = d.lifecycle_disposition(matrix)
     check("six_explicit_human_rows", disposition["human_external"] == list(d.HUMAN_ROWS))
-    check("engineering_stays_pending", disposition["project_review_pending"] == ["M56", "M57"])
-    changed = matrix.replace("| M56 | Full production composition and gate tooling | Frozen deterministic acceptance dossier | OWNED_NOT_BUILT |",
-                             "| M56 | Full production composition and gate tooling | Frozen deterministic acceptance dossier | HUMAN_EXTERNAL |")
-    denied("static_work_not_human", lambda: d.lifecycle_disposition(changed), "UNEXPECTED_LIFECYCLE_DISPOSITION:M56")
+    check("current_matrix_exact_verified_rows", {row for row, state in disposition["authoritative_rows"].items()
+        if state == "VERIFIED"} == {f"M{n:02}" for n in range(1, 62)} - set(d.HUMAN_ROWS))
+    check("exact_dossier_review_still_required", disposition["exact_dossier_project_review_required"] == ["M56", "M57"])
+    check("tooling_does_not_promote", disposition["tooling_promotes_rows"] is False)
+
+    def replace_state(row, state):
+        lines = matrix.splitlines()
+        position = next(i for i, line in enumerate(lines) if line.startswith("| " + row + " |"))
+        cells = lines[position].split("|")
+        cells[4] = " " + state + " "
+        lines[position] = "|".join(cells)
+        return "\n".join(lines)
+
+    for row in ("M56", "M57"):
+        for state in ("OWNED_NOT_BUILT", "HUMAN_EXTERNAL", "BLOCKED"):
+            denied(row + "_rejects_" + state, lambda: d.lifecycle_disposition(replace_state(row, state)),
+                "UNEXPECTED_LIFECYCLE_DISPOSITION:" + row)
+    for row in d.HUMAN_ROWS:
+        denied(row + "_cannot_be_promoted", lambda: d.lifecycle_disposition(replace_state(row, "VERIFIED")),
+            "UNEXPECTED_LIFECYCLE_DISPOSITION:" + row)
+    denied("other_engineering_cannot_be_deferred", lambda: d.lifecycle_disposition(replace_state("M01", "HUMAN_EXTERNAL")),
+        "UNEXPECTED_LIFECYCLE_DISPOSITION:M01")
+    row = next(line for line in matrix.splitlines() if line.startswith("| M56 |"))
+    denied("missing_lifecycle_row", lambda: d.lifecycle_disposition(matrix.replace(row, "")), "INCOMPLETE_LIFECYCLE")
+    denied("duplicate_lifecycle_row", lambda: d.lifecycle_disposition(matrix + "\n" + row), "DUPLICATE_LIFECYCLE_ROW")
+    step11b = d.read_json(ROOT / d.INDEX_PATHS[2])
+    check("historical_step11b_remainder_preserved", step11b["final_project_acceptance"]["remaining_owned_not_built"]
+        == list(d.STEP11B_REMAINING_OWNED_ROWS) == ["M56", "M57"])
     snapshot = d.build_dossier(ROOT)
     check("real_frozen_revision", snapshot["source"]["accepted_revision"] == d.BASE_REVISION)
     check("all_accepted_transitions", len(snapshot["transition_coverage"]) == 17)

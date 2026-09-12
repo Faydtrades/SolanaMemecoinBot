@@ -1,5 +1,13 @@
 # MEME-LIVE Owner Acceptance and LIVE Lane Status
 
+## Step12-A FIX1 - post-acceptance dossier corrective candidate
+
+Status: **STEP12A_FIX1_IMPLEMENTED_PENDING_PROJECT_REVIEW**. This bounded corrective package starts at `19e1d795fdb2f716edd9409167554d2c2c168e02`. It aligns the current dossier lifecycle contract with the supplied Step11-C acceptance: M56/M57 VERIFIED, exactly M09/M10/M58/M59/M60/M61 HUMAN_EXTERNAL, every other row VERIFIED. Historical Step11-B engineering remainders retain their original meaning. The dossier records current matrix facts and does not promote or project-accept rows; positive T010 structural preflight still requires the separate explicit project-review record bound to the exact changed-source dossier.
+
+The [FIX1 evidence/review index](MEME_LIVE_STEP12A_FIX1_REVIEW_V1.json) binds the corrective candidate, affected validation and fresh independent review. Historical Step11-C and Step12-A artifacts remain unchanged. Matrix: **55 VERIFIED / 0 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. The supplied acceptance covers the prior revision; this changed-source candidate is not project-accepted. T010 remains **NOT_STARTED**. No public RPC, collector action, production runtime action, canonical-store mutation, signing, sending or real-capital activity is authorized. T011/M59/M60/M61 remain unauthorized. **STOP after the corrective candidate checkpoint.**
+
+The following Step12-A launch-blocker record is historical at its stated checkpoint; FIX1 validation and review are recorded separately above.
+
 ## Step12-A - supplied Step11-C acceptance and one-run owner decision
 
 The supplied ChatGPT project decision accepts Step11-C at exact revision `3fccf8828b4f7f41ceda0cfdaef3beceecfd69c9` as **PASS / ACCEPTED / CHECKPOINTED** and promotes **M56 and M57 to VERIFIED**. Current matrix: **55 VERIFIED / 0 OWNED_NOT_BUILT / 6 HUMAN_EXTERNAL / 0 BLOCKED; 61 total**. Historical accepted evidence, generated artifacts, source/selection bindings and the gate contract remain unchanged. This records the supplied decision; it does not independently re-review Step11-C.

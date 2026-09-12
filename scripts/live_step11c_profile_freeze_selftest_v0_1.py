@@ -43,6 +43,8 @@ def qualification(profile_directory, directory):
         check('missing_external_inputs_denied_without_static_gap',missing['ready'] is False
             and not any(row['class']=='ENGINEERING' for row in missing['reasons'])
             and {row.get('row') for row in missing['reasons'] if row['class']=='HUMAN_EXTERNAL'}=={'M09','M10','M58'})
+        check('verified_rows_do_not_supply_project_review', any(row['class']=='ENGINEERING_REVIEW'
+            and row['reason']=='M56_M57_PROJECT_REVIEW_NOT_SUPPLIED' for row in missing['reasons']))
         accepted = d.read_json(dossier['deployment']['profile']['path'])
         accepted['source_configuration'].update(binding=profile['inputs']['source_start']['binding'],
             profile=profile['inputs']['source_start']['profile'])
@@ -55,6 +57,24 @@ def qualification(profile_directory, directory):
             and report['structural_validation']['state']=='STRUCTURALLY_COMPLETE')
         check('structural_success_never_authorization',all(report[key] is False for key in
             ('grants_permission','authenticated_approval','current_environment_proven','capital_authority','t010_executed')))
+        review = d.read_json(package['project_review']['path'])
+        invalid_reviews = [('missing-project-review', None)]
+        for name, mutate in (
+            ('unaccepted-project-review', lambda r:r.update(decision='PENDING')),
+            ('wrong-project-authority', lambda r:r.update(authority='TOOLING')),
+            ('wrong-project-reviewed-rows', lambda r:r['reviewed_rows'].update(M56='OWNED_NOT_BUILT')),
+            ('wrong-project-dossier', lambda r:r.update(dossier_sha256='0'*64)),
+            ('wrong-project-source', lambda r:r.update(source_content_digest='0'*64))):
+            changed = copy.deepcopy(review); mutate(changed)
+            invalid_reviews.append((name, fixtures.record(directory/(name+'.json'), changed)))
+        for name, reference in invalid_reviews:
+            changed = copy.deepcopy(package); changed['project_review'] = reference
+            # Full exact-source rebuild and positive public preflight were checked above.
+            with patch.object(d,'verify_dossier',return_value=dossier):
+                denied = gate.preflight(ROOT,dossier,changed,evaluated_at_utc=fixtures.AT)
+            check(name, denied['ready'] is False and denied['structural_validation']['state']=='INCOMPLETE'
+                and all(denied[key] is False for key in ('grants_permission','authenticated_approval',
+                    'current_environment_proven','capital_authority','t010_executed')))
         for name, mutate in (
             ('qualification-stale-source',lambda r:r.update(source_content_digest='0'*64)),
             ('qualification-stale-profile',lambda r:r.update(profile_content_digest='0'*64)),
