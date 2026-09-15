@@ -16,6 +16,10 @@ from pathlib import Path
 SCHEMA = "MEME_LIVE_M56_DOSSIER_V1"
 BASE_REVISION = "d7993c4dfaff62ac87ed777f8f48366186c5848f"
 BRANCH = "live/meme-production-readiness"
+FIX2_BRANCH_PREFIX = "codex/step12a-fix2-"
+# Absolute source links embedded in immutable accepted evidence refer to this
+# development checkout. Its working bytes are not historical evidence.
+ACCEPTED_DEVELOPMENT_CHECKOUT = Path(r"C:\Users\Mari1\AppData\Local\Temp\meme-live-audit-e6b9a4b")
 HUMAN_ROWS = ("M09", "M10", "M58", "M59", "M60", "M61")
 # Historical accepted Step11-B remainder; never the current matrix policy.
 STEP11B_REMAINING_OWNED_ROWS = ("M56", "M57")
@@ -27,6 +31,7 @@ INDEX_PATHS = (
 )
 MATRIX_PATH = "docs/live/MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md"
 NEW_CODE = frozenset({
+    "scripts/live_wallet_context_retry_selftest_v0_1.py",
     "src/live/acceptance_dossier_v0_1.py",
     "src/live/t010_preflight_v0_1.py",
     "src/live/t010_driver_v0_1.py",
@@ -42,12 +47,104 @@ NEW_CODE = frozenset({
     "scripts/live_t010_preflight_v0_1.py",
     "scripts/live_t010_preflight_selftest_v0_1.py",
     "scripts/live_t010_driver_v0_1.py",
+    "src/live/runtime_dry_public_facts_v0_1.py",
+    "src/live/runtime_public_clock_v0_1.py",
+    "src/live/runtime_dry_public_qualification_v0_1.py",
+    "src/live/t010_public_host_v0_1.py",
+    "scripts/live_runtime_dry_public_qualification_v0_1.py",
+    "scripts/live_runtime_dry_public_qualification_selftest_v0_1.py",
+    "scripts/live_runtime_public_clock_selftest_v0_1.py",
+    "scripts/live_runtime_public_clock_observe_v0_1.py",
+    "scripts/live_t010_public_host_v0_1.py",
+    "scripts/live_t010_public_host_selftest_v0_1.py",
+    "scripts/live_step12a_fix2_composed_selftest_v0_1.py",
+    "scripts/live_fix2_pending_guard_delta_selftest_v0_1.py",
+    "scripts/live_producer_lifecycle_selftest_v0_1.py",
+    "scripts/live_operations_journal_budget_selftest_v0_1.py",
+    "scripts/live_t010_work_budget_selftest_v0_1.py",
+    "src/live/t010_resource_envelope_v0_1.py",
+    "scripts/live_t010_resource_boundary_measure_v0_1.py",
+    "scripts/live_t010_resource_envelope_selftest_v0_1.py",
+    "src/live/pump_token2022_profile_v0_1.py",
+    "src/live/pump_protocol_compatibility_v0_1.py",
+    "src/live/pump_current_state_v0_1.py",
+    "src/live/simulation_public_cpi_v0_1.py",
+    "scripts/live_simulation_public_cpi_selftest_v0_1.py",
+    "scripts/live_wallet_cohort_selftest_v0_1.py",
+    "scripts/live_wallet_after_venue_selftest_v0_1.py",
+    "scripts/live_pump_current_state_selftest_v0_1.py",
+    "scripts/live_pump_token2022_evidence_selftest_v0_1.py",
+    "scripts/live_pump_token2022_settlement_selftest_v0_1.py",
+    "scripts/live_pump_protocol_compatibility_selftest_v0_1.py",
+    "scripts/live_operations_receipt_scan_selftest_v0_1.py",
+    "scripts/live_producer_cold_replay_selftest_v0_1.py",
+    "scripts/live_source_replay_selftest_v0_1.py",
+    "scripts/live_t010_cold_fragment_proof_v0_1.py",
+    "scripts/live_t010_journal_boundary_measure_v0_1.py",
+    "scripts/live_t010_ledger_codec_equivalence_v0_1.py",
+    "scripts/live_t010_ledger_cold_integration_selftest_v0_1.py",
+    "scripts/live_t010_ledger_cold_recheck_v0_1.py",
+    "scripts/live_t010_ledger_cold_tamper_selftest_v0_1.py",
+    "scripts/live_t010_ledger_history_measure_v0_1.py",
+    "scripts/live_t010_source_capture_selftest_v0_1.py",
+    "scripts/live_t010_source_cold_recheck_v0_1.py",
+    "scripts/live_t010_source_evolving_boundary_v0_1.py",
+    "scripts/live_t010_source_growth_model_v0_1.py",
+    "scripts/live_t010_source_history_measure_v0_1.py",
+    "scripts/live_runtime_public_resource_order_selftest_v0_1.py",
+    "scripts/live_t010_boundary_integration_selftest_v0_1.py",
+    "scripts/live_t010_checkpoint_pending_measure_v0_1.py",
+    "scripts/live_t010_checkpoint_pending_measure_v0_2.py",
+    "scripts/live_t010_joint_hot_measure_v0_2.py",
+    "scripts/live_t010_joint_hot_measure_v0_3.py",
+    "scripts/live_t010_joint_startup_measure_v0_1.py",
+    "scripts/live_t010_joint_startup_measure_v0_2.py",
+    "scripts/live_t010_joint_state_v0_1.py",
+    "scripts/live_t010_joint_state_v0_2.py",
+    "scripts/live_t010_joint_state_v0_3.py",
+    "scripts/live_t010_measured_guards_selftest_v0_1.py",
+    "scripts/live_t010_monitor_full_state_v0_1.py",
+    "scripts/live_t010_monitor_resume_selftest_v0_1.py",
+    "scripts/live_t010_parent_boundary_selftest_v0_1.py",
+    "scripts/live_t010_physical_certificate_selftest_v0_1.py",
+    "scripts/live_t010_private_memory_selftest_v0_1.py",
+    "scripts/live_t010_resource_environment_selftest_v0_1.py",
+    "scripts/live_t010_resource_guard_policy_selftest_v0_1.py",
+    "scripts/live_t010_sqlite_boundary_selftest_v0_1.py",
+    "src/live/t010_physical_certificate_v0_1.py",
+    "src/live/t010_resource_environment_v0_1.py",
+    "src/live/t010_resource_measurement_v0_1.py",
+    "src/live/t010_sqlite_boundary_v0_1.py",
 })
 CORE_OVERLAY = frozenset({
     "src/live/runtime_composition_v0_1.py", "src/live/runtime_reconstruction_v0_1.py",
     "src/live/operations_startup_v0_1.py", "src/live/operations_ownership_v0_1.py",
     "src/live/operations_supervisor_v0_1.py", "src/live/operations_readiness_v0_1.py",
     "src/live/operations_degradation_v0_1.py",
+    "src/live/operations_degradation_monitor_v0_1.py",
+    "src/live/runtime_dry_v0_1.py",
+    "src/live/continuous_producer_v0_2.py",
+    "scripts/live_candidate_handoff_selftest_v0_1.py",
+    "scripts/live_step10_s01_s02_selftest_v0_1.py",
+    "src/live/wallet_evidence_v0_1.py",
+    "src/live/public_rpc_v0_1.py",
+    "src/live/authority_admission_v0_1.py",
+    "src/live/authority_controls_v0_1.py",
+    "src/live/continuous_producer_v0_1.py",
+    "src/live/evidence_store_v0_1.py",
+    "src/live/source_health_v0_1.py",
+    "src/live/authority_message_evidence_v0_1.py",
+    "src/live/authority_message_codec_v0_1.py",
+    "src/live/ledger_settlement_v0_1.py",
+    "src/live/ledger_repository_v0_1.py",
+    "src/live/execution_message_v0_1.py",
+    "src/phase5/shadow_venue_route_quote_v0_1.py",
+    "scripts/live_authority_admission_selftest_v0_1.py",
+    "scripts/live_authority_message_evidence_selftest_v0_1.py",
+    "scripts/live_execution_message_selftest_v0_1.py",
+    "scripts/live_execution_composition_selftest_v0_1.py",
+    "scripts/live_runtime_composition_selftest_v0_1.py",
+    "scripts/live_wallet_immutable_owner_selftest_v0_1.py",
 })
 ASSEMBLY = {
     "producer": "src/live/continuous_producer_v0_2.py",
@@ -57,6 +154,10 @@ ASSEMBLY = {
     "dry_execution": "src/live/runtime_dry_v0_1.py",
     "dry_reconstruction": "src/live/runtime_reconstruction_v0_1.py",
     "public_dry_driver": "src/live/runtime_dry_public_driver_v0_1.py",
+    "public_facts": "src/live/runtime_dry_public_facts_v0_1.py",
+    "public_clock": "src/live/runtime_public_clock_v0_1.py",
+    "public_qualification": "src/live/runtime_dry_public_qualification_v0_1.py",
+    "public_host": "src/live/t010_public_host_v0_1.py",
     "supported_dry_profile": "src/live/runtime_dry_profile_v0_1.py",
     "exact_message": "src/live/execution_message_v0_1.py",
     "non_submitted_ledger": "src/live/ledger_repository_v0_1.py",
@@ -137,8 +238,15 @@ def _base_files(root):
 
 def source_freeze(root):
     root = Path(root).resolve()
-    require(_git(root, "branch", "--show-current").decode().strip() == BRANCH,
-            "WRONG_BRANCH")
+    branch = _git(root, "branch", "--show-current").decode().strip()
+    if branch != BRANCH:
+        # An explicitly isolated FIX2 worktree must track the existing LIVE
+        # lane. Branch identity never substitutes for the exact byte freeze.
+        require(branch.startswith(FIX2_BRANCH_PREFIX), "WRONG_BRANCH")
+        require(_git(root, "rev-parse", "--abbrev-ref", "@{upstream}").decode().strip()
+                == "origin/" + BRANCH, "WRONG_UPSTREAM_BRANCH")
+        _git(root, "merge-base", "--is-ancestor",
+             "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2", "HEAD")
     _git(root, "merge-base", "--is-ancestor", BASE_REVISION, "HEAD")
     tracked = _base_files(root)
     # Freeze all production Python dependencies, plus every LIVE entrypoint/test.
@@ -174,9 +282,15 @@ def lifecycle_disposition(text):
         rows[cells[0]] = cells[3]
     require(set(rows) == {f"M{n:02}" for n in range(1, 62)}, "INCOMPLETE_LIFECYCLE")
     for row, state in rows.items():
+        if row in PROJECT_REVIEW_ROWS:
+            require(state in ("VERIFIED", "OWNED_NOT_BUILT"),
+                    "UNEXPECTED_LIFECYCLE_DISPOSITION:" + row)
+            continue
         expected = "HUMAN_EXTERNAL" if row in HUMAN_ROWS else "VERIFIED"
         require(state == expected, "UNEXPECTED_LIFECYCLE_DISPOSITION:" + row)
     return {"authoritative_rows": rows,
+            "reopened_engineering_rows": [row for row in PROJECT_REVIEW_ROWS
+                                         if rows[row] == "OWNED_NOT_BUILT"],
             "exact_dossier_project_review_required": list(PROJECT_REVIEW_ROWS),
             "human_external": list(HUMAN_ROWS),
             "static_engineering_may_be_deferred_to_t010": False,
@@ -245,10 +359,16 @@ class EvidenceGraph:
                 child_path = Path(child)
                 if not child_path.is_absolute():
                     child_path = self.root / child_path
+                original_path = child_path
+                if child_path.suffix == ".py" and child_path.is_relative_to(ACCEPTED_DEVELOPMENT_CHECKOUT):
+                    relative = child_path.relative_to(ACCEPTED_DEVELOPMENT_CHECKOUT).as_posix()
+                    require(relative in _base_files(self.root), "UNKNOWN_HISTORICAL_SOURCE_REFERENCE")
+                    child_path = self.root / relative
                 # Source file links are original qualification provenance. Their
                 # bytes may have been superseded by an explicitly accepted step.
                 if child_path.suffix == ".py" and child_path.is_relative_to(self.root):
                     self.historical_sources.append({"parent": key, "path": str(child_path),
+                                                    "original_reference_path": str(original_path),
                                                     "sha256": child_hash})
                 elif child_path.suffix.lower() in (".sqlite", ".sqlite3", ".db"):
                     self.database_observations.append({"parent": key, "path": str(child_path),
@@ -344,18 +464,26 @@ def _qualified_dry(profile_reference, qualification_reference, source, deploymen
     from .runtime_dry_profile_v0_1 import read_reference, load_profile
     require(profile_reference is not None and qualification_reference is not None,
         "DRY_PROFILE_AND_QUALIFICATION_REQUIRED")
-    profile = load_profile(read_reference(profile_reference)).record
+    supported_profile = load_profile(read_reference(profile_reference))
+    profile = supported_profile.record
     qualification = read_reference(qualification_reference)
-    require(qualification["schema"] == "MEME_LIVE_DRY_PROFILE_QUALIFICATION_V1"
-        and qualification["profile_content_digest"] == profile["content_digest"]
+    public = profile["inputs"]["qualification_substitutions"]["scope"] == "PUBLIC_ENVIRONMENT_REVIEWED"
+    if public:
+        from .runtime_dry_public_qualification_v0_1 import validate_evidence
+        validate_evidence(qualification, supported_profile)
+    else:
+        require(qualification["schema"] == "MEME_LIVE_DRY_PROFILE_QUALIFICATION_V1",
+                "SYNTHETIC_DRY_QUALIFICATION_SCHEMA_REQUIRED")
+    require(qualification["profile_content_digest"] == profile["content_digest"]
         and canonical_bytes(qualification["startup_identity"]) == canonical_bytes(profile["startup_identity"])
         and qualification["source_content_digest"] == source["content_digest"], "STALE_DRY_PROFILE_QUALIFICATION")
     required = {"exact_supported_startup", "qualified_actual_exact_dry_terminal",
         "same_profile_cold_original_non_submitted_recovery", "same_profile_second_original_admission",
         "amended_guards_fail_closed_above_bound", "monitor-alias", "wrong-source-start", "unknown-baseline"}
-    require(required <= set(qualification["checks"]) and all(value is True for value in qualification["checks"].values())
-        and qualification["simulation_count"] >= 2 and qualification["cold_interruption_recovery_count"] >= 1,
-        "INCOMPLETE_DRY_PROFILE_QUALIFICATION")
+    if not public:
+        require(required <= set(qualification["checks"]) and all(value is True for value in qualification["checks"].values())
+            and qualification["simulation_count"] >= 2 and qualification["cold_interruption_recovery_count"] >= 1,
+            "INCOMPLETE_DRY_PROFILE_QUALIFICATION")
     inputs = profile["inputs"]
     require(inputs["accepted_profile"] == deployment["profile"] and inputs["accepted_extension"] == deployment["profile_extension"]
         and inputs["accepted_monitor"] == deployment["accepted_monitor"],
@@ -371,9 +499,24 @@ def _qualified_dry(profile_reference, qualification_reference, source, deploymen
         and qualification["original_source_mapping"]["source_binding_identity"] == binding.source_identity,
         "DRY_QUALIFICATION_IDENTITY_OR_SUBSTITUTION_CONFLICT")
     require(qualification["guard_amendment"] == inputs["guard_amendment"], "DRY_QUALIFICATION_GUARD_AMENDMENT_CONFLICT")
+    from .runtime_dry_profile_v0_1 import reviewed_wallet_target, current_pump_rpc_binding
+    accepted = read_reference(inputs["accepted_profile"])
+    current_target = reviewed_wallet_target(accepted,
+        inputs["accepted_profile"], inputs.get("deployment_rebind"))
+    current_target, _ = current_pump_rpc_binding(accepted, inputs["accepted_profile"],
+        current_target, inputs.get("public_rpc_rebind"))
     for key in ("wallet", "genesis_hash", "expected_profile_fingerprint"):
-        require(profile["domain"][key] == deployment["accepted_target"]["domain"][key], "DRY_PROFILE_PUBLIC_TARGET_CONFLICT")
-    require(qualification["signer_send_broadcast"] is False and qualification["canonical_store_access"] is False
+        require(profile["domain"][key] == current_target["domain"][key], "DRY_PROFILE_PUBLIC_TARGET_CONFLICT")
+    if inputs.get("deployment_rebind") is not None:
+        require(public, "DRY_WALLET_PUBLIC_REBIND_SCOPE_REQUIRED")
+        deployment["current_target"] = current_target
+        deployment["wallet_rebind"] = inputs["deployment_rebind"]
+    if inputs.get("public_rpc_rebind") is not None:
+        require(public, "DRY_CURRENT_PUMP_PUBLIC_RPC_SCOPE_REQUIRED")
+        deployment["current_target"] = current_target
+        deployment["public_rpc_rebind"] = inputs["public_rpc_rebind"]
+    require(qualification["signer_send_broadcast"] is False
+        and (qualification["canonical_live_store_access"] if public else qualification["canonical_store_access"]) is False
         and qualification["T010_executed"] is False, "DRY_QUALIFICATION_SAFETY_CONFLICT")
     return {"profile":profile_reference, "qualification":qualification_reference,
         "profile_content_digest":profile["content_digest"], "startup_identity":profile["startup_identity"],
@@ -420,7 +563,7 @@ def build_dossier(repo_root, *, dry_profile=None, dry_qualification=None):
             "lifecycle": lifecycle, "deployment": deployment, "runtime_components": assembly,
             "supported_dry": supported_dry,
             "gate_tooling": {p: source["files"][p]["sha256"] for p in sorted(NEW_CODE) if p in source["files"]},
-            "review_boundary": "M56/M57 VERIFIED is authoritative matrix input, not acceptance by this tool. Positive T010 structural preflight still requires a separate explicit ChatGPT project-review record bound to this exact dossier and source.",
+            "review_boundary": "M56/M57 current VERIFIED or reopened OWNED_NOT_BUILT states are matrix input, never acceptance by this tool. Reopened rows deny launch readiness. Positive T010 structural preflight requires VERIFIED rows and a separate explicit ChatGPT project-review record bound to this exact dossier and source.",
             "capabilities": {"execute_t010": False, "sign": False, "send": False, "broadcast": False,
                              "database_mutation": False, "capital_authority": False}}
 

@@ -31,6 +31,21 @@ VERSION = "live_authority_message_evidence_v0.1"
 COMPUTE_PROGRAM = str(COMPUTE_BUDGET_ID)
 
 
+def economic_setup_keys(keys, header):
+    """Complete economic account cut, excluding only fixed read-only programs.
+
+    Program code is not setup/account-funding evidence. Program identities and
+    effective permissions are independently reconstructed from the exact plan.
+    Unknown programs, signers and writable accounts are never omitted.
+    """
+    programs = {COMPUTE_PROGRAM, plans.ASSOCIATED_TOKEN_PROGRAM_ID,
+        venue.SYSTEM_PROGRAM_ID, venue.TOKEN_PROGRAM_ID, venue.TOKEN_2022_PROGRAM_ID,
+        venue.PUMP_PROGRAM_ID, venue.PUMPSWAP_PROGRAM_ID, venue.PUMP_FEES_PROGRAM_ID}
+    required, readonly_signed, readonly_unsigned = header
+    return tuple(key for index, key in enumerate(keys) if key not in programs
+        or index < required or index < len(keys)-readonly_unsigned)
+
+
 @dataclass(frozen=True, slots=True)
 class MessageValidationProfile:
     profile_id: str
@@ -436,7 +451,9 @@ def _rebuild(original):
     mint = c.action.mint
     curve_keys = (primary_keys[0], mint, venue.derive_pump_global_pda(), venue.derive_pump_fee_config_pda())
     curve_slots = tuple(slots[key] for key in curve_keys)
-    curve = venue.build_pump_state(e.intent, *(raw(key) for key in curve_keys), slot_min=min(curve_slots),
+    from .pump_current_state_v0_1 import pump_state_builder
+    builder = pump_state_builder(e.wallet.observation.schema, raw(mint), raw(curve_keys[0]))
+    curve = builder(e.intent, *(raw(key) for key in curve_keys), slot_min=min(curve_slots),
         slot_max=max(curve_slots), observed_at_us=last.cut.observed_at_us, account_slots=curve_slots)
     pool = None
     needed = set(curve_keys[1:])
@@ -460,6 +477,15 @@ def _rebuild(original):
     if pool is not None:
         _known(not pool.decoded.is_cashback_coin, "MESSAGE_CASHBACK_LIFECYCLE_UNSUPPORTED")
     wallet = e.wallet.observation
+    from .wallet_evidence_v0_1 import SCHEMA as CURRENT_WALLET_SCHEMA
+    if wallet.schema == CURRENT_WALLET_SCHEMA:
+        from .pump_protocol_compatibility_v0_1 import selected_state_compatibility
+        try:
+            selected, reason = selected_state_compatibility(mint, raw(primary_keys[0]),
+                None if first.accounts[1] is None else raw(primary_keys[1]))
+        except (ValueError, venue.VenueStateError):
+            selected, reason = None, "MESSAGE_CURRENT_PUMP_PROTOCOL_UNSUPPORTED"
+        _known(reason is None and selected == actual_venue, reason or "MESSAGE_CURRENT_PUMP_ROUTE_CONFLICT")
     _known(utc_microseconds(e.wallet.evaluated_at_utc) <= utc_microseconds(original.clock.utc_lower_utc),
            "MESSAGE_ORIGINAL_WALLET_EVALUATION_FROM_FUTURE")
     _fresh(utc_microseconds(wallet.observed_at_utc), p.maximum_wallet_age_us, original, "MESSAGE_WALLET_READ_STALE_OR_FUTURE")
@@ -476,7 +502,9 @@ def _rebuild(original):
     explicit = dict(zip(wallet.explicit_read.requested_keys, wallet.explicit_read.accounts))
     _known({base, quote_account, c.domain.wallet} <= explicit.keys(), "MESSAGE_EXPLICIT_ACTOR_ACCOUNT_COVERAGE_MISSING")
     _known(c.action.side == "SELL" or explicit[quote_account] is None, "MESSAGE_PREEXISTING_WSOL_ENTRY_PROFILE_UNSUPPORTED")
-    _known(not (explicit[base] is None and c.action.token_program == venue.TOKEN_2022_PROGRAM_ID),
+    from .ledger_settlement_v0_1 import fresh_token2022_mint_supported
+    _known(not (explicit[base] is None and c.action.token_program == venue.TOKEN_2022_PROGRAM_ID)
+           or fresh_token2022_mint_supported(wallet, mint),
            "MESSAGE_FRESH_TOKEN2022_ATA_LIFECYCLE_UNSUPPORTED")
     quote = venue.create_executable_quote(e.intent, state, route, e.quote_policy)
     actor = plans.PublicShadowActorV01(c.domain.wallet)
@@ -575,13 +603,20 @@ def _exact_simulation(original, plan):
                 "MESSAGE_EFFECTIVE_SIGNER_WRITABLE_CONFLICT")
     outer = tuple(InstructionFact(i, None, ix.program_id_index, tuple(ix.accounts), bytes(ix.data), None)
                   for i, ix in enumerate(instructions))
-    inner, groups = _simulation_inner(result.inner_instructions_json, len(keys), len(outer))
+    inner, groups = _simulation_inner(result.inner_instructions_json, len(keys), len(outer),
+        public_keys=keys if e.wallet.observation.schema == "live_wallet_account_evidence_v0.3" else None)
     view = SimulationInstructionView(header, keys, outer, inner, groups)
     return message, view, seen[2], seen[3]
 
 
-def _simulation_inner(payload, key_count, outer_count):
-    value = strict_json_object('{"rows":'+payload+'}')["rows"]
+def _simulation_inner(payload, key_count, outer_count, *, public_keys=None):
+    require(public_keys is None or type(public_keys) is tuple and len(public_keys) == key_count
+        and len(set(public_keys)) == key_count, "MESSAGE_PARSED_CPI_KEYS_INVALID")
+    if public_keys is None:
+        value = strict_json_object('{"rows":'+payload+'}')["rows"]
+    else:
+        from .simulation_public_cpi_v0_1 import public_cpi_payload
+        value = public_cpi_payload(payload)
     _known(type(value) is list, "MESSAGE_COMPLETE_CPI_TRACE_MISSING")
     rows, groups = [], []
     require(len(value) <= outer_count, "MESSAGE_INNER_GROUP_BOUND_INVALID")
@@ -591,6 +626,13 @@ def _simulation_inner(payload, key_count, outer_count):
             and group["index"] not in groups, "MESSAGE_INNER_GROUP_SHAPE_CONFLICT")
         groups.append(group["index"])
         for i, raw in enumerate(group["instructions"]):
+            if public_keys is not None and type(raw) is dict and "programId" in raw:
+                from .simulation_public_cpi_v0_1 import semantic_instruction
+                require(type(raw.get("stackHeight")) is int and raw["stackHeight"] in (2,3),
+                    "MESSAGE_PARSED_CPI_STACK_UNSUPPORTED")
+                pid, indexes, data = semantic_instruction(raw, public_keys)
+                rows.append(InstructionFact(group["index"], i, pid, indexes, data, raw["stackHeight"]))
+                continue
             require(type(raw) is dict and set(raw) == {"programIdIndex", "accounts", "data", "stackHeight"}
                 and type(raw["programIdIndex"]) is int and 0 <= raw["programIdIndex"] < key_count
                 and type(raw["accounts"]) is list and all(type(j) is int and 0 <= j < key_count for j in raw["accounts"])
@@ -614,7 +656,10 @@ def _costs(original, plan, quote, view, compute_units, compute_price):
         and fee.cut.context_slot-plan.prerequisite_slot <= p.maximum_context_span
         and base64.b64decode(fee.request_message_base64).hex() == envelope.message_hex,
         "MESSAGE_EXACT_FEE_UNAVAILABLE_OR_UNBOUND")
-    _known(setup.requested_keys == view.account_keys and setup.cut.context_slot >= plan.prerequisite_slot
+    expected_setup = (view.account_keys,)
+    if e.wallet.observation.schema == "live_wallet_account_evidence_v0.3":
+        expected_setup += (economic_setup_keys(view.account_keys, view.header),)
+    _known(setup.requested_keys in expected_setup and setup.cut.context_slot >= plan.prerequisite_slot
         and setup.cut.context_slot <= result.context_slot
         and result.context_slot-setup.cut.context_slot <= p.maximum_context_span
         and setup.cut.observed_at_us <= e.simulation.attempts[-1].observed_at_us,
@@ -631,7 +676,9 @@ def _costs(original, plan, quote, view, compute_units, compute_price):
     venue_ix, program, roles, token_roles, base, wsol, pool, pool_base, pool_quote, fee_native, fee_tokens, minimum = _roles(view, c.action, wallet)
     _validate_outer_shapes(view, venue_ix, token_roles, wsol, wallet)
     try:
-        _validate_failed_inner(view, venue_ix, program, roles, token_roles, fee_native, fee_tokens, wallet)
+        from .ledger_settlement_v0_1 import fresh_token2022_mint_supported
+        _validate_failed_inner(view, venue_ix, program, roles, token_roles, fee_native, fee_tokens, wallet,
+            allow_token2022_creation=fresh_token2022_mint_supported(e.wallet.observation, c.action.mint))
     except ValueError:
         raise _Unknown("MESSAGE_CPI_LIFECYCLE_OR_PROGRAM_UNSUPPORTED") from None
     groups = set(view.inner_recorded_outer_indexes)
@@ -640,7 +687,7 @@ def _costs(original, plan, quote, view, compute_units, compute_price):
     _known({venue_ix.outer_index, *ata_outer} <= groups, "MESSAGE_COMPLETE_REQUIRED_CPI_GROUPS_MISSING")
     _known(all(ix.outer_index in {venue_ix.outer_index, *ata_outer} for ix in view.inner_instructions),
            "MESSAGE_UNEXPECTED_CPI_GROUP_UNSUPPORTED")
-    pre = dict(zip(keys, setup.accounts))
+    pre = dict(zip(setup.requested_keys, setup.accounts))
     original_accounts = {key:value for batch in (e.venue_read.primary,e.venue_read.dependent)
                          for key,value in zip(batch.requested_keys,batch.accounts)}
     _known(all(pre[key] is not None and value is not None and pre[key].account == value.account
@@ -661,11 +708,20 @@ def _costs(original, plan, quote, view, compute_units, compute_price):
     nested = None
     last_outer = None
     native_venue = wallet_funding = external_funding = base_in = base_out = wsol_out = 0
+    pump_events, native_recipients = [], {}
     for ix in view.inner_instructions:
         pid, accounts = keys[ix.program_id_index], tuple(keys[i] for i in ix.account_indexes)
         if last_outer != ix.outer_index or ix.stack_height == 2:
             nested = None
         last_outer = ix.outer_index
+        if pid == venue.PUMP_PROGRAM_ID:
+            from .ledger_settlement_v0_1 import _pump_trade_event, ANCHOR_EVENT_TAG, PUMP_TRADE_EVENT_TAG
+            if ix.data[:16] == ANCHOR_EVENT_TAG+PUMP_TRADE_EVENT_TAG:
+                try:
+                    pump_events.append(_pump_trade_event(ix.data))
+                except ValueError:
+                    raise _Unknown("MESSAGE_PUMP_TRADE_EVENT_UNSUPPORTED") from None
+            continue
         if pid == plans.ASSOCIATED_TOKEN_PROGRAM_ID:
             nested = accounts[1]
             invoked_atas.add(nested)
@@ -684,8 +740,13 @@ def _costs(original, plan, quote, view, compute_units, compute_price):
                         and owner == program and 0 < space <= 4096, "MESSAGE_PROGRAM_SETUP_UNSUPPORTED")
                     external_funding += amount
                 else:
-                    _known(target == ata and space == 165 and owner == venue.TOKEN_PROGRAM_ID
+                    _known(target == ata and space == (170 if owner == venue.TOKEN_2022_PROGRAM_ID else 165)
+                        and owner == token_roles[target][1]
                         and target in token_roles and ata in queried, "MESSAGE_TOKEN_ACCOUNT_CREATION_UNSUPPORTED")
+                    if owner == venue.TOKEN_2022_PROGRAM_ID:
+                        from .ledger_settlement_v0_1 import fresh_token2022_mint_supported
+                        _known(target == base and fresh_token2022_mint_supported(e.wallet.observation, c.action.mint),
+                               "MESSAGE_FRESH_TOKEN2022_ORIGINAL_MINT_PROFILE_REQUIRED")
                     if token_roles[target][2] == wallet:
                         wallet_funding += amount
                     else:
@@ -694,11 +755,14 @@ def _costs(original, plan, quote, view, compute_units, compute_price):
             else:
                 _known(c.action.side == "BUY" and program == venue.PUMP_PROGRAM_ID and accounts[0] == wallet
                     and accounts[1] in (pool, *fee_native), "MESSAGE_NATIVE_SETUP_OR_TRANSFER_AMBIGUOUS")
-                native_venue += int.from_bytes(ix.data[4:12], "little")
+                amount = int.from_bytes(ix.data[4:12], "little")
+                native_venue += amount
+                native_recipients[accounts[1]] = native_recipients.get(accounts[1], 0)+amount
         elif pid in (venue.TOKEN_PROGRAM_ID, venue.TOKEN_2022_PROGRAM_ID):
             if ata is not None:
                 if ix.data in (b"\x15", b"\x15\x07\x00"):
-                    _known(ata not in queried and pre[ata] is None, "MESSAGE_DUPLICATE_ACCOUNT_SIZE_QUERY")
+                    _known(ata not in queried and pre[ata] is None
+                        and (pid != venue.TOKEN_2022_PROGRAM_ID or ix.data == b"\x15\x07\x00"), "MESSAGE_DUPLICATE_ACCOUNT_SIZE_QUERY")
                     queried.add(ata)
                 elif ix.data == b"\x16":
                     _known(ata in created and ata not in immutable, "MESSAGE_ACCOUNT_IMMUTABLE_INIT_ORDER_UNKNOWN")
@@ -736,6 +800,31 @@ def _costs(original, plan, quote, view, compute_units, compute_price):
     else:
         _known(base_out == c.action.input_units and base_in == 0 and native_venue == 0 and wsol_out == 0,
                "MESSAGE_SIMULATED_REDUCTION_QUANTITY_UNKNOWN")
+    if program == venue.PUMP_PROGRAM_ID:
+        original_mints = {key:value for batch in e.wallet.observation.mint_reads
+                          for key,value in zip(batch.requested_keys,batch.accounts)}
+        metadata_mint = (c.action.token_program == venue.TOKEN_2022_PROGRAM_ID
+                        and len(original_mints[c.action.mint].account.data) > 82)
+        current_events = [event for event in pump_events if event["current_layout"]]
+        if metadata_mint or current_events:
+            _known(len(pump_events) == len(current_events) == 1, "MESSAGE_CURRENT_PUMP_TRADE_EVENT_REQUIRED")
+            event = current_events[0]
+            _known(event["mint"] == c.action.mint and event["user"] == wallet
+                and event["is_buy"] == (c.action.side == "BUY")
+                and event["token_amount"] == (base_in if c.action.side == "BUY" else base_out)
+                and event["fee_recipient"] == roles["fee_recipient"]
+                and plans.derive_pump_creator_vault(event["creator"]) == roles["creator_vault"]
+                and event["quote_mint"] in (venue.WSOL_MINT, venue.SYSTEM_PROGRAM_ID),
+                "MESSAGE_CURRENT_PUMP_EVENT_IDENTITY_CONFLICT")
+            if c.action.side == "BUY":
+                _known(event["sol_amount"] == event["quote_amount"] == native_recipients.get(pool, 0)
+                    and event["fee"] >= event["buyback_fee"], "MESSAGE_CURRENT_PUMP_PRINCIPAL_OR_SETUP_CONFLICT")
+                classified = {}
+                for key, amount in ((roles["fee_recipient"], event["fee"]-event["buyback_fee"]),
+                    (roles["creator_vault"], event["creator_fee"]), (roles["buyback_fee_recipient"], event["buyback_fee"])):
+                    classified[key] = classified.get(key, 0)+amount
+                _known(all(native_recipients.get(key, 0) == amount for key,amount in classified.items()),
+                       "MESSAGE_CURRENT_PUMP_FEE_OR_SETUP_CONFLICT")
     setup_cap = costs.setup_outflow_lamports if c.action.side == "BUY" else costs.protective_setup_lamports
     lock_cap = costs.refundable_account_lock_lamports if c.action.side == "BUY" else costs.protective_refundable_lock_lamports
     require(external_funding <= setup_cap and wallet_funding <= lock_cap, "MESSAGE_EXPLICIT_SETUP_FUNDING_LIMIT_CONFLICT")

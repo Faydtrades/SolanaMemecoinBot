@@ -235,6 +235,9 @@ def preflight(repo_root, dossier, package=None, *, evaluated_at_utc):
         source_digest = verified["source"]["content_digest"]
         if verified.get("supported_dry") is not None:
             reasons = []
+        for row in verified.get("lifecycle", {}).get("reopened_engineering_rows", []):
+            reasons.append({"class": "ENGINEERING_REVIEW", "row": row,
+                            "reason": "REOPENED_FIX2_ROW_PENDING_PROJECT_REVIEW"})
         if package is None:
             reasons += [{"class": "HUMAN_EXTERNAL", "row": row, "reason": reason} for row, reason in (
                 ("M09", "EXPLICIT_SELECTED_TRACK_NOT_SUPPLIED"),

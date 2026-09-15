@@ -1,0 +1,137 @@
+{
+  "M56": "OWNED_NOT_BUILT",
+  "M57": "OWNED_NOT_BUILT",
+  "PUBLIC_ENVIRONMENT_REVIEWED": "NOT_QUALIFIED",
+  "T010": "NOT_STARTED",
+  "T011_M59_M60_M61_real_capital": "NOT_AUTHORIZED",
+  "actual_component_quote_policy_provenance": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_ACTUAL_QUOTE_POLICY_PROVENANCE_V1.json",
+    "sha256": "2bde31290470dc189e3d54658ca0407a96e48fe401d627d20a3a1c5eca7ff0b3"
+  },
+  "actual_preflight": "NOT_RUN; requires qualified actual profile",
+  "additional_lamports_required_by_cost_vector": 0,
+  "arithmetic_surplus_lamports": 21242813,
+  "candidate_sha": null,
+  "clock_profile": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_T010_APPROVED_CLOCK_PROFILE_V1.json",
+    "sha256": "3c303933e0a39ab726c256efa79ee978c4f2af52f78213979c9d70610d042dc3"
+  },
+  "current_inventory_floor_observation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\current-wallet-inventory-floor-v1\\result.json",
+    "sha256": "45f61e6054a255b25a72ecf5adfaf1e12c4eb8a2bd38b4f790697284af24eb88"
+  },
+  "current_pump_support": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_CURRENT_PUMP_COMPATIBILITY_CLOSURE_V1.json",
+    "sha256": "f84b2b7d16727e532f2fbdf05b615c7612a83bdf2f52c3f71a549718ffa5c322"
+  },
+  "current_source_capacity_shape": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\source-start-capacity-v1\\shape.json",
+    "sha256": "21505feab8d6c1ac517bafe687a67b372883c8ca54bcde555c1fd0d52c9ca4e9"
+  },
+  "current_source_freshness_and_tails": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\source-start-capacity-v1\\freshness-and-tails.json",
+    "sha256": "f8ab2f953187e1d9f7bd7c81e8ee5a9dedca69599c7bfabb7275ae4df844f39f"
+  },
+  "current_wallet_acquisition_evidence": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\wallet-cohort-availability-v1\\result.json",
+    "sha256": "e33c1f7e690e1386288eda914a5ec1461cf7faa3a57b84001b3f9a8b325e419d"
+  },
+  "current_wallet_baseline": "NOT_ESTABLISHED_AT_CURRENT_PROFILE; original exact-slot/anchor checks remain unchanged",
+  "final_delta_independent_review": "READY_FOR_FROZEN_DELTA_REVIEW_INCLUDING_UNAPPLIED_DOSSIER_INVENTORY_PROPOSAL",
+  "funding_requirement_lamports": 114788560,
+  "historical_evidence_rewritten": false,
+  "ledger_physical_component_calculation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\ledger-physical-components-v1.json",
+    "sha256": "852c0f757649ac4a2e9a73d6578e3614e078eec4b01e6975099aa5e666c3fcbb"
+  },
+  "ledger_read_optimization_authorization": {
+    "applied": true,
+    "manifest": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\rejected-ledger-cold-fragments-v1.json",
+      "sha256": "b9b73f8bc165d8cc958d3f61f60e2a4e64e49dadcb84d5897884a694dfd7a98d"
+    },
+    "patch": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\rejected-ledger-cold-fragments-v1.patch",
+      "sha256": "cb038ccb8bfed1122810ec969d1824ed5f06257a1c4f98dcaf8426cdafffbb0e"
+    },
+    "status": "EXPLICIT_OWNER_AUTHORIZED_INTEGRATION_VALIDATED_FOR_EQUIVALENCE; PERFORMANCE_GATE_FAILED; COMPOSED_AND_INDEPENDENT_REVIEW_PENDING",
+    "integration_scope": "Authorized canonical_record and two Ledger reader hunks preserved exactly. Constructor context adapted using default-off canonical_fragments enabled only for Ledger cold scans; current source-store path preserved. Literal patch context failure changed neither file. No acceptance or publication is implied.",
+    "integrated_diff_sha256": "fde2d1ff32ee6d126769924ccd48655dcb6a9227bffdff6bb2c661145c405d3a",
+    "owner_authorization_record": {
+      "sha256": "52b98cc0620593905d5e4c5a65687275ccf32494b1a48886f5bb45e5e0b1c10b",
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_LEDGER_COLD_READ_AUTHORIZATION_V1.json"
+    }
+  },
+  "m10": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_T010_M10_DERIVED_COST_BINDING_V1.json",
+    "sha256": "cfd3e477397583c61675f9537eb8bfd186bf6c2a03cf1842b24ffea288e2185f"
+  },
+  "m10_original_admission_validation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\m10-cost-contract-v1\\result.json",
+    "sha256": "4b250ef8dadce7105bcf548185b531b468837a4395473076b4f42a17a19ea5fc"
+  },
+  "observed_wallet_lamports": 136031373,
+  "owner_quote_denial_validation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\owner-quote-denial-v1\\result.json",
+    "sha256": "7f93b6be99f5db699d9a5ea8bf9860e10590bdd347cd229d2c5e8d62ee7cc614"
+  },
+  "owner_quote_policy": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_T010_IMPACT_SLIPPAGE_DECISION_V1.json",
+    "sha256": "27718d5b07c3d8567450fe08ed213bad4dd46c5fc22b666b7370e052b77007a8"
+  },
+  "production_runtime_mutation": false,
+  "published": false,
+  "pump_independent_review": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pump-compatibility-independent-review-v1\\review.json",
+    "sha256": "87cfc2d93e1b61f52c88a132b90114ecdf19b72de7aa05c76bedde73506baa9c"
+  },
+  "resource_envelope": "IN_PROGRESS; source maximum-state cold replay exceeds4s; combined timing and cumulative physical reservations not discharged",
+  "schema": "MEME_LIVE_FIX2_T010_DECISION_BINDING_STATUS_V1",
+  "scope": [
+    "T010",
+    "DRY",
+    "NO_BROADCAST",
+    "NON_SUBMITTED"
+  ],
+  "source_maximum_state_timing": {
+    "after_native_comparison": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\resource-source-evolving-v6\\measurement.json",
+      "sha256": "2f97b08d627886d916f16d23aa843c911af3534592c900299eda16c093b42d03"
+    },
+    "after_type_sensitive_prefix_reuse": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\resource-source-evolving-v2\\measurement.json",
+      "sha256": "5933d32605b4429d814c056cf3d3f735dfee2efcab57e7721e40fa7db2c9825f"
+    },
+    "initial": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\resource-source-evolving-v1\\measurement.json",
+      "sha256": "15d3cedc56226e7226661fe60a45347f5c1104d49c8e1c54200f5f78dbdb2a04"
+    },
+    "latest_source_only_cold_us": 11274992,
+    "maximum_startup_us": 4000000,
+    "result": "DOES_NOT_MEET_UNCHANGED_STARTUP_LIMIT"
+  },
+  "status": "IMPLEMENTED_DELTAS_PENDING_RESOURCE_AND_PUBLIC_QUALIFICATION",
+  "successor_start_answer": "YES; retained measured Ledger cold replay16.270676s and source maximum-state cold replay11.274992s each exceed unchanged4s startup. Physical proof and current coherent wallet remain additionally unresolved.",
+  "wallet_acquisition_order": "Current cohort reads both inventories concurrently, then explicit accounts and known mints concurrently at the observed inventory floor; ending slot floor covers all observed account contexts. One observation, no retries, unchanged original same-slot/anchor/bytes/budget/provider checks.",
+  "wallet_after_venue_validation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\wallet-order-validation-v1\\manifest.json",
+    "sha256": "5defe8fa184fc8fc23ff67677c346327f872fa05dcb50432a2649608984ed451"
+  },
+  "wallet_cohort_validation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\wallet-cohort-validation-v1\\manifest.json",
+    "sha256": "fb4f54a2d0c9411db9eaddf0eb702d5b6ea980192eeaacda1660a82883de9b80"
+  },
+  "wallet_inventory_floor_validation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\wallet-inventory-floor-validation-v1\\manifest.json",
+    "sha256": "8842926bda5a096713d8d412ac50c599a519b2d8570043551d1320124e755ffa"
+  },
+  "ledger_authorized_cold_comparison": {
+    "maximum_startup_us": 4000000,
+    "limit_satisfied": false,
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\authorized-cold-patch-application-v1\\full-replay-comparison.json",
+    "reference_us": 24169067,
+    "sha256": "9987767ff3ff8ba1e2f13e88e885f6cc8307602c72d0bc0571d2bb23b75c77eb",
+    "integrated_us": 16270676
+  },
+  "composed_validation_blocker": "UNREVIEWED_ADDITIONAL_SOURCE before constituent execution. Exact 15-script and four-core-file dossier inventory amendment rejected by automatic approval review; retained unapplied for independent review. Twelve focused commands exited0 (1794 reported checks). No semantic discrepancy observed."
+}

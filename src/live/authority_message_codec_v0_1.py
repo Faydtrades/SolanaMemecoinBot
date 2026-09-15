@@ -26,6 +26,7 @@ from .authority_message_evidence_v0_1 import (
 )
 
 CODEC_VERSION = "live_authority_message_codec_v0.1"
+PARSED_CODEC_VERSION = "live_authority_message_codec_v0.2"
 MAX_PAYLOAD_BYTES = 16*1024*1024
 
 
@@ -53,9 +54,21 @@ def _batch(value):
 
 
 def _simulation_record(value):
+    from .simulation_public_cpi_v0_1 import public_cpi_payload
+    results = []
+    for item in value.results:
+        result = item.payload()
+        groups = public_cpi_payload(item.inner_instructions_json)
+        if type(groups) is list and any(type(group) is dict and type(group.get("instructions")) is list
+                and any(type(row) is dict and "programId" in row for row in group["instructions"]) for group in groups):
+            # Preserve original public JSON as text, including decorative UI
+            # floats. Ledger policy/economic JSON remains strictly integer-only.
+            result.pop("inner_instructions")
+            result["inner_instructions_json"] = item.inner_instructions_json
+        results.append(result)
     return {"leases": [item.payload() for item in value.leases], "validity": [item.payload() for item in value.validity],
         "envelopes": [item.payload() for item in value.envelopes], "attempts": [item.payload() for item in value.attempts],
-        "results": [item.payload() for item in value.results]}
+        "results": results}
 
 
 def simulation_run_digest(value):
@@ -91,6 +104,11 @@ def _simulation(value):
         require(len(row["logs"]) <= 4096 and all(type(log) is str and len(log) <= 16384 for log in row["logs"]),
                 "MESSAGE_CODEC_PUBLIC_LOG_BOUND_INVALID")
         for name in ("error", "return_data", "inner_instructions", "returned_accounts"):
+            if name == "inner_instructions" and "inner_instructions_json" in row:
+                from .simulation_public_cpi_v0_1 import public_cpi_payload
+                require("inner_instructions" not in row, "MESSAGE_CODEC_DUPLICATE_CPI_ENCODING")
+                public_cpi_payload(row["inner_instructions_json"])
+                continue
             row[name+"_json"] = canonical_json(row.pop(name))
         results.append(plans.ShadowSimulationResultV01(**row))
     return plans.SimulationRunEvidenceV01(tuple(leases), tuple(validity), tuple(envelopes), tuple(attempts), tuple(results))
@@ -100,7 +118,11 @@ def encode_validation_input(value):
     try:
         require(type(value) is MessageValidationInput, "MESSAGE_CODEC_EXACT_INPUT_REQUIRED")
         c, e = value.context, value.evidence
-        record = {"codec_version": CODEC_VERSION, "context": {
+        simulation = _simulation_record(e.simulation)
+        parsed = any("inner_instructions_json" in row for row in simulation["results"])
+        require(not parsed or e.wallet.observation.schema == "live_wallet_account_evidence_v0.3",
+            "MESSAGE_PARSED_CPI_CURRENT_EVIDENCE_REQUIRED")
+        record = {"codec_version": PARSED_CODEC_VERSION if parsed else CODEC_VERSION, "context": {
             "domain": c.domain.to_record(), "candidate": c.candidate.to_record(), "acceptance": asdict(c.acceptance),
             "ledger_admission": asdict(c.ledger_admission),
             "admitted_buy": c.admitted_buy.to_record(), "action": c.action.to_record(),
@@ -117,7 +139,7 @@ def encode_validation_input(value):
                 "quote_policy": e.quote_policy.payload(), "plan_policy": e.plan_policy.payload(),
                 "supplied_state_json": e.supplied_state_json, "supplied_route_json": e.supplied_route_json,
                 "supplied_quote_json": e.supplied_quote_json, "supplied_plan_json": e.supplied_plan_json,
-                "simulation": _simulation_record(e.simulation), "simulation_provenance": asdict(e.simulation_provenance),
+                "simulation": simulation, "simulation_provenance": asdict(e.simulation_provenance),
                 "fee": None if e.fee is None else asdict(e.fee),
                 "setup_accounts": _batch_record(e.setup_accounts)}}
         payload = canonical_json(record)
@@ -130,7 +152,7 @@ def encode_validation_input(value):
 def decode_validation_input(payload):
     try:
         record = _object(strict_json_object(payload), ("codec_version", "context", "profile", "clock", "evidence"))
-        require(record["codec_version"] == CODEC_VERSION, "MESSAGE_CODEC_VERSION_INVALID")
+        require(record["codec_version"] in (CODEC_VERSION, PARSED_CODEC_VERSION), "MESSAGE_CODEC_VERSION_INVALID")
         row = _object(record["context"], ("domain", "candidate", "acceptance", "ledger_admission", "admitted_buy", "action", "original_policy",
             "entry_policy", "cut", "required_wallet_context_slot", "position", "protection"))
         domain = dict(row["domain"])

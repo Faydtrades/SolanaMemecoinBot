@@ -1,0 +1,12 @@
+{
+  "schema": "MEME_LIVE_T010_IMPACT_SLIPPAGE_DECISION_V1",
+  "authority": "EXPLICIT_OWNER_DECISION_CURRENT_FIX2_CHIEF_RUN",
+  "scope": ["T010", "DRY", "NO_BROADCAST", "NON_SUBMITTED"],
+  "maximum_impact_bps": 500,
+  "maximum_slippage_bps": 500,
+  "quote_policy": {"slippage_bps": 500},
+  "candidate_over_limit_disposition": "DENY_THROUGH_ORIGINAL_RUNTIME_WITHOUT_POLICY_RELAXATION",
+  "historical_policy_rewritten": false,
+  "T011_or_recurring_capital_policy_authorized": false,
+  "T010_launch_authorized_by_this_record": false
+}

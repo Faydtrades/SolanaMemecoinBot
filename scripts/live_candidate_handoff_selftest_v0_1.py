@@ -315,7 +315,10 @@ def conflicts(directory):
         finally:
             second.close()
         f.reopen()
-        f.conn.execute(f"UPDATE {TABLES[5]} SET event_json='{{}}' WHERE event_type='CandidateEvaluationEvent'")
+        reject("acknowledged original provenance is immutable at storage boundary", lambda: f.conn.execute(
+            f"UPDATE {TABLES[5]} SET event_json='{{}}' WHERE event_type='CandidateEvaluationEvent'"))
+        f.conn.rollback()
+        f.conn.execute(f"UPDATE {TABLES[5]} SET event_json='{{}}' WHERE delivered=0")
         f.conn.commit()
         reject("altered original provenance denied before Ledger",lambda:f.handoff.deliver_page())
     finally:

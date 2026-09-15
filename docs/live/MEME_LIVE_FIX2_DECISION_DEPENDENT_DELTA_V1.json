@@ -1,0 +1,76 @@
+{
+  "M56": "OWNED_NOT_BUILT",
+  "M57": "OWNED_NOT_BUILT",
+  "T010": "NOT_STARTED",
+  "T011": "NOT_AUTHORIZED",
+  "T011_clock_trust_approved": false,
+  "accepted_freshness_seconds": 30,
+  "actual_PUBLIC_ENVIRONMENT_REVIEWED_qualification": "NOT_COMPLETED_SOURCE_GATE_DENIED",
+  "actual_public_capacity_measurement": "NOT_REACHED_SOURCE_GATE_DENIED_BEFORE_ADMISSION",
+  "actual_source_diagnosis": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_ACTUAL_SOURCE_BOUND_DIAGNOSIS_V1.json",
+    "sha256": "f8d34c729cc9750b10e9bf7cb0db90027d33a6cd87bf0d6c1a0d071046721b42"
+  },
+  "actual_source_evidence": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_ACTUAL_SOURCE_PREREQUISITE_V1.json",
+    "sha256": "831328ea5bae5e870d95107b996aef10d55bdbfbc70087b8ca4dc8e0688ff7a0"
+  },
+  "approved_clock_lower_utc": "2026-09-13T12:10:42.106905+00:00",
+  "approved_clock_profile": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_T010_APPROVED_CLOCK_PROFILE_V1.json",
+    "sha256": "3c303933e0a39ab726c256efa79ee978c4f2af52f78213979c9d70610d042dc3"
+  },
+  "bounded_delta_review": "NO_SUBSTANTIVE_FINDINGS_FOR_DECISION_DEPENDENT_ARTIFACT_DELTA",
+  "bounded_delta_review_details": {
+    "model": "gpt-6-astra",
+    "offline_validation_exit_code": 0,
+    "reasoning_effort": "high",
+    "scope": "Four new decision-dependent artifacts only; existing engineering not reopened",
+    "source_runtime_network_actions": false
+  },
+  "candidate_published": false,
+  "candidate_sha": null,
+  "canonical_live_store_mutation": false,
+  "capital_authority": false,
+  "clock_approval_scope": [
+    "T010",
+    "DRY",
+    "NO_BROADCAST",
+    "NON_SUBMITTED"
+  ],
+  "clock_binding_validation": {
+    "actual_fresh_sample_status": "QUALIFIED",
+    "exact_approved_provider_and_policy": true,
+    "exit_code": 0,
+    "packet_interval_and_sample_recomputed": true
+  },
+  "exactly_1_to_2_sufficient": "NOT_ESTABLISHED",
+  "git": {
+    "candidate_published": false,
+    "divergence": [
+      "0",
+      "0"
+    ],
+    "fetched_remote": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2",
+    "head": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2",
+    "staged": false
+  },
+  "latest_receipt_age_seconds_at_observation": 68773.095979,
+  "latest_receipt_utc": "2026-09-12T17:04:29.010926+00:00",
+  "original_admissions_performed": 0,
+  "other_limits_relaxed": false,
+  "page_limit": 10000,
+  "prior_engineering_evidence_reused": true,
+  "prior_engineering_reopened": false,
+  "provider_fingerprint": "8b474daec8f92a40b400834018bb43d220dac51c520a26d2c7d186ba56d0cb6d",
+  "required_pump_rows_lower_bound": 10001,
+  "required_receipt_rows_lower_bound": 10001,
+  "required_resolution": "An approved compatible current canonical source and explicit retained continuation that satisfy the existing 30-second freshness and 10000-row source-page bounds. No reset, new anchor, page-budget increase, collector restart or safety relaxation was applied.",
+  "schema": "MEME_LIVE_FIX2_DECISION_DEPENDENT_DELTA_V1",
+  "signer_send_broadcast": false,
+  "source_code_changed": false,
+  "source_disposition": "UNKNOWN",
+  "source_failure": "SOURCE_PAGE_BUDGET_EXHAUSTED",
+  "status": "BLOCKED_ACTUAL_SOURCE_PREREQUISITE",
+  "tombstone_adjustment_applied": false
+}

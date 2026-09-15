@@ -1,0 +1,116 @@
+{
+  "PUBLIC_ENVIRONMENT_REVIEWED_qualification_complete": false,
+  "T010_executed": false,
+  "approval_required": [
+    "provider_id",
+    "provider_fingerprint",
+    "maximum_uncertainty_us",
+    "maximum_drift_ppm",
+    "maximum_checkpoint_elapsed_us",
+    "explicit unauthenticated SNTP trust assumption"
+  ],
+  "capital_authority": false,
+  "counter": {
+    "rejected_for_interval_measurement": "Python 3.12 monotonic_ns uses GetTickCount64, resolution 0.015625 seconds",
+    "reported_resolution_seconds": 1e-07,
+    "selected_mechanism": "QueryPerformanceCounter via Python perf_counter_ns"
+  },
+  "evidence": [
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\public-wallet-interface-smoke-network.json",
+      "sha256": "81c0883d62e6171aa1ff032eff7095bf499dacec4b2e405b43b0a04dfbd2fdea"
+    },
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\cloudflare-clock-discovery-v2.json",
+      "sha256": "ce6373b17fdb779660aa10dc5d2136f71c1c2841a5440feb406e3bd7702fd0bd"
+    },
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\windows-clock-discovery-v2.json",
+      "sha256": "0210a2e2c91d659b92ab7a8e8e7a479d2fbf0d7b8733f24ef1c3668212f05289"
+    }
+  ],
+  "host_identity_digest": "09928edc688fbcf1fee5a3a81f63adcdbfe4e598e26feb66c09ecb34ef0cd93c",
+  "host_time_service": {
+    "changed": false,
+    "configured_peer": "time.windows.com,0x9",
+    "configured_type": "NTP",
+    "service": "W32Time",
+    "start_type": "Manual",
+    "status": "Stopped"
+  },
+  "measurements": {
+    "cloudflare": {
+      "local_wall_offset_interval_us_max": 171574,
+      "local_wall_offset_interval_us_min": 152566,
+      "observed_30s_relative_rate_interval_ppm": [
+        -515.75218956554,
+        632.18442866674
+      ],
+      "round_trip_us_max": 10488,
+      "round_trip_us_min": 5900,
+      "samples": 4,
+      "utc_interval_width_us_max": 17500,
+      "utc_interval_width_us_min": 13218
+    },
+    "windows": {
+      "observed_30s_relative_rate_interval_ppm": [
+        -1564.22329887912,
+        1543.71684974212
+      ],
+      "round_trip_us_max": 30517,
+      "round_trip_us_min": 26105,
+      "samples": 4,
+      "utc_interval_width_us_max": 50697,
+      "utc_interval_width_us_min": 46393
+    }
+  },
+  "no_automatic_fallback": true,
+  "numerical_proposal_basis": "1000 ppm rounds above the observed short-window possible relative-rate interval, not a hardware certification. A 30s holdover widens the observed maximum 17500us interval by at most 60000us under that explicit assumption, remaining below proposed 100000us. Refresh is every 10s; failed refresh holds immediately. 30000000us is the explicit maximum checkpoint interval, never grant validity. All numerical values are proposed, not selected production policy. Final reviewed code also widens the observation RTT by approved drift (up to 11us for the observed 10488us RTT at proposed 1000ppm); the proposed 100000us guard still covers this measured scenario. Raw discovery interval widths use nominal QPC elapsed.",
+  "observed_at_utc": "2026-09-13T11:22:07.560058+00:00",
+  "ranked_options": [
+    {
+      "option": "Cloudflare direct SNTP v4 pinned 162.159.200.1",
+      "rank": 1,
+      "reason": "Current lower measured interval width; no host time-service configuration needed; existing read-only client supports it; explicit unauthenticated trust approval required."
+    },
+    {
+      "option": "Configured Windows peer direct SNTP v3 pinned 51.145.123.29",
+      "rank": 2,
+      "reason": "Reachable without starting W32Time; measured interval is wider; separately fingerprinted and must be separately approved, never fallback."
+    },
+    {
+      "option": "Authenticated NTS via external reviewed time client",
+      "rank": 3,
+      "reason": "Stronger provider authentication; no installed accepted client established; requires dependency/deployment qualification. Not implemented or selected in FIX2."
+    }
+  ],
+  "recommended_clock_policy": {
+    "maximum_checkpoint_elapsed_us": 30000000,
+    "maximum_drift_ppm": 1000,
+    "maximum_uncertainty_us": 100000,
+    "provider_fingerprint": "8b474daec8f92a40b400834018bb43d220dac51c520a26d2c7d186ba56d0cb6d",
+    "provider_id": "CLOUDFLARE_PUBLIC_SNTP_V1"
+  },
+  "recommended_provider": {
+    "address": "162.159.200.1",
+    "maximum_holdover_us": 30000000,
+    "ntp_era": 0,
+    "port": 123,
+    "protocol_version": 4,
+    "provider_id": "CLOUDFLARE_PUBLIC_SNTP_V1",
+    "refresh_interval_us": 10000000,
+    "server_name": "time.cloudflare.com",
+    "timeout_ms": 2000,
+    "trust_profile": "UNAUTHENTICATED_SNTP_HONEST_SERVER_AND_NETWORK_REQUIRED_V1"
+  },
+  "schema": "MEME_LIVE_FIX2_CLOCK_DECISION_V1",
+  "source_references": [
+    "https://www.rfc-editor.org/rfc/rfc5905",
+    "https://www.rfc-editor.org/rfc/rfc4330",
+    "https://learn.microsoft.com/en-us/windows-server/networking/windows-time-service/windows-time-service-tools-and-settings",
+    "https://developers.cloudflare.com/time-services/ntp/",
+    "https://developers.cloudflare.com/time-services/nts/"
+  ],
+  "status": "PROJECT_DECISION_REQUIRED_NOT_APPROVED",
+  "trust_decision": "Pinned-IP unauthenticated SNTP requires approval of honest server AND network assumptions. Origin nonce and connected UDP correlate responses but do not authenticate the server. Choose NTS instead if this trust assumption is unacceptable."
+}

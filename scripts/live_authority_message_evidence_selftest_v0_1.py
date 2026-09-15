@@ -487,7 +487,7 @@ def actual_positions(directory,cleanup):
     base=plans.derive_associated_token_address(sf.WALLET,buy.mint,buy.token_program)
     absent.accounts.pop(base);absent.inventory[buy.token_program].remove(base)
     fresh=a3.wallet(f,scenario=absent,program=buy.token_program,at=NOW+5)
-    deny("fresh_token22_creation_explicitly_unresolved",replace(value,evidence=replace(value.evidence,wallet=fresh)),True)
+    deny("fresh_token22_wallet_cannot_replace_existing_setup_lineage",replace(value,evidence=replace(value.evidence,wallet=fresh)))
     legacy=replace(value.evidence.wallet,observation=replace(value.evidence.wallet.observation,schema="live_wallet_account_evidence_v0.1"))
     deny("old_wallet_version_never_reinterprets_canonical170",replace(value,evidence=replace(value.evidence,wallet=legacy)),True)
     f.reopen();check("canonical170_original_codec_replay",validate_message_evidence(decode_validation_input(encode_validation_input(value)))==result)

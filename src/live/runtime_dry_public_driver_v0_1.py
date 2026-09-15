@@ -29,10 +29,12 @@ class DryPublicFacts:
     now_us: object
     operations_resources: object
     source_cut_utc: str | None = None
+    wallet_after_venue: object = None
 
     def __post_init__(self):
         require(callable(self.clock) and callable(self.now_us)
-            and (self.entry is None or type(self.entry) is EntryFacts),
+            and (self.entry is None or type(self.entry) is EntryFacts)
+            and (self.wallet_after_venue is None or callable(self.wallet_after_venue)),
             "DRY_DRIVER_ORIGINAL_PUBLIC_FACTS_REQUIRED")
 
 
@@ -43,9 +45,11 @@ class DryPublicInputDriver:
     facts: object
     # Tests may supply a mock public HTTP boundary; never an execution port.
     public_transport: object = None
+    qualification_interrupt_after_simulation: bool = False
 
     def __post_init__(self):
-        require(callable(self.facts), "DRY_DRIVER_PUBLIC_FACTS_PROVIDER_REQUIRED")
+        require(callable(self.facts) and type(self.qualification_interrupt_after_simulation) is bool,
+            "DRY_DRIVER_PUBLIC_FACTS_PROVIDER_REQUIRED")
 
     @contextmanager
     def __call__(self, started):
@@ -60,7 +64,8 @@ class DryPublicInputDriver:
                 transport=self.public_transport) as rpc:
             yield dict(clock=facts.clock, entry=facts.entry,
                 execution=DryExecutionPorts(rpc, facts.wallet, facts.quote_policy,
-                    facts.plan_policy, facts.compute, facts.now_us),
+                    facts.plan_policy, facts.compute, facts.now_us, self.qualification_interrupt_after_simulation,
+                    facts.wallet_after_venue),
                 operations_resources=facts.operations_resources, source_cut_utc=facts.source_cut_utc)
 
 

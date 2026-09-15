@@ -10,7 +10,7 @@ from contextlib import nullcontext
 import multiprocessing
 import os
 from dataclasses import dataclass
-from time import monotonic_ns, sleep, time_ns
+from time import monotonic_ns, perf_counter_ns, sleep, time_ns
 from uuid import uuid4
 
 from .operations_ownership_v0_1 import OperationsStore, OwnerFence
@@ -44,17 +44,35 @@ class SupervisionFacts:
 def _runtime_child(channel, launch_id, configuration, external_inputs, now_us, generation):
     """No inherited owner: the original startup acquires inside the new process."""
     started = None
+    startup_begin = perf_counter_ns()
     try:
+        before_start = getattr(external_inputs, "runtime_before_start", None)
+        if before_start is not None:
+            before_start()
         started = start_runtime(**configuration, process_identity=launch_id+":"+str(os.getpid()),
                              now_us=now_us, replace_generation=generation)
-        channel.send(("STARTED", started.audit.owner_fence))
+        # Optional trusted host hook measures this actual child startup, never
+        # a launcher observation serialized before spawning.
+        on_started = getattr(external_inputs, "runtime_started", None)
+        if on_started is not None:
+            startup_report = on_started(started, max(1, (perf_counter_ns()-startup_begin)//1000))
+        else:
+            startup_report = None
+        channel.send(("STARTED", started.audit.owner_fence if startup_report is None else
+            (started.audit.owner_fence, startup_report)))
         while channel.recv() == "STEP":
+            before_step = getattr(external_inputs, "runtime_before_step", None)
+            if before_step is not None and not before_step(started):
+                channel.send(("RESOURCE_HELD", ("RESOURCE_HELD", external_inputs._work_report(started))))
+                continue
             # Host supplies external resources only. Original Runtime selects and
             # authorizes every work unit; no supervisor economic decision exists.
             inputs = external_inputs(started)
             with nullcontext(inputs) if type(inputs) is dict else inputs as resources:
                 result = started.runtime.step(**resources)
-            channel.send(("PROGRESS", result.work))
+            completed = getattr(external_inputs, "runtime_completed", None)
+            channel.send(("PROGRESS", result.work if completed is None else
+                (result.work, completed(started, result))))
     except EOFError:
         pass
     finally:
@@ -72,7 +90,7 @@ class OperationsSupervisor:
     termination latch this instance held. Reopening a supervisor is an explicit
     host action; it is not an automatic retry path. No reset API is called.
     """
-    def __init__(self, configuration, external_inputs, health, *, expected_generation=None):
+    def __init__(self, configuration, external_inputs, health, *, expected_generation=None, work_control=None):
         if (type(health) is not HealthProfile or not callable(external_inputs)
                 or type(configuration.get("expected_identity")) is not StartupIdentity
                 or any(k in configuration for k in ("process_identity", "now_us", "replace_generation"))):
@@ -82,6 +100,8 @@ class OperationsSupervisor:
         from pickle import dumps, loads
         self._configuration = loads(dumps(configuration))
         self._external_inputs, self.health = external_inputs, health
+        self._work_control = work_control
+        self._observation_state = None
         self.store = OperationsStore(configuration["operations_path"], configuration["domain"])
         self._context = multiprocessing.get_context("spawn")
         self.process = self._channel = None
@@ -108,6 +128,9 @@ class OperationsSupervisor:
         facts = SupervisionFacts(state, None if self.process is None else self.process.pid,
             None if self.fence is None else self.fence.generation, self.completed_steps, self.last_work)
         from .operations_degradation_monitor_v0_1 import observe_supervisor, unavailable
+        if state.startswith("OBSERVING_"):
+            # No mutable monitor observation after the finite work boundary.
+            return facts
         if state == "STARTING" and self.fence is None:
             # A1 acquisition commits with timeout=0. Preserve its existing no-read
             # window; this unavailable view neither clears nor refreshes incidents.
@@ -142,6 +165,9 @@ class OperationsSupervisor:
             dumps((self._configuration, self._external_inputs))
         except Exception:
             return self._hold("HELD_LAUNCH_UNPROVEN")
+        if self._work_control is not None and not self._work_control.before_start():
+            self._observation_state = self._work_control.observation_state
+            return self._facts(self._observation_state)
         launch_id = uuid4().hex
         parent, child = self._context.Pipe()
         process = self._context.Process(target=_runtime_child,
@@ -172,6 +198,8 @@ class OperationsSupervisor:
         self._last_mono = monotonic_us
         if self._latched:
             return self._facts(self._latched)
+        if self._observation_state is not None:
+            return self._facts(self._observation_state)
         # Do not hold SQLite read locks while the timeout=0 A1 acquisition
         # is committing in a starting child. Stop still fences that acquisition;
         # startup health is bounded and durable facts are refreshed at handshake.
@@ -227,6 +255,11 @@ class OperationsSupervisor:
                     if self._waiting and self._channel.poll(0):
                         message, value = self._channel.recv()
                         if self.fence is None:
+                            startup_report = None
+                            if self._work_control is not None:
+                                if type(value) is not tuple or len(value) != 2:
+                                    return self._hold("HELD_CHILD_PROTOCOL_CONFLICT")
+                                value, startup_report = value
                             # STARTED may arrive after the poll's first read.
                             try:
                                 state = self.store.snapshot()
@@ -240,13 +273,29 @@ class OperationsSupervisor:
                                            ("domain_id", "binding_digest", "generation", "process_identity", "nonce"))):
                                 return self._hold("HELD_CHILD_IDENTITY_CONFLICT")
                             self.fence = value
+                            if self._work_control is not None:
+                                self._work_control.after_start(startup_report)
                         else:
-                            if message != "PROGRESS" or type(value) is not str or len(value) > 128:
+                            completion_report = None
+                            if self._work_control is not None:
+                                if type(value) is not tuple or len(value) != 2:
+                                    return self._hold("HELD_CHILD_PROTOCOL_CONFLICT")
+                                value, completion_report = value
+                            if message not in ("PROGRESS", "RESOURCE_HELD") or type(value) is not str or len(value) > 128:
+                                return self._hold("HELD_CHILD_PROTOCOL_CONFLICT")
+                            if message == "RESOURCE_HELD" and self._work_control is None:
                                 return self._hold("HELD_CHILD_PROTOCOL_CONFLICT")
                             self.completed_steps += 1
                             self.last_work = value
+                            if self._work_control is not None:
+                                self._work_control.after_step(completion_report)
+                                if message == "RESOURCE_HELD":
+                                    self._work_control.hold_resources()
                         self._waiting = False
                     if not self._waiting:
+                        if self._work_control is not None and not self._work_control.before_step():
+                            self._observation_state = self._work_control.observation_state
+                            return self._facts(self._observation_state)
                         self._waiting = True
                         self._deadline = monotonic_us+self.health.progress_us
                         self._channel.send("STEP")

@@ -132,7 +132,10 @@ def execute(f, key, action, accounts, lower, *, route, at, number, intent=None,
     original = production.original
     plan = _rebuild(original)[-1]
     inputs = original.evidence.setup_accounts
-    pre = dict(zip(inputs.requested_keys, inputs.accounts))
+    # Finalized metadata includes all balances, independently of Q1's economic
+    # setup-data query. Retain the fixture's original public program accounts.
+    pre = dict(public_read.setup)
+    pre.update(zip(inputs.requested_keys, inputs.accounts))
     actual = sf.Fixture(route, action.side, failed=failed, token_program=action.token_program,
         external_plan=plan, external_message_hex=prep.message_hex, external_wire=wire, external_pre_accounts=pre)
     actual.mint = action.mint
@@ -228,14 +231,21 @@ def failure_cycles(directory):
 
 
 def handoff_guards(directory):
+    original_produce = q1.produce
+    chain_accounts = {}
+    def capture_public_accounts(*args, **kwargs):
+        result, public_read = original_produce(*args, **kwargs)
+        chain_accounts.clear()
+        chain_accounts.update(public_read.setup)
+        return result, public_read
     for case in ('timeout','membership-contradiction','wrong-wire','wrong-genesis','concurrent','wrong-profile','stale-fence','clock-private'):
-        with q3.fixture(directory,case) as (f,production,envelope,fresh,boundary,transport,at):
+        with patch.object(q1,'produce',capture_public_accounts), q3.fixture(directory,case) as (f,production,envelope,fresh,boundary,transport,at):
             # Deliberately no send claim: public reconciliation is still lawful
             # for already signed durable output after an interrupted dispatch.
             prep = envelope.preparation
             inputs = production.original.evidence.setup_accounts
             actual = sf.Fixture(external_plan=_rebuild(production.original)[-1],external_message_hex=prep.message_hex,
-                external_wire=base64.b64decode(envelope.signed_wire_base64),external_pre_accounts=dict(zip(inputs.requested_keys,inputs.accounts)))
+                external_wire=base64.b64decode(envelope.signed_wire_base64),external_pre_accounts=dict(chain_accounts))
             scenario = chain_scenario(actual,prep,at,envelope.primary_signature)
             if case == 'membership-contradiction': scenario.blocks[scenario.tx['slot']]['signatures'] = []
             elif case == 'wrong-wire': scenario.tx['transaction'] = a5.chain_fixture.scenario().tx['transaction']

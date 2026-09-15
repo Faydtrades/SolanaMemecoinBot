@@ -60,7 +60,7 @@ def evidence_cases():
         observation = observe(token_scenario(wf.token_data(wf.MINT22, amount=amount, tail=TAIL)), request=request)
         value = port(observation)
         label = "amount-"+str(amount)
-        check(label+"_actual_adapter_emits_new_version", observation.schema == SCHEMA == "live_wallet_account_evidence_v0.2")
+        check(label+"_actual_adapter_emits_new_version", observation.schema == SCHEMA == "live_wallet_account_evidence_v0.3")
         check(label+"_canonical_exact_account_supported", value.account_facts_usable and value.assessment.tokens[0].amount == amount
             and value.assessment.tokens[0].program == wf.TOKEN_2022_PROGRAM_ID and not value.assessment.tokens[0].reasons)
         payload = wallet_observation_to_json(observation)

@@ -42,6 +42,20 @@ from .source_health_v0_1 import CollectorSourceAdapter, INTEGRITY_REASONS
 
 VERSION = "live_operations_degradation_monitor_v0.1"
 HOST_METRICS = frozenset(("HOST_RSS_BYTES", "HOST_DISK_RESERVE_BYTES", "STARTUP_US", "PROTECTIVE_STEP_US"))
+
+
+def observation_metrics(policy, designation=None):
+    """Only an explicit C2 designation separates evidence from numeric guards."""
+    if designation is None:
+        return frozenset()
+    from .t010_resource_envelope_v0_1 import OBSERVATION_POLICY
+    require(designation == OBSERVATION_POLICY, "OPERATIONS_OBSERVATION_POLICY_INVALID")
+    observed = HOST_METRICS - {"HOST_DISK_RESERVE_BYTES"}
+    require(not observed.intersection(item.metric for item in policy.resource_limits),
+        "OPERATIONS_OBSERVATION_ENFORCEMENT_CONFLICT")
+    return observed
+
+
 HUMAN = frozenset(("UNSENT_ATTEMPT_RECOVERY_REQUIRED", "SOURCE_IDENTITY_OR_HISTORY_BROKEN", "PRODUCER_INTEGRITY_UNAVAILABLE",
     "OWNER_FENCE_UNPROVEN", "OPERATOR_STOPPED", "RESTART_EXHAUSTED", "SUPERVISOR_HELD",
     "ECONOMIC_INTEGRITY_UNAVAILABLE", "CUSTODY_TRUTH_UNAVAILABLE"))
@@ -65,6 +79,7 @@ class MonitorConfiguration:
     runtime_code_digest: str
     resource_max_age_us: int
     protective_qualification_digest: str | None
+    observation_policy: str | None = None
 
     def binding_for(self, identity):
         return monitor_configuration_digest(identity, path=self.path, host_identity_digest=self.host_identity_digest,
@@ -77,6 +92,7 @@ class MonitorConfiguration:
         require(type(self.resource_max_age_us) is int and 0 < self.resource_max_age_us <= 86400000000)
         if self.protective_qualification_digest is not None:
             digest(self.protective_qualification_digest)
+        observation_metrics(self.policy, self.observation_policy)
 
 
 @dataclass(frozen=True, slots=True)
@@ -415,15 +431,26 @@ class OperationsMonitor:
             (cut["consumer_cut"].revision,)).fetchone()
         host, host_witness = self._host_metrics(resources, now_us, owner_digest)
         metrics.update(host)
+        self._observe_resources(metrics, common, producer_witness, host_witness, backlog_count, now_us)
+        self._attempts(cut, common, now_us)
+        require(repo.consumer_snapshot()["consumer_cut"] == cut["consumer_cut"], "OPERATIONS_LEDGER_CUT_CHANGED")
+
+    def _observe_resources(self, metrics, common, producer_witness, host_witness, backlog_count, now_us):
+        repo, store, config = self.started.runtime.ledger, self.store, self.configuration
         configured = {item.metric for item in config.policy.resource_limits}
+        observation_only = observation_metrics(config.policy, config.observation_policy)
         observed_metrics = REQUIRED_METRICS | configured
         self.last_metrics = tuple(sorted((metric, metrics.get(metric)) for metric in observed_metrics))
         coverage = _subject(repo.domain, "PROFILE_COVERAGE", config.policy.content_digest)
-        _record(store, "PROFILE_UNRESOLVED", coverage, common, now_us, healthy=REQUIRED_METRICS <= configured)
+        _record(store, "PROFILE_UNRESOLVED", coverage, common, now_us,
+            healthy=REQUIRED_METRICS - observation_only <= configured)
         for metric in sorted(observed_metrics):
             subject = _subject(repo.domain, "RESOURCE", (config.policy.content_digest, metric))
             witness = content_fingerprint((common, producer_witness, host_witness, metric, metrics.get(metric), backlog_count))
-            if metric == "OLDEST_UNCONSUMED_AGE_US" and backlog_count == 0 and metric in configured:
+            if metric in observation_only:
+                value = metrics.get(metric)
+                condition = None if type(value) is int and 0 <= value < 2**63 else "PROFILE_UNRESOLVED"
+            elif metric == "OLDEST_UNCONSUMED_AGE_US" and backlog_count == 0 and metric in configured:
                 condition = None  # Positive same-cut empty count, NOT a zero age.
             else:
                 condition = resource_condition(config.policy, metric, metrics.get(metric),
@@ -433,8 +460,6 @@ class OperationsMonitor:
                     _record(store, code, subject, witness, now_us)
                 elif condition is None:
                     _record(store, code, subject, witness, now_us, healthy=True)
-        self._attempts(cut, common, now_us)
-        require(repo.consumer_snapshot()["consumer_cut"] == cut["consumer_cut"], "OPERATIONS_LEDGER_CUT_CHANGED")
 
     def _attempts(self, cut, common, now_us):
         repo, store = self.started.runtime.ledger, self.store

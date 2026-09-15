@@ -1,0 +1,91 @@
+{
+  "schema": "MEME_LIVE_FIX2_LEDGER_COLD_READ_VALIDATION_V1",
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "owner_acceptance_gates_all_satisfied": false,
+  "authorized_patch": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\rejected-ledger-cold-fragments-v1.patch",
+    "sha256": "cb038ccb8bfed1122810ec969d1824ed5f06257a1c4f98dcaf8426cdafffbb0e"
+  },
+  "application": "Context-adapted Ledger-only integration; authorized canonical method and two reader hunks preserved verbatim, default-off Ledger-only opt-in preserves current source-store implementation.",
+  "authorization": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_LEDGER_COLD_READ_AUTHORIZATION_V1.json",
+    "sha256": "52b98cc0620593905d5e4c5a65687275ccf32494b1a48886f5bb45e5e0b1c10b"
+  },
+  "gates": {
+    "1_canonical_bytes": "IDENTICAL across 130 retained Authority and 128 admission rows",
+    "2_content_and_receipt_digests": "IDENTICAL",
+    "3_full_replay": "IDENTICAL semantic state and all 31 logical tables; both full replays retained",
+    "4_tamper_and_inconsistency": "Reference and integrated cold-start rejection verdicts match; retained original history unchanged",
+    "5_startup_resources": {
+      "result": "NOT_SATISFIED",
+      "reference_us": 24169067,
+      "integrated_us": 16270676,
+      "improvement_percent": 32.67975135324835,
+      "maximum_startup_us": 4000000,
+      "hard_rss_limit_bytes": 100663296,
+      "integrated_rss_after_open_bytes": 74502144
+    },
+    "6_affected_and_composed_validation": {
+      "focused_commands_exit_zero": 12,
+      "focused_checks": 1794,
+      "composed_commands_exit_zero": 9,
+      "composed_constituent_checks": 584,
+      "composed_checks": 18,
+      "corrected_fixture_checks": {
+        "profile": 26,
+        "public_qualifier": 43
+      },
+      "note": "Counts overlap across runs; they are not unique coverage totals. Earlier failures are retained."
+    },
+    "7_independent_review": "NO_SUBSTANTIVE_FINDINGS for implemented bounded delta and exact fixture/manifest correction"
+  },
+  "measured_history_provenance": "Exact retained original-API denial benchmark using actual source shape; not an actual-public admission campaign.",
+  "semantic_discrepancy_observed": false,
+  "mandatory_discrepancy_rollback_triggered": false,
+  "patch_disposition": "Retained unpublished engineering work; NOT accepted for candidate publication because gate5 remains unmet.",
+  "evidence": {
+    "seven_gate_freeze": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\authorized-cold-patch-application-v1\\seven-gate-freeze.json",
+      "sha256": "80c1198ca6341f2068384731d5e28cce94d2d6c19dd29d132bcdee5cf06accde"
+    },
+    "final_gate6": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\authorized-cold-patch-application-v1\\gate6-final-supplement.json",
+      "sha256": "4910f8e05f3e2c36f8f12a01c134d2824bb1ac7514092fa1d5b9109468afd411"
+    },
+    "independent_review": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\new-delta-independent-review-v3\\review.json",
+      "sha256": "40617de5d3777d5b6fc8c556ea768848f89c8af8525406cc5d7886095ab67d2c"
+    },
+    "correction_review": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\new-delta-independent-review-v3\\correction-review-supplement-v1.json",
+      "sha256": "43cae6a6d69413a00ac6eb144e29c1c6599cf7348480b464e37f5bcf919ab13f"
+    },
+    "reviewed_dossier_registration": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\reviewed-dossier-registration-v1.json",
+      "sha256": "97a222b60ed9faa931db3010bd965dbdf5cb6d4b330030604d90f5ab5f523743"
+    }
+  },
+  "directly_required_test_correction": "Local deterministic qualification fixture now uses accepted producer architectural history bound. Shared helper and historical 16384-byte amendment remain unchanged; no actual-public guard adjustment.",
+  "automatic_review_inventory_rejection": "Resolved through independent exact-scope evidence and accepted reconsideration of the same patch; no bypass.",
+  "source_freeze": {
+    "files": 294,
+    "content_digest": "f5e20f0a5c22f2e9e399306dafaeb11a872c4056760de232ba660f478ec4e069"
+  },
+  "remaining_package_constraints": [
+    "Ledger cold replay16.270676s exceeds unchanged4s; profile identifies remaining original digest/transition serialization work outside the exact two-reader patch.",
+    "Source maximum-state cold replay11.274992s separately exceeds4s.",
+    "All-store cumulative physical size, WAL/freelist, pre-write/recovery and joint timing/RSS proof remains incomplete.",
+    "Current coherent opening wallet observation at accepted RPC profile remains unestablished."
+  ],
+  "PUBLIC_ENVIRONMENT_REVIEWED": "NOT_QUALIFIED",
+  "actual_preflight": "NOT_RUN",
+  "successor_start_answer": "YES; known cold-start/resource engineering remains required",
+  "M56": "OWNED_NOT_BUILT",
+  "M57": "OWNED_NOT_BUILT",
+  "candidate_sha": null,
+  "published": false,
+  "T010": "NOT_STARTED",
+  "T011_and_real_capital": "NOT_AUTHORIZED",
+  "production_runtime_files_modified": false,
+  "collector": "Verified running in accepted unlimited mode; left running"
+}

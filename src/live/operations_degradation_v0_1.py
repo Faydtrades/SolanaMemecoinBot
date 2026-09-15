@@ -12,8 +12,9 @@ absence is never positive recovery evidence. Runtime integration is separate.
 from __future__ import annotations
 
 import os
+import re
 import sqlite3
-from time import monotonic
+from time import perf_counter as monotonic
 from contextlib import closing, contextmanager
 from dataclasses import asdict, dataclass, field
 
@@ -69,6 +70,30 @@ def digest(value):
         digest_value(value)
     except (ValueError, TypeError):
         raise ValueError("OPERATIONS_DEGRADATION_DIGEST_REQUIRED") from None
+
+
+def _validate_receipt_digests(conn):
+    """Same complete current-cut check, in bounded 256KiB ASCII blocks.
+
+    Invalid type/length rows become a nonhex sentinel before concatenation, so
+    malformed arbitrarily large values never become an aggregate allocation.
+    Character AND byte lengths exclude NUL suffixes and Unicode substitutions.
+    Keyset pagination covers every signed rowid, including the minimum integer.
+    Nothing is cached between calls; direct SQL changes remain visible.
+    """
+    last = None
+    while True:
+        where = "" if last is None else "WHERE rowid>?"
+        args = () if last is None else (last,)
+        high, block = conn.execute("SELECT max(rowid),group_concat(CASE WHEN "
+            "typeof(digest)='text' AND length(digest)=64 AND length(CAST(digest AS BLOB))=64 "
+            "THEN digest ELSE '?' END,'') FROM (SELECT rowid,digest FROM receipts "
+            + where + " ORDER BY rowid LIMIT 4096)", args).fetchone()
+        if high is None:
+            return
+        require(type(block) is str and re.fullmatch(r"[0-9a-f]*", block) is not None,
+            "OPERATIONS_DEGRADATION_DIGEST_REQUIRED")
+        last = high
 
 
 @dataclass(frozen=True, slots=True)
@@ -196,6 +221,23 @@ def _facts(rows):
     return DegradationFacts(tuple(rows), bool(active), tuple(sorted({row.scope for row in active})))
 
 
+class _JournalConnection(sqlite3.Connection):
+    """Refresh the shared remaining allowance before every lockable statement."""
+    remaining_seconds = None
+
+    def _timeout(self):
+        if self.remaining_seconds is not None:
+            super().execute("PRAGMA busy_timeout=" + str(int(1000 * self.remaining_seconds())))
+
+    def execute(self, *args, **kwargs):
+        self._timeout()
+        return super().execute(*args, **kwargs)
+
+    def commit(self):
+        self._timeout()
+        return super().commit()
+
+
 class DegradationStore:
     """Independent incident journal. No acknowledgement/reset/release API.
 
@@ -208,7 +250,8 @@ class DegradationStore:
     def __init__(self, path, domain, policy):
         require(type(domain) is LedgerDomain and domain.mode in ("LIVE", "DRY"))
         require(type(policy) is DegradationPolicy)
-        self._busy_deadline = None
+        self._busy_remaining = None
+        self._busy_operation_started = None
         self.path, self.policy = _journal_path(path), policy
         self.domain_digest, self.binding_digest = domain.economic_domain_id, domain.binding_digest
         stat = self.path.stat()
@@ -238,34 +281,49 @@ class DegradationStore:
     @contextmanager
     def contention_window(self):
         """One finite SQLite contention allowance for a composed observation/step."""
-        previous = self._busy_deadline
+        previous = self._busy_remaining
         if previous is None:
-            self._busy_deadline = monotonic()+1.0
+            self._busy_remaining = 1.0
         try:
             yield
         finally:
-            self._busy_deadline = previous
+            # Nested observations share the consumed budget; they cannot renew
+            # it by restoring their entry value. Only the outer window resets.
+            if previous is None:
+                self._busy_remaining = None
 
     def _busy_seconds(self):
-        return 1.0 if self._busy_deadline is None else max(0.0, self._busy_deadline-monotonic())
+        remaining = 1.0 if self._busy_remaining is None else self._busy_remaining
+        elapsed = 0.0 if self._busy_operation_started is None else monotonic()-self._busy_operation_started
+        return max(0.0, remaining-elapsed)
 
     def _commit(self, conn):
-        conn.execute("PRAGMA busy_timeout="+str(int(1000*self._busy_seconds())))
         conn.commit()
 
     @contextmanager
     def _connection(self):
+        previous_operation = self._busy_operation_started
+        if previous_operation is None:
+            self._busy_operation_started = monotonic()
         try:
             require(_journal_path(self.path) == self.path and self.path.is_file(), "OPERATIONS_DEGRADATION_STORE_REQUIRED")
             stat = self.path.stat()
             require((stat.st_dev, stat.st_ino) == self._identity, "OPERATIONS_DEGRADATION_STORE_REPLACED")
             with closing(sqlite3.connect(self.path.as_uri()+"?mode=rw", uri=True,
-                    timeout=self._busy_seconds(), isolation_level=None)) as conn:
+                    timeout=self._busy_seconds(), isolation_level=None, factory=_JournalConnection)) as conn:
+                conn.remaining_seconds = self._busy_seconds
                 conn.row_factory = sqlite3.Row
                 conn.execute("PRAGMA synchronous=FULL")
                 yield conn
         except (sqlite3.DatabaseError, OSError):
             raise ValueError("OPERATIONS_DEGRADATION_STORE_UNAVAILABLE") from None
+        finally:
+            if previous_operation is None:
+                # Conservatively charge all journal-operation time, including
+                # file checks, SQL and fsync, not unrelated Runtime/RPC work.
+                if self._busy_remaining is not None:
+                    self._busy_remaining = max(0.0, self._busy_remaining-(monotonic()-self._busy_operation_started))
+                self._busy_operation_started = None
 
     def _read(self, conn):
         objects = conn.execute("SELECT sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%'").fetchall()
@@ -295,8 +353,7 @@ class DegradationStore:
             require((row.alerted == 0 and row.alerted_us is None) or
                 (row.alerted == 1 and type(row.alerted_us) is int and row.first_us <= row.alerted_us <= last_us))
             require(row.alerted == 1 or CONDITIONS[row.condition][2])
-        for receipt in conn.execute("SELECT digest FROM receipts"):
-            digest(receipt[0])
+        _validate_receipt_digests(conn)
         return last_us, rows
 
     def snapshot(self):

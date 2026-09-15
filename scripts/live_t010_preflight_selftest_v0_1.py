@@ -168,7 +168,11 @@ def main():
             report = gate.preflight(ROOT, dossier, package, evaluated_at_utc=AT)
         check("real_exact_freeze_preflight_structure", report["structural_validation"]["state"] == "STRUCTURALLY_COMPLETE")
         check("static_engineering_not_overridden_by_fixture_review", report["readiness"] == "DENIED" and report["ready"] is False
-              and {r["reason"] for r in report["reasons"]} == set(gate.STATIC_ENGINEERING_GAPS))
+              and set(gate.STATIC_ENGINEERING_GAPS) <= {r["reason"] for r in report["reasons"]})
+        check("reopened_rows_not_project_accepted_by_tooling",
+              {r["row"] for r in report["reasons"]
+               if r["reason"] == "REOPENED_FIX2_ROW_PENDING_PROJECT_REVIEW"}
+              == set(dossier["lifecycle"]["reopened_engineering_rows"]))
         check("no_grant_or_t010", report["grants_permission"] is False and report["t010_executed"] is False)
         check("no_mutation", before == {str(p): p.read_bytes() for p in root.rglob("*") if p.is_file()})
         check("no_stores_initialized", not any(root.glob("*.sqlite3")))

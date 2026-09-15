@@ -218,6 +218,9 @@ def transact(f, key, action, at, number):
     units_before = 0 if action.side == 'BUY' else f.repo.position_history(action.position_id).remaining_units
     with external_mint(action.mint), retained_accumulator_rpc(f, action) as prior_accumulator:
         submitted, reads, sends = c2.execution(f, key, action, at=at, number=number)
+        if submitted.work != 'SUBMISSION_OBSERVED' or len(sends.requests) != 1:
+            raise AssertionError({'check': f.name+'_'+str(number)+'_actual_guarded_send',
+                'runtime_step': asdict(submitted), 'send_request_count': len(sends.requests)})
         check(f.name+'_'+str(number)+'_actual_guarded_send', submitted.work == 'SUBMISSION_OBSERVED'
             and len(sends.requests) == 1)
         envelope, actual, scenario, pre = c2.original_chain(f, submitted, at)

@@ -70,12 +70,26 @@ def main():
         denied("runtime_store_never_opened", lambda: d.EvidenceGraph(root).add(root / "live.sqlite3", "a" * 64, parent="x"), "DATABASE_IS_NOT_A_DOSSIER_ARTIFACT")
         parent.write_bytes(b'{"x":1,"x":2}')
         denied("ambiguous_json_denied", lambda: d.read_json(parent), "DUPLICATE_JSON_KEY")
+        old_source = d.ACCEPTED_DEVELOPMENT_CHECKOUT / original
+        parent.write_bytes(d.canonical_bytes({"source": {"path": str(old_source), "sha256": "a" * 64}}))
+        with patch.object(d, "_base_files", return_value={original: b"# accepted\n"}):
+            relocated = d.EvidenceGraph(root)
+            relocated.add(parent, d.sha256(parent.read_bytes()), parent="accepted")
+            check("historical_checkout_source_is_provenance_not_current_file",
+                  relocated.historical_sources == [{"parent": str(parent), "path": str(root / original),
+                      "original_reference_path": str(old_source), "sha256": "a" * 64}]
+                  and len(relocated.nodes) == 1)
+        with patch.object(d, "_base_files", return_value={}):
+            denied("unknown_historical_source_not_relocated",
+                   lambda: d.EvidenceGraph(root).add(parent, d.sha256(parent.read_bytes()), parent="accepted"),
+                   "UNKNOWN_HISTORICAL_SOURCE_REFERENCE")
         denied("unsupported_schema", lambda: d.verify_dossier(root, {"schema": "v999"}), "UNSUPPORTED_DOSSIER")
     matrix = (ROOT / d.MATRIX_PATH).read_text(encoding="utf-8-sig")
     disposition = d.lifecycle_disposition(matrix)
     check("six_explicit_human_rows", disposition["human_external"] == list(d.HUMAN_ROWS))
     check("current_matrix_exact_verified_rows", {row for row, state in disposition["authoritative_rows"].items()
-        if state == "VERIFIED"} == {f"M{n:02}" for n in range(1, 62)} - set(d.HUMAN_ROWS))
+        if state == "VERIFIED"} == {f"M{n:02}" for n in range(1, 62)} - set(d.HUMAN_ROWS)
+        - set(disposition["reopened_engineering_rows"]))
     check("exact_dossier_review_still_required", disposition["exact_dossier_project_review_required"] == ["M56", "M57"])
     check("tooling_does_not_promote", disposition["tooling_promotes_rows"] is False)
 
@@ -88,7 +102,11 @@ def main():
         return "\n".join(lines)
 
     for row in ("M56", "M57"):
-        for state in ("OWNED_NOT_BUILT", "HUMAN_EXTERNAL", "BLOCKED"):
+        reopened = d.lifecycle_disposition(replace_state(row, "OWNED_NOT_BUILT"))
+        check(row + "_truthful_reopened_state", row in reopened["reopened_engineering_rows"]
+              and reopened["authoritative_rows"][row] == "OWNED_NOT_BUILT"
+              and not reopened["tooling_promotes_rows"])
+        for state in ("HUMAN_EXTERNAL", "BLOCKED"):
             denied(row + "_rejects_" + state, lambda: d.lifecycle_disposition(replace_state(row, state)),
                 "UNEXPECTED_LIFECYCLE_DISPOSITION:" + row)
     for row in d.HUMAN_ROWS:

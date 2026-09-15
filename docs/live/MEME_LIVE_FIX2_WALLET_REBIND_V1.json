@@ -1,0 +1,19 @@
+{
+  "accepted_profile": {
+    "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-profile-02\\profile.json",
+    "sha256": "fc924b5d572211b82a889b6933e9fb191bea9c9e9e2e82c95d2fd7a89fdc6440"
+  },
+  "origin": "HUMAN_EXTERNAL",
+  "review_reference": "CHATGPT_PROJECT_OWNER_FIX2_WALLET_REBIND_20260913_ATTACHMENT_2b3aeb61-3fe8-4500-8ce9-a799bc3a00ae",
+  "schema": "MEME_LIVE_PUBLIC_DEPLOYMENT_WALLET_REBIND_V1",
+  "scope": [
+    "T010",
+    "DRY",
+    "NO_BROADCAST",
+    "NON_SUBMITTED"
+  ],
+  "signer_send_broadcast": false,
+  "superseded_wallet": "B96iU8vKUtV2kAcGNj5zsYWo9GKPEGZo5jDPmJVqC3xp",
+  "wallet": "Cx2GvwVAbozcAg19L3ePmGUp59F19LVc5DgPgsRu4LWm",
+  "wallet_mutation": false
+}

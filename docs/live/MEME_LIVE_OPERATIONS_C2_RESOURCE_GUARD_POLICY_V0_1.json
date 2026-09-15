@@ -1,0 +1,48 @@
+{
+  "schema": "MEME_LIVE_OPERATIONS_C2_RESOURCE_GUARD_POLICY_V0_1",
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "runtime_configuration_source": false,
+  "authoritative_requirements": [
+    {"path": "docs/live/MEME_LIVE_COMPLETION_PLAN_V2.md", "sections": ["Step 6", "Step 8", "Step 9", "Acceptance discipline"]},
+    {"path": "docs/live/MEME_LIVE_OPERATIONS_C1_ENGINEERING_PROFILE_V0_1.json", "fields": ["configured_continuation_profile", "required_future_C2_ports"]}
+  ],
+  "evidence": {
+    "disposition": "Accepted PREP12.3O inputs; no measurement recomputation or new qualification",
+    "completed_samples": 12,
+    "continuation_summary": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\continued-63k-measurements-20260914-211412-554a704730b044b895cc0238804204ed\\continuation-summary.json",
+    "analytical_inputs": {"candidate_roots": 128, "ledger_commits": 274, "ledger_payload_bytes": 199472, "source_observations": 627, "source_payload_bytes": 657457152, "runtime_monitor_observations": 2193, "owned_peak_bytes": 893218177024, "independent_recovery_bytes": 893218177024, "temporary_peak_bytes": 207260041216}
+  },
+  "observation_policy_designation": "C2_OBSERVATION_ONLY_V1",
+  "observations": [
+    {"dimension": "STARTUP_US", "observed_maximum": 192179512, "unit": "us", "policy": "OBSERVATION_ONLY", "enforcement_threshold": null},
+    {"dimension": "parent_first_legal_unit_us", "observed_maximum": 192322264, "unit": "us", "policy": "OBSERVATION_ONLY", "enforcement_threshold": null},
+    {"dimension": "HOST_RSS_BYTES", "observed_maximum": 441843712, "unit": "B", "policy": "OBSERVATION_ONLY", "enforcement_threshold": null},
+    {"dimension": "child_private_bytes", "observed_maximum": 425820160, "unit": "B", "policy": "OBSERVATION_ONLY", "enforcement_threshold": null},
+    {"dimension": "PROTECTIVE_STEP_US", "observed_maximum": 5054436, "unit": "us", "policy": "OBSERVATION_ONLY", "enforcement_threshold": null},
+    {"dimension": "first_runtime_step_us", "observed_maximum": 1897770, "unit": "us", "policy": "OBSERVATION_ONLY", "enforcement_threshold": null},
+    {"dimension": "resource_max_age_us", "observed_maximum": 2090418, "unit": "us", "policy": "OBSERVATION_ONLY", "enforcement_threshold": null},
+    {"dimension": "recovery_evidence_max_age_us", "observed_maximum": 1113926, "unit": "us", "policy": "OBSERVATION_ONLY", "enforcement_threshold": null}
+  ],
+  "configured_ceilings": {
+    "policy_type": "HARD_LIMIT",
+    "readiness_policy_type": "READINESS_DENY",
+    "derivation": "Unchanged authoritative configured_continuation_profile.values; no ceiling is derived from a measurement maximum",
+    "values": {"active_mints": 64, "batch_rows": 32, "checkpoint_bytes": 1048576, "delivery_page_rows": 256, "history_bytes": 8388608, "history_rows": 256, "hot_mint_bytes": 2097152, "hot_mint_events": 512, "pending_bytes": 16777216, "pending_rows": 8192, "record_bytes": 1048576, "retained_bytes": 8388608, "retained_events": 1024},
+    "units": "bytes for *_bytes, counts for all other values",
+    "policy": "Existing enforcement roles unchanged; the original producer transaction remains the exact byte-cap arbiter",
+    "readiness": "ResourceGate.before_step retains joint identity/retirement and active-mint batch reservations; reached HISTORY_BYTES, CHECKPOINT_BYTES, PRODUCER_PENDING_ROWS or PRODUCER_PENDING_BYTES holds fresh work",
+    "capacity_claim": "Configuration ceilings are not a claim that every byte cap was exercised to exhaustion"
+  },
+  "boundaries": {
+    "envelope": "src/live/t010_resource_envelope_v0_1.py:validate",
+    "physical": "src/live/t010_resource_envelope_v0_1.py:validate_physical",
+    "fresh_entry": "ResourceGate.before_step",
+    "startup": "PublicHostInputs.runtime_before_start"
+  },
+  "readiness_action": "Unavailable, unknown or invalid required producer/physical readiness evidence denies fresh work at the existing ResourceGate; capacity holds remain latched",
+  "priority": "Existing owned pending and DRY recovery branches remain before ordinary holds; no ownership, receipt, reservation or protective obligation is removed to create capacity",
+  "compatibility": "Absent observation_policy preserves numerical-envelope behavior; C2 observation designation conflicts with numerical measured guards and numerical limits for its observation dimensions",
+  "evidence_binding": "Existing reference reader and envelope digest bind retained observations; this document is explanatory and is not loaded as runtime configuration",
+  "unsupported_claims": ["No new RSS/private-memory/timing limit", "No process-tree capacity inferred from child observations", "No production capacity increase", "No retrospective modification of retained evidence or persisted reservations", "Independent original source freshness and volume-reserve contracts remain applicable"],
+  "authority": "This policy grants no signing, send, broadcast or real-capital authority."
+}

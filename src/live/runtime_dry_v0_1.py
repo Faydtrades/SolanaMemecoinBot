@@ -26,6 +26,10 @@ from .ledger_ports_v0_1 import DryTerminalInput
 VERSION = "live_runtime_dry_v0.1"
 
 
+class DryQualificationInterruption(BaseException):
+    """Explicit DRY-only interruption after the durable simulation receipt."""
+
+
 def _original(repository, action_id):
     require(repository.domain.mode == "DRY", "RUNTIME_DRY_FIXED_DOMAIN_REQUIRED")
     action = repository.action(action_id)
@@ -108,7 +112,8 @@ def _simulation_record(run, rpc, preparation):
         "loaded_accounts_data_size": result.loaded_accounts_data_size}
 
 
-def run_dry(repository, action_id, rpc, wallet, quote_policy, plan_policy, compute, *, clock, now_us):
+def run_dry(repository, action_id, rpc, wallet, quote_policy, plan_policy, compute, *, clock, now_us,
+            qualification_interrupt_after_simulation=False, wallet_after_venue=None):
     """One original DRY action -> exact construction/read -> durable terminal.
 
     Redelivery of prepared work finishes its durable history; it does not retry
@@ -142,9 +147,11 @@ def run_dry(repository, action_id, rpc, wallet, quote_policy, plan_policy, compu
     intent = _intent(context, utc_microseconds(initial_clock.utc_lower_utc))
     try:
         rpc.bind_genesis(context.domain.genesis_hash)
-        reads, state, route, quote, plan = _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, initial_clock)
+        reads, state, route, quote, plan, wallet = _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, initial_clock,
+            wallet_after_venue=wallet_after_venue, current_clock=clock)
         started, lease, config, envelope, setup, fee, validity = construct_exact_readonly_message(
-            plan, context.domain.wallet, compute, rpc, now_us=now_us)
+            plan, context.domain.wallet, compute, rpc, now_us=now_us,
+            economic_setup_only=wallet.observation.schema == "live_wallet_account_evidence_v0.3")
     except (ValueError, RuntimeError):
         return finish_interrupted_dry(repository, action_id, recorded_at_utc=clock().utc_upper_utc)
     construction = {"version": VERSION, "context_cut": asdict(context.cut),
@@ -181,4 +188,8 @@ def run_dry(repository, action_id, rpc, wallet, quote_policy, plan_policy, compu
         content_fingerprint(original), external_record_json=canonical_json(original))
     repository.record_external_attempt_stage(stage, idempotency_key="runtime-dry-simulation-"+prep.attempt_id,
         expected_attempt_revision=stored.revision, fence=repository.write_fence())
+    if qualification_interrupt_after_simulation:
+        require(qualification_interrupt_after_simulation is True and repository.domain.mode == "DRY",
+            "RUNTIME_QUALIFICATION_INTERRUPTION_DRY_ONLY")
+        raise DryQualificationInterruption("DRY_QUALIFICATION_EXACT_SIMULATION_DURABLE")
     return finish_interrupted_dry(repository, action_id, recorded_at_utc=clock().utc_upper_utc)

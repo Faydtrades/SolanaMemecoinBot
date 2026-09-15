@@ -1,0 +1,40 @@
+{
+  "accepted_extension": {
+    "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-03\\profile-extension.json",
+    "sha256": "abeead8a4fc2fbefb28e9df0b7aaabb3f4cce4c1c96f65c33b4c715d1c6a6a95"
+  },
+  "accepted_profile": {
+    "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-profile-02\\profile.json",
+    "sha256": "fc924b5d572211b82a889b6933e9fb191bea9c9e9e2e82c95d2fd7a89fdc6440"
+  },
+  "authority": "CHATGPT_PROJECT_REVIEW",
+  "decision": "APPROVED_FOR_PUBLIC_DRY",
+  "guard_limits": {
+    "AGGREGATE_FEATURE_BYTES": 248125,
+    "CHECKPOINT_BYTES": 2239,
+    "HISTORY_BYTES": 9086,
+    "HOST_DISK_RESERVE_BYTES": 1073741824,
+    "HOST_RSS_BYTES": 100663296,
+    "HOTTEST_EVENTS": 256,
+    "HOTTEST_FEATURE_BYTES": 166275,
+    "IDENTITY_ROWS": 34,
+    "LEDGER_TAIL_PAYLOAD_BYTES": 10292,
+    "LEDGER_TAIL_ROWS": 20,
+    "NO_T0_MINTS": 31,
+    "OLDEST_UNCONSUMED_AGE_US": 30000000,
+    "PRODUCER_PENDING_BYTES": 2210889,
+    "PRODUCER_PENDING_ROWS": 2421,
+    "PROTECTIVE_STEP_US": 2000000,
+    "RETAINED_EVENTS": 382,
+    "RETAINED_SERIALIZED_BYTES": 410065,
+    "STARTUP_US": 4000000,
+    "TOMBSTONE_ROWS": 1,
+    "UNFINISHED_MINTS": 33
+  },
+  "measurement": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_PENDING_GUARD_MEASUREMENT_V1.json",
+    "sha256": "8b628986fed0cbf3fffd965bb6c6ead73c6428c0517e64657ababefd65101ea9"
+  },
+  "review_reference": "CHATGPT_PROJECT_FIX2_PENDING_ROWS_2346_TO_2421_EXACT_RECORDED_CUT_T010_DRY_NO_BROADCAST_NON_SUBMITTED",
+  "schema": "MEME_LIVE_PUBLIC_DRY_GUARD_REVIEW_V1"
+}

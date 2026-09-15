@@ -687,15 +687,23 @@ class LedgerRepository:
             "DO UPDATE SET content_digest=excluded.content_digest,payload_json=excluded.payload_json",
             (state.content_digest, canonical_json(asdict(state))))
 
-    def _authority_receipt_row(self, row):
+    def _authority_receipt_row(self, row, *, _source_decoder=None):
         seq, key, kind, policy_id, grant_id, digest, payload = row
         try:
-            item = authority_receipt_from_record(strict_json_object(payload))
+            item = authority_receipt_from_record(strict_json_object(payload), _source_decoder=_source_decoder)
             command = item.original if kind == "AUTHORITY_CONTROL" else None
             expected_policy = None if command is None or command.policy is None else command.policy.policy_id
             expected_grant = None if command is None or command.grant is None else command.grant.grant_id
-            if (item.sequence, item.command_id, item.kind, expected_policy, expected_grant, item.content_digest,
-                    canonical_json(asdict(item))) != (seq, key, kind, policy_id, grant_id, digest, payload):
+            if _source_decoder is None:
+                original, fingerprint = canonical_json(asdict(item)), item.content_digest
+            else:
+                # One cold scan's exact original canonical bytes and SHA256.
+                # The normal receipt property and original write codec remain
+                # untouched; every retained payload and hash is still checked.
+                original = _source_decoder.canonical_record(item)
+                fingerprint = hashlib.sha256(original.encode("utf-8")).hexdigest()
+            if (item.sequence, item.command_id, item.kind, expected_policy, expected_grant, fingerprint,
+                    original) != (seq, key, kind, policy_id, grant_id, digest, payload):
                 raise ValueError
             public_reference(key)
             return item
@@ -859,9 +867,16 @@ class LedgerRepository:
             receipt.request.root_id if receipt.accepted else None, receipt.mint if receipt.accepted else None,
             receipt.consumed_grant_id, receipt.content_digest, canonical_json(asdict(receipt)))
 
-    def _read_authority_admission_row(self, row):
-        value = admission_receipt_from_record(strict_json_object(row[-1]))
-        if self._authority_admission_row(value) != row:
+    def _read_authority_admission_row(self, row, *, _source_decoder=None):
+        value = admission_receipt_from_record(strict_json_object(row[-1]), _source_decoder=_source_decoder)
+        if _source_decoder is None:
+            expected = self._authority_admission_row(value)
+        else:
+            original = _source_decoder.canonical_record(value)
+            expected = (value.sequence, value.command_id, value.request.root_id,
+                value.request.root_id if value.accepted else None, value.mint if value.accepted else None,
+                value.consumed_grant_id, hashlib.sha256(original.encode("utf-8")).hexdigest(), original)
+        if expected != row:
             raise LedgerConflict("AUTHORITY_ADMISSION_RECORD_LINK_CONFLICT")
         return value
 
@@ -2185,7 +2200,7 @@ class LedgerRepository:
 
     def record_nonacceptance(self, root_id: str, disposition: str, *, external_reference: str,
                              external_record_digest: str, recorded_at_utc: str, idempotency_key: str,
-                             fence: LedgerWriteFence) -> str:
+                             fence: LedgerWriteFence, protocol_evidence: dict | None = None) -> str:
         try:
             if disposition not in NON_ACCEPTANCE:
                 raise LedgerConflict("LEDGER_CANNOT_ISSUE_ADMISSION_ACCEPTANCE")
@@ -2205,6 +2220,13 @@ class LedgerRepository:
                 "idempotency_key": idempotency_key, "from_disposition": old, "disposition": disposition,
                 "external_reference": external_reference, "external_record_digest": external_record_digest,
                 "recorded_at_utc": at, "has_real_authority_grant": False}
+            if protocol_evidence is not None:
+                from .pump_protocol_compatibility_v0_1 import validate_rejection_proof
+                record.update(version="live_ledger_nonacceptance_v0.2", protocol_evidence=protocol_evidence)
+                # Apply the same bounded strict codec as every retained receipt.
+                record = strict_json_object(canonical_json(record))
+                validate_rejection_proof(record["protocol_evidence"], self.domain, self._authority,
+                    self.candidate(root_id), record)
             for number, payload in rows:
                 previous = strict_json_object(payload)
                 if previous["idempotency_key"] == idempotency_key:
@@ -2293,10 +2315,15 @@ class LedgerRepository:
     def _audit_economic_history(self, commits: dict, baseline_seq: int | None, baseline_slot: int | None,
                                 baseline_receipt: LedgerWalletReceipt | None) -> tuple[dict, dict]:
         """Full finite replay on open/audit; ordinary appends validate touched facts."""
+        # Share only equal immutable source arrays within this one original
+        # scan. All row codecs, canonical byte/digest comparisons and original
+        # transition checks below remain unchanged; no cross-scan cache.
+        from .source_health_v0_1 import _SourceReplayDecoder
+        source_decoder = _SourceReplayDecoder(canonical_fragments=True)
         records, events, candidates, actions, attempts = {}, {}, {}, {}, {}
         groups = {item.sequence: item for item in (self._port_receipt_row(row) for row in self._conn.execute("SELECT * FROM ledger_consumer_groups"))}
         children = {seq: {} for seq in groups}
-        authority_groups = {item.sequence: item for item in (self._read_authority_admission_row(row)
+        authority_groups = {item.sequence: item for item in (self._read_authority_admission_row(row, _source_decoder=source_decoder)
             for row in self._conn.execute("SELECT * FROM ledger_authority_admissions"))}
         authority_children = {seq: {} for seq in authority_groups}
         message_groups = {item.sequence: item for item in (self._read_message_stage_row(row)
@@ -2358,9 +2385,10 @@ class LedgerRepository:
             remember(seq, "ATTEMPT", attempt_id, digest, item)
         for root, ordinal, key, disposition, digest, payload, seq in self._conn.execute("SELECT * FROM ledger_inbox_dispositions"):
             item = strict_json_object(payload)
+            proof_keys = {"protocol_evidence"} if item.get("version") == "live_ledger_nonacceptance_v0.2" else set()
             if (set(item) != {"version", "root_id", "ordinal", "idempotency_key", "from_disposition", "disposition",
-                             "external_reference", "external_record_digest", "recorded_at_utc", "has_real_authority_grant"}
-                    or item["version"] != "live_ledger_nonacceptance_v0.1" or item["has_real_authority_grant"] is not False
+                             "external_reference", "external_record_digest", "recorded_at_utc", "has_real_authority_grant"} | proof_keys
+                    or item["version"] not in ("live_ledger_nonacceptance_v0.1", "live_ledger_nonacceptance_v0.2") or item["has_real_authority_grant"] is not False
                     or (item["root_id"], item["ordinal"], item["idempotency_key"], item["disposition"]) != (root, ordinal, key, disposition)
                     or type(item["ordinal"]) is not int or disposition not in NON_ACCEPTANCE
                     or canonical_json(item) != payload or content_fingerprint(item) != digest):
@@ -2431,7 +2459,7 @@ class LedgerRepository:
             raise LedgerConflict("LEDGER_ORPHAN_CUSTODY_ORIGINAL_INPUT")
 
         for row in self._conn.execute("SELECT * FROM ledger_authority_records"):
-            receipt = self._authority_receipt_row(row)
+            receipt = self._authority_receipt_row(row, _source_decoder=source_decoder)
             remember(receipt.sequence, receipt.kind, receipt.command_id, receipt.content_digest, receipt)
         for row in self._conn.execute("SELECT * FROM ledger_runtime_exit_records"):
             receipt = self._exit_row(row)
@@ -2688,6 +2716,9 @@ class LedgerRepository:
             elif kind == "NON_ACCEPTANCE":
                 root = item["root_id"]
                 state = inbox.get(root)
+                if item["version"] == "live_ledger_nonacceptance_v0.2":
+                    from .pump_protocol_compatibility_v0_1 import validate_rejection_proof
+                    validate_rejection_proof(item["protocol_evidence"], self.domain, authority, candidates[root], item)
                 if (any(value.root_id == root for value in custody.reservations) or state is None or state[0] in TERMINAL_INBOX or item["from_disposition"] != state[0]
                         or item["ordinal"] != state[1]+1 or item["recorded_at_utc"] < state[2]
                         or utc_microseconds(item["recorded_at_utc"]) < candidates[root].generated_at_us

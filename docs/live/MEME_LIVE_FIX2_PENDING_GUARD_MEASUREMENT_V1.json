@@ -1,0 +1,39 @@
+{
+  "accepted_extension": {
+    "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m53-recovery-03\\profile-extension.json",
+    "sha256": "abeead8a4fc2fbefb28e9df0b7aaabb3f4cce4c1c96f65c33b4c715d1c6a6a95"
+  },
+  "approval_scope": [
+    "T010",
+    "DRY",
+    "NO_BROADCAST",
+    "NON_SUBMITTED"
+  ],
+  "canonical_live_store_mutation": false,
+  "maxima": {
+    "AGGREGATE_FEATURE_BYTES": 144647,
+    "CHECKPOINT_BYTES": 2035,
+    "HISTORY_BYTES": 8453,
+    "HOTTEST_EVENTS": 79,
+    "HOTTEST_FEATURE_BYTES": 78813,
+    "IDENTITY_ROWS": 8,
+    "NO_T0_MINTS": 0,
+    "PRODUCER_PENDING_BYTES": 1519004,
+    "PRODUCER_PENDING_ROWS": 2421,
+    "RETAINED_EVENTS": 145,
+    "RETAINED_SERIALIZED_BYTES": 213584,
+    "TOMBSTONE_ROWS": 1,
+    "UNFINISHED_MINTS": 7
+  },
+  "measurement_scope": "Original isolated producer resource cut only. Host, Ledger and other unmeasured dimensions are not qualified by this evidence.",
+  "original_runtime_admissions": 0,
+  "producer_observation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\actual-producer-capacity-continuation-v2\\capacity-observation.json",
+    "sha256": "c08f78dac9e5504cdde6bb741525d7c94c230fe830fa5da431e36ec57a3d306e"
+  },
+  "schema": "MEME_LIVE_PUBLIC_DRY_CAPACITY_OBSERVATION_V1",
+  "scope": "ACTUAL_PUBLIC_READONLY_DRY_CAPACITY",
+  "signer_send_broadcast": false,
+  "source_cut_p1_rowid": 3143387,
+  "synthetic_observations": false
+}

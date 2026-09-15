@@ -710,6 +710,11 @@ class PumpBondingCurveStateV01:
         object.__setattr__(self, "state_id", deterministic_id("P5VS", STATE_SCHEMA_VERSION, fp))
 
     @property
+    def fee_mint_supply(self) -> int:
+        """Historical fee basis; explicitly versioned LIVE states may override."""
+        return self.decoded.token_total_supply
+
+    @property
     def executable(self) -> bool:
         return not self.decoded.complete and self.decoded.real_token_reserves > 0
 
@@ -1123,7 +1128,7 @@ def _selected_fees(
     if isinstance(state, PumpBondingCurveStateV01):
         market_cap = _market_cap(
             state.decoded.virtual_quote_reserves,
-            state.decoded.token_total_supply,
+            state.fee_mint_supply,
             state.decoded.virtual_token_reserves,
         )
     else:

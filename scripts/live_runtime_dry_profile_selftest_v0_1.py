@@ -159,6 +159,22 @@ def qualification(directory):
         f=owned.fixture(directory,'supported-profile')
         try:
             inputs=inputs_for(f,refs,accepted)
+            from live.acceptance_dossier_v0_1 import canonical_bytes,sha256
+            from live.continuous_producer_v0_2 import STORAGE_FINGERPRINT
+            producer_profile=accepted['constructor_configuration']['continuation_profile']
+            # The historical 16384-byte snapshot no longer covers corrected
+            # lossless history. Only this synthetic fixture uses the existing
+            # architectural ceiling, never observed usage or a public claim.
+            amendment={'schema':'MEME_LIVE_DRY_STORAGE_QUALIFICATION_AMENDMENT_V1',
+                'scope':'DETERMINISTIC_QUALIFICATION_ONLY','status':'IMPLEMENTED_PENDING_PROJECT_REVIEW',
+                'project_acceptance_claimed':False,'production_capacity_claimed':False,
+                'accepted_profile':refs['accepted_profile'],'accepted_extension':refs['accepted_extension'],
+                'producer_storage_fingerprint':STORAGE_FINGERPRINT,'producer_profile':producer_profile,
+                'proposed_guard_limits':{'HISTORY_BYTES':producer_profile['history_bytes'],'TOMBSTONE_ROWS':2}}
+            amendment_path=directory/'supported-profile-storage-qualification-amendment.json'
+            amendment_path.write_bytes(canonical_bytes(amendment))
+            inputs['guard_amendment']={'path':str(amendment_path),'sha256':sha256(amendment_path.read_bytes())}
+            inputs['monitor']['resource_limits'].update(amendment['proposed_guard_limits'])
             profile=profile_api.build_profile(inputs)
             check('profile_original_public_identity',profile.record['domain']['wallet']==accepted['target']['domain']['wallet']
                 and profile.record['domain']['genesis_hash']==accepted['target']['domain']['genesis_hash']
@@ -249,7 +265,8 @@ def qualification(directory):
             policy=f.startup_monitor_config.policy
             check('amended_guards_fail_closed_above_bound',all(resource_condition(policy,key,limit+1,
                 configuration_digest=policy.reviewed_configuration_digest)=='RESOURCE_EXCEEDED'
-                for key,limit in (('HISTORY_BYTES',16384),('TOMBSTONE_ROWS',2))))
+                for key,limit in (('HISTORY_BYTES',inputs['monitor']['resource_limits']['HISTORY_BYTES']),
+                    ('TOMBSTONE_ROWS',2))))
             check('no_capital_or_permission',not exported['grants_permission'] and not exported['capital_authority'])
             from live.acceptance_dossier_v0_1 import source_freeze
             result={'source_content_digest':source_freeze(ROOT)['content_digest'],'schema':'MEME_LIVE_DRY_PROFILE_QUALIFICATION_V1','checks':dict(CHECKS),

@@ -10,7 +10,7 @@ import hashlib
 import json
 import re
 import sqlite3
-from dataclasses import asdict, dataclass, is_dataclass, replace
+from dataclasses import asdict, dataclass, fields, is_dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -31,7 +31,14 @@ INTEGRITY_REASONS = frozenset({
 
 
 def canonical_json(value: object) -> str:
-    return json.dumps(asdict(value) if is_dataclass(value) else value,
+    # Source records contain immutable dataclasses, tuples and JSON scalars.
+    # Let the JSON encoder visit them directly rather than deepcopy every scalar
+    # of every historical gap through asdict on each digest calculation.
+    def record(item):
+        if is_dataclass(item) and not isinstance(item, type):
+            return {field.name:getattr(item, field.name) for field in fields(item)}
+        raise TypeError("Object of type "+type(item).__name__+" is not JSON serializable")
+    return json.dumps(value, default=record if is_dataclass(value) else None,
                       sort_keys=True, separators=(",", ":"), ensure_ascii=True,
                       allow_nan=False)
 
@@ -389,7 +396,8 @@ class CollectorSourceAdapter:
 
     def capture(self, binding: SourceBinding, profile: SourceProfile, *,
                 observed_at_utc: str, requested_cut_utc: str,
-                previous: SourceVerdict | None = None) -> SourceSnapshot:
+                previous: SourceVerdict | None = None, max_raw_bytes: int | None = None,
+                reserve_rows=None) -> SourceSnapshot:
         base = SourceSnapshot(binding.source_identity, profile.fingerprint,
                               observed_at_utc, requested_cut_utc,
                               ZERO_DIGEST if previous is None else previous.content_digest)
@@ -405,6 +413,36 @@ class CollectorSourceAdapter:
             # Validate the source schema even when a table currently has no rows.
             for table in TABLES:
                 conn.execute(f"SELECT {_SELECT[table]} FROM {table} LIMIT 0")
+            if max_raw_bytes is not None or reserve_rows is not None:
+                if type(max_raw_bytes) is not int or max_raw_bytes < 1 or not callable(reserve_rows):
+                    raise SourceReadError("SOURCE_CAPTURE_RESOURCE_CONTRACT_INVALID")
+                # Inspect only lengths/counts in this same read snapshot before
+                # materializing any raw public field. Both repeated witnesses
+                # and all four complete tails contribute to the capture bound.
+                raw_bytes = 0
+                counts = {}
+                def sizes(table, clause, params):
+                    terms = "+".join("COALESCE(length(CAST("+column+" AS BLOB)),0)"
+                        for column in _SELECT[table].split(","))
+                    return conn.execute("SELECT COUNT(*),COALESCE(SUM(n),0) FROM (SELECT "+terms+
+                        " AS n FROM "+table+" "+clause+")", params).fetchone()
+                for expected in (*binding.anchors, *prior_cursors):
+                    if expected.rowid:
+                        _, size = sizes(expected.table, "WHERE rowid=?", (expected.rowid,))
+                        raw_bytes += size
+                for index, table in enumerate(TABLES):
+                    lower = prior_cursors[index].rowid if prior_cursors else (
+                        binding.anchors[index].rowid-1 if index < 3 else 0)
+                    count, size = sizes(table, "WHERE rowid>? ORDER BY rowid LIMIT ?",
+                        (lower, profile.max_rows_per_table+1))
+                    if count > profile.max_rows_per_table:
+                        raise SourceReadError("SOURCE_PAGE_BUDGET_EXHAUSTED")
+                    counts[table] = count
+                    raw_bytes += size
+                if raw_bytes > max_raw_bytes:
+                    raise SourceReadError("SOURCE_CAPTURE_RAW_BYTE_BUDGET_EXHAUSTED")
+                if not reserve_rows(counts):
+                    raise SourceReadError("SOURCE_CAPTURE_CUMULATIVE_ROW_BUDGET_EXHAUSTED")
             for expected in prior_cursors:
                 maximum = conn.execute(f"SELECT COALESCE(MAX(rowid),0) FROM {expected.table}").fetchone()[0]
                 if maximum < expected.rowid:
@@ -459,9 +497,11 @@ class CollectorSourceAdapter:
 
     def observe(self, binding: SourceBinding, profile: SourceProfile, *,
                 observed_at_utc: str, requested_cut_utc: str,
-                previous: SourceVerdict | None = None) -> SourceVerdict:
+                previous: SourceVerdict | None = None, max_raw_bytes: int | None = None,
+                reserve_rows=None) -> SourceVerdict:
         snapshot = self.capture(binding, profile, observed_at_utc=observed_at_utc,
-                                requested_cut_utc=requested_cut_utc, previous=previous)
+                                requested_cut_utc=requested_cut_utc, previous=previous,
+                                max_raw_bytes=max_raw_bytes, reserve_rows=reserve_rows)
         return evaluate_source(binding, profile, snapshot, previous=previous)
 
 
@@ -514,9 +554,18 @@ def _advance(progress: SourceProgress, snapshot: SourceSnapshot) -> SourceProgre
 
 def evaluate_source(binding: SourceBinding, profile: SourceProfile, snapshot: SourceSnapshot, *,
                     previous: SourceVerdict | None = None) -> SourceVerdict:
+    return _evaluate_source(binding, profile, snapshot, previous=previous,
+        previous_digest=ZERO_DIGEST if previous is None else previous.content_digest)
+
+
+def _evaluate_source(binding: SourceBinding, profile: SourceProfile, snapshot: SourceSnapshot, *,
+                     previous: SourceVerdict | None, previous_digest: str) -> SourceVerdict:
+    # Internal replay seam: the original store computed and checked this exact
+    # immutable predecessor's digest on its immediately preceding row. Public
+    # callers continue through evaluate_source and compute it from the object.
     progress = SourceProgress() if previous is None else previous.progress
     reasons = list(snapshot.problems) + list(progress.integrity_reasons)
-    expected_previous = ZERO_DIGEST if previous is None else previous.content_digest
+    expected_previous = previous_digest
     if snapshot.previous_verdict_digest != expected_previous:
         reasons.append("PREVIOUS_VERDICT_MISMATCH")
     if snapshot.source_identity != binding.source_identity or (previous is not None and previous.binding != binding):
@@ -657,19 +706,146 @@ def source_consumer_evidence(verdict: SourceVerdict, *, expected_source_identity
 
 def verdict_from_json(payload: str) -> SourceVerdict:
     """Strict immutable reconstruction used by the append-only evidence store."""
-    data = json.loads(payload)
+    return _decode_verdict(json.loads(payload))
+
+
+def _decode_verdict(raw, arrays=None):
+    data = dict(raw)
     binding = data.pop("binding")
-    binding["anchors"] = tuple(CursorWitness(**w) for w in binding["anchors"])
-    snapshot = data.pop("snapshot")
+    binding = dict(binding, anchors=tuple(CursorWitness(**w) for w in binding["anchors"]))
+    snapshot = dict(data.pop("snapshot"))
     for field, cls in (("pump_rows", PumpFact), ("controls", ControlFact), ("receipts", ReceiptFact),
                        ("gaps", GapFact), ("cursors", CursorWitness)):
-        snapshot[field] = tuple(cls(**item) for item in snapshot[field])
+        snapshot[field] = (tuple(cls(**item) for item in snapshot[field]) if arrays is None
+            else arrays("snapshot",field,cls,snapshot[field]))
     snapshot["problems"] = tuple(snapshot["problems"])
-    progress = data.pop("progress")
+    progress = dict(data.pop("progress"))
     for field, cls in (("cursors", CursorWitness), ("boundaries", BoundaryFact),
                        ("gaps", GapFact), ("control_gaps", ControlFact)):
-        progress[field] = tuple(cls(**item) for item in progress[field])
+        progress[field] = (tuple(cls(**item) for item in progress[field]) if arrays is None
+            else arrays("progress",field,cls,progress[field]))
     progress["integrity_reasons"] = tuple(progress["integrity_reasons"])
     data["reasons"] = tuple(data["reasons"])
     return SourceVerdict(SourceBinding(**binding), SourceProfile(**data.pop("profile")),
                          SourceSnapshot(**snapshot), SourceProgress(**progress), **data)
+
+
+def _same_source_raw(left, right):
+    """JSON equality must distinguish bool/float from original integer facts."""
+    if type(left) is not type(right):
+        return False
+    if type(left) in (tuple,list):
+        return len(left) == len(right) and all(_same_source_raw(a,b) for a,b in zip(left,right))
+    if type(left) is dict:
+        return left.keys() == right.keys() and all(_same_source_raw(value,right[key]) for key,value in left.items())
+    return left == right
+
+
+class _SourceReplayDecoder:
+    """One cold scan's immediately preceding immutable fact arrays, no history cache.
+
+    Every payload is parsed. Only exactly equal raw arrays reuse their previously
+    validated immutable facts; changed content takes the original constructors.
+    Each verdict, its complete canonical hash, and its transition are still
+    validated. The cached field records are exact original asdict representations,
+    not hashes substituted for original evidence or a persisted checkpoint.
+    """
+    def __init__(self, *, allow_append_prefix=False, canonical_fragments=False):
+        if type(allow_append_prefix) is not bool:
+            raise ValueError("explicit source replay prefix scope required")
+        if type(canonical_fragments) is not bool:
+            raise ValueError("explicit canonical fragment scope required")
+        self.allow_append_prefix = allow_append_prefix
+        self.canonical_fragments = canonical_fragments
+        self.parts = {}
+        self.comparison_keys = {}
+        self.fragments = {}
+
+    def canonical_record(self, value):
+        """Original JSON bytes for one cold read, with verified array fragments.
+
+        Only immutable tuples reconstructed by this decoder are fragment keys.
+        Every enclosing field is serialized again, in original sorted-key order.
+        This private method does not change the public or write-side codec.
+        """
+        cached = self.fragments.get(id(value))
+        if cached is not None and cached[0] is value:
+            return cached[1]
+        if is_dataclass(value) and not isinstance(value, type):
+            return "{"+",".join(json.dumps(field.name)+":"+self.canonical_record(getattr(value,field.name))
+                for field in sorted(fields(value),key=lambda field:field.name))+"}"
+        if type(value) in (tuple,list):
+            return "["+",".join(self.canonical_record(item) for item in value)+"]"
+        if type(value) is dict and all(type(key) is str for key in value):
+            return "{"+",".join(json.dumps(key,ensure_ascii=True)+":"+self.canonical_record(value[key])
+                for key in sorted(value))+"}"
+        return json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False)
+
+    def decode(self, payload):
+        parts = {}
+        fragments = {}
+        comparison_keys = {}
+        def comparison_key(raw):
+            # Comparison only, on trees returned by json.loads. No loads,
+            # persisted pickle, or change to the original receipt JSON codec.
+            import pickle
+            try:
+                return pickle.dumps(raw, protocol=4)
+            except (TypeError, ValueError, OverflowError, RecursionError, pickle.PickleError):
+                return None
+        def arrays(section, field, cls, raw):
+            key = section,field
+            prior = self.parts.get(key)
+            raw_key = comparison_key(raw) if self.allow_append_prefix else None
+            if self.allow_append_prefix:
+                prior_key = self.comparison_keys.get(key)
+                same = prior is not None and raw_key is not None and raw_key == prior_key
+                prefix = (prior is not None and type(raw) is list and len(raw) > len(prior[0])
+                    and prior_key is not None and comparison_key(raw[:len(prior[0])]) == prior_key)
+                comparison_keys[key] = raw_key
+            else:
+                same = prior is not None and _same_source_raw(prior[0], raw)
+                prefix = False
+            if same:
+                value, encoded = prior[1:]
+            elif prefix:
+                # Source-store-only append replay: every old raw field must be
+                # exactly equal, not merely the row IDs or tuple length. Only
+                # immutable facts already validated in this scan are reused.
+                tail = tuple(cls(**item) for item in raw[len(prior[0]):])
+                value = prior[1]+tail
+                encoded = prior[2]+tuple(asdict(item) for item in tail)
+            else:
+                value = tuple(cls(**item) for item in raw)
+                encoded = tuple(asdict(item) for item in value)
+            parts[key] = (raw,value,encoded)
+            if self.canonical_fragments:
+                cached = self.fragments.get(id(value))
+                fragment = (cached[1] if cached is not None and cached[0] is value else
+                    json.dumps(encoded,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False))
+                fragments[id(value)] = (value,fragment)
+            else:
+                fragments.update((id(item),(item,record)) for item,record in zip(value,encoded))
+            return value
+        value = _decode_verdict(json.loads(payload), arrays)
+        def encode(item):
+            cached = fragments.get(id(item))
+            if cached is not None and cached[0] is item:
+                return cached[1]
+            if is_dataclass(item) and not isinstance(item,type):
+                return {field.name:getattr(item,field.name) for field in fields(item)}
+            raise TypeError("unsupported source record")
+        if self.canonical_fragments:
+            previous_fragments = self.fragments
+            self.fragments = fragments
+            try:
+                encoded = self.canonical_record(value)
+            except BaseException:
+                self.fragments = previous_fragments
+                raise
+        else:
+            encoded = json.dumps(value,default=encode,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False)
+        current_digest = hashlib.sha256(encoded.encode()).hexdigest()
+        self.parts = parts
+        self.comparison_keys = comparison_keys
+        return value,current_digest

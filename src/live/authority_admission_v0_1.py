@@ -153,7 +153,9 @@ def assess_entry_risk(domain, custody, candidate, request, eligibility, policy, 
     if any(token.mint == WSOL_MINT for token in port.assessment.tokens) or explicit.get(quote) is not None:
         reasons.add("ENTRY_REQUIRES_ABSENT_WSOL_ACCOUNT")
     if request.token_program == TOKEN_2022_PROGRAM_ID and explicit.get(base) is None:
-        reasons.add("FRESH_TOKEN2022_ATA_CREATION_OUTSIDE_SETTLEMENT_PROFILE")
+        from .ledger_settlement_v0_1 import fresh_token2022_mint_supported
+        if not fresh_token2022_mint_supported(support.observation, candidate.mint):
+            reasons.add("FRESH_TOKEN2022_ATA_CREATION_OUTSIDE_SETTLEMENT_PROFILE")
     if pending_attempts:
         reasons.add("COMPETING_POSSIBLY_LANDING_MUTATION_LANE")
     if any(record.request.root_id == request.root_id or record.mint == candidate.mint for record in accepted.values()):
@@ -254,12 +256,12 @@ class AuthorityAdmissionReceipt:
         return content_fingerprint(asdict(self))
 
 
-def admission_receipt_from_record(record):
+def admission_receipt_from_record(record, *, _source_decoder=None):
     value = dict(record)
     require(value.pop("grants_message_permission") is False and value.pop("historical_only") is True
             and value["version"] == VERSION, "AUTHORITY_ADMISSION_RECORD_PROFILE_INVALID")
     value["request"] = EntryRequest(**value["request"])
-    value["eligibility"] = authority_receipt_from_record(value["eligibility"])
+    value["eligibility"] = authority_receipt_from_record(value["eligibility"], _source_decoder=_source_decoder)
     risk = dict(value["risk"])
     require(risk.pop("grants_message_permission") is False and risk.pop("exposure_basis") == "FULL_ORIGINAL_QUOTE_CAP_UNTIL_LAWFUL_RETIREMENT",
             "AUTHORITY_RISK_RECORD_PROFILE_INVALID")

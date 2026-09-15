@@ -1,0 +1,118 @@
+{
+  "T010_executed": false,
+  "accepted_profile": {
+    "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-profile-02\\profile.json",
+    "sha256": "fc924b5d572211b82a889b6933e9fb191bea9c9e9e2e82c95d2fd7a89fdc6440"
+  },
+  "canonical_live_store_mutation": false,
+  "clock_observation": {
+    "address": "162.159.200.1",
+    "authenticated_transport": false,
+    "grants_permission": false,
+    "monotonic_ns": 63631686525900,
+    "packet_hex": "240300e6000001bf000000080a6a080aee511126769eead637a238a3a058570eee5111421c31453bee5111421c3569de",
+    "packet_sha256": "dcb8d812269bc2954b5332f62a1d292f2f392f8d5933913db308e460a927b39a",
+    "provider_fingerprint": "8b474daec8f92a40b400834018bb43d220dac51c520a26d2c7d186ba56d0cb6d",
+    "provider_id": "CLOUDFLARE_PUBLIC_SNTP_V1",
+    "request_monotonic_ns": 63631680176900,
+    "request_nonce_sha256": "b0a463d1a58b6f3b3581f7027b468d364cbc344b09a6ae14f50ce3a5a8b58eb7",
+    "root_distance_us": 3537,
+    "round_trip_us": 6349,
+    "schema": "MEME_LIVE_SNTP_OBSERVATION_V1",
+    "scope": "PUBLIC_ENVIRONMENT_REVIEWED",
+    "server_name": "time.cloudflare.com",
+    "sets_system_time": false,
+    "stratum": 3,
+    "trust_profile": "UNAUTHENTICATED_SNTP_HONEST_SERVER_AND_NETWORK_REQUIRED_V1",
+    "utc_lower_utc": "2026-09-13T12:10:42.106653+00:00",
+    "utc_upper_utc": "2026-09-13T12:10:42.120076+00:00"
+  },
+  "clock_profile": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_T010_APPROVED_CLOCK_PROFILE_V1.json",
+    "sha256": "3c303933e0a39ab726c256efa79ee978c4f2af52f78213979c9d70610d042dc3"
+  },
+  "clock_sample": {
+    "epoch_id": "PUBLIC_CLOCK_7236ccb17c734c6db5e1afe7bc5e891c_56740",
+    "monotonic_ns": 63631686778900,
+    "observation_record_digest": "6ea2ba1e7f0e107fbd11b10aaac29cbed484b82a64c44c0888dd05eacc84414b",
+    "previous_sample_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+    "provider_fingerprint": "8b474daec8f92a40b400834018bb43d220dac51c520a26d2c7d186ba56d0cb6d",
+    "provider_id": "CLOUDFLARE_PUBLIC_SNTP_V1",
+    "reconciliation": null,
+    "status": "QUALIFIED",
+    "utc_lower_utc": "2026-09-13T12:10:42.106905+00:00",
+    "utc_upper_utc": "2026-09-13T12:10:42.120337+00:00"
+  },
+  "schema": "MEME_LIVE_FIX2_APPROVED_CLOCK_SOURCE_PREREQUISITE_V1",
+  "scope": "ACTUAL_PUBLIC_READONLY_PREREQUISITE_NOT_QUALIFICATION",
+  "signer_send_broadcast": false,
+  "source_verdict": {
+    "binding": {
+      "anchors": [
+        {
+          "rowid": 3060927,
+          "sha256": "60538055dcf5f3d72dc4a29dc009b930faec1345a469c9e627d22eb47227fd25",
+          "table": "pump_events"
+        },
+        {
+          "rowid": 1815,
+          "sha256": "88bb0c8c23a02c6d9176cc8c2977d611581edd30c2b6bbba872b108df867abd5",
+          "table": "collector_events"
+        },
+        {
+          "rowid": 18362463,
+          "sha256": "e8232002742eaa9655f0ec05126e77cbf64db559786f51ef16e4eb658a8da4e0",
+          "table": "websocket_observations"
+        }
+      ],
+      "coverage_start_utc": "2026-09-06T23:10:59.312271+00:00",
+      "lineage": "M52:QUALIFICATION:97eab8c8889cf871698210c9",
+      "source_model_fingerprint": "9cb094f52bf4b4fe28dc4828b1d9a52a3350cde664c7da5a489fa84e9a4085a9",
+      "source_model_id": "P4-CONTINUOUS-MARKET-SOURCE-0002"
+    },
+    "covered_from_utc": "",
+    "covered_through_utc": "",
+    "disposition": "UNKNOWN",
+    "producer": "LIVE-SOURCE-HEALTH-0001",
+    "profile": {
+      "freshness_seconds": 30,
+      "max_rows_per_table": 10000,
+      "profile_id": "COLLECTOR-V034-RECEIPT-BOUNDED-PREFIX-0001"
+    },
+    "progress": {
+      "active_since_utc": "",
+      "boundaries": [],
+      "collector_start_utc": "",
+      "connection_state": "UNOBSERVED",
+      "control_gaps": [],
+      "cursors": [],
+      "gaps": [],
+      "integrity_reasons": [],
+      "last_control_utc": "",
+      "last_live_receipt_utc": "",
+      "maximum_pump_activity_utc": ""
+    },
+    "reasons": [
+      "SOURCE_PAGE_BUDGET_EXHAUSTED",
+      "SUBSCRIPTION_COVERAGE_UNOBSERVED",
+      "SUBSCRIPTION_NOT_ACTIVE",
+      "UNOBSERVED_RECEIPT_TAIL"
+    ],
+    "schema": "live_source_evidence_v0.1",
+    "snapshot": {
+      "controls": [],
+      "cursors": [],
+      "gaps": [],
+      "observed_at_utc": "2026-09-13T12:10:42.120337+00:00",
+      "previous_verdict_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "problems": [
+        "SOURCE_PAGE_BUDGET_EXHAUSTED"
+      ],
+      "profile_fingerprint": "d4fc7ff04967f27da079b5551560c960c11be1ecab6a0c17562f6d6c619959de",
+      "pump_rows": [],
+      "receipts": [],
+      "requested_cut_utc": "2026-09-13T12:10:42.106905+00:00",
+      "source_identity": "543930ed3797752386d243f344a531606394035db27ca200729cd1d1d2c2cd7a"
+    }
+  }
+}

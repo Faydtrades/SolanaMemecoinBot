@@ -16,18 +16,33 @@ from .continuous_producer_v0_1 import (
     MODEL_FINGERPRINT, SPEC, accepted,
 )
 
-STORAGE_VERSION = "live_producer_continuation_v0.2"
+STORAGE_VERSION = "live_producer_continuation_v0.3"
 LAUNCHES = "live_producer_launches_v0_2"
 RETIRED = "live_producer_retired_v0_2"
 COUNTERS = "live_producer_history_counters_v0_2"
 FEATURES, RUNS = TABLES[2:4]
 PENDING = (TABLES[1], *TABLES[4:])
+RESOLVED = {TABLES[1]: "complete=1", TABLES[4]: "delivered=1",
+            TABLES[5]: "delivered=1", TABLES[6]: "status='COMPLETE'"}
+RESOLVED_COLUMNS = {
+    TABLES[1]: "input_key,input_kind,production_p1_rowid,content_fingerprint,complete,created_at,updated_at",
+    TABLES[4]: "input_key,ordinal,evaluation_json,content_fingerprint,accepted_evaluation_id,delivered",
+    TABLES[5]: "event_sequence,input_key,ordinal,event_key,event_type,event_json,content_fingerprint,delivered",
+    TABLES[6]: "timer_key,clock_type,clock_timestamp,drive_exit_clock,source_watermark_p1_rowid,content_fingerprint,status,input_key,created_at,updated_at",
+}
+RESOLVED_KEYS = {
+    TABLES[1]: (('input_key',), ('production_p1_rowid',), ('rowid',)),
+    TABLES[4]: (('input_key', 'ordinal'), ('rowid',)),
+    TABLES[5]: (('event_sequence',), ('event_key',), ('input_key', 'ordinal'), ('rowid',)),
+    TABLES[6]: (('timer_key',), ('input_key',), ('rowid',)),
+}
 STORAGE_SPEC = {
     "version": STORAGE_VERSION, "lineage_model": MODEL_FINGERPRINT,
     "reconstruction": "COMPLETE_ACTIVE_PER_MINT_REPLAY",
     "retirement": "WINNER_OR_ALL_LOCKED_ROLES_TERMINAL_WITH_ORIGINAL_RUN_BUNDLE",
-    "history": "IMMUTABLE_POINT_LOOKUPS_WITH_CHECKPOINTED_INSERT_COUNTERS",
-    "pending": "ORIGINAL_UNACKNOWLEDGED_INPUT_OUTPUT_AUDIT_TIMER_WITH_FINITE_PROFILE",
+    "history": "IMMUTABLE_ORIGINAL_RESOLVED_ROWS_PLUS_TERMINAL_BUNDLES_BYTE_BOUNDED_CHECKPOINTED",
+    "pending": "INCOMPLETE_INPUT_UNDELIVERED_OUTPUT_AUDIT_INCOMPLETE_TIMER_ONLY",
+    "resolved_guards": "UPDATE_DELETE_AND_ALL_UNIQUE_ROWID_INSERT_COLLISIONS_EXACT_REPLAY_IGNORED",
     "source": "SINGLE_CAPTURED_BOUNDED_PREFIX_ACCEPTED_V02_NORMALIZATION",
 }
 STORAGE_FINGERPRINT = accepted._fingerprint(STORAGE_SPEC)
@@ -79,11 +94,46 @@ def _schema():
         statements.append(f"CREATE TRIGGER {table}_insert AFTER INSERT ON {table} BEGIN "
                           f"UPDATE {COUNTERS} SET {counter}={counter}+1,history_bytes=history_bytes+{byte_expr} "
                           "WHERE singleton=1; END")
+    # Keep the original row and foreign-key identity. Resolution changes its
+    # resource class once, and freezes all its bytes. Exact no-op ACKs remain
+    # legal; unacknowledged children keep their own operational obligations.
+    for table, predicate in RESOLVED.items():
+        old = "OLD." + predicate
+        same = " AND ".join(f"NEW.{column} IS OLD.{column}" for column in ('rowid', *RESOLVED_COLUMNS[table].split(',')))
+        statements.append(f"CREATE TRIGGER {table}_resolved_update BEFORE UPDATE ON {table} "
+            f"WHEN {old} AND NOT ({same}) BEGIN SELECT RAISE(ABORT,'immutable resolved producer history'); END")
+        statements.append(f"CREATE TRIGGER {table}_resolved_delete BEFORE DELETE ON {table} "
+            f"WHEN {old} BEGIN SELECT RAISE(ABORT,'immutable resolved producer history'); END")
+        # REPLACE's implicit delete need not execute DELETE triggers when
+        # recursive_triggers=OFF. Guard conflicts before SQLite applies any
+        # INSERT conflict policy. '=' deliberately follows UNIQUE NULL rules.
+        collision = ' OR '.join('(' + ' AND '.join(f'saved.{c}=NEW.{c}' for c in key) + ')'
+                                for key in RESOLVED_KEYS[table])
+        equal = ' AND '.join(f'saved.{c} IS NEW.{c}' for c in RESOLVED_COLUMNS[table].split(','))
+        # SQLite exposes -1 for an unspecified rowid in BEFORE INSERT. Exact
+        # natural-key replay is ignored, so it retains the original rowid.
+        equal += ' AND (NEW.rowid=-1 OR saved.rowid IS NEW.rowid)'
+        existing = f'SELECT 1 FROM {table} AS saved WHERE saved.{predicate} AND ({collision})'
+        # An unresolved OLD row may also replace a different resolved row via
+        # UPDATE OR REPLACE. Even identical target bytes must not merge away
+        # that independent pending obligation.
+        statements.append(f"CREATE TRIGGER {table}_resolved_update_collision BEFORE UPDATE ON {table} "
+            f"WHEN EXISTS ({existing} AND saved.rowid<>OLD.rowid) "
+            "BEGIN SELECT RAISE(ABORT,'immutable resolved producer history'); END")
+        statements.append(f"CREATE TRIGGER {table}_resolved_insert BEFORE INSERT ON {table} "
+            f"WHEN EXISTS ({existing}) BEGIN SELECT CASE WHEN EXISTS ({existing} AND NOT ({equal})) "
+            "THEN RAISE(ABORT,'immutable resolved producer history') END; SELECT RAISE(IGNORE); END")
     return statements
 
 
 class LiveContinuousProducerV02(LiveContinuousProducerV01):
-    """Storage v0.2; deliberately preserves A1 model/run/event/source identity."""
+    """Storage v0.3 accounting; preserves A1 model/run/event/source identity.
+
+    Resolved original rows stay in their original keyed tables, independently
+    frozen by schema guards and committed in the exact checkpoint digest.
+    Their canonical bytes consume permanent history capacity, never pending.
+    No implicit V02 store migration or loss of an unresolved obligation.
+    """
 
     def __init__(self, conn, market_source, *, profile=None, **kwargs):
         self.profile = profile or ContinuationProfileV02()
@@ -177,6 +227,8 @@ class LiveContinuousProducerV02(LiveContinuousProducerV01):
             return super()._manifest_state()
         result = {}
         pending_rows = pending_bytes = retained_bytes = 0
+        resolved_rows = resolved_bytes = 0
+        resolved_digests = {}
         hot = {}
         caps = {TABLES[0]: 1, FEATURES: self.profile.retained_events,
                 RUNS: self.profile.active_mints * len(accepted.LOCKED_ROLE_ORDER)}
@@ -184,14 +236,27 @@ class LiveContinuousProducerV02(LiveContinuousProducerV01):
             cap = caps.get(table, self.profile.pending_rows)
             byte_cap = (self.profile.pending_bytes - pending_bytes if table in PENDING else
                         self.profile.retained_bytes - retained_bytes if table in (FEATURES, RUNS) else self.profile.checkpoint_bytes)
+            if table in PENDING:
+                # Every canonical row costs at least two bytes. Thus this
+                # combined LIMIT also bounds the retained history scan before
+                # loading payloads; history cannot become an unlimited archive.
+                cap += self.profile.history_bytes // 2
+                byte_cap += self.profile.history_bytes - resolved_bytes
             rows = [dict(row) for row in self._bounded_rows(self.conn, table, cap, byte_cap)]
             self.metrics["checkpoint_rows_read"] += len(rows)
             if len(rows) > cap:
                 raise ProducerConflict("continuation row profile exhausted: " + table)
             size = len(accepted._json(rows).encode())
             if table in PENDING:
-                pending_rows += len(rows)
-                pending_bytes += size
+                column = 'complete' if table == TABLES[1] else 'status' if table == TABLES[6] else 'delivered'
+                terminal = 'COMPLETE' if column == 'status' else 1
+                unresolved = [row for row in rows if row[column] != terminal]
+                resolved = [row for row in rows if row[column] == terminal]
+                pending_rows += len(unresolved)
+                pending_bytes += len(accepted._json(unresolved).encode())
+                resolved_rows += len(resolved)
+                resolved_bytes += len(accepted._json(resolved).encode()) if resolved else 0
+                resolved_digests[table] = accepted._fingerprint(resolved)
             elif table in (FEATURES, RUNS):
                 retained_bytes += size
             if table == FEATURES:
@@ -209,13 +274,44 @@ class LiveContinuousProducerV02(LiveContinuousProducerV01):
         if pending_rows > self.profile.pending_rows or pending_bytes > self.profile.pending_bytes:
             raise ProducerConflict("unresolved pending profile exhausted; acknowledgement required")
         result[COUNTERS] = self._history_counters()
+        history_bytes = result[COUNTERS]['history_bytes'] + resolved_bytes
+        if history_bytes > self.profile.history_bytes:
+            raise ProducerConflict("resolved immutable history byte profile exhausted")
+        result['resolved_history'] = {'rows': resolved_rows, 'bytes': resolved_bytes,
+            'table_digests': resolved_digests}
         result["schema_guard"] = self._schema_digest()
         self.last_profile_usage = {"active_mints": len(hot), "retained_events": sum(v[0] for v in hot.values()),
                                    "retained_bytes": retained_bytes, "pending_rows": pending_rows,
                                    "pending_bytes": pending_bytes, "hottest_events": max((v[0] for v in hot.values()), default=0),
                                    "hottest_bytes": max((v[1] for v in hot.values()), default=0),
-                                   **result[COUNTERS]}
+                                   **result[COUNTERS],
+                                   'identity_history_bytes': result[COUNTERS]['history_bytes'],
+                                   'resolved_history_rows': resolved_rows, 'resolved_history_bytes': resolved_bytes,
+                                   'history_bytes': history_bytes}
         return result
+
+    def _mark_input_complete(self, input_key):
+        # Original COMPLETE replays must not rewrite immutable observation UTC.
+        self._inject(input_key, 'before_input_resolution')
+        self.conn.execute(f"UPDATE {TABLES[1]} SET complete=1,updated_at=? WHERE input_key=? AND complete=0",
+            (accepted._dt_text(self.wall_clock()), input_key))
+        self._inject(input_key, 'after_input_resolution')
+
+    def execute_prepared_timer(self, timer_key):
+        # The inherited method rewrites updated_at even on completed redelivery.
+        # Preserve its original result and exact durable bytes without repeating
+        # planning, acknowledgement or source movement.
+        with self._transaction():
+            timer = self._prepared_timer(timer_key)
+            if timer['status'] == 'COMPLETE':
+                audits = self.conn.execute(f"SELECT count(*) FROM {TABLES[4]} WHERE input_key=?",
+                    (timer['input_key'],)).fetchone()[0]
+                return accepted.BindingTimerResultV01(timer_key, 'COMMITTED', timer['source_watermark_p1_rowid'], audits, 0, 0)
+            first = self.conn.execute(f"SELECT timer_key FROM {TABLES[6]} WHERE status<>'COMPLETE' "
+                "ORDER BY source_watermark_p1_rowid,timer_key LIMIT 1").fetchone()
+            if first[0] != timer_key:
+                raise ProducerConflict("execute minimum watermark/timer key first")
+            return accepted.ContinuousFirstPullbackBindingV01.execute_prepared_timer(self, timer_key)
 
     def _publish_checkpoint(self):
         if not self._bounded:
@@ -428,7 +524,7 @@ class LiveContinuousProducerV02(LiveContinuousProducerV01):
             raise ProducerConflict("captured Phase-2 input differs from accepted source projection")
         return qevent
 
-    def process_next_batch(self, *, batch_size=256):
+    def process_next_batch(self, *, batch_size=256, max_raw_bytes=None):
         if type(batch_size) is not int or not 1 <= batch_size <= self.profile.batch_rows:
             raise ProducerConflict("source batch outside continuation profile")
         with self._transaction():
@@ -442,7 +538,12 @@ class LiveContinuousProducerV02(LiveContinuousProducerV01):
             try:
                 conn.execute("BEGIN")
                 source.validate_schema(conn)
-                rows = self._bounded_rows(conn, "pump_events", limit, limit * self.profile.record_bytes, after=after)
+                byte_cap = limit*self.profile.record_bytes
+                if max_raw_bytes is not None:
+                    if type(max_raw_bytes) is not int or not 0 < max_raw_bytes <= byte_cap:
+                        raise ProducerConflict("finite narrower source capture byte reservation required")
+                    byte_cap = max_raw_bytes
+                rows = self._bounded_rows(conn, "pump_events", limit, byte_cap, after=after)
             finally:
                 conn.close()
             self._captured_rows = {row["p1_rowid"]: row for row in rows}

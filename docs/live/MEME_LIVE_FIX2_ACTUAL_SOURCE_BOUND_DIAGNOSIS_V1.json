@@ -1,0 +1,829 @@
+{
+  "T010_executed": false,
+  "maximum_rows_per_table": 10000,
+  "prerequisite": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_ACTUAL_SOURCE_PREREQUISITE_V1.json",
+    "sha256": "831328ea5bae5e870d95107b996aef10d55bdbfbc70087b8ca4dc8e0688ff7a0"
+  },
+  "schema": "MEME_LIVE_FIX2_ACTUAL_SOURCE_BOUND_DIAGNOSIS_V1",
+  "scope": "ACTUAL_PUBLIC_READONLY_PREREQUISITE_NOT_QUALIFICATION",
+  "source_or_runtime_mutated": false,
+  "tables": {
+    "collector_events": {
+      "count_exact": true,
+      "exceeds_accepted_page_bound": false,
+      "newest_normalized_facts": [
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:53:26.600159+00:00",
+            "event_type": "DATA_GAP_CLOSED",
+            "gap_end_utc": "2026-09-12T16:53:26.571680+00:00",
+            "gap_start_utc": "2026-09-12T16:53:24.789690+00:00",
+            "rowid": 3124
+          },
+          "rowid": 3124,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:53:26.423814+00:00",
+            "event_type": "PUMP_SUBSCRIPTION_ACTIVE",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3123
+          },
+          "rowid": 3123,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:53:26.354661+00:00",
+            "event_type": "WS_CONNECTED",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3122
+          },
+          "rowid": 3122,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:53:24.789690+00:00",
+            "event_type": "WS_DISCONNECTED",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3121
+          },
+          "rowid": 3121,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:48:31.234001+00:00",
+            "event_type": "DATA_GAP_CLOSED",
+            "gap_end_utc": "2026-09-12T16:48:31.186939+00:00",
+            "gap_start_utc": "2026-09-12T16:48:29.554016+00:00",
+            "rowid": 3120
+          },
+          "rowid": 3120,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:48:31.186939+00:00",
+            "event_type": "PUMP_SUBSCRIPTION_ACTIVE",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3119
+          },
+          "rowid": 3119,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:48:31.115831+00:00",
+            "event_type": "WS_CONNECTED",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3118
+          },
+          "rowid": 3118,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:48:29.554016+00:00",
+            "event_type": "WS_DISCONNECTED",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3117
+          },
+          "rowid": 3117,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:26:16.736712+00:00",
+            "event_type": "DATA_GAP_CLOSED",
+            "gap_end_utc": "2026-09-12T16:26:16.708188+00:00",
+            "gap_start_utc": "2026-09-12T16:26:13.664010+00:00",
+            "rowid": 3116
+          },
+          "rowid": 3116,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:26:16.372587+00:00",
+            "event_type": "PUMP_SUBSCRIPTION_ACTIVE",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3115
+          },
+          "rowid": 3115,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:26:16.265285+00:00",
+            "event_type": "WS_CONNECTED",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3114
+          },
+          "rowid": 3114,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T16:26:13.664010+00:00",
+            "event_type": "WS_DISCONNECTED",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3113
+          },
+          "rowid": 3113,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T15:56:17.289406+00:00",
+            "event_type": "DATA_GAP_CLOSED",
+            "gap_end_utc": "2026-09-12T15:56:17.260298+00:00",
+            "gap_start_utc": "2026-09-12T15:56:11.034601+00:00",
+            "rowid": 3112
+          },
+          "rowid": 3112,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T15:56:17.005689+00:00",
+            "event_type": "PUMP_SUBSCRIPTION_ACTIVE",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3111
+          },
+          "rowid": 3111,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T15:56:16.898607+00:00",
+            "event_type": "WS_CONNECTED",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3110
+          },
+          "rowid": 3110,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T15:56:11.034601+00:00",
+            "event_type": "WS_DISCONNECTED",
+            "gap_end_utc": "",
+            "gap_start_utc": "",
+            "rowid": 3109
+          },
+          "rowid": 3109,
+          "supported": true
+        }
+      ],
+      "retained_anchor_rowid": 1815,
+      "rows_required_lower_bound": 1310
+    },
+    "gap_jobs_v034": {
+      "count_exact": true,
+      "exceeds_accepted_page_bound": false,
+      "newest_normalized_facts": [
+        {
+          "fact": {
+            "after_slot": 446479699,
+            "before_slot": 446478865,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T16:53:26.571680+00:00",
+            "events_recovered": 0,
+            "gap_key": "0f400025aac879ef17b69e65270004110f291b9a30608d3d19b07ba296a4a506",
+            "rowid": 430,
+            "start_utc": "2026-09-12T16:53:24.789690+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 430,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446478767,
+            "before_slot": 446475082,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T16:48:31.186939+00:00",
+            "events_recovered": 0,
+            "gap_key": "ea59009f4da259dc3dfd0031ac88df135f439cc9063336384c85bfd61ccc48d6",
+            "rowid": 429,
+            "start_utc": "2026-09-12T16:48:29.554016+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 429,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446474553,
+            "before_slot": 446469342,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T16:26:16.708188+00:00",
+            "events_recovered": 0,
+            "gap_key": "253523fcd68717aafce680320f49d2ceeafbe17829370ded937f03cdee0439fb",
+            "rowid": 428,
+            "start_utc": "2026-09-12T16:26:13.664010+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 428,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446468878,
+            "before_slot": 446461443,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T15:56:17.260298+00:00",
+            "events_recovered": 0,
+            "gap_key": "6f4e36e404bac76c2095b7e1b1b348cf6543b3730a9957f683a440feb7314990",
+            "rowid": 427,
+            "start_utc": "2026-09-12T15:56:11.034601+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 427,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446460224,
+            "before_slot": 446456876,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T15:10:35.719854+00:00",
+            "events_recovered": 0,
+            "gap_key": "de37c97c778980d61fb85d985efef5d5d26c4018361eddb7451b49001487d7cf",
+            "rowid": 426,
+            "start_utc": "2026-09-12T15:10:33.445441+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 426,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446456206,
+            "before_slot": 446455441,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T14:49:24.531357+00:00",
+            "events_recovered": 0,
+            "gap_key": "fea214c922efb306e1ad9421614ff9ba3df7524253defbc55e44edc0d28cbce4",
+            "rowid": 425,
+            "start_utc": "2026-09-12T14:49:22.577287+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 425,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446455284,
+            "before_slot": 446432555,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T14:44:28.568500+00:00",
+            "events_recovered": 0,
+            "gap_key": "6af75e58b4a70a477c215547b9e127ec0883f6547bca9767ab0d703c78e76bc5",
+            "rowid": 424,
+            "start_utc": "2026-09-12T14:44:25.114342+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 424,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446428301,
+            "before_slot": 446402330,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T12:22:02.253678+00:00",
+            "events_recovered": 0,
+            "gap_key": "b082e5709009ad1a3477442c90b34c0d5027195edc925e8e65b65ec2cbcf9fe9",
+            "rowid": 423,
+            "start_utc": "2026-09-12T12:22:00.423609+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 423,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446394918,
+            "before_slot": 446378773,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T09:25:44.619060+00:00",
+            "events_recovered": 0,
+            "gap_key": "7dc99157d0f23c8d4f1801fedd6c14e29774dcb9552a6f583dec2e802d4e7720",
+            "rowid": 422,
+            "start_utc": "2026-09-12T09:25:41.475740+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 422,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446374331,
+            "before_slot": 446373728,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T07:37:08.631859+00:00",
+            "events_recovered": 0,
+            "gap_key": "4d5a1cedae4618fee24612a28eeb5ad14a509bd9b6d5905ffc642d6e9b70b811",
+            "rowid": 421,
+            "start_utc": "2026-09-12T07:37:06.797751+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 421,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446373571,
+            "before_slot": 446371094,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T07:33:09.197123+00:00",
+            "events_recovered": 0,
+            "gap_key": "bea5aa64432c1bdfd09176d666982be477f73f05effb4c50928fe38f345832cf",
+            "rowid": 420,
+            "start_utc": "2026-09-12T07:33:05.955298+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 420,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446370831,
+            "before_slot": 446363011,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T07:18:38.531765+00:00",
+            "events_recovered": 0,
+            "gap_key": "ec5380a17cb6f952e39b285348f0ac9d55696274313ea920706c200aadab8f47",
+            "rowid": 419,
+            "start_utc": "2026-09-12T07:18:37.269388+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 419,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446361319,
+            "before_slot": 446346790,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T06:28:21.812019+00:00",
+            "events_recovered": 0,
+            "gap_key": "52081f58ed0e64fef718cbe15cd87b6db8a0a984dceb9156f809c0462fbea771",
+            "rowid": 418,
+            "start_utc": "2026-09-12T06:28:20.182526+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 418,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446344371,
+            "before_slot": 446336031,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T04:58:49.937000+00:00",
+            "events_recovered": 0,
+            "gap_key": "899be339fb29784e08afc8141e09e4370b97d321e4d49ccc2d25d2ace10bddc8",
+            "rowid": 417,
+            "start_utc": "2026-09-12T04:58:48.349155+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 417,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446334497,
+            "before_slot": 446329874,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T04:06:36.914959+00:00",
+            "events_recovered": 0,
+            "gap_key": "6154f5494c3fe9c8bad2426eadf7362058de73837696eaddf92ff8b4d2ed8955",
+            "rowid": 416,
+            "start_utc": "2026-09-12T04:06:35.454816+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 416,
+          "supported": true
+        },
+        {
+          "fact": {
+            "after_slot": 446329398,
+            "before_slot": 446325261,
+            "confirmed_blocks_checked": 0,
+            "end_utc": "2026-09-12T03:39:47.540713+00:00",
+            "events_recovered": 0,
+            "gap_key": "117197a4ba2dc769cfbc341f4e2bc5af7bcaa2c53bada3198cab6fdbde28b7e4",
+            "rowid": 415,
+            "start_utc": "2026-09-12T03:39:45.356270+00:00",
+            "status": "PENDING"
+          },
+          "rowid": 415,
+          "supported": true
+        }
+      ],
+      "retained_anchor_rowid": 1,
+      "rows_required_lower_bound": 430
+    },
+    "pump_events": {
+      "count_exact": false,
+      "exceeds_accepted_page_bound": true,
+      "newest_normalized_facts": [
+        {
+          "fact": {
+            "event_key": "XovD2j4ASSk3siErR8GUpGUjn235qvK1sXM7J43FkyGQQRiiUYQ6QsTp7m6XzUr423tuhLZJ41NLNmUG8EvJ4B4:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:21.314058+00:00",
+            "rowid": 3140309,
+            "signature": "XovD2j4ASSk3siErR8GUpGUjn235qvK1sXM7J43FkyGQQRiiUYQ6QsTp7m6XzUr423tuhLZJ41NLNmUG8EvJ4B4",
+            "slot": 446479905,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140309,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "4XpwVnak3MnjQG7qmZi1gM14C8QjPGjMhMs4TZWfqXbhoNxDgFEw1BN1C7x1wsmy6pxiKdFEBdeEY1xFSUUzJrWy:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:21.137219+00:00",
+            "rowid": 3140308,
+            "signature": "4XpwVnak3MnjQG7qmZi1gM14C8QjPGjMhMs4TZWfqXbhoNxDgFEw1BN1C7x1wsmy6pxiKdFEBdeEY1xFSUUzJrWy",
+            "slot": 446479905,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140308,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "4HQBpdxjii9QLSWth7ede5JqwiBgqMCemmkpqFjS8F4JGdvPXbXYCRtHVc4LmFoZqgv7oDjGWSPNVtqnMXEMBwzK:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:21.054631+00:00",
+            "rowid": 3140307,
+            "signature": "4HQBpdxjii9QLSWth7ede5JqwiBgqMCemmkpqFjS8F4JGdvPXbXYCRtHVc4LmFoZqgv7oDjGWSPNVtqnMXEMBwzK",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140307,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "3z2WxWysqbZYvis9c5CrMuaQprgzjyZDRDxp3KfBfcp6kc9UkdCHe7mJ3iGHiyXaudRPfgDSsQUUmgDkrxRjN5QN:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.931206+00:00",
+            "rowid": 3140306,
+            "signature": "3z2WxWysqbZYvis9c5CrMuaQprgzjyZDRDxp3KfBfcp6kc9UkdCHe7mJ3iGHiyXaudRPfgDSsQUUmgDkrxRjN5QN",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140306,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "4pW8Fkj9TAhzm3nKZM9ZAQu6VK6WN15ok4zedmMcDSfkRMeMXj7NyFae7EgehAYckHVSBppf5SpMgGnDrY1FRSWJ:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.880098+00:00",
+            "rowid": 3140305,
+            "signature": "4pW8Fkj9TAhzm3nKZM9ZAQu6VK6WN15ok4zedmMcDSfkRMeMXj7NyFae7EgehAYckHVSBppf5SpMgGnDrY1FRSWJ",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140305,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "5BjxGHG8SXwFPBjYWb4noYrtW75kKUofFduf3f4JR77witb2BHHWVUyDaLYnWQ1kAcKHz93TbcseK3fiXMEsacjp:1:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.757948+00:00",
+            "rowid": 3140304,
+            "signature": "5BjxGHG8SXwFPBjYWb4noYrtW75kKUofFduf3f4JR77witb2BHHWVUyDaLYnWQ1kAcKHz93TbcseK3fiXMEsacjp",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140304,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "5BjxGHG8SXwFPBjYWb4noYrtW75kKUofFduf3f4JR77witb2BHHWVUyDaLYnWQ1kAcKHz93TbcseK3fiXMEsacjp:0:1b72a94ddeeb6376",
+            "inserted_at_utc": "2026-09-12T17:04:20.757948+00:00",
+            "rowid": 3140303,
+            "signature": "5BjxGHG8SXwFPBjYWb4noYrtW75kKUofFduf3f4JR77witb2BHHWVUyDaLYnWQ1kAcKHz93TbcseK3fiXMEsacjp",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140303,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "2dhf81RLqGjLxhkfFTSq3E3Xd7QiiFYRnb1E8TTr8ARE5WW2WNjV63W3BqqRrA9jY7BbUtov9MwNLD8imsR7cCmj:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.643751+00:00",
+            "rowid": 3140302,
+            "signature": "2dhf81RLqGjLxhkfFTSq3E3Xd7QiiFYRnb1E8TTr8ARE5WW2WNjV63W3BqqRrA9jY7BbUtov9MwNLD8imsR7cCmj",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140302,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "5v5qQnWNkWr9P1amNhkfi4xA6hzS8fbt8rYCZPn64FUJBrQBp1UseghyDpTwXcQaGaigXC3H7usgXBX4223uWMsX:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.597957+00:00",
+            "rowid": 3140301,
+            "signature": "5v5qQnWNkWr9P1amNhkfi4xA6hzS8fbt8rYCZPn64FUJBrQBp1UseghyDpTwXcQaGaigXC3H7usgXBX4223uWMsX",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140301,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "21hpcYBAsQHdepTcbEZHjvhunM5sV3nMa75Pr1Uqe5Y65SiS2RcVmKSgjGUYQNk7m17pMWvcaE1S8sWsmN2fobuF:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.570413+00:00",
+            "rowid": 3140300,
+            "signature": "21hpcYBAsQHdepTcbEZHjvhunM5sV3nMa75Pr1Uqe5Y65SiS2RcVmKSgjGUYQNk7m17pMWvcaE1S8sWsmN2fobuF",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140300,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "CuhyjexgBVMzPanboXXHg5TZVNwzQFgKdPXJZU5k181EuNMaxMyDUJdymhFkT4HrHNrhwrTbhrfH7245eW1Cvx2:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.524844+00:00",
+            "rowid": 3140299,
+            "signature": "CuhyjexgBVMzPanboXXHg5TZVNwzQFgKdPXJZU5k181EuNMaxMyDUJdymhFkT4HrHNrhwrTbhrfH7245eW1Cvx2",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140299,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "5zSiKkTg39wcGMtyP743pZF6sdrWR29bbQAmACioLKAG5o5pNxCtVo82mkVTkoUrLbZfE9JCgGTRfHMK32fq2KiJ:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.390284+00:00",
+            "rowid": 3140298,
+            "signature": "5zSiKkTg39wcGMtyP743pZF6sdrWR29bbQAmACioLKAG5o5pNxCtVo82mkVTkoUrLbZfE9JCgGTRfHMK32fq2KiJ",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140298,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "2ZjyW1QGKHm6JjJ1NyhdSDcfPoovW6oj45R7bTHTrr8CRNq4tqZHhsc2VLqXnG3TB6yZHrrnkAAsAv6kKr7aWoqW:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.269015+00:00",
+            "rowid": 3140297,
+            "signature": "2ZjyW1QGKHm6JjJ1NyhdSDcfPoovW6oj45R7bTHTrr8CRNq4tqZHhsc2VLqXnG3TB6yZHrrnkAAsAv6kKr7aWoqW",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140297,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "WtB7iyf9xHrQn3r6Txs6AmseUR1AG3sAyRdXgxcpX6K4DPYgKbpxDP8Q8BUzzxx7qp1ka1RRAxvqwc8gbHikRLP:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.088319+00:00",
+            "rowid": 3140296,
+            "signature": "WtB7iyf9xHrQn3r6Txs6AmseUR1AG3sAyRdXgxcpX6K4DPYgKbpxDP8Q8BUzzxx7qp1ka1RRAxvqwc8gbHikRLP",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140296,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "PPHAeVngmJkCzbguDgUjLoD8wc2UW73yneEhEvQXqCR3Y8khND3kVgUQAH7hKFjA9cRgvag8Sf7d2AcLDoW3tR9:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:20.026878+00:00",
+            "rowid": 3140295,
+            "signature": "PPHAeVngmJkCzbguDgUjLoD8wc2UW73yneEhEvQXqCR3Y8khND3kVgUQAH7hKFjA9cRgvag8Sf7d2AcLDoW3tR9",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140295,
+          "supported": true
+        },
+        {
+          "fact": {
+            "event_key": "2nH9qU2qqZk42525LC4vVYsh47pVymJbjf9FCqW6JaVzcxjyRhT3SS5W8bB599GW1jV2c3uEWcRMBkuJaQEEUcHG:0:bddb7fd34ee661ee",
+            "inserted_at_utc": "2026-09-12T17:04:19.983057+00:00",
+            "rowid": 3140294,
+            "signature": "2nH9qU2qqZk42525LC4vVYsh47pVymJbjf9FCqW6JaVzcxjyRhT3SS5W8bB599GW1jV2c3uEWcRMBkuJaQEEUcHG",
+            "slot": 446479904,
+            "source": "LIVE_WEBSOCKET_EVENT_V0_3_4"
+          },
+          "rowid": 3140294,
+          "supported": true
+        }
+      ],
+      "retained_anchor_rowid": 3060927,
+      "rows_required_lower_bound": 10001
+    },
+    "websocket_observations": {
+      "count_exact": false,
+      "exceeds_accepted_page_bound": true,
+      "newest_normalized_facts": [
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:29.010926+00:00",
+            "executed": 0,
+            "rowid": 18619440,
+            "signature": "4iav4kNWYBVq5GSHPUT95w4kUPWyhQccgJAAD8tWdQBdsn34tG7HLDWfoSt1y6o7F9LzhxVhT3UVGtA49gGscAvD",
+            "slot": 446479905
+          },
+          "rowid": 18619440,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:29.001887+00:00",
+            "executed": 0,
+            "rowid": 18619439,
+            "signature": "5DupXdMfHLjPWQuYUTqkWr37LiowMeDXfFMPK9URe2yXzCFhHpv26FYeSRThFgCAgTX62fAwGGksxZKM7ZKMsKvt",
+            "slot": 446479905
+          },
+          "rowid": 18619439,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.993742+00:00",
+            "executed": 0,
+            "rowid": 18619438,
+            "signature": "2fRNG2ttnYigNL6ap32SqMgxraAU2TbGfJMdKytZvXezUQrKpqhf5EtJ2Y6sMpxRrB49Lc5rQ7dtKbaFn5Kpf7t8",
+            "slot": 446479905
+          },
+          "rowid": 18619438,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.965052+00:00",
+            "executed": 1,
+            "rowid": 18619437,
+            "signature": "3tkLYki3a63eoH6cVLhJQU3endL2sHLHbHYu8vqL15h7Cb9mEkLSoHQ2BSg5cYBSKJTj8MDizZEQP2ttQV1EpATr",
+            "slot": 446479905
+          },
+          "rowid": 18619437,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.958366+00:00",
+            "executed": 1,
+            "rowid": 18619436,
+            "signature": "PPsx2up3Adq1Ku98ECpiwYuYHxjKWy6zcfcPHRNTb28MLoZggsByAb4JwJ3va5H3xFmvHzjqxE5MkSe8q8TvKtn",
+            "slot": 446479905
+          },
+          "rowid": 18619436,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.944942+00:00",
+            "executed": 1,
+            "rowid": 18619435,
+            "signature": "5z2XS48iS9uvCYyEPtomk2yM7zfoNqwrRHYMn8ZWyiYkzxAQ9mnWq3BTTqyPz6886gKCkyQMVpsuNWJP147MdoF3",
+            "slot": 446479905
+          },
+          "rowid": 18619435,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.929915+00:00",
+            "executed": 0,
+            "rowid": 18619434,
+            "signature": "ooh4dAGYa8rWGvNV1d58CoD3zHQSXpYACNQXUs5Kaq5jjv4QYyvnedUn7Cnm5pPgi7jCmpGUsMN1tTj2cmHUxFg",
+            "slot": 446479905
+          },
+          "rowid": 18619434,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.923390+00:00",
+            "executed": 0,
+            "rowid": 18619433,
+            "signature": "4Lc1sxJMnzGnfuCZWpP6sRcevKT3KG369oZrfzuk3FStZaJoHGXKX27uj1DENBfdYRzxU5ZP3S56rCEkEXSHhB4C",
+            "slot": 446479905
+          },
+          "rowid": 18619433,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.908864+00:00",
+            "executed": 0,
+            "rowid": 18619432,
+            "signature": "2yqatEm3kM37YD7RKq2oAmrY48QB7X7kwtaEddEiVUhAZnBU3LqaoyVipvNtZWh7SNzw8USDwV26keHXCD8gzWpV",
+            "slot": 446479905
+          },
+          "rowid": 18619432,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.895324+00:00",
+            "executed": 0,
+            "rowid": 18619431,
+            "signature": "362acVA6GbjzB7oJ9Q22vz3AH7GNKTKJh29VkBfNnZHgtQKxDsUM2YNt9jgPGFP5b5cawUMeJ3tobabhYeJ9PHR9",
+            "slot": 446479905
+          },
+          "rowid": 18619431,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.884798+00:00",
+            "executed": 0,
+            "rowid": 18619430,
+            "signature": "48ErKxHkZ2FZWrQFtingcbeV4joiGHq8Bjao8mStwBcgFAvYeUzRLdZAybjLuG7RpwxPFcSkYc74RAqGgqTQR6Zb",
+            "slot": 446479905
+          },
+          "rowid": 18619430,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.876282+00:00",
+            "executed": 0,
+            "rowid": 18619429,
+            "signature": "5h7fz576RVueVFmuG3RP6Y4zvikZi91V21cfXUkEwBSDWw9uDyZ86qz6j26a6VaPhDq2MdvfmX7PJdHrNPYQd5PC",
+            "slot": 446479905
+          },
+          "rowid": 18619429,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.850226+00:00",
+            "executed": 0,
+            "rowid": 18619428,
+            "signature": "4fKwEjGUZrimWEpCjiDxA8NPDMerTjA7DHUz8JL2wXJAFfYqyT3vAMEazEeTd7i4Gys67ZWfXgXbnRxGcQ3uVHCd",
+            "slot": 446479905
+          },
+          "rowid": 18619428,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.835972+00:00",
+            "executed": 0,
+            "rowid": 18619427,
+            "signature": "614rJw9E3vF14yKdMdJ1Xs2CWPuNHGGbgtPYoB1mTzY3aUw3wnRx1cqBBiyWWfpFH9iXCyZvBiktLT8ZUkDo9dmR",
+            "slot": 446479905
+          },
+          "rowid": 18619427,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.825788+00:00",
+            "executed": 0,
+            "rowid": 18619426,
+            "signature": "2p9DPknrTqzDwrrNwchqanuVomxVAB9TK5dVvCSipM6y2E26idsvRpAtWeLuxhtLk1VtfH6sTNeJ5P9UcCeVxbeb",
+            "slot": 446479905
+          },
+          "rowid": 18619426,
+          "supported": true
+        },
+        {
+          "fact": {
+            "at_utc": "2026-09-12T17:04:28.812243+00:00",
+            "executed": 0,
+            "rowid": 18619425,
+            "signature": "27EqJK3PpgUAZ1ZzWyttjMWXWs47uBpB8hBCSvh5WwYeCgqZcs3pfwNmuCiNa7HXr3FzV23qqdtUVpnGbm2QetzZ",
+            "slot": 446479905
+          },
+          "rowid": 18619425,
+          "supported": true
+        }
+      ],
+      "retained_anchor_rowid": 18362463,
+      "rows_required_lower_bound": 10001
+    }
+  }
+}

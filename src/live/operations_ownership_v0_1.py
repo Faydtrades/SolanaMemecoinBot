@@ -66,7 +66,9 @@ class OperationsStore:
     creates a new budget identity and clears the Operations stop/exhaustion.
     It cannot access Authority policy, hard-stop, or grants.
     """
-    def __init__(self, path, domain):
+    def __init__(self, path, domain, *, readonly=False):
+        _require(type(readonly) is bool, "OPERATIONS_READONLY_FLAG_REQUIRED")
+        self.readonly = readonly
         self.path = _journal_path(path)
         _require(type(domain) is LedgerDomain and domain.mode in ("LIVE", "DRY"), "OPERATIONS_LIVE_DOMAIN_REQUIRED")
         self.domain_id, self.binding_digest = domain.economic_domain_id, domain.binding_digest
@@ -103,10 +105,13 @@ class OperationsStore:
             "OPERATIONS_EXISTING_STORE_REQUIRED")
         stat = self.path.stat()
         _require((stat.st_dev, stat.st_ino) == self._file_identity, "OPERATIONS_STORE_REPLACED")
-        with closing(sqlite3.connect(self.path.as_uri()+"?mode=rw", uri=True, timeout=0,
+        with closing(sqlite3.connect(self.path.as_uri()+("?mode=ro" if self.readonly else "?mode=rw"), uri=True, timeout=0,
                                      isolation_level=None)) as conn:
             conn.row_factory = sqlite3.Row
-            conn.execute("PRAGMA synchronous=FULL")
+            if self.readonly:
+                conn.execute("PRAGMA query_only=ON")
+            else:
+                conn.execute("PRAGMA synchronous=FULL")
             yield conn
 
     def _read(self, conn):
@@ -160,6 +165,7 @@ class OperationsStore:
 
     @contextmanager
     def _control(self, now_us):
+        _require(not self.readonly, "OPERATIONS_READONLY_CONTROL_DENIED")
         self._time(now_us)
         with self._connection() as conn:
             conn.execute("BEGIN IMMEDIATE")

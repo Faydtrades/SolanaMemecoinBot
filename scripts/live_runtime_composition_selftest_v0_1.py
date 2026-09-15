@@ -132,6 +132,9 @@ def execution(f,key,action,*,at,number,outcome='ACKNOWLEDGED',gap_during_read=Fa
                 lambda:seed.evidence.simulation.leases[0].observed_at_us)
             result=f.step(at,execution=ports)
         finally:transport.close()
+    # Independent declared chain facts include read-only program balances;
+    # Q1's setup query only needs complete economic account data.
+    f._fixture_chain_accounts=dict(read.setup)
     return result,read,send
 
 
@@ -141,7 +144,8 @@ def original_chain(f,result,at,*,failed=False):
     plan=q4._rebuild(original)[-1]
     action=f.repo.action(envelope.preparation.action_id)
     inputs=original.evidence.setup_accounts
-    pre=dict(zip(inputs.requested_keys,inputs.accounts))
+    pre=dict(f._fixture_chain_accounts)
+    pre.update(zip(inputs.requested_keys,inputs.accounts))
     actual=sf.Fixture('pump',action.side,failed=failed,token_program=action.token_program,
         external_plan=plan,external_message_hex=envelope.preparation.message_hex,
         external_wire=base64.b64decode(envelope.signed_wire_base64),external_pre_accounts=pre)

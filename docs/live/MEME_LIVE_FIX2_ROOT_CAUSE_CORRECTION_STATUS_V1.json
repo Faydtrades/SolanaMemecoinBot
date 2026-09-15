@@ -1,0 +1,197 @@
+{
+  "2422_guard_applied": false,
+  "M56": "OWNED_NOT_BUILT",
+  "M57": "OWNED_NOT_BUILT",
+  "PUBLIC_ENVIRONMENT_REVIEWED": "NOT_COMPLETED",
+  "T010": "NOT_STARTED",
+  "T011_M59_M60_M61_real_capital": "NOT_AUTHORIZED",
+  "actual_preflight": "NOT_RUN_NO_VALID_ACTUAL_BASELINE_PROFILE",
+  "actual_wallet_evidence": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\root-cause-current-wallet-v1\\result.json",
+    "sha256": "277f50ae473226032a16ad371c3c76869fbf9ed4c1ede0e5e088eebc31609950"
+  },
+  "authorization": {
+    "path": "C:\\Users\\Mari1\\.codex\\attachments\\581413c0-a1ed-4f02-8dc4-39d71b967888\\pasted-text.txt",
+    "sha256": "f2b4fa56d9208faaf786468860c9b05235a09aefdbf32ffd89a64263793f582d"
+  },
+  "candidate_published": false,
+  "candidate_sha": null,
+  "canonical_live_store_mutation": false,
+  "collector_status": "Accepted unlimited collector remains running; PIDs 55352/55500 observed alive. No stop/restart performed.",
+  "collector_stop_or_restart_performed": false,
+  "complete_t010_envelope": "NOT_DERIVED_OR_BOUND_BEFORE_WALLET_STOP",
+  "final_composed_result": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\root-cause-persistence-composed-v2\\result.json",
+    "sha256": "d0aa3071f4e55533ab554a2c81d771ff54af781efa168c68bd8050d127796bb7"
+  },
+  "final_source_content_digest": "80ac9872b116b33e768e3971f11be6b6ae3a6ffacb887cd124c1d5a59874cbb7",
+  "final_t010_resource_limits": null,
+  "finite_history_boundary_evidence": "Engineering fixture only: 64 completed empty timers retain 128 immutable history rows and zero pending rows; completed timer replay leaves source cursor and original bytes unchanged. History and unresolved work retain fail-closed bound/bound+1 coverage. These are not actual-public T010 sizing values.",
+  "focused_correction_validation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\root-cause-producer-reviewfix-v1\\reviewfix-validation-summary.json",
+    "sha256": "f9ffd0d259ca1abb636eb6b5427fe6f41e8d3b0312ed706118b2d628f72f8b43"
+  },
+  "git": {
+    "checks": [
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exit_code": 0,
+        "stderr": "warning: in the working copy of 'docs/live/MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/live_acceptance_dossier_selftest_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/live_candidate_handoff_selftest_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/live_step10_s01_s02_selftest_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/live_t010_preflight_selftest_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/acceptance_dossier_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/continuous_producer_v0_2.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/runtime_composition_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/runtime_dry_profile_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/runtime_dry_public_driver_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/runtime_dry_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/t010_preflight_v0_1.py', LF will be replaced by CRLF the next time Git touches it",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--cached",
+          "--quiet"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2"
+      },
+      {
+        "command": [
+          "git",
+          "rev-parse",
+          "origin/live/meme-production-readiness"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2"
+      },
+      {
+        "command": [
+          "git",
+          "rev-list",
+          "--left-right",
+          "--count",
+          "HEAD...origin/live/meme-production-readiness"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "0\t0"
+      }
+    ],
+    "fetched_remote": true,
+    "new_commit_or_push": false,
+    "staged_changes": false,
+    "unpublished_changes_preserved": true,
+    "worktree_clean": false
+  },
+  "host_total_work_budget": "KNOWN_ENGINEERING_REMAINDER; current host tight-loop dispatch not corrected before STOP",
+  "immutable_history_integrity": "Resolved-row schema guards plus exact checkpoint state/table digests; original rows remain lookup-accessible and byte-bounded.",
+  "independent_review": {
+    "disposition": "NO_SUBSTANTIVE_FINDINGS_FOR_IMPLEMENTED_PERSISTENCE_DELTA",
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\root-cause-persistence-review-v2\\review.json",
+    "scope": "Correction-only persistence and frozen affected regression; not full T010 envelope/public qualification.",
+    "sha256": "78cf7ca8ea31a769df10145de9a9e3aa057233f9bf682e184f390e08ba7ea39f"
+  },
+  "initial_composed_result": {
+    "exit_code": 1,
+    "failed_command": "S12",
+    "passed_commands": 5,
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\root-cause-persistence-composed-v1\\result.json",
+    "sha256": "f0d3b6ac8e4a14267c39e2a2c140262f59907147f11f8b0a07de6cd2b7a28de6"
+  },
+  "initial_review_finding": "P2: INSERT OR REPLACE could replace a resolved timer despite UPDATE/DELETE guards; correction and re-review required.",
+  "legacy_v2_migration": "No silent store migration. Existing historical stores preserved; new storage fingerprint and fresh reviewed profile required.",
+  "persistence_validation": "SIX_AFFECTED_COMMANDS_EXIT_ZERO_AT_UNCHANGED_FINAL_SOURCE",
+  "physical_compaction": "NONE; no evidence is discarded or moved, existing lookup/FK identities are preserved.",
+  "prior_s12_failure_disposition": "Initial composed guarded-send failure did not reproduce in corrected serial S12 or final frozen composed S12. Cause remains unestablished; original failure retained and test diagnostics improved. No timing or safety limit relaxed.",
+  "producer_correction": "Storage v0.3 retains all original keyed rows. Resolved rows are immutable and counted in bounded HISTORY_BYTES; unresolved rows alone consume pending rows/bytes. Active feature/run and immutable launch/retired identity state remain separately accounted.",
+  "provisional_2346_to_2421_policy": "SUPERSEDED_DIAGNOSTIC_ONLY_NOT_FINAL_T010_POLICY",
+  "replacement_guard_correction": "Resolved UPDATE/DELETE plus INSERT and UPDATE collision guards cover every original unique key and rowid with recursive triggers disabled. Exact duplicate inserts retain original rowid; unresolved rows cannot replace resolved history.",
+  "resolved_predicates": {
+    "evaluation_audit": "delivered=1",
+    "inputs": "complete=1",
+    "outbox": "delivered=1",
+    "prepared_timers": "status=COMPLETE"
+  },
+  "resource_derivation_findings": [
+    "LEDGER_TAIL_ROWS and LEDGER_TAIL_PAYLOAD_BYTES currently count all ledger_commits through the consumer revision (seq>0), so they are cumulative rather than an unconsumed backlog.",
+    "CHECKPOINT_BYTES includes active launch identities and growing counter representations; its old snapshot maximum is not a complete-run bound.",
+    "Immutable producer identity/tombstone and resolved history grow with authorized work and must be derived jointly from total source/timer/action work.",
+    "Host logical-history accounting does not itself bound SQLite physical file size, transient serialization memory or operation latency. These remain explicit unfinished envelope requirements."
+  ],
+  "resource_metric_classification": {
+    "active_working_set": [
+      "AGGREGATE_FEATURE_BYTES",
+      "HOTTEST_FEATURE_BYTES",
+      "UNFINISHED_MINTS",
+      "NO_T0_MINTS",
+      "RETAINED_EVENTS",
+      "HOTTEST_EVENTS",
+      "RETAINED_SERIALIZED_BYTES"
+    ],
+    "cumulative_durable_history": [
+      "IDENTITY_ROWS",
+      "TOMBSTONE_ROWS",
+      "HISTORY_BYTES",
+      "LEDGER_TAIL_ROWS",
+      "LEDGER_TAIL_PAYLOAD_BYTES"
+    ],
+    "instantaneous_host_resource": [
+      "HOST_RSS_BYTES",
+      "HOST_DISK_RESERVE_BYTES"
+    ],
+    "measured_operation_latency": [
+      "STARTUP_US",
+      "PROTECTIVE_STEP_US"
+    ],
+    "serialized_current_checkpoint": [
+      "CHECKPOINT_BYTES"
+    ],
+    "source_backlog_age": [
+      "OLDEST_UNCONSUMED_AGE_US"
+    ],
+    "unresolved_operational_work": [
+      "PRODUCER_PENDING_ROWS",
+      "PRODUCER_PENDING_BYTES"
+    ]
+  },
+  "root_cause": "Operational pending metrics counted all retained input/audit/outbox/timer rows regardless of completed or delivered state. Finite snapshot limits therefore ratcheted on legitimate transitions.",
+  "schema": "MEME_LIVE_FIX2_ROOT_CAUSE_CORRECTION_STATUS_V1",
+  "signer_send_broadcast": false,
+  "status": "BLOCKED_ACTUAL_WALLET_SAFETY_PREREQUISITE",
+  "storage_fingerprint": "1769164c5714f3823a8caa7ed1d79c0eb985cfdabc67f1ff404ba6c5524e4677",
+  "storage_version": "live_producer_continuation_v0.3",
+  "successor_start_answer": "YES",
+  "successor_start_reason": "Producer/resource/host envelope correction remains unfinished; the actual wallet also fails existing safety prerequisites. No publication claim.",
+  "tombstone_disposition": "No new actual Runtime admissions or final T010 tombstone limit established before wallet STOP; joint cumulative envelope remains unfinished.",
+  "unresolved_state": "Incomplete inputs, undelivered audits/outbox and incomplete timers remain pending. No synthetic acknowledgement is introduced.",
+  "wallet_blocker": {
+    "authority_budget_invariant": "Original Authority requires unencumbered native SOL >= fixed quote plus mandatory nonnegative costs. Even the quote alone exceeds actual observed native SOL.",
+    "locked_quote_lamports": 100000000,
+    "minimum_shortfall_before_fees": 99091882,
+    "native_lamports": 908118,
+    "opening_baseline_disposition": "QUARANTINED",
+    "owner_resolution": "Supply project-approved wallet state/identity compatible with the unchanged opening-baseline contract and sufficient actual native SOL for the locked quote plus the original required fees/locks; no wallet mutation is authorized by this run.",
+    "reasons": [
+      "ACCOUNT_CONTEXTS_DIFFER",
+      "CONSUMER_CHAIN_TIME_UNKNOWN_OR_FUTURE",
+      "CONSUMER_CONTEXT_FLOOR_UNSATISFIED",
+      "FINALIZED_CONTEXT_ANCHOR_UNAVAILABLE",
+      "FINALIZED_CONTEXT_BOUNDS_OR_PROVIDER_MISMATCH",
+      "UNATTRIBUTED_PREEXISTING_TOKEN_ACCOUNT",
+      "UNSUPPORTED_MINT_EXTENSIONS_OR_LENGTH"
+    ],
+    "stop_condition": "Proceeding with the observed accepted wallet would require bypassing the opening-baseline quarantine or native-funding safety invariant, changing locked economics, or unauthorized wallet/capital mutation. None performed.",
+    "supported_shape": "UNSUPPORTED",
+    "wallet": "B96iU8vKUtV2kAcGNj5zsYWo9GKPEGZo5jDPmJVqC3xp"
+  }
+}

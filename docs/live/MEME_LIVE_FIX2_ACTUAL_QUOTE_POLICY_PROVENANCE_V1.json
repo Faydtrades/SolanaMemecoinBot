@@ -1,0 +1,86 @@
+{
+  "PUBLIC_ENVIRONMENT_REVIEWED": "NOT_QUALIFIED",
+  "T010": "NOT_STARTED",
+  "checked": 12,
+  "failures": 0,
+  "network_calls": 0,
+  "original_records_rewritten": false,
+  "owner_policy": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_T010_IMPACT_SLIPPAGE_DECISION_V1.json",
+    "sha256": "27718d5b07c3d8567450fe08ed213bad4dd46c5fc22b666b7370e052b77007a8"
+  },
+  "rows": [
+    {
+      "actual_quote_policy_fingerprint": "7f02c51e2bdbd8c1a8680bdd08c4059257c0f948cd863ed47fad80df2f79f924",
+      "checks": {
+        "actual_policy_fingerprint_500": true,
+        "fixed_quote": true,
+        "impact_within_owner_limit": true,
+        "minimum_output_exact_500": true,
+        "not_100": true,
+        "plan_binds_quote": true
+      },
+      "correction": "The descriptive probe_inputs.quote_policy=100 was stale metadata. The retained original executable quote and plan bind QuotePolicyV01(500), verified by fingerprint and exact minimum-output arithmetic. No original evidence was rewritten. policy_approval=false is not production authorization; the owner decision supplies the T010-only policy authority.",
+      "original_plan_and_quote": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pump-buy-owner-policy-v1\\plan-and-quote.json",
+        "sha256": "04389bd34baaf0062c3add92fd43419ee553965d6d27341cc2d417d946f05bd9"
+      },
+      "probe_script": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pump-buy-owner-policy-v1\\probe.py",
+        "sha256": "c361d99fb652a76827c2b5c3b9064949c2c11ddac92f1edc0e6d9e4a2be5ca6a"
+      },
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pump-buy-owner-policy-v1\\result.json",
+        "sha256": "7adb9b38502c4324c8aad64d5afd71d8212b5b16d8c39e24bbb7b8986daef324"
+      },
+      "stale_descriptive_probe_inputs": {
+        "compute": {
+          "micro_lamports": 1000,
+          "units": 250000
+        },
+        "policy_approval": false,
+        "quote_policy": {
+          "slippage_bps": 100
+        }
+      },
+      "witness": "pump-buy-owner-policy-v1"
+    },
+    {
+      "actual_quote_policy_fingerprint": "7f02c51e2bdbd8c1a8680bdd08c4059257c0f948cd863ed47fad80df2f79f924",
+      "checks": {
+        "actual_policy_fingerprint_500": true,
+        "fixed_quote": true,
+        "impact_within_owner_limit": true,
+        "minimum_output_exact_500": true,
+        "not_100": true,
+        "plan_binds_quote": true
+      },
+      "correction": "The descriptive probe_inputs.quote_policy=100 was stale metadata. The retained original executable quote and plan bind QuotePolicyV01(500), verified by fingerprint and exact minimum-output arithmetic. No original evidence was rewritten. policy_approval=false is not production authorization; the owner decision supplies the T010-only policy authority.",
+      "original_plan_and_quote": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pumpswap-buy-cost-v1\\plan-and-quote.json",
+        "sha256": "8a7a7f611699bf5b2a7bb04e7b99d08ea5ded5125bce5abde3a3e6ae0e5e732b"
+      },
+      "probe_script": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pumpswap-buy-cost-v1\\probe.py",
+        "sha256": "5f7b3a7eed1acff967243e3ab0d758d0967919d83ced36e46ed9156f853c7210"
+      },
+      "result": {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pumpswap-buy-cost-v1\\result.json",
+        "sha256": "27199ce032263ff98d9824e1669de915d0e1a98d6b4340f72266aff67fa14561"
+      },
+      "stale_descriptive_probe_inputs": {
+        "compute": {
+          "micro_lamports": 1000,
+          "units": 250000
+        },
+        "policy_approval": false,
+        "quote_policy": {
+          "slippage_bps": 100
+        }
+      },
+      "witness": "pumpswap-buy-cost-v1"
+    }
+  ],
+  "schema": "MEME_LIVE_FIX2_ACTUAL_QUOTE_POLICY_PROVENANCE_CORRECTION_V1",
+  "scope": "RETAINED_ACTUAL_PUBLIC_COMPONENT_PROVENANCE_ONLY"
+}

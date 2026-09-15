@@ -50,9 +50,14 @@ class PublicTransport:
         payload=json.loads(request.content);method=payload['method'];params=payload['params']
         self.requests.append(payload)
         e=self.seed.evidence;run=e.simulation;slot=run.leases[0].context_slot
+        if self.fault=='confirmed-ahead' and method in ('getLatestBlockhash','isBlockhashValid','getFeeForMessage','simulateTransaction'):
+            slot+=32
         if method=='getGenesisHash': result=a3.GENESIS
         elif method=='getMultipleAccounts':
             self.account_calls+=1
+            if params[1]['minContextSlot']>slot:
+                return httpx.Response(200,json={'jsonrpc':'2.0','id':payload['id'],
+                    'error':{'code':-32016,'message':'Minimum context slot has not been reached'}})
             source=self.venue if self.account_calls<=3 else self.setup
             result={'context':{'slot':slot},'value':[]}
             for key in params[0]:
@@ -156,6 +161,13 @@ def main():
             qualify(f,sell,seed,'SELL_'+route)
         f,_,scenario,action=a4.fixture(tmp,'hostile');cleanup.callback(f.close)
         seed,_=a4.evidence(f,action,scenario);install(f,seed)
+        ahead,boundary=produce(f,action,seed,fault='confirmed-ahead')
+        check('confirmed_lease_finalized_setup_independent_cuts',
+            ahead.validation.disposition=='SUPPORTED_CONTEXT_ONLY'
+            and ahead.original.evidence.simulation.leases[0].context_slot
+                ==ahead.original.evidence.setup_accounts.cut.context_slot+32)
+        check('confirmed_ahead_preserves_original_read_proof',
+            ExactMessageProduction(ahead.validation_input_json,ahead.original_read_records)==ahead)
         for fault in ('null-fee','missing-cpi','compute-exceeded','simulation-failed'):
             value,_=produce(f,action,seed,fault=fault)
             check(fault+'_unsupported',value.validation.disposition!='SUPPORTED_CONTEXT_ONLY')

@@ -121,7 +121,7 @@ def denied_cases(directory):
             and f.repo.audit()["action_count"]==0 and receipt.consumed_grant_id is None)
         check(name+"_denial_binds_returned_risk",f.repo._conn.execute("SELECT external_record_digest FROM (SELECT json_extract(payload_json,'$.external_record_digest') AS external_record_digest FROM ledger_inbox_dispositions)").fetchone()[0]==receipt.risk.content_digest)
         f.reopen();check(name+"_original_denial_replay",f.repo.authority_admission_receipt(name)==receipt);f.close()
-    for name in ("withdrawal","deposit","unsupported","unknown","missing-mint","missing-explicit","retained-wsol","new-token22","wrong-genesis","old-wallet","behind-floor"):
+    for name in ("withdrawal","deposit","unsupported","unknown","missing-mint","missing-explicit","retained-wsol","historical-new-token22","wrong-genesis","old-wallet","behind-floor"):
         f=Fixture(directory,name)
         scenario=Scenario()
         program=TOKEN_PROGRAM_ID
@@ -133,9 +133,11 @@ def denied_cases(directory):
         elif name=="retained-wsol":
             key=derive_associated_token_address(WALLET,WSOL_MINT,TOKEN_PROGRAM_ID)
             scenario.add_token(token=key,mint=WSOL_MINT,data=token_data(WSOL_MINT,amount=0,reserve=2039280))
-        elif name=="new-token22":program=TOKEN_2022_PROGRAM_ID
+        elif name=="historical-new-token22":program=TOKEN_2022_PROGRAM_ID
         elif name=="wrong-genesis":scenario.genesis=sf.bh(199)
         support=wallet(f,scenario=scenario,program=program)
+        if name=="historical-new-token22":
+            support=replace(support,observation=replace(support.observation,schema="live_wallet_account_evidence_v0.2"))
         if name=="missing-mint":
             support=replace(support,observation=replace(support.observation,mint_reads=()))
         if name=="missing-explicit":

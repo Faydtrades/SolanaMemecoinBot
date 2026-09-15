@@ -47,6 +47,7 @@ class EntryFacts:
     venue: str
     token_program: str
     wallet: object
+    protocol: object = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,9 +76,13 @@ class DryExecutionPorts:
     plan_policy: object
     compute: object
     now_us: object
+    qualification_interrupt_after_simulation: bool = False
+    wallet_after_venue: object = None
 
     def __post_init__(self):
-        require(type(self.rpc) is ExecutionReadOnlyRpc and callable(self.now_us),
+        require(type(self.rpc) is ExecutionReadOnlyRpc and callable(self.now_us)
+            and type(self.qualification_interrupt_after_simulation) is bool
+            and (self.wallet_after_venue is None or callable(self.wallet_after_venue)),
             "RUNTIME_DRY_READONLY_PORTS_REQUIRED")
 
 
@@ -155,7 +160,11 @@ class RuntimeCompositionV01:
         prior = self.source.latest_record()
         previous = None if prior is None else prior[1]
         observed = CollectorSourceAdapter(self.producer.market_source.db_path).observe(self.handoff.binding,
-            self.source.profile, observed_at_utc=sample.utc_upper_utc, requested_cut_utc=cut, previous=previous)
+            self.source.profile, observed_at_utc=sample.utc_upper_utc, requested_cut_utc=cut, previous=previous,
+            max_raw_bytes=getattr(self, "_resource_raw_bytes", None),
+            reserve_rows=getattr(self, "_resource_capture_reservation", None))
+        append_guard = getattr(self, "_resource_source_append_guard", None)
+        require(append_guard is None or append_guard(observed), "RUNTIME_SOURCE_RECORD_CAPACITY_HELD")
         self.source.append(observed, expected_previous_digest=ZERO_DIGEST if previous is None else previous.content_digest)
         return observed
 
@@ -169,7 +178,16 @@ class RuntimeCompositionV01:
                 first = self.producer.conn.execute("SELECT timer_key FROM paper_fp_binding_prepared_timers_v0_1 "
                     "WHERE status<>'COMPLETE' ORDER BY source_watermark_p1_rowid,timer_key LIMIT 1").fetchone()
             timer = first[0] if first else self.producer.prepare_clock_tick(datetime.fromisoformat(sample.utc_upper_utc))
-            self.producer.process_next_batch(batch_size=self.batch_rows)
+            # Optional trusted T010 reservation narrows only this source unit;
+            # the accepted dispatch ceiling and normal Runtime stay unchanged.
+            reserved = getattr(self, "_resource_batch_rows", self.batch_rows)
+            require(type(reserved) is int and 0 < reserved <= self.batch_rows,
+                "RUNTIME_DURABLE_SOURCE_RESERVATION_REQUIRED")
+            raw_bytes = getattr(self, "_resource_raw_bytes", None)
+            if raw_bytes is None:
+                self.producer.process_next_batch(batch_size=reserved)
+            else:
+                self.producer.process_next_batch(batch_size=reserved, max_raw_bytes=raw_bytes)
             self.producer.execute_prepared_timer(timer)
             self._source_health(sample, cut)
             available = self.queue_limit-len(self._queue)
@@ -179,7 +197,9 @@ class RuntimeCompositionV01:
         except (ValueError, RuntimeError, sqlite3.DatabaseError, OSError):
             return "SOURCE_UNAVAILABLE_OR_PROFILE_EXHAUSTED"
         for root in page.candidate_roots:
-            if root not in self._queue and self.ledger.authority_acceptance(root) is None:
+            from .ledger_actions_v0_1 import NON_ACCEPTANCE, TERMINAL_INBOX
+            if (root not in self._queue and self.ledger.authority_acceptance(root) is None
+                    and self.ledger.inbox_disposition(root) not in NON_ACCEPTANCE | TERMINAL_INBOX):
                 self._queue.append(root)
         return "SOURCE_PAGE_CONSUMED"
 
@@ -449,7 +469,9 @@ class RuntimeCompositionV01:
             # same original recovery used on cold reopen, without another read.
             self._dry_recovery = True
             receipt = run_dry(self.ledger, action.action_id, ports.rpc, ports.wallet,
-                ports.quote_policy, ports.plan_policy, ports.compute, clock=clock, now_us=ports.now_us)
+                ports.quote_policy, ports.plan_policy, ports.compute, clock=clock, now_us=ports.now_us,
+                qualification_interrupt_after_simulation=ports.qualification_interrupt_after_simulation,
+                wallet_after_venue=ports.wallet_after_venue)
         self._entry_action_id = None
         self._dry_recovery = False
         return self._result("NON_SUBMITTED", receipt.dry_terminal.reason, action=action,
@@ -529,7 +551,8 @@ class RuntimeCompositionV01:
             return self._result("ENTRY_HELD", reason)
         if source_state == "SOURCE_UNAVAILABLE_OR_PROFILE_EXHAUSTED":
             return self._result("SOURCE_HELD", source_state)
-        if self._entry_degradation(clock, entry, operations_resources, source_cut_utc):
+        if (entry is None or type(entry) is EntryFacts and entry.protocol is None) and self._entry_degradation(
+                clock, entry, operations_resources, source_cut_utc):
             return self._result("OPERATIONS_ENTRY_HELD", "CURRENT_DEGRADATION_ENTRY_HOLD")
         if not self._queue:
             return self._result("SOURCE_ADVANCED", source_state)
@@ -542,6 +565,30 @@ class RuntimeCompositionV01:
             return self._result("ENTRY_HELD", "EXTERNAL_AUTHORITY_POLICY_REQUIRED", root=root)
         if self.capability == "LIVE" and not self._owner_current():
             return self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED", root=root)
+        if entry.protocol is not None:
+            from .pump_protocol_compatibility_v0_1 import PumpProtocolObservation, rejection_proof
+            require(type(entry.protocol) is PumpProtocolObservation, "RUNTIME_TYPED_PUMP_PROTOCOL_FACTS_REQUIRED")
+            if clock_reasons(self.ledger._authority, sample):
+                return self._result("ENTRY_HELD", "PUMP_PROTOCOL_QUALIFIED_CLOCK_REQUIRED", root=root)
+            disposition, selected_venue, reason = entry.protocol.classify(
+                self.ledger.domain, self.ledger.candidate(root), sample, entry.wallet)
+            if disposition == "UNKNOWN":
+                return self._result("ENTRY_HELD", reason, root=root)
+            if disposition == "UNSUPPORTED":
+                # An original nonacceptance is durable but never changes wallet
+                # custody, consumes a grant, reserves funds or permits signing.
+                # It precedes wallet comparison so an unsupported candidate
+                # cannot quarantine an otherwise supported dedicated wallet.
+                key = self._key("protocol-reject", root, entry.protocol.content_digest)
+                self.ledger.record_nonacceptance(root, "REJECTED", external_reference=reason,
+                    external_record_digest=entry.protocol.content_digest,
+                    recorded_at_utc=sample.utc_lower_utc, idempotency_key=key, fence=snapshot["fence"],
+                    protocol_evidence=rejection_proof(entry.protocol, entry.wallet, sample))
+                self._queue.pop(0)
+                return self._result("CANDIDATE_UNSUPPORTED", reason, root=root, key=key)
+            entry = EntryFacts(selected_venue, entry.protocol.read.accounts[0].account.owner, entry.wallet, entry.protocol)
+        if entry.protocol is not None and self._entry_degradation(clock, entry, operations_resources, source_cut_utc):
+            return self._result("OPERATIONS_ENTRY_HELD", "CURRENT_DEGRADATION_ENTRY_HOLD")
         key = self._key("admission", root, sample.utc_upper_utc)
         receipt = self.ledger.admit_authority_entry(EntryRequest(root, entry.venue, entry.token_program, policy.selected_track),
             sample, self.source, entry.wallet, command_id=key, fence=snapshot["fence"])

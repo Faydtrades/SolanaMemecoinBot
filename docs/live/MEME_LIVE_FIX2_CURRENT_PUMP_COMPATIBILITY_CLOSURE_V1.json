@@ -1,0 +1,158 @@
+{
+  "T010": "NOT_STARTED",
+  "acquisition_delta": "Subsequent exact-coherence public wallet acquisition changes require their own directly affected validation; mint/settlement/optional-mode review is reused.",
+  "actual_buy_component": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pump-public-buy-cost-v1\\result.json",
+    "sha256": "f15a15c02f0b94d13a4fac45d5072158406554383665f3a2910a21d7d897d08a"
+  },
+  "actual_finalized_wallet_position_claimed": false,
+  "actual_witness_classification": "SUPPORTED_IMMUTABLE_METADATA_TOKEN2022_MINT_TLV18_19",
+  "independent_review": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pump-compatibility-independent-review-v1\\review.json",
+    "sha256": "87cfc2d93e1b61f52c88a132b90114ecdf19b72de7aa05c76bedde73506baa9c"
+  },
+  "later_capital_authorized": false,
+  "matrix": [
+    {
+      "classification": "SUPPORTED_END_TO_END",
+      "implementation_evidence": "Original 27-account fixed-quote buy_exact_quote_in_v2 and 26-account sell_v2 layout retained; buy_v2 exact-base is not selected by the fixed-quote contract.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump.json",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/instructions/BUY.md",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/instructions/SELL.md"
+      ],
+      "surface": "Normal SOL Pump trade interface"
+    },
+    {
+      "classification": "SUPPORTED_END_TO_END",
+      "implementation_evidence": "Wallet v0.3 parses only immutable metadata TLV18/19 with exact base, padding, account type, authority, pointer and mint relationships; historical observations retain their original schema verdict.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/instructions/COIN_CREATION.md",
+        "https://github.com/solana-program/token-2022/blob/36ab4139912c3991a2858270cccf434dfd295802/interface/src/extension/metadata_pointer/mod.rs",
+        "https://github.com/solana-program/token-2022/blob/36ab4139912c3991a2858270cccf434dfd295802/program/src/extension/token_metadata/processor.rs",
+        "https://github.com/solana-program/token-metadata/blob/62f21de4afc18b7c49823c36ee5d6635b69f46a8/interface/src/state.rs"
+      ],
+      "surface": "Normal create_v2 Token2022 immutable metadata"
+    },
+    {
+      "classification": "SUPPORTED_END_TO_END",
+      "implementation_evidence": "Canonical absent-to-170-byte ImmutableOwner ATA, exact System funding, Token2022 initialization, actual finalized token credit, durable locked lamports, cold position reconstruction and SELL actual units are validated. Prefunded System ATA variants remain fail-closed.",
+      "official_sources": [
+        "https://github.com/solana-program/associated-token-account/blob/2dc55ee1009d787eea7e1c401b8f27e6892bff4b/program/src/processor.rs",
+        "https://github.com/solana-program/associated-token-account/blob/2dc55ee1009d787eea7e1c401b8f27e6892bff4b/program/src/tools/account.rs",
+        "https://github.com/solana-program/token-2022/blob/36ab4139912c3991a2858270cccf434dfd295802/interface/src/extension/mod.rs",
+        "https://github.com/solana-program/token-2022/blob/36ab4139912c3991a2858270cccf434dfd295802/interface/src/extension/immutable_owner.rs"
+      ],
+      "surface": "Canonical fresh Token2022 base ATA"
+    },
+    {
+      "classification": "SUPPORTED_END_TO_END",
+      "implementation_evidence": "Canonical SOL PumpSwap existing 23/21 base layouts plus exact pool_v2/buyback remaining roles retained; shared Token2022 ATA settlement applies. Optional flags are gated in the current public path.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump_amm.json",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/PUMP_SWAP_README.md",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/FEE_RECIPIENTS.md"
+      ],
+      "surface": "Canonical PumpSwap SOL route"
+    },
+    {
+      "classification": "SUPPORTED_END_TO_END",
+      "implementation_evidence": "Pump native SOL and PumpSwap WSOL remain distinct; unused native Pump quote ATA addresses do not imply account creation or rent.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/README.md",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/instructions/BUY.md"
+      ],
+      "surface": "SOL quote semantics"
+    },
+    {
+      "classification": "SUPPORTED_END_TO_END",
+      "implementation_evidence": "Current normal fee tables use current actual mint supply, separately preserving initial curve supply; current fee CPI and buyback-inclusive event split bind exact recipient and creator vault. RPC account cap10337 derives from the existing bounded fee-config decoder.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/FEE_PROGRAM_README.md",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/FEE_RECIPIENTS.md",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump_fees.json",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/HOLDER_REWARDS_README.md"
+      ],
+      "surface": "Dynamic standard fee config and buyback recipients"
+    },
+    {
+      "classification": "SUPPORTED_END_TO_END",
+      "implementation_evidence": "Existing verified virtual quote arithmetic retained. Unsupported holder/custom semantic variants are denied independently.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/PUMP_SWAP_README.md",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump_amm.json"
+      ],
+      "surface": "PumpSwap virtual quote reserves"
+    },
+    {
+      "classification": "EXPLICITLY_UNSUPPORTED_BEFORE_ECONOMIC_ACCEPTANCE",
+      "implementation_evidence": "Normal adequately sized accounts supported; explicitly undersized required-expansion variants durably denied before economic acceptance. Official normal Pump curve minimum115 bytes retained;151 is not a fabricated minimum.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/PUMP_PROGRAM_README.md",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump.json"
+      ],
+      "surface": "Curve/account expansion"
+    },
+    {
+      "classification": "EXPLICITLY_UNSUPPORTED_BEFORE_ECONOMIC_ACCEPTANCE",
+      "implementation_evidence": "Known mayhem curve/pool flag receives original durable protocol nonacceptance; next candidate continues.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/FEE_RECIPIENTS.md",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump.json",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump_amm.json"
+      ],
+      "surface": "Mayhem"
+    },
+    {
+      "classification": "EXPLICITLY_UNSUPPORTED_BEFORE_ECONOMIC_ACCEPTANCE",
+      "implementation_evidence": "Known cashback curve/pool flag receives original durable protocol nonacceptance; next candidate continues.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/PUMP_CASHBACK_README.md",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/HOLDER_REWARDS_README.md"
+      ],
+      "surface": "Cashback"
+    },
+    {
+      "classification": "EXPLICITLY_UNSUPPORTED_BEFORE_ECONOMIC_ACCEPTANCE",
+      "implementation_evidence": "Current optional creator-edit/holder semantic fields are parsed and unsupported modes durably denied; ordinary SOL standard-fee fields are not treated as custom fee policy.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump.json",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump_amm.json",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/HOLDER_REWARDS_README.md"
+      ],
+      "surface": "Holder rewards and customcreatorfee variants"
+    },
+    {
+      "classification": "SUPPORTED_END_TO_END",
+      "implementation_evidence": "Recognized old/current normal event layouts supported; current holder rewards suffix must be zero, buyback is split from aggregate fee, and fee-recipient/creator-vault roles are independently bound.",
+      "official_sources": [
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/idl/pump.json",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/docs/HOLDER_REWARDS_README.md"
+      ],
+      "surface": "Current regular Pump TradeEvent"
+    },
+    {
+      "classification": "EXPLICITLY_UNSUPPORTED_BEFORE_ECONOMIC_ACCEPTANCE",
+      "implementation_evidence": "Unknown Token2022 extensions and unsupported transfer/custody semantics remain fail-closed; non-native quote or unsupported pool identity never receives economic acceptance.",
+      "official_sources": [
+        "https://github.com/solana-program/token-2022/blob/36ab4139912c3991a2858270cccf434dfd295802/interface/src/extension/mod.rs",
+        "https://github.com/solana-program/token-2022/blob/36ab4139912c3991a2858270cccf434dfd295802/program/src/extension/token_metadata/processor.rs",
+        "https://github.com/pump-fun/pump-public-docs/blob/f216b6724c6ede79d7cef9ce210b741f7e17e93b/README.md"
+      ],
+      "surface": "Non-native quote / arbitraryToken2022extensions / mutablemetadata"
+    }
+  ],
+  "official_pass": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pump-compatibility-official-v1\\compatibility-matrix.json",
+    "sha256": "03692446b7d5495c9843fdbd2179ca2ebf0a3711bf012f1e0749de0cb81a4fcf"
+  },
+  "qualification_claimed": false,
+  "schema": "MEME_LIVE_FIX2_CURRENT_PUMP_COMPATIBILITY_CLOSURE_V1",
+  "scope": "CURRENT_PUBLIC_T010_DRY_NO_BROADCAST_NON_SUBMITTED_GRAPH",
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "validation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pump-affected-composed-v2\\manifest.json",
+    "sha256": "3f17d6208a0a53e06198e49468f5fa2d2975cff3c518361bda720166a0de12a3"
+  },
+  "witness_mint": "brAjuM86aXzWSQnJW3oWccfct3bqMu62dYYfg4p7wUS"
+}

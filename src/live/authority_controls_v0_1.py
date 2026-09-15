@@ -593,9 +593,16 @@ def clock_from_record(record):
     return TrustedClockSample(**value)
 
 
-def eligibility_from_record(record):
-    return EligibilityInput(record["root_id"], record["candidate_digest"], record["track"], clock_from_record(record["clock"]),
-        record["source_sequence"], None if record["source"] is None else verdict_from_json(canonical_json(record["source"])),
+def eligibility_from_record(record, *, _source_decoder=None):
+    if _source_decoder is not None:
+        from .source_health_v0_1 import _SourceReplayDecoder
+        require(type(_source_decoder) is _SourceReplayDecoder, "AUTHORITY_ORIGINAL_SOURCE_DECODER_REQUIRED")
+    root, candidate, track = record["root_id"], record["candidate_digest"], record["track"]
+    clock, sequence = clock_from_record(record["clock"]), record["source_sequence"]
+    payload = None if record["source"] is None else canonical_json(record["source"])
+    source = None if payload is None else (verdict_from_json(payload) if _source_decoder is None
+        else _source_decoder.decode(payload)[0])
+    return EligibilityInput(root, candidate, track, clock, sequence, source,
         record["previous_source_record_digest"])
 
 
@@ -616,11 +623,12 @@ class AuthorityReceipt:
         return content_fingerprint(asdict(self))
 
 
-def authority_receipt_from_record(record):
+def authority_receipt_from_record(record, *, _source_decoder=None):
     value = dict(record)
     require(value.get("version") == VERSION and value.get("kind") in ("AUTHORITY_CONTROL", "AUTHORITY_ELIGIBILITY"),
             "AUTHORITY_RECEIPT_VERSION_OR_KIND_INVALID")
-    value["original"] = command_from_record(value["original"]) if value["kind"] == "AUTHORITY_CONTROL" else eligibility_from_record(value["original"])
+    value["original"] = command_from_record(value["original"]) if value["kind"] == "AUTHORITY_CONTROL" else eligibility_from_record(
+        value["original"], _source_decoder=_source_decoder)
     if value["decision"] is not None:
         decision = dict(value["decision"])
         decision["binding"] = EntryBinding(**decision["binding"])

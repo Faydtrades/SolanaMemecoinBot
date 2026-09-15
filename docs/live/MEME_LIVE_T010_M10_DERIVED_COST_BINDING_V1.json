@@ -1,0 +1,346 @@
+{
+  "T010": "NOT_STARTED",
+  "T011_or_capital_authority": false,
+  "actual_coherent_baseline_required": true,
+  "actual_public_qualification_claimed": false,
+  "additional_lamports_required_by_this_cost_vector": 0,
+  "arithmetic_sufficient": true,
+  "arithmetic_surplus_lamports": 21242813,
+  "compute_note": "Exact bounded execution tuple used by both retained original public simulations. Not a claim of required landing bid or any capital authority. Fee fields are exact getFeeForMessage5250 including250 priority for this tuple. Future over-cap observations deny; no automatic bid or cap increase.",
+  "costs": {
+    "failed_attempt_count": 2,
+    "failed_attempt_network_budget_lamports": 10500,
+    "maximum_impact_bps": 500,
+    "maximum_slippage_bps": 500,
+    "network_total_fee_lamports": 5250,
+    "priority_fee_within_total_lamports": 250,
+    "protective_network_fee_lamports": 5250,
+    "protective_refundable_lock_lamports": 1488440,
+    "protective_setup_lamports": 4465320,
+    "refundable_account_lock_lamports": 3002280,
+    "setup_outflow_lamports": 5811520,
+    "venue_fee_within_quote_cap_lamports": 1234570
+  },
+  "execution_compute": {
+    "micro_lamports": 1000,
+    "units": 250000
+  },
+  "fee_tier_derivation": [
+    {
+      "fee_lamports": 1234569,
+      "rates_bps": [
+        0,
+        95,
+        30
+      ],
+      "tier": 0,
+      "venue": "pump-buy-owner-policy-v1"
+    },
+    {
+      "fee_lamports": 1234570,
+      "rates_bps": [
+        2,
+        93,
+        30
+      ],
+      "tier": 0,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 1185773,
+      "rates_bps": [
+        20,
+        5,
+        95
+      ],
+      "tier": 1,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 1136927,
+      "rates_bps": [
+        20,
+        5,
+        90
+      ],
+      "tier": 2,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 1088032,
+      "rates_bps": [
+        20,
+        5,
+        85
+      ],
+      "tier": 3,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 1039091,
+      "rates_bps": [
+        20,
+        5,
+        80
+      ],
+      "tier": 4,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 990100,
+      "rates_bps": [
+        20,
+        5,
+        75
+      ],
+      "tier": 5,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 941061,
+      "rates_bps": [
+        20,
+        5,
+        70
+      ],
+      "tier": 6,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 891975,
+      "rates_bps": [
+        20,
+        5,
+        65
+      ],
+      "tier": 7,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 842837,
+      "rates_bps": [
+        20,
+        5,
+        60
+      ],
+      "tier": 8,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 793652,
+      "rates_bps": [
+        20,
+        5,
+        55
+      ],
+      "tier": 9,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 744418,
+      "rates_bps": [
+        20,
+        5,
+        50
+      ],
+      "tier": 10,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 695135,
+      "rates_bps": [
+        20,
+        5,
+        45
+      ],
+      "tier": 11,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 645804,
+      "rates_bps": [
+        20,
+        5,
+        40
+      ],
+      "tier": 12,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 596423,
+      "rates_bps": [
+        20,
+        5,
+        35
+      ],
+      "tier": 13,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 546994,
+      "rates_bps": [
+        20,
+        5,
+        30
+      ],
+      "tier": 14,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 527207,
+      "rates_bps": [
+        20,
+        5,
+        28
+      ],
+      "tier": 15,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 497514,
+      "rates_bps": [
+        20,
+        5,
+        25
+      ],
+      "tier": 16,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 477709,
+      "rates_bps": [
+        20,
+        5,
+        23
+      ],
+      "tier": 17,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 447987,
+      "rates_bps": [
+        20,
+        5,
+        20
+      ],
+      "tier": 18,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 428160,
+      "rates_bps": [
+        20,
+        5,
+        18
+      ],
+      "tier": 19,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 398408,
+      "rates_bps": [
+        20,
+        5,
+        15
+      ],
+      "tier": 20,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 378562,
+      "rates_bps": [
+        20,
+        5,
+        13
+      ],
+      "tier": 21,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 348781,
+      "rates_bps": [
+        20,
+        5,
+        10
+      ],
+      "tier": 22,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 328916,
+      "rates_bps": [
+        20,
+        5,
+        8
+      ],
+      "tier": 23,
+      "venue": "pumpswap-buy-cost-v1"
+    },
+    {
+      "fee_lamports": 299104,
+      "rates_bps": [
+        20,
+        5,
+        5
+      ],
+      "tier": 24,
+      "venue": "pumpswap-buy-cost-v1"
+    }
+  ],
+  "fixed_quote_lamports": 100000000,
+  "funding_requirement_lamports": 114788560,
+  "network_fee_primary_contract": "https://solana.com/docs/core/fees",
+  "observed_setup_unit_lamports": {
+    "current_volume_137": 1346200,
+    "legacy_wsol_165": 1488440,
+    "token2022_immutable_owner_170": 1513840
+  },
+  "observed_wallet_lamports": 136031373,
+  "owner_impact_slippage": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_T010_IMPACT_SLIPPAGE_DECISION_V1.json",
+    "sha256": "27718d5b07c3d8567450fe08ed213bad4dd46c5fc22b666b7370e052b77007a8"
+  },
+  "real_expenditure_authorized_lamports": 0,
+  "references": {
+    "current_pump_builder": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\src\\phase5\\shadow_unsigned_plan_simulation_v0_1.py",
+      "sha256": "1fa1df4bd7ac8fb4faf234b4bbde3b70b45f5b3a8ea52017f65fc7e10f527d6a"
+    },
+    "pump_public": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pump-buy-owner-policy-v1\\result.json",
+      "sha256": "7adb9b38502c4324c8aad64d5afd71d8212b5b16d8c39e24bbb7b8986daef324"
+    },
+    "settlement_roles": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\src\\live\\ledger_settlement_v0_1.py",
+      "sha256": "ff60a12b882778af9c5e052216ba45ef67b2b379f3d22c60796a8e3edf6c2a05"
+    },
+    "swap_derived_flows": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pumpswap-buy-cost-v1\\derived-system-flows.json",
+      "sha256": "7202ba5f96fae1ec2d1b9a5081a95b0443b87a08d5e93dc22eeb1f10b916b84c"
+    },
+    "swap_original_simulation": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pumpswap-buy-cost-v1\\exact-simulation.json",
+      "sha256": "b514e66f950faea0459db4095f01648d3560ade0c7711ce34e21e66303de4c1f"
+    },
+    "swap_public": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pumpswap-buy-cost-v1\\result.json",
+      "sha256": "27199ce032263ff98d9824e1669de915d0e1a98d6b4340f72266aff67fa14561"
+    }
+  },
+  "schema": "MEME_LIVE_T010_M10_DERIVED_COST_BINDING_V1",
+  "scope": [
+    "T010",
+    "DRY",
+    "NO_BROADCAST",
+    "NON_SUBMITTED"
+  ],
+  "setup_derivation": {
+    "contract_note": "CostLimits uses independent BUY and NEXT-exit buckets. Each is bounded over both accepted venues. Sum is the existing contract reservation, not an assertion all maxima spend in the same transaction. No refund or quoted SELL proceeds reduce upfront protection.",
+    "entry_external": "one current volume account + up to3 distinct supported external WSOL ATA roles: protocol fee, creator vault, buyback",
+    "entry_wallet_locks": "one Token2022 base ATA + one temporary WSOL ATA; legacy base requires no more",
+    "protective_external": "up to3 external WSOL ATA roles on canonical PumpSwap after a Pump acquisition/migration; no fresh base or volume account on supported SELL",
+    "protective_wallet_locks": "one temporary WSOL ATA; SELL consumes actual existing base units"
+  },
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "wallet": "Cx2GvwVAbozcAg19L3ePmGUp59F19LVc5DgPgsRu4LWm"
+}

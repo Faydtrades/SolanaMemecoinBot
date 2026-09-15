@@ -1,0 +1,343 @@
+{
+  "M56": "OWNED_NOT_BUILT",
+  "M57": "OWNED_NOT_BUILT",
+  "PUBLIC_ENVIRONMENT_REVIEWED": "NOT_QUALIFIED",
+  "T010": "NOT_STARTED",
+  "actual_finite_probe": {
+    "candidate_evaluations": 0,
+    "elapsed_seconds": 301.8899999999994,
+    "evidence": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\new-wallet-current-producer-v2\\result.json",
+      "sha256": "f08fe81e885bd2c3aa8d9dc616f8cfb0265237e86c5520bdac04c2bfcfa6c6a8"
+    },
+    "final_cursor": 3174382,
+    "final_usage": {
+      "active_mints": 19,
+      "history_bytes": 331843,
+      "hottest_bytes": 26082,
+      "hottest_events": 26,
+      "identity_history_bytes": 2203,
+      "launch_rows": 19,
+      "pending_bytes": 623902,
+      "pending_rows": 500,
+      "resolved_history_bytes": 329640,
+      "resolved_history_rows": 1048,
+      "retained_bytes": 219174,
+      "retained_events": 100,
+      "retired_rows": 0,
+      "singleton": 1
+    },
+    "not_complete_t010_envelope": true,
+    "raw_pump_rows": 700,
+    "scope": "Original isolated producer only, no Runtime admission or T010"
+  },
+  "actual_preflight": "NOT_READY_NO_FINAL_PROFILE_OR_ENVELOPE",
+  "assessment": {
+    "coherent_context": "COHERENT",
+    "context_slot": 446729055,
+    "inventory_coverage": "COMPLETE",
+    "mints": [],
+    "native_account_presence": "PRESENT",
+    "reasons": [],
+    "supported_shape": "SUPPORTED",
+    "tokens": []
+  },
+  "baseline_decision": {
+    "binding_digest": "af4a04f33a478c02b1b84407d9a7c269c918c8bc0a0705a67e0e19458321c797",
+    "coherent_context": "COHERENT",
+    "context_slot": 446729055,
+    "disposition": "ESTABLISHED",
+    "economic_domain_id": "49801a81abbeb2e41246a3ac1f2efea2b358256fabab113e10af1a8599eb072b",
+    "evaluated_at_utc": "2026-09-13T14:46:08.721194+00:00",
+    "evidence_digest": "3ee8944b4e24d57a95613b820d617bc3a490fc62d2805f22d751ae677fc3ecce",
+    "inventory_coverage": "COMPLETE",
+    "known_token_accounts": [],
+    "locked_token_account_lamports": 0,
+    "native_account_presence": "PRESENT",
+    "observed_native_lamports": 136031373,
+    "owned_native_lamports": 136031373,
+    "reasons": [],
+    "required_min_context_slot": 0,
+    "supported_shape": "SUPPORTED",
+    "version": "live_ledger_opening_baseline_v0.1"
+  },
+  "capital_authority": false,
+  "closure_status": "BLOCKED_ON_ACCEPTED_ACCOUNT_SUPPORT_CONTRACT",
+  "collector": {
+    "left_running": true,
+    "matching_process_ids": [
+      55352,
+      55500
+    ],
+    "read_only_process_check": true,
+    "unlimited_max_pump_events": 0
+  },
+  "deployment_target_binding_digest": "bb37fd5209cacfc501b723496eb25ec1865663938435fb5d1713eccd1aeab6aa",
+  "deployment_target_economic_domain_id": "4360f829e90d5fc545390c04edce1621cd82f6fefd1775e7758c1efb841b8c15",
+  "dry_binding_digest": "af4a04f33a478c02b1b84407d9a7c269c918c8bc0a0705a67e0e19458321c797",
+  "dry_economic_domain_id": "49801a81abbeb2e41246a3ac1f2efea2b358256fabab113e10af1a8599eb072b",
+  "external_project_decision": {
+    "absent_base_ata": "4cwML9kYrejzBXoXci9pmXabPnyYSzgWe5tetcnPCj6w",
+    "candidate_mint": "brAjuM86aXzWSQnJW3oWccfct3bqMu62dYYfg4p7wUS",
+    "context_limit": "Candidate support reads had differing account contexts / unavailable common finalized anchor. These are preserved separately; raw account size/owner facts do not establish coherent admission.",
+    "current_launch_sample": {
+      "mint_length_range_bytes": [
+        379,
+        429
+      ],
+      "mints": 16,
+      "unsupported_extended_token2022_mints": 16
+    },
+    "evidence": [
+      {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\new-wallet-v1\\original-candidate-support.json",
+        "sha256": "3b1a46a06db69a4e02f2deac7638543cee8a4c46f7e13d7a7ca36dfd814e23d5"
+      },
+      {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\new-wallet-v1\\original-candidate-support-v2.json",
+        "sha256": "1d67097ef5ac260b38b7f5b8be1063025f97f3e78d8a9754909803c2cd353afa"
+      },
+      {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\new-wallet-current-producer-v2\\mint-support.json",
+        "sha256": "8ac5cf3cf400ae395eda7101c06c93902a71da5ddff511649f7a29747be64fc5"
+      }
+    ],
+    "fresh_observed_mint_bytes": 409,
+    "historical_candidate_not_current_admission": true,
+    "mint_reason": "UNSUPPORTED_MINT_EXTENSIONS_OR_LENGTH",
+    "original_admission_contract_reason": "FRESH_TOKEN2022_ATA_CREATION_OUTSIDE_SETTLEMENT_PROFILE",
+    "required": "Define and approve supported mint-extension and fresh Token-2022 associated-account/settlement contracts for these observed routes before implementation. Preserve current denials until that decision. No account creation or wallet mutation is requested or performed in this run.",
+    "retained_original_candidate_id": "fp1sig-41bd6fe12bb9482b5e66de7d"
+  },
+  "final_public_profile": null,
+  "funding": {
+    "additional_lamports_required": null,
+    "complete_required_lamports": null,
+    "fixed_quote_lamports": 100000000,
+    "quote_only_headroom_lamports": 36031373,
+    "reason": "Exact supported fee/setup/protection/refundable-lock requirements cannot be derived for the observed unsupported Token-2022 route. Quote-only headroom is not full-policy funding proof.",
+    "sufficiency": "UNESTABLISHED_FOR_FULL_M10"
+  },
+  "independent_review": {
+    "disposition": "NO_SUBSTANTIVE_FINDINGS_FOR_IMPLEMENTED_WALLET_DOMAIN_AND_HOST_BUDGET_DELTA",
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\wallet-domain-independent-review-v1\\review.json",
+    "scope": "New wallet/domain, host work budget and native RSS, journal budget correction, deterministic storage fixture and retained evidence; no claim of full resource-envelope or actual-public qualification.",
+    "sha256": "c11d830ac9931273b81877d61fb4812532411ea0415116ae96a9d6a863681947",
+    "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW"
+  },
+  "native_balance_lamports": 136031373,
+  "owner_wallet_rebind": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_WALLET_REBIND_V1.json",
+    "sha256": "051cb84b520186cd36a6ea7b7668d3cec978a506501184c54d308ae83faa6c4b"
+  },
+  "producer_lifecycle": "Unresolved original inputs/audits/outputs/timers alone consume pending capacity; resolved rows are retained as integrity-checked, byte-bounded history. Prior reviewed persistence delta unchanged.",
+  "publication": {
+    "divergence": "0\t0",
+    "fetched_remote": true,
+    "git_checks": [
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exit_code": 0,
+        "stderr": "warning: in the working copy of 'docs/live/MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/live_acceptance_dossier_selftest_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/live_candidate_handoff_selftest_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/live_step10_s01_s02_selftest_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/live_t010_preflight_selftest_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/continuous_producer_v0_2.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/operations_degradation_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/runtime_composition_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/runtime_dry_profile_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/runtime_dry_public_driver_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/runtime_dry_v0_1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/live/t010_preflight_v0_1.py', LF will be replaced by CRLF the next time Git touches it",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--cached",
+          "--quiet"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2"
+      },
+      {
+        "command": [
+          "git",
+          "rev-parse",
+          "origin/live/meme-production-readiness"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2"
+      },
+      {
+        "command": [
+          "git",
+          "rev-list",
+          "--left-right",
+          "--count",
+          "HEAD...origin/live/meme-production-readiness"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "0\t0"
+      },
+      {
+        "command": [
+          "git",
+          "status",
+          "--porcelain"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "M docs/live/MEME_LIVE_OWNER_ACCEPTANCE_AND_LANE_STATUS.md\n M docs/live/MEME_LIVE_PRODUCTION_LIFECYCLE_MATRIX_V2.md\n M scripts/live_acceptance_dossier_selftest_v0_1.py\n M scripts/live_candidate_handoff_selftest_v0_1.py\n M scripts/live_step10_s01_s02_selftest_v0_1.py\n M scripts/live_t010_preflight_selftest_v0_1.py\n M src/live/acceptance_dossier_v0_1.py\n M src/live/continuous_producer_v0_2.py\n M src/live/operations_degradation_v0_1.py\n M src/live/operations_ownership_v0_1.py\n M src/live/operations_supervisor_v0_1.py\n M src/live/runtime_composition_v0_1.py\n M src/live/runtime_dry_profile_v0_1.py\n M src/live/runtime_dry_public_driver_v0_1.py\n M src/live/runtime_dry_v0_1.py\n M src/live/t010_preflight_v0_1.py\n?? docs/live/MEME_LIVE_FIX2_ACTUAL_SOURCE_BOUND_DIAGNOSIS_V1.json\n?? docs/live/MEME_LIVE_FIX2_ACTUAL_SOURCE_PREREQUISITE_V1.json\n?? docs/live/MEME_LIVE_FIX2_APPROVED_PENDING_GUARD_V1.json\n?? docs/live/MEME_LIVE_FIX2_DECISION_DEPENDENT_DELTA_V1.json\n?? docs/live/MEME_LIVE_FIX2_PENDING_GUARD_DELTA_V1.json\n?? docs/live/MEME_LIVE_FIX2_PENDING_GUARD_MEASUREMENT_V1.json\n?? docs/live/MEME_LIVE_FIX2_ROOT_CAUSE_CORRECTION_STATUS_V1.json\n?? docs/live/MEME_LIVE_FIX2_SOURCE_CAPACITY_DELTA_V1.json\n?? docs/live/MEME_LIVE_FIX2_WALLET_DOMAIN_DELTA_V1.json\n?? docs/live/MEME_LIVE_FIX2_WALLET_REBIND_V1.json\n?? docs/live/MEME_LIVE_STEP12A_FIX2_CLOCK_DECISION_V1.json\n?? docs/live/MEME_LIVE_STEP12A_FIX2_ENGINEERING_REVIEW_V1.json\n?? docs/live/MEME_LIVE_STEP12A_FIX2_PUBLIC_QUALIFICATION_V1.md\n?? docs/live/MEME_LIVE_T010_APPROVED_CLOCK_PROFILE_V1.json\n?? docs/live/MEME_LIVE_T010_PUBLIC_HOST_RUNBOOK_V1.md\n?? scripts/live_fix2_pending_guard_delta_selftest_v0_1.py\n?? scripts/live_operations_journal_budget_selftest_v0_1.py\n?? scripts/live_producer_lifecycle_selftest_v0_1.py\n?? scripts/live_runtime_dry_public_qualification_selftest_v0_1.py\n?? scripts/live_runtime_dry_public_qualification_v0_1.py\n?? scripts/live_runtime_public_clock_observe_v0_1.py\n?? scripts/live_runtime_public_clock_selftest_v0_1.py\n?? scripts/live_step12a_fix2_composed_selftest_v0_1.py\n?? scripts/live_t010_public_host_selftest_v0_1.py\n?? scripts/live_t010_public_host_v0_1.py\n?? scripts/live_t010_work_budget_selftest_v0_1.py\n?? src/live/runtime_dry_public_facts_v0_1.py\n?? src/live/runtime_dry_public_qualification_v0_1.py\n?? src/live/runtime_public_clock_v0_1.py\n?? src/live/t010_public_host_v0_1.py"
+      },
+      {
+        "command": [
+          "git",
+          "branch",
+          "--show-current"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "codex/step12a-fix2-20260913"
+      }
+    ],
+    "local_head": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2",
+    "new_candidate_sha": null,
+    "new_commit_or_push": false,
+    "remote_head": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2",
+    "staged_changes": false,
+    "unpublished_changes_preserved": true,
+    "worktree_clean": false
+  },
+  "resource_envelope": {
+    "final_limits": null,
+    "hard_expiry_hours": 14,
+    "host_budget_engine": "Durable total startup/Runtime-step reservations with no recovery refund, plus exact simulated original terminal target; exhaustion switches to read-only observation.",
+    "observation_target_hours": 12,
+    "public_host_integration": "Fails closed: T010_HOST_COMPLETE_RESOURCE_ENVELOPE_BINDING_UNAVAILABLE. Profile codec intentionally does not yet accept resource_envelope. No accepting stub or synthetic full-envelope proof.",
+    "state": "NOT_DERIVED_OR_BOUND"
+  },
+  "s12": {
+    "disposition": "CONCRETE_REPRODUCIBLE_JOURNAL_BUDGET_DEFECT_CORRECTED_PENDING_REVIEW",
+    "evidence": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\s12-journal-budget-validation-v1.json",
+      "sha256": "b2476cab8d2a2417a14da471aec46a65efe17bd4d9a1c777a4267f2b24d8f635"
+    },
+    "final_affected_regression": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\wallet-domain-final-validation-v1\\result.json",
+      "sha256": "4ec12a97c2197b2a93a3e01566e8c4fec53dbdb66d3061ed157c3f6b386b6ae2"
+    },
+    "historical_attribution_limit": "Exact historical SQLite/OS exception and competing lock timing were not persisted; exact historical code and durable failure pattern are reproduced. No claim about the exact old lock schedule."
+  },
+  "schema": "MEME_LIVE_FIX2_WALLET_DOMAIN_DELTA_V1",
+  "signer_send_broadcast": false,
+  "source": {
+    "binding_identity": "ed0c4f10c3b74a6798bfded551031b6fda9cbe5d434eeca5baa12935dbbf7da2",
+    "evidence": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\new-wallet-current-producer-v2\\source.json",
+      "sha256": "a15a7e4f8d5f913c5ce4899d346b374f24ec7070218b05653ee2f12542aceaa5"
+    },
+    "final_launch_binding": false,
+    "incremental_pump_tail": 0,
+    "incremental_receipt_tail": 5,
+    "initial_health": "HEALTHY",
+    "last_live_receipt_utc": "2026-09-13T15:01:29.759518+00:00",
+    "observed_at_utc": "2026-09-13T15:01:30.099634+00:00",
+    "profile": {
+      "freshness_seconds": 30,
+      "max_rows_per_table": 10000,
+      "profile_id": "COLLECTOR-V034-RECEIPT-BOUNDED-PREFIX-0001"
+    },
+    "pump_rows_including_retained_anchor": 1,
+    "receipt_freshness_seconds": 0.340116,
+    "receipt_rows_including_retained_anchor": 6,
+    "start_after_p1_rowid": 3173682
+  },
+  "status": "IMPLEMENTED_PENDING_PROJECT_REVIEW",
+  "successor_start_answer": "YES",
+  "successor_start_reason": "Supported account/settlement contract decision is required; full finite-envelope and profile/preflight integration remain unfinished dependent work.",
+  "synthetic_fixture_change": {
+    "actual_public_capacity_claim": false,
+    "historical_fixture_or_public_guard_modified": false,
+    "reason": "Corrected retained-history accounting invalidates the historical 16384-byte deterministic fixture for the second admission.",
+    "replacement_scope": "Explicit DETERMINISTIC_QUALIFICATION_ONLY amendment binds current storage fingerprint and existing accepted producer history_bytes architectural capacity."
+  },
+  "tombstone": {
+    "actual_probe_rows": 0,
+    "adjustment_applied": false,
+    "public_limit": 1,
+    "two_legitimate_runtime_admissions_proven": false
+  },
+  "validation": {
+    "command_exit_codes": [
+      0,
+      0
+    ],
+    "dossier_checks": 47,
+    "final_frozen_evidence": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\wallet-domain-final-validation-v1\\result.json",
+      "sha256": "4ec12a97c2197b2a93a3e01566e8c4fec53dbdb66d3061ed157c3f6b386b6ae2"
+    },
+    "final_source_hashes_rechecked": true,
+    "fixture_checks": 43,
+    "host_worker_report": {
+      "artifact_files": null,
+      "commands": [
+        {
+          "checks": 34,
+          "command": "python -B scripts/live_t010_work_budget_selftest_v0_1.py",
+          "exit_code": 0,
+          "output_chunk": "8e073c"
+        },
+        {
+          "checks": 66,
+          "command": "python -B scripts/live_t010_public_host_selftest_v0_1.py",
+          "exit_code": 0,
+          "output_chunk": "55341e"
+        },
+        {
+          "checks": 40,
+          "command": "python -B scripts/live_operations_supervisor_selftest_v0_1.py",
+          "exit_code": 0,
+          "output_chunk": "1c71a2"
+        }
+      ],
+      "provenance": "Worker public_host tool stdout retained in this task; no file hashes claimed.",
+      "python_executable": "C:\\Users\\Mari1\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+      "pythonpath": "D:\\Tradingbot\\solana_memecoin_bot_phase1_v0_1\\.venv\\Lib\\site-packages"
+    },
+    "reused_persistence_evidence": [
+      {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\root-cause-persistence-composed-v2\\result.json",
+        "sha256": "d0aa3071f4e55533ab554a2c81d771ff54af781efa168c68bd8050d127796bb7"
+      },
+      {
+        "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\root-cause-persistence-review-v2\\review.json",
+        "sha256": "78cf7ca8ea31a769df10145de9a9e3aa057233f9bf682e184f390e08ba7ea39f"
+      }
+    ],
+    "s12_checks": 77,
+    "source_content_digest": "5affdb6b9404e383e9f0fb8a2f9f22d4cb7b7f1398410bf779716debd59c0965",
+    "state": "AFFECTED_RETAINED_DELTA_VALIDATED_NOT_PUBLIC_QUALIFICATION",
+    "synthetic_storage_fixture": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\synthetic-storage-amendment-validation-v1.json",
+      "sha256": "f497ad17ca60b0c1e49b65765476b1b2118c7115958188407144480d51646fda"
+    },
+    "wallet_checks": 18
+  },
+  "wallet": "Cx2GvwVAbozcAg19L3ePmGUp59F19LVc5DgPgsRu4LWm",
+  "wallet_evidence": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\new-wallet-v1\\result.json",
+    "sha256": "da3e05aeb3855631f86919b07d2aeae4c5ad4466b3bbf64e457c191ef155da0d"
+  },
+  "wallet_mutation": false,
+  "wallet_observed_at_utc": "2026-09-13T14:46:08.721194+00:00"
+}

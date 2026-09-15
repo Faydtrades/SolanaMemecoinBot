@@ -19,7 +19,7 @@ from phase5.shadow_domain_v0_1 import ExecutionIntentV01, IntentRole, IntentSide
 from .authority_controls_v0_1 import require
 from .authority_message_evidence_v0_1 import (
     capture_message_context, _entry_intent, ExternalMessageEvidence, OriginalVenueRead,
-    MessageValidationInput, SimulationProvenance, validate_message_evidence,
+    MessageValidationInput, SimulationProvenance, validate_message_evidence, economic_setup_keys,
 )
 from .authority_message_codec_v0_1 import encode_validation_input, decode_validation_input, simulation_run_digest
 from .ledger_actions_v0_1 import AttemptPreparation, utc_microseconds
@@ -157,7 +157,8 @@ def _intent(context, decision_at_us):
         protection.handoff.binding_id)
 
 
-def _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, clock):
+def _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, clock,
+                *, wallet_after_venue=None, current_clock=None):
     """Build using original surrounding reads and accepted Phase-5 factories."""
     mint = context.action.mint
     keys = (venue.derive_bonding_curve_pda(mint), venue.derive_pumpswap_pool_pda(mint))
@@ -179,7 +180,9 @@ def _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, clock):
         return value.account
     curve_keys = (keys[0], mint, venue.derive_pump_global_pda(), venue.derive_pump_fee_config_pda())
     curve_slots = tuple(slots[key] for key in curve_keys)
-    curve = venue.build_pump_state(intent, *(raw(key) for key in curve_keys), slot_min=min(curve_slots),
+    from .pump_current_state_v0_1 import pump_state_builder
+    builder = pump_state_builder(wallet.observation.schema, raw(mint), raw(keys[0]))
+    curve = builder(intent, *(raw(key) for key in curve_keys), slot_min=min(curve_slots),
         slot_max=max(curve_slots), observed_at_us=last.cut.observed_at_us, account_slots=curve_slots)
     pool = None
     if first.accounts[1] is not None:
@@ -191,9 +194,19 @@ def _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, clock):
     route = venue.decide_route(intent, curve, pool)
     state = curve if route.selected_state_id == curve.state_id else pool
     require(state is not None and route.selected_state_id == state.state_id, "EXECUTION_ROUTE_UNAVAILABLE")
-    actual_venue = "PUMP" if type(state) is venue.PumpBondingCurveStateV01 else "PUMPSWAP"
+    actual_venue = "PUMP" if isinstance(state, venue.PumpBondingCurveStateV01) else "PUMPSWAP"
     require(actual_venue in context.original_policy.allowed_venues and state.base_token_program == context.action.token_program,
         "EXECUTION_VENUE_OR_TOKEN_PROGRAM_UNSUPPORTED")
+    if wallet_after_venue is not None:
+        # One original observation at the completed venue floor, before message
+        # construction. This is acquisition ordering, never a retry after a
+        # rejected observation or simulation. Every original check still runs.
+        from .ledger_settlement_v0_1 import WalletSupportInput
+        require(callable(wallet_after_venue) and callable(current_clock),
+            "EXECUTION_ORIGINAL_WALLET_OBSERVER_REQUIRED")
+        wallet = wallet_after_venue(max(context.required_wallet_context_slot, last.cut.context_slot))
+        require(type(wallet) is WalletSupportInput, "EXECUTION_ORIGINAL_WALLET_OBSERVATION_REQUIRED")
+        clock = current_clock()
     port = ledger_account_evidence(wallet.observation, expected_wallet=context.domain.wallet,
         expected_genesis=context.domain.genesis_hash, expected_profile_fingerprint=context.domain.expected_profile_fingerprint,
         required_min_context_slot=max(context.required_wallet_context_slot, wallet.required_min_context_slot, last.cut.context_slot),
@@ -214,10 +227,10 @@ def _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, clock):
     require(quote_policy.slippage_bps <= costs.maximum_slippage_bps and quote.price_impact_ppm <= costs.maximum_impact_bps*100
         and quote.fees.total_fee <= costs.venue_fee_within_quote_cap_lamports, "EXECUTION_QUOTE_POLICY_BOUND")
     plan = plans.build_unsigned_transaction_plan(intent, state, route, quote, actor, plan_policy, recipients, snapshot)
-    return reads, state, route, quote, plan
+    return reads, state, route, quote, plan, wallet
 
 
-def construct_exact_readonly_message(plan, wallet, compute, rpc, *, now_us):
+def construct_exact_readonly_message(plan, wallet, compute, rpc, *, now_us, economic_setup_only=False):
     """Shared finite zero-signature construction; no domain or Authority grant."""
     started = u64(now_us())
     lease = plans.acquire_blockhash_lease(rpc, plan, observed_at_us=started)
@@ -232,7 +245,14 @@ def construct_exact_readonly_message(plan, wallet, compute, rpc, *, now_us):
     envelope = plans.SimulationEnvelopeV01(plan.plan_id, plan.fingerprint, lease.lease_id, lease.fingerprint,
         config.fingerprint, canonical_json(config.payload()), raw.hex(), base64.b64encode(wire).decode(), 1, 1,
         hashlib.sha256(raw).hexdigest(), hashlib.sha256(wire).hexdigest())
-    setup = rpc.account_batch(tuple(map(str, message.account_keys)), min_context_slot=config.min_context_slot)
+    # Setup is a finalized read. A confirmed lease is normally ahead of the
+    # finalized bank and cannot supply this read's floor. Preserve the plan's
+    # finalized prerequisite; A4 independently bounds setup against simulation.
+    keys = tuple(map(str, message.account_keys))
+    if economic_setup_only:
+        keys = economic_setup_keys(keys, (message.header.num_required_signatures,
+            message.header.num_readonly_signed_accounts, message.header.num_readonly_unsigned_accounts))
+    setup = rpc.account_batch(keys, min_context_slot=plan.prerequisite_slot)
     fee = rpc.fee_for_message(envelope.message_hex, min_context_slot=config.min_context_slot)
     validity = plans.verify_blockhash_lease(rpc, plan, lease, observed_at_us=u64(now_us()))
     validity = replace(validity, observed_at_us=rpc.last_observed_at_us)
@@ -250,7 +270,8 @@ def simulate_exact_readonly_message(plan, lease, config, envelope, validity, rpc
     return run
 
 
-def produce_exact_message(repository, action_id, rpc, wallet, quote_policy, plan_policy, compute, *, clock, now_us):
+def produce_exact_message(repository, action_id, rpc, wallet, quote_policy, plan_policy, compute, *, clock, now_us,
+                          wallet_after_venue=None):
     """One finite Q1 call. Errors fail closed; returned validation grants nothing.
 
     Clock suppliers are the externally qualified clock boundary, not freshness
@@ -273,9 +294,11 @@ def produce_exact_message(repository, action_id, rpc, wallet, quote_policy, plan
     initial_clock = clock()
     intent = _intent(context, utc_microseconds(initial_clock.utc_lower_utc))
     rpc.bind_genesis(context.domain.genesis_hash)
-    reads, state, route, quote, plan = _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, initial_clock)
+    reads, state, route, quote, plan, wallet = _route_plan(context, intent, rpc, wallet, quote_policy, plan_policy, initial_clock,
+        wallet_after_venue=wallet_after_venue, current_clock=clock)
     started, lease, config, envelope, setup, fee, validity = construct_exact_readonly_message(
-        plan, context.domain.wallet, compute, rpc, now_us=now_us)
+        plan, context.domain.wallet, compute, rpc, now_us=now_us,
+        economic_setup_only=wallet.observation.schema == "live_wallet_account_evidence_v0.3")
     run = simulate_exact_readonly_message(plan, lease, config, envelope, validity, rpc, now_us=now_us)
     provenance = SimulationProvenance(context.domain.genesis_hash, rpc.profile.fingerprint,
         "LIVE_EXECUTION_EXACT_READ", rpc.record_digest, simulation_run_digest(run), started, rpc.last_observed_at_us)

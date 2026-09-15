@@ -1,0 +1,134 @@
+{
+  "M56": "OWNED_NOT_BUILT",
+  "M57": "OWNED_NOT_BUILT",
+  "T010": "NOT_STARTED",
+  "T011": "NOT_AUTHORIZED",
+  "actual_PUBLIC_ENVIRONMENT_REVIEWED_qualification": "NOT_COMPLETED_ACTUAL_PRODUCER_CAPACITY_GATE",
+  "binding_receipt_age_seconds": 0.234349,
+  "binding_tail_sizes": {
+    "collector_events": 6,
+    "gap_jobs_v034": 431,
+    "pump_events": 1,
+    "websocket_observations": 2
+  },
+  "bounded_review": "NO_SUBSTANTIVE_FINDINGS_FOR_SOURCE_CAPACITY_DELTA",
+  "bounded_review_details": {
+    "all_11_capacity_comparisons_verified": true,
+    "artifact_and_parent_hashes_verified": true,
+    "isolated_database_readonly_count_verified": true,
+    "model": "gpt-6-astra",
+    "offline_checks_exit_code": 0,
+    "prior_regression_rerun": false,
+    "process_or_network_actions": false,
+    "producer_hash_unchanged": true,
+    "reasoning_effort": "high",
+    "recorded_healthy_source_and_receipt_age_verified": true,
+    "reviewer": "fix2_independent_review",
+    "scope": "New source/capacity artifact delta and directly required original count/handoff semantics only"
+  },
+  "bounded_validation": {
+    "dispositions_verified": true,
+    "exit_code": 0,
+    "git_diff_check_exit_code": 0,
+    "pending_row_arithmetic": "2421 = 1486 + 637 + 298 + 0",
+    "reference_hashes": "VERIFIED",
+    "unchanged_source_and_capacity_bounds": true
+  },
+  "candidate_published": false,
+  "candidate_sha": null,
+  "capacity_evidence": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\actual-producer-capacity-continuation-v2\\capacity-observation.json",
+    "sha256": "c08f78dac9e5504cdde6bb741525d7c94c230fe830fa5da431e36ec57a3d306e"
+  },
+  "capacity_scope": "Actual original isolated producer plus original Operations resource observer; not a complete Runtime qualification.",
+  "capacity_source_prefix_through_p1_rowid": 3143387,
+  "capacity_violation": [
+    {
+      "condition": "RESOURCE_EXCEEDED",
+      "limit": 2346,
+      "metric": "PRODUCER_PENDING_ROWS",
+      "observed": 2421
+    }
+  ],
+  "collector": {
+    "current_source_status": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\current-collector-source-status-v1.json",
+      "sha256": "32da3d1e18f7d4edc76c05f75f047b809911b7bd28f788beb69af26e8eaf4599"
+    },
+    "launcher_pid": 55352,
+    "max_pump_events": 0,
+    "pid": 55500,
+    "runtime_code_configuration_modified": false,
+    "start_evidence": {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\authorized-collector-start.json",
+      "sha256": "52c63ecb396835aaf5f46730926433ca768cc7c709dc62e9236b33ef5ae6e24c"
+    },
+    "status": "RUNNING",
+    "stopped": false
+  },
+  "current_tail_sizes": {
+    "controls": 6,
+    "gaps": 431,
+    "pump_rows": 2648,
+    "receipts": 8131
+  },
+  "exactly_two_legitimate_admissions_proven": false,
+  "git": {
+    "diff_check_exit_code": 0,
+    "divergence": [
+      0,
+      0
+    ],
+    "fetched_remote": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2",
+    "head": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2",
+    "working_tree": "UNCOMMITTED_FIX2_PRESERVED"
+  },
+  "handoff_count_semantics": "Original _manifest_state counts every retained PENDING row, including acknowledged outbox rows. Original handoff only sets delivered=1; it does not reduce this count. No row deletion or retention-policy change was performed.",
+  "history_bytes": 8453,
+  "latest_receipt_age_seconds": 0.244451,
+  "latest_receipt_utc": "2026-09-13T12:57:35.544985+00:00",
+  "original_runtime_admissions": 0,
+  "other_limits_relaxed": false,
+  "pending_rows_breakdown": {
+    "evaluation_audit": 637,
+    "inputs": 1486,
+    "outbox": 298,
+    "prepared_timers": 0,
+    "total": 2421
+  },
+  "prior_engineering_evidence_reused": true,
+  "required_resolution": "Project decision on the observed PRODUCER_PENDING_ROWS 2421 versus accepted 2346 conflict under this actual source continuation. Tombstone-only conditional authority does not authorize changing this limit or retained-history behavior. This measurement does not propose a sufficient replacement value or certify another source start.",
+  "schema": "MEME_LIVE_FIX2_SOURCE_CAPACITY_DELTA_V1",
+  "semantic_source_files": [
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\src\\live\\continuous_producer_v0_2.py",
+      "sha256": "f9458df09ec64ac092e4f363589e5d153bf9a0ec8596bf610c3e1974f61c9004"
+    },
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\src\\live\\candidate_handoff_v0_1.py",
+      "sha256": "157167e1b339e76ddb4cbd3bb057c6ddb5e9a09aec1406b08bc38665ff113f67"
+    },
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\src\\live\\operations_degradation_monitor_v0_1.py",
+      "sha256": "c804b4533edef837e569d5bc54045fbbe792572e423caa8d032e02e7e2e6688e"
+    }
+  ],
+  "signer_send_broadcast": false,
+  "source_binding": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\actual-producer-capacity-v1\\source-binding.json",
+    "sha256": "140d8afa7e23b700d0350b829bbf145ab5d0e21e9e1ccbbe83ce6c34b353157d"
+  },
+  "source_code_changed": false,
+  "source_health": "HEALTHY",
+  "source_identity": "c37248c6045a8be24b7cc62f134197fa10682b9a80e0dadefac3c0d2104acf96",
+  "source_policy": {
+    "freshness_seconds": 30,
+    "max_rows_per_table": 10000,
+    "profile_id": "COLLECTOR-V034-RECEIPT-BOUNDED-PREFIX-0001"
+  },
+  "start_after_p1_rowid": 3141901,
+  "status": "BLOCKED_ACTUAL_NON_TOMBSTONE_CAPACITY",
+  "tombstone_1_to_2_sufficient": "NOT_ESTABLISHED",
+  "tombstone_adjustment_applied": false,
+  "tombstone_rows": 1
+}

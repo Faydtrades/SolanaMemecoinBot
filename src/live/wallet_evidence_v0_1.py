@@ -19,7 +19,8 @@ from .public_rpc_v0_1 import (
 
 
 LEGACY_SCHEMA = "live_wallet_account_evidence_v0.1"
-SCHEMA = "live_wallet_account_evidence_v0.2"
+IMMUTABLE_OWNER_SCHEMA = "live_wallet_account_evidence_v0.2"
+SCHEMA = "live_wallet_account_evidence_v0.3"
 # One explicit new account shape, not a general extension parser. Official
 # https://github.com/solana-program/token-2022/tree/
 # aa84ca89f26127a8f881c46484974b534fefb6f6/interface/src/extension
@@ -106,7 +107,7 @@ class WalletObservation:
     schema: str = SCHEMA
 
     def __post_init__(self) -> None:
-        if type(self.request) is not WalletEvidenceRequest or type(self.profile) is not PublicRpcProfile or self.schema not in (LEGACY_SCHEMA, SCHEMA):
+        if type(self.request) is not WalletEvidenceRequest or type(self.profile) is not PublicRpcProfile or self.schema not in (LEGACY_SCHEMA, IMMUTABLE_OWNER_SCHEMA, SCHEMA):
             raise PublicRpcError("IMMUTABLE_WALLET_DOMAIN_REQUIRED")
         for field in ("started_at_utc", "observed_at_utc"):
             object.__setattr__(self, field, _utc(getattr(self, field)))
@@ -201,7 +202,7 @@ def _token_shape(value: PublicAccount, slot: int, wallet: str, schema: str) -> T
     mint = _key(data[:32]) if len(data) >= 32 else None
     authority = _key(data[32:64]) if len(data) >= 64 else None
     amount = state = delegated_amount = delegate = reserve = close = None
-    immutable_owner = (schema == SCHEMA and account.owner == TOKEN_2022_PROGRAM_ID
+    immutable_owner = (schema in (IMMUTABLE_OWNER_SCHEMA, SCHEMA) and account.owner == TOKEN_2022_PROGRAM_ID
                        and len(data) == 170 and data[165:] == _IMMUTABLE_OWNER_TAIL)
     # Historical v0.1 receipts must keep their original unsupported verdict.
     if len(data) != 165 and not immutable_owner:
@@ -239,12 +240,21 @@ def _token_shape(value: PublicAccount, slot: int, wallet: str, schema: str) -> T
                               delegate, delegated_amount, reserve, close, tuple(sorted(set(reasons))))
 
 
-def _mint_shape(value: PublicAccount, slot: int) -> MintShapeEvidence:
+def _mint_shape(value: PublicAccount, slot: int, schema: str = LEGACY_SCHEMA) -> MintShapeEvidence:
     account, data = value.account, value.account.data
     supply = decimals = authority = freeze = None
     reasons = []
     if len(data) != 82:
-        reasons.append("UNSUPPORTED_MINT_EXTENSIONS_OR_LENGTH")
+        if schema == SCHEMA and account.owner == TOKEN_2022_PROGRAM_ID:
+            from .pump_token2022_profile_v0_1 import parse_pump_token2022_mint
+            try:
+                parse_pump_token2022_mint(account)
+            except (ValueError, VenueStateError):
+                reasons.append("UNSUPPORTED_MINT_EXTENSIONS_OR_LENGTH")
+        else:
+            # Version is in the original observation digest: old receipts
+            # retain their old verdict even after this compatibility update.
+            reasons.append("UNSUPPORTED_MINT_EXTENSIONS_OR_LENGTH")
     if len(data) >= 82:
         supply, decimals = int.from_bytes(data[36:44], "little"), data[44]
         try:
@@ -274,12 +284,19 @@ class WalletEvidenceAdapter:
     """One configured wallet, one bounded observation, typed public RPC only."""
 
     def __init__(self, rpc: PublicReadOnlyRpc, request: WalletEvidenceRequest, *,
-                 clock: Callable[[], str] | None = None) -> None:
+                 clock: Callable[[], str] | None = None, concurrent_cohort: bool = False,
+                 retry_min_context: bool = False) -> None:
         if type(rpc) is not PublicReadOnlyRpc or type(request) is not WalletEvidenceRequest:
             raise PublicRpcError("BOUND_PUBLIC_WALLET_ADAPTER_REQUIRED")
         self._rpc, self._request = rpc, request
         self._clock = clock or (lambda: datetime.now(timezone.utc).isoformat())
         self._used = False
+        if type(concurrent_cohort) is not bool:
+            raise PublicRpcError("EXPLICIT_WALLET_COHORT_MODE_REQUIRED")
+        self._concurrent_cohort = concurrent_cohort
+        if type(retry_min_context) is not bool or retry_min_context and not concurrent_cohort:
+            raise PublicRpcError("EXPLICIT_COHORT_CONTEXT_RETRY_REQUIRED")
+        self._retry_min_context = retry_min_context
 
     def observe(self) -> WalletObservation:
         if self._used:
@@ -301,22 +318,55 @@ class WalletEvidenceAdapter:
         if genesis == self._request.genesis_hash:
             initial = read("START_SLOT", lambda: self._rpc.get_finalized_slot(min_context_slot=self._request.min_context_slot))
             if initial is not None:
-                for operation, program in zip(("SPL_INVENTORY", "TOKEN2022_INVENTORY"), TOKEN_PROGRAMS, strict=True):
-                    result = read(operation, lambda program=program: self._rpc.get_token_accounts_by_owner(
-                        self._request.wallet, program, min_context_slot=initial))
-                    if result is not None:
-                        inventories.append(result)
                 keys = (self._request.wallet, *(item.pubkey for item in self._request.expected_accounts))
-                explicit = read("EXPLICIT_ACCOUNTS", lambda: self._rpc.get_multiple_accounts(keys, min_context_slot=initial))
+                calls = [(operation, lambda program=program: self._rpc.get_token_accounts_by_owner(
+                    self._request.wallet, program, min_context_slot=initial))
+                    for operation, program in zip(("SPL_INVENTORY", "TOKEN2022_INVENTORY"), TOKEN_PROGRAMS, strict=True)]
+                known_mints = tuple(sorted({item.mint for item in self._request.expected_accounts}))
+                dependent_floor = initial
+                if self._concurrent_cohort:
+                    # One observation, two dependent pairs. Optional retries
+                    # repeat only the same minimum slot within original budgets.
+                    # Inventory
+                    # context is an observed lower bound for account/mint reads,
+                    # not an assertion that the provider returned that exact
+                    # slot. Final assessment still requires exact equality.
+                    from concurrent.futures import ThreadPoolExecutor
+                    with ThreadPoolExecutor(max_workers=2, thread_name_prefix="wallet-public") as pool:
+                        pending = [(operation, pool.submit(call)) for operation, call in calls]
+                        results = [read(operation, future.result) for operation, future in pending]
+                        inventories.extend(result for result in results if result is not None)
+                        dependent_floor = max((initial, *(item.context.slot for item in inventories)))
+                        dependent = [("EXPLICIT_ACCOUNTS", lambda: self._rpc.get_multiple_accounts(keys,
+                            min_context_slot=dependent_floor, retry_min_context=self._retry_min_context))]
+                        if known_mints:
+                            dependent.append(("MINT_ACCOUNTS", lambda: self._rpc.get_multiple_accounts(known_mints,
+                                min_context_slot=dependent_floor, retry_min_context=self._retry_min_context)))
+                        pending = [(operation, pool.submit(call)) for operation, call in dependent]
+                        results = [read(operation, future.result) for operation, future in pending]
+                    explicit = results[0]
+                    if known_mints and results[1] is not None:
+                        mint_reads.append(results[1])
+                else:
+                    calls.append(("EXPLICIT_ACCOUNTS", lambda: self._rpc.get_multiple_accounts(keys, min_context_slot=initial)))
+                    results = [read(operation, call) for operation, call in calls]
+                    inventories.extend(result for result in results[:2] if result is not None)
+                    explicit = results[2]
                 needed = _needed_mints(self._request, tuple(inventories), explicit)
+                if self._concurrent_cohort:
+                    # An exhausted/other failed known-mint read stays failed.
+                    needed = tuple(key for key in needed if key not in known_mints)
                 for start in range(0, len(needed), 100):
-                    result = read("MINT_ACCOUNTS", lambda start=start: self._rpc.get_multiple_accounts(needed[start:start+100], min_context_slot=initial))
+                    result = read("MINT_ACCOUNTS", lambda start=start: self._rpc.get_multiple_accounts(needed[start:start+100],
+                        min_context_slot=dependent_floor, retry_min_context=self._retry_min_context))
                     if result is not None:
                         mint_reads.append(result)
-                upper = read("END_SLOT", lambda: self._rpc.get_finalized_slot(min_context_slot=initial))
                 slots = [item.context.slot for item in (*inventories, *mint_reads)]
                 if explicit is not None:
                     slots.append(explicit.context.slot)
+                upper_floor = max((initial, *slots)) if self._concurrent_cohort else initial
+                upper = read("END_SLOT", lambda: self._rpc.get_finalized_slot(min_context_slot=upper_floor,
+                    retry_min_context=self._retry_min_context))
                 if slots and upper is not None and max(slots) <= upper:
                     anchor = read("BLOCK_ANCHOR", lambda: self._rpc.get_finalized_block_anchor(max(slots)))
             genesis_end = read("END_GENESIS", self._rpc.get_genesis_hash)
@@ -444,7 +494,7 @@ def assess_wallet_accounts(observation: WalletObservation) -> WalletAccountAsses
                 reasons.add("REQUIRED_MINT_ACCOUNT_ABSENT")
                 unknown = True
             else:
-                shape = _mint_shape(value, read.context.slot)
+                shape = _mint_shape(value, read.context.slot, observation.schema)
                 mints.append(shape)
                 reasons.update(shape.reasons)
                 if shape.reasons:

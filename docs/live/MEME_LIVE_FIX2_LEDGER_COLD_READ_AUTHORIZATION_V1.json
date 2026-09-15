@@ -1,0 +1,45 @@
+{
+  "schema": "MEME_LIVE_FIX2_LEDGER_COLD_READ_AUTHORIZATION_V1",
+  "authority": "Explicit project owner reply in current FIX2 CHIEF task",
+  "scope": [
+    "T010",
+    "DRY",
+    "NO_BROADCAST",
+    "NON_SUBMITTED"
+  ],
+  "authorized_patch": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\rejected-ledger-cold-fragments-v1.patch",
+    "sha256": "cb038ccb8bfed1122810ec969d1824ed5f06257a1c4f98dcaf8426cdafffbb0e"
+  },
+  "context_integration": {
+    "literal_application": "CONTEXT_CONFLICT; BOTH_AFFECTED_FILES_UNCHANGED",
+    "preserved": "Current unpublished FIX2 work backed up before application. Current source-store prefix/type-safe comparison retained.",
+    "authorized_method_and_two_reader_hunks": "VERBATIM",
+    "additional_scope_control": "Default-off canonical_fragments; enabled only at existing Ledger cold-scan decoder construction",
+    "integrated_diff_sha256": "fde2d1ff32ee6d126769924ccd48655dcb6a9227bffdff6bb2c661145c405d3a",
+    "identity_manifest": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\authorized-cold-patch-application-v1\\integration-identity.json"
+  },
+  "prohibited_changes": [
+    "Persisted receipt formats or original write codecs",
+    "Content-digest or receipt-digest semantics",
+    "Existing Ledger history rewrite or migration",
+    "Schema or economic state",
+    "Weakened integrity verification",
+    "Broad Ledger/Authority replay refactoring",
+    "Acceptance or publication solely because the patch applies"
+  ],
+  "acceptance_gates": [
+    "Byte-for-byte identical canonical serialized values on retained measured-load history",
+    "Exactly identical derived content and receipt digests",
+    "Identical full historical replay semantic state and integrity verdicts",
+    "Cold reopen/startup fails closed on tampered or inconsistent history",
+    "Startup/resource improvement sufficient to meet unchanged qualification limits",
+    "Directly affected Ledger/Authority/reconstruction tests and composed affected regression pass",
+    "Independent review has no substantive integrity or persistence findings"
+  ],
+  "discrepancy_rule": "If any byte, digest, reconstructed state, receipt identity or integrity result differs: stop, remove only this patch's changes, preserve current unrelated FIX2 and failure evidence.",
+  "measured_history_provenance": "Retained original-API Ledger benchmark with actual source shape and original Authority denials. Not an actual-public admission campaign.",
+  "project_acceptance_claimed": false,
+  "publication_authorized_only_after": "All normal frozen-delta, actual qualification, preflight and successor-start gates close",
+  "T010": "NOT_STARTED"
+}

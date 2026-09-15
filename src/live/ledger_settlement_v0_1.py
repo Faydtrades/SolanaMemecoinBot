@@ -35,7 +35,7 @@ from .ledger_domain_v0_1 import LedgerDomain, ledger_utc
 from .ledger_finality_v0_1 import LedgerChainReceipt
 from .public_rpc_v0_1 import u64
 from .transaction_evidence_v0_1 import TransactionObservation, ledger_transaction_evidence, _known_finalized_anchors_consistent
-from .wallet_evidence_v0_1 import WalletObservation, ledger_account_evidence
+from .wallet_evidence_v0_1 import WalletObservation, ledger_account_evidence, SCHEMA
 
 VERSION = "live_ledger_settlement_v0.1"
 # Narrow read-only CPI envelopes reviewed from primary sources by CHIEF.
@@ -46,6 +46,15 @@ ANCHOR_EVENT_TAG = bytes.fromhex("e445a52e51cb9a1d")
 # idl/pump_fees.json SHA256 ea2fb5dae0252375513ff8072a111affe83a0fd4db7a2e8840b3b39bace5ec83.
 GET_FEES_TAG = bytes.fromhex("e7257e55cf5b3f34")
 PUMP_TRADE_EVENT_TAG = bytes.fromhex("bddb7fd34ee661ee")
+GET_FEES_WITH_QUOTE_MINT_TAG = bytes.fromhex("9aed8a5ca202a2bb")
+
+
+def _get_fees_shape(data):
+    # Current official pump_fees.json: bool + u128 + Pubkey (57 total).
+    # The quote is native SOL only; neither envelope moves assets.
+    return ((len(data) == 34 and data[:8] == GET_FEES_TAG and data[8] in (0, 1) and data[33] in (0, 1))
+        or (len(data) == 57 and data[:8] == GET_FEES_WITH_QUOTE_MINT_TAG and data[8] in (0, 1)
+            and data[25:] in (bytes(32), bytes(Pubkey.from_string(WSOL_MINT)))))
 
 
 def _pump_trade_event(data):
@@ -53,8 +62,8 @@ def _pump_trade_event(data):
 
     pump.json at the same accepted revision as get_fees; SHA256
     b90bc471327f671449271d5d1d42354d1fae6f5a06502f5834459a3108138e49.
-    No other event schema,
-    shareholder distribution or historical-layout guessing is supported.
+    The explicit current layout appends two zero holder-reward fields.
+    No shareholder distribution or other historical-layout guessing is supported.
     """
     _require(data[:16] == ANCHOR_EVENT_TAG+PUMP_TRADE_EVENT_TAG and len(data) <= 2048,
              "PUMP_TRADE_EVENT_SCHEMA_UNSUPPORTED")
@@ -88,15 +97,59 @@ def _pump_trade_event(data):
     mayhem = boolean()
     cashback_basis_points, cashback, buyback_basis_points, buyback_fee = number(), number(), number(), number()
     shareholder_count = int.from_bytes(take(4), "little")
-    _require(not mayhem and cashback == cashback_basis_points == shareholder_count == 0,
+    _require(not mayhem and cashback == cashback_basis_points == 0,
              "PUMP_TRADE_EVENT_DISTRIBUTION_PROFILE_UNSUPPORTED")
+    # Shareholder entries describe future creator-vault claims, not transfers
+    # in this trade. Their vector is bounded by the already bounded event bytes.
+    _require(shareholder_count <= (len(data)-offset)//34, "PUMP_TRADE_EVENT_SHAREHOLDERS_TRUNCATED")
+    shareholders = tuple((key(), int.from_bytes(take(2), "little")) for _ in range(shareholder_count))
+    _require(not shareholders or (len({key for key, _ in shareholders}) == len(shareholders)
+             and all(0 < bps <= 10000 for _, bps in shareholders)
+             and sum(bps for _, bps in shareholders) == 10000), "PUMP_TRADE_EVENT_SHAREHOLDERS_INVALID")
     quote_mint, quote_amount = key(), number()
     number()
     number()
+    # Current official pump.json f216b6724c6ede79d7cef9ce210b741f7e17e93b
+    # adds exactly two u64 holder-reward fields, also present (zero) on normal coins.
+    current = len(data)-offset == 16
+    if current:
+        _require(number() == number() == 0, "PUMP_TRADE_EVENT_HOLDER_REWARDS_UNSUPPORTED")
+    _require(current or not shareholders, "PUMP_TRADE_EVENT_DISTRIBUTION_PROFILE_UNSUPPORTED")
     _require(offset == len(data), "PUMP_TRADE_EVENT_TRAILING_BYTES_UNSUPPORTED")
     return {"mint": mint, "sol_amount": sol_amount, "token_amount": token_amount, "is_buy": is_buy, "user": user,
         "fee_recipient": fee_recipient, "fee": fee, "creator": creator, "creator_fee": creator_fee,
-        "buyback_fee": buyback_fee, "ix_name": name, "quote_mint": quote_mint, "quote_amount": quote_amount}
+        "buyback_fee": buyback_fee, "ix_name": name, "quote_mint": quote_mint, "quote_amount": quote_amount, "current_layout": current, "shareholders": shareholders}
+
+
+def fresh_token2022_mint_supported(observation, mint):
+    """New creation authority requires current original Wallet semantics.
+
+    Base-only mints retain their finite base checks at the Wallet port; extended
+    mints additionally require the exact metadata-only Pump semantic parser.
+    Callers must independently require the original Wallet port to be usable.
+    """
+    if observation.schema != SCHEMA:
+        return False
+    values = [value for read in observation.mint_reads
+              for key, value in zip(read.requested_keys, read.accounts) if key == mint]
+    if not values or any(value is None or value.account != values[0].account for value in values):
+        return False
+    account = values[0].account
+    if account.owner != TOKEN_2022_PROGRAM_ID:
+        return False
+    if len(account.data) == 82:
+        return True
+    from .pump_token2022_profile_v0_1 import parse_pump_token2022_mint
+    try:
+        parse_pump_token2022_mint(account)
+    except ValueError:
+        return False
+    return True
+
+
+def _ata_space(program):
+    # Canonical Associated Token Program requests exactly ImmutableOwner.
+    return 170 if program == TOKEN_2022_PROGRAM_ID else 165
 
 
 @dataclass(frozen=True, slots=True)
@@ -352,7 +405,8 @@ def _attribute(domain, action, attempt, receipt, support):
     component("NETWORK_FEE", "SOL", wallet, -tx.fee_lamports)
     if not tx.outcome.succeeded:
         _validate_outer_shapes(tx, venue_ix, token_roles, quote, wallet)
-        _validate_failed_inner(tx, venue_ix, program, roles, token_roles, fee_native, fee_tokens, wallet)
+        _validate_failed_inner(tx, venue_ix, program, roles, token_roles, fee_native, fee_tokens, wallet,
+            allow_token2022_creation=fresh_token2022_mint_supported(support.observation, action.mint))
         _require(pre == post and all(delta == (-tx.fee_lamports if i == 0 else 0) for i, delta in enumerate(native_delta)),
                  "FAILED_TRANSACTION_HAS_FILL_OR_UNEXPLAINED_EFFECTS", contradiction=True)
         return _proposal(domain, action, attempt, receipt, support, basis, native_delta[0], 0, 0,
@@ -403,7 +457,7 @@ def _validate_outer_shapes(tx, venue_ix, token_roles, quote, wallet):
             raise _Unapplied("OUTER_INSTRUCTION_UNSUPPORTED")
 
 
-def _validate_failed_inner(tx, venue_ix, program, roles, token_roles, fee_native, fee_tokens, wallet):
+def _validate_failed_inner(tx, venue_ix, program, roles, token_roles, fee_native, fee_tokens, wallet, *, allow_token2022_creation=False):
     """A failed trace can be a prefix. Recognize its shapes, never apply it.
 
     Complete pre/post equality is checked separately and is the fee-only proof;
@@ -435,15 +489,15 @@ def _validate_failed_inner(tx, venue_ix, program, roles, token_roles, fee_native
                      and ix.data.startswith(ANCHOR_EVENT_TAG) and 16 <= len(ix.data) <= 65536, "FAILED_EVENT_SHAPE_UNSUPPORTED")
         elif pid == PUMP_FEES_PROGRAM_ID:
             _require(outer == venue_ix and nested is None and accounts == (roles["fee_config"], program)
-                     and all(not _writable(tx, i) for i in ix.account_indexes) and len(ix.data) == 34
-                     and ix.data[:8] == GET_FEES_TAG and ix.data[8] in (0, 1) and ix.data[33] in (0, 1),
+                     and all(not _writable(tx, i) for i in ix.account_indexes) and _get_fees_shape(ix.data),
                      "FAILED_GET_FEES_SHAPE_UNSUPPORTED")
         elif pid == SYSTEM_PROGRAM_ID:
             if len(ix.data) == 52 and ix.data[:4] == bytes(4):
                 _require(len(accounts) == 2 and accounts[0] == wallet, "FAILED_CREATE_PAYER_UNSUPPORTED")
                 decoded = decode_create_account(_instruction(tx, ix))
                 _require(decoded["lamports"] > 0 and ((ata is not None and accounts[1] == ata
-                         and str(decoded["owner"]) == token_roles[ata][1] and decoded["space"] == 165)
+                         and str(decoded["owner"]) == token_roles[ata][1] and decoded["space"] == _ata_space(token_roles[ata][1])
+                         and (token_roles[ata][1] != TOKEN_2022_PROGRAM_ID or allow_token2022_creation))
                          or (outer == venue_ix and ata is None and accounts[1] == roles.get("user_volume_accumulator")
                          and str(decoded["owner"]) == program and 0 < decoded["space"] <= 4096)), "FAILED_CREATE_ROLE_UNSUPPORTED")
             else:
@@ -454,7 +508,8 @@ def _validate_failed_inner(tx, venue_ix, program, roles, token_roles, fee_native
             if ata is not None:
                 mint, tprog, owner = token_roles[ata]
                 _require(pid == tprog and ((ix.data in (b"\x15", b"\x15\x07\x00") and accounts == (mint,))
-                         or (pid == TOKEN_PROGRAM_ID and ix.data == b"\x16" and accounts == (ata,))
+                         or (ix.data == b"\x16" and accounts == (ata,)
+                             and (pid == TOKEN_PROGRAM_ID or allow_token2022_creation))
                          or (ix.data == b"\x12"+bytes(Pubkey.from_string(owner)) and accounts == (ata, mint))),
                          "FAILED_TOKEN_INITIALIZATION_UNSUPPORTED")
             else:
@@ -524,8 +579,7 @@ def _successful(domain, action, attempt, receipt, support, tx, venue_ix, program
             _require(ata is None and ix.outer_index == venue_ix.outer_index
                      and accounts == (roles["fee_config"], program)
                      and all(not _writable(tx, i) for i in ix.account_indexes)
-                     and len(ix.data) == 34 and ix.data[:8] == GET_FEES_TAG
-                     and ix.data[8] in (0, 1) and ix.data[33] in (0, 1), "GET_FEES_ENVELOPE_UNSUPPORTED")
+                     and _get_fees_shape(ix.data), "GET_FEES_ENVELOPE_UNSUPPORTED")
             return
         if pid == SYSTEM_PROGRAM_ID:
             if len(ix.data) == 52 and ix.data[:4] == bytes(4):
@@ -550,8 +604,16 @@ def _successful(domain, action, attempt, receipt, support, tx, venue_ix, program
                 _require(ata is not None and accounts == (wallet, ata) and ata not in created
                          and ata not in pre and lamports[ata] == 0, "ACCOUNT_CREATE_LIFECYCLE_UNSUPPORTED")
                 decoded = decode_create_account(_instruction(tx, ix))
-                _require(str(decoded["owner"]) == token_roles[ata][1] and decoded["space"] == 165
+                _require(str(decoded["owner"]) == token_roles[ata][1] and decoded["space"] == _ata_space(token_roles[ata][1])
                          and decoded["lamports"] > 0, "ACCOUNT_CREATE_SHAPE_UNSUPPORTED")
+                if token_roles[ata][1] == TOKEN_2022_PROGRAM_ID:
+                    _require(ata == base and fresh_token2022_mint_supported(support.observation, action.mint),
+                             "FRESH_TOKEN2022_ORIGINAL_MINT_PROFILE_REQUIRED")
+                    original = dict(zip(support.observation.explicit_read.requested_keys,
+                                        support.observation.explicit_read.accounts)).get(ata)
+                    _require(original is not None and len(original.account.data) == 170
+                             and original.account.data[165:] == bytes.fromhex("0207000000"),
+                             "FRESH_TOKEN2022_IMMUTABLE_OWNER_POST_SHAPE_REQUIRED")
                 amount = decoded["lamports"]
                 move_native(wallet, ata, amount)
                 created[ata] = amount
@@ -581,17 +643,19 @@ def _successful(domain, action, attempt, receipt, support, tx, venue_ix, program
             if ix.data in (b"\x15", b"\x15\x07\x00"):
                 # Canonical ATA tools/account.rs requests ImmutableOwner (7)
                 # using GetAccountDataSize tag21 + one little-endian u16.
-                _require(accounts == (token_roles[ata][0],) and ata not in size_queried and ata not in created,
+                _require(accounts == (token_roles[ata][0],) and ata not in size_queried and ata not in created
+                         and (pid != TOKEN_2022_PROGRAM_ID or ix.data == b"\x15\x07\x00"),
                          "ATA_SIZE_QUERY_UNSUPPORTED")
                 size_queried.add(ata)
                 return
             if ix.data == b"\x16":
-                _require(pid == TOKEN_PROGRAM_ID and accounts == (ata,) and ata in created and ata not in immutable_initialized,
+                _require(accounts == (ata,) and ata in created and ata not in immutable_initialized,
                          "ATA_EXTENSION_INITIALIZATION_UNSUPPORTED")
                 immutable_initialized.add(ata)
                 return
             _require(len(ix.data) == 33 and ix.data[0] == 18 and accounts == (ata, token_roles[ata][0])
-                     and ata in created and ata not in initialized, "ATA_INITIALIZE_LIFECYCLE_UNSUPPORTED")
+                     and ata in created and ata not in initialized
+                     and (pid != TOKEN_2022_PROGRAM_ID or ata in immutable_initialized), "ATA_INITIALIZE_LIFECYCLE_UNSUPPORTED")
             decoded = decode_initialize_account3(_instruction(tx, ix))
             _require(str(decoded.owner) == token_roles[ata][2], "ATA_INITIALIZED_OWNER_CONFLICT", contradiction=True)
             initialized.add(ata)
@@ -704,7 +768,8 @@ def _successful(domain, action, attempt, receipt, support, tx, venue_ix, program
     if pump:
         _require(quote not in pre and quote not in post and quote not in created,
                  "PUMP_DIRECT_NATIVE_REQUIRES_ABSENT_WSOL")
-        if buy:
+        current_event = len(pump_events) == 1 and pump_events[0]["current_layout"]
+        if buy and not current_event:
             # Pinned Pump BUY.md: curve extension target115, creator vault0.
             # solana v1.18.26 sdk/program/src/rent.rs minimum_balance is monotone
             # with length. Canonical ATA create funded a fresh165-byte account
@@ -715,7 +780,7 @@ def _successful(domain, action, attempt, receipt, support, tx, venue_ix, program
             _require(witness is not None and tx.pre_lamports[index[pool]] >= witness
                      and tx.pre_lamports[index[roles["creator_vault"]]] >= witness,
                      "PUMP_NATIVE_SETUP_EXCLUSION_WITNESS_REQUIRED")
-        else:
+        elif not buy:
             # The System-owned payer cannot be debited directly by the venue.
             # A complete trace with no such System transfer excludes a hidden
             # wallet-funded top-up from the supported SELL proceeds profile.
@@ -736,8 +801,17 @@ def _successful(domain, action, attempt, receipt, support, tx, venue_ix, program
                  and event["quote_mint"] in (WSOL_MINT, SYSTEM_PROGRAM_ID)
                  and derive_pump_creator_vault(event["creator"]) == roles["creator_vault"],
                  "PUMP_TRADE_EVENT_IDENTITY_OR_ACTUAL_UNITS_CONFLICT", contradiction=True)
+        protocol_fee = event["fee"]
+        if event["current_layout"]:
+            # Current SOL events report principal and aggregate protocol fees.
+            # Independently observed native movements remain the fill truth;
+            # these exact equalities exclude curve/recipient setup top-ups.
+            _require(event["sol_amount"] == event["quote_amount"] == principal,
+                     "PUMP_CURRENT_EVENT_PRINCIPAL_OR_SETUP_CONFLICT")
+            _require(event["buyback_fee"] <= protocol_fee, "PUMP_CURRENT_EVENT_FEE_SPLIT_CONFLICT")
+            protocol_fee -= event["buyback_fee"]
         classified_fees = {}
-        for key, value in ((roles["fee_recipient"], event["fee"]), (roles["creator_vault"], event["creator_fee"]),
+        for key, value in ((roles["fee_recipient"], protocol_fee), (roles["creator_vault"], event["creator_fee"]),
                            (roles["buyback_fee_recipient"], event["buyback_fee"])):
             classified_fees[key] = classified_fees.get(key, 0)+value
         _require(all(residual[key] == amount for key, amount in classified_fees.items()),

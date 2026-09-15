@@ -56,8 +56,97 @@ def read_reference(reference):
     return json.loads(raw)
 
 
+def reviewed_wallet_target(accepted, accepted_reference, rebind_reference):
+    """Explicit owner wallet overlay; historical deployment records stay intact."""
+    target = json.loads(canonical_json(accepted["target"]))
+    if rebind_reference is None:
+        return target
+    decision = read_reference(rebind_reference)
+    _keys(decision, ("schema", "origin", "review_reference", "accepted_profile",
+        "superseded_wallet", "wallet", "scope", "signer_send_broadcast", "wallet_mutation"),
+        "DRY_WALLET_EXPLICIT_OWNER_REBIND_REQUIRED")
+    require(decision["schema"] == "MEME_LIVE_PUBLIC_DEPLOYMENT_WALLET_REBIND_V1"
+        and decision["origin"] == "HUMAN_EXTERNAL"
+        and type(decision["review_reference"]) is str and bool(decision["review_reference"].strip())
+        and decision["accepted_profile"] == accepted_reference
+        and decision["superseded_wallet"] == target["domain"]["wallet"]
+        and decision["scope"] == ["T010", "DRY", "NO_BROADCAST", "NON_SUBMITTED"]
+        and decision["signer_send_broadcast"] is False and decision["wallet_mutation"] is False,
+        "DRY_WALLET_OWNER_REBIND_CONFLICT")
+    domain = LedgerDomain(**dict(target["domain"], wallet=decision["wallet"], expected_empty_token_accounts=()))
+    target.update(domain=json.loads(canonical_json(domain.to_record())), domain_binding_digest=domain.binding_digest,
+        economic_domain_id=domain.economic_domain_id)
+    return target
+
+
+def current_pump_rpc_binding(accepted, accepted_reference, target, reference):
+    """Finite current-protocol read capacity; no provider/trust replacement.
+
+    Two existing decoder-bounded vectors (128 * (u128 + 3*u64)) plus
+    discriminator/bump/admin/flat fees/vector counts/exotic flat fees.
+    Zero allocation padding fits inside this same total cap, never beyond it.
+    """
+    original = accepted["constructor_configuration"]["public_rpc_profile"]
+    if reference is None:
+        return target, original
+    record = read_reference(reference)
+    _keys(record, ("schema", "scope", "accepted_profile", "public_rpc_profile", "derivation",
+        "source_evidence", "authorization_reference", "project_acceptance_claimed"),
+        "DRY_CURRENT_PUMP_RPC_BINDING_REQUIRED")
+    derivation = {"discriminator":8, "bump":1, "admin":32, "flat_fees":24,
+        "vector_count_bytes":8, "fee_tier_bytes":40, "vector_count":2,
+        "maximum_tiers_per_vector":128, "exotic_flat_fees":24}
+    maximum = 8+1+32+24+8+2*128*40+24
+    expected = dict(original, max_account_bytes=maximum)
+    require(record["schema"] == "MEME_LIVE_T010_CURRENT_PUMP_RPC_BINDING_V1"
+        and record["scope"] == ["T010", "DRY", "NO_BROADCAST", "NON_SUBMITTED"]
+        and record["accepted_profile"] == accepted_reference and record["derivation"] == derivation
+        and record["public_rpc_profile"] == expected and record["project_acceptance_claimed"] is False
+        and type(record["authorization_reference"]) is str and bool(record["authorization_reference"].strip()),
+        "DRY_CURRENT_PUMP_RPC_BINDING_CONFLICT")
+    # Retain the actual incompatibility witness; it is not used to ratchet the cap.
+    read_reference(record["source_evidence"])
+    rpc = PublicRpcProfile(**expected)
+    domain = LedgerDomain(**dict(target["domain"], expected_profile_fingerprint=rpc.fingerprint,
+        expected_empty_token_accounts=()))
+    target = dict(target, domain=json.loads(canonical_json(domain.to_record())),
+        domain_binding_digest=domain.binding_digest, economic_domain_id=domain.economic_domain_id)
+    return target, expected
+
+
+def _validate_pending_guard_decision(measured, start, limits, proposed):
+    """The separate T010 decision permits exactly the recorded 2346 -> 2421 cut."""
+    require(limits["PRODUCER_PENDING_ROWS"] == 2346
+        and proposed["PRODUCER_PENDING_ROWS"] == 2421
+        and all(proposed[key] == value for key, value in limits.items()
+                if key != "PRODUCER_PENDING_ROWS")
+        and measured.get("approval_scope") == ["T010", "DRY", "NO_BROADCAST", "NON_SUBMITTED"],
+        "DRY_PUBLIC_PENDING_EXACT_DECISION_REQUIRED")
+    observed = read_reference(measured["producer_observation"])
+    source = read_reference(observed["source_binding"])
+    require(observed["schema"] == "MEME_LIVE_FIX2_ACTUAL_PRODUCER_CAPACITY_CONTINUATION_V1"
+        and observed["scope"] == "ACTUAL_PUBLIC_READONLY_DRY_CAPACITY"
+        and observed["accepted_extension"] == measured["accepted_extension"]
+        and observed["source_readonly"] is True and observed["synthetic_observations"] is False
+        and observed["signer_send_broadcast"] is False and observed["T010_executed"] is False
+        and _same(source["binding"], start["binding"])
+        and _same(source["source_profile"], start["profile"])
+        and source["start_after_p1_rowid"] == start["start_after_p1_rowid"]
+        and Path(source["database_identity"]).resolve() == Path(start["database_identity"]).resolve(),
+        "DRY_PUBLIC_PENDING_SOURCE_CUT_CONFLICT")
+    rows = observed["observations"]
+    require(bool(rows) and rows[-1]["manifest"]["cursor"] == measured["source_cut_p1_rowid"]
+        and rows[-1]["metrics"]["PRODUCER_PENDING_ROWS"] == 2421,
+        "DRY_PUBLIC_PENDING_REVIEWED_CUT_REQUIRED")
+    maxima = {key: max(row["metrics"][key] for row in rows) for key in rows[0]["metrics"]}
+    require(_same(maxima, measured["maxima"])
+        and all(key in proposed and type(value) is int and 0 <= value <= proposed[key]
+                for key, value in maxima.items()), "DRY_PUBLIC_PENDING_OTHER_MEASURED_LIMIT_CONFLICT")
+
+
 def _construct(inputs):
-    _keys(inputs, KEYS, "DRY_PROFILE_EXPLICIT_INPUTS_REQUIRED")
+    _keys(inputs, KEYS | ({"deployment_rebind", "public_rpc_rebind", "resource_envelope"} & inputs.keys()),
+        "DRY_PROFILE_EXPLICIT_INPUTS_REQUIRED")
     accepted, extension = read_reference(inputs["accepted_profile"]), read_reference(inputs["accepted_extension"])
     require(extension["parent_profile_sha256"] == inputs["accepted_profile"]["sha256"]
         and extension["parent_profile_content_digest"] == accepted["content_digest"],
@@ -67,7 +156,10 @@ def _construct(inputs):
         and accepted_monitor["parent_profile_content_digest"] == accepted["content_digest"],
         "DRY_PROFILE_ACCEPTED_MONITOR_BINDING_CONFLICT")
     original_monitor = accepted_monitor["monitor"]
-    target, original = accepted["target"], accepted["constructor_configuration"]
+    target = reviewed_wallet_target(accepted, inputs["accepted_profile"], inputs.get("deployment_rebind"))
+    target, public_rpc_profile = current_pump_rpc_binding(accepted, inputs["accepted_profile"],
+        target, inputs.get("public_rpc_rebind"))
+    original = accepted["constructor_configuration"]
     baseline = inputs["baseline"]
     _keys(baseline, ("observation_json", "known_native_wallet_lamports", "evaluated_at_utc",
         "required_min_context_slot", "review_reference"), "DRY_PROFILE_REVIEWED_ORIGINAL_BASELINE_REQUIRED")
@@ -99,6 +191,8 @@ def _construct(inputs):
     require(substitutions["scope"] in ("DETERMINISTIC_QUALIFICATION_ONLY", "PUBLIC_ENVIRONMENT_REVIEWED"),
         "DRY_PROFILE_SCOPE_REQUIRED")
     synthetic = substitutions["scope"] == "DETERMINISTIC_QUALIFICATION_ONLY"
+    require(not synthetic or inputs.get("deployment_rebind") is None, "DRY_WALLET_PUBLIC_REBIND_SCOPE_REQUIRED")
+    require(not synthetic or inputs.get("public_rpc_rebind") is None, "DRY_CURRENT_PUMP_PUBLIC_RPC_SCOPE_REQUIRED")
     require(type(substitutions["synthetic_baseline_and_rpc"]) is bool
         and type(substitutions["synthetic_source_binding"]) is bool
         and substitutions["synthetic_baseline_and_rpc"] == synthetic,
@@ -123,23 +217,91 @@ def _construct(inputs):
     monitor = inputs["monitor"]
     _keys(monitor, ("resource_limits", "persistent_unknown_alert_us", "recovery_evidence_max_age_us",
         "resource_max_age_us", "protective_qualification_digest"), "DRY_PROFILE_EXPLICIT_MONITOR_REQUIRED")
-    amendment = read_reference(inputs["guard_amendment"])
-    require(amendment["schema"] == "MEME_LIVE_STEP11C_DRY_GUARD_AMENDMENT_V1"
-        and amendment["scope"] == "IR-C2 fixed DRY deterministic qualification only"
-        and amendment["status"] == "IMPLEMENTED_PENDING_PROJECT_REVIEW"
-        and not amendment["project_acceptance_claimed"] and not amendment["production_capacity_claimed"]
-        and _same(amendment["proposed_guard_limits"], {"HISTORY_BYTES":16384,"TOMBSTONE_ROWS":2}),
-        "DRY_PROFILE_EXACT_AUTHORIZED_GUARD_AMENDMENT_REQUIRED")
-    limits = dict(extension["limits"], **amendment["proposed_guard_limits"])
+    require(not synthetic or inputs.get("resource_envelope") is None, "T010_RESOURCE_PUBLIC_SCOPE_REQUIRED")
+    if synthetic:
+        amendment = read_reference(inputs["guard_amendment"])
+        if amendment["schema"] == "MEME_LIVE_DRY_STORAGE_QUALIFICATION_AMENDMENT_V1":
+            from .continuous_producer_v0_2 import STORAGE_FINGERPRINT
+            _keys(amendment, ("schema", "scope", "status", "project_acceptance_claimed",
+                "production_capacity_claimed", "accepted_profile", "accepted_extension",
+                "producer_storage_fingerprint", "producer_profile", "proposed_guard_limits"),
+                "DRY_PROFILE_STORAGE_QUALIFICATION_AMENDMENT_REQUIRED")
+            # Storage correction moves resolved rows into history. An explicit
+            # engineering fixture may exercise the already accepted producer
+            # history capacity; it does not derive a limit from observed usage.
+            require(amendment["scope"] == "DETERMINISTIC_QUALIFICATION_ONLY"
+                and amendment["status"] == "IMPLEMENTED_PENDING_PROJECT_REVIEW"
+                and amendment["project_acceptance_claimed"] is False
+                and amendment["production_capacity_claimed"] is False
+                and amendment["accepted_profile"] == inputs["accepted_profile"]
+                and amendment["accepted_extension"] == inputs["accepted_extension"]
+                and amendment["producer_storage_fingerprint"] == STORAGE_FINGERPRINT
+                and _same(amendment["producer_profile"], asdict(producer))
+                and _same(amendment["proposed_guard_limits"],
+                    {"HISTORY_BYTES": producer.history_bytes, "TOMBSTONE_ROWS": 2}),
+                "DRY_PROFILE_STORAGE_QUALIFICATION_AMENDMENT_CONFLICT")
+        else:
+            require(amendment["schema"] == "MEME_LIVE_STEP11C_DRY_GUARD_AMENDMENT_V1"
+            and amendment["scope"] == "IR-C2 fixed DRY deterministic qualification only"
+            and amendment["status"] == "IMPLEMENTED_PENDING_PROJECT_REVIEW"
+            and not amendment["project_acceptance_claimed"] and not amendment["production_capacity_claimed"]
+            and _same(amendment["proposed_guard_limits"], {"HISTORY_BYTES":16384,"TOMBSTONE_ROWS":2}),
+                "DRY_PROFILE_EXACT_AUTHORIZED_GUARD_AMENDMENT_REQUIRED")
+        limits = dict(extension["limits"], **amendment["proposed_guard_limits"])
+    elif inputs.get("resource_envelope") is not None:
+        from .t010_resource_envelope_v0_1 import validate as validate_resource_envelope
+        limits = validate_resource_envelope(inputs)["derivation"]["resource_limits"]
+    else:
+        limits = dict(extension["limits"])
+        if inputs["guard_amendment"] is not None:
+            # FIX2 found that two immutable terminal bundles cannot fit a
+            # one-tombstone public profile. Only an explicit separate project
+            # decision can supply new public DRY limits; there are no defaults.
+            review = read_reference(inputs["guard_amendment"])
+            _keys(review, ("schema", "authority", "decision", "review_reference",
+                "accepted_profile", "accepted_extension", "guard_limits", "measurement"),
+                "DRY_PUBLIC_EXPLICIT_GUARD_REVIEW_REQUIRED")
+            require(review["schema"] == "MEME_LIVE_PUBLIC_DRY_GUARD_REVIEW_V1"
+                and review["authority"] == "CHATGPT_PROJECT_REVIEW"
+                and review["decision"] == "APPROVED_FOR_PUBLIC_DRY"
+                and bool(review["review_reference"])
+                and review["accepted_profile"] == inputs["accepted_profile"]
+                and review["accepted_extension"] == inputs["accepted_extension"],
+                "DRY_PUBLIC_GUARD_REVIEW_NOT_APPROVED")
+            proposed = review["guard_limits"]
+            require(type(proposed) is dict and set(proposed) == set(limits)
+                and all(type(value) is int and value > 0 for value in proposed.values())
+                and all(proposed[key] == value for key, value in limits.items()
+                        if key not in ("HISTORY_BYTES", "TOMBSTONE_ROWS", "PRODUCER_PENDING_ROWS")),
+                "DRY_PUBLIC_GUARD_REVIEW_OUTSIDE_FIX2_SCOPE")
+            measured = read_reference(review["measurement"])
+            require(measured["schema"] == "MEME_LIVE_PUBLIC_DRY_CAPACITY_OBSERVATION_V1"
+                and measured["scope"] == "ACTUAL_PUBLIC_READONLY_DRY_CAPACITY"
+                and measured["accepted_extension"] == inputs["accepted_extension"]
+                and measured["signer_send_broadcast"] is False
+                and measured["canonical_live_store_mutation"] is False
+                and all(type(measured["maxima"][key]) is int and 0 < measured["maxima"][key] <= proposed[key]
+                        for key in ("HISTORY_BYTES", "TOMBSTONE_ROWS")),
+                "DRY_PUBLIC_GUARD_MEASUREMENT_REQUIRED")
+            if proposed["PRODUCER_PENDING_ROWS"] != limits["PRODUCER_PENDING_ROWS"]:
+                _validate_pending_guard_decision(measured, start, limits, proposed)
+            limits = proposed
     require(_same(monitor["resource_limits"], limits), "DRY_PROFILE_REVIEWED_GUARD_LIMIT_CONFLICT")
-    require(all(monitor[key] == original_monitor["policy"][key] for key in
-        ("persistent_unknown_alert_us", "recovery_evidence_max_age_us"))
-        and all(monitor[key] == original_monitor[key] for key in
-        ("resource_max_age_us", "protective_qualification_digest")), "DRY_PROFILE_MONITOR_TIMING_CONFLICT")
+    requalified = (inputs.get("resource_envelope") is not None
+        and read_reference(inputs["resource_envelope"]).get("measured_guard_evidence") is not None)
+    require(monitor["persistent_unknown_alert_us"] == original_monitor["policy"]["persistent_unknown_alert_us"]
+        and (requalified or monitor["recovery_evidence_max_age_us"] == original_monitor["policy"]["recovery_evidence_max_age_us"]
+            and all(monitor[key] == original_monitor[key] for key in
+                ("resource_max_age_us", "protective_qualification_digest"))), "DRY_PROFILE_MONITOR_TIMING_CONFLICT")
     policy = DegradationPolicy("0"*64, monitor["persistent_unknown_alert_us"], monitor["recovery_evidence_max_age_us"],
         tuple(ResourceLimit(k,v) for k,v in sorted(monitor["resource_limits"].items())))
+    designation = None
+    if inputs.get("resource_envelope") is not None:
+        from .t010_resource_envelope_v0_1 import observation_only, OBSERVATION_POLICY
+        if observation_only(read_reference(inputs["resource_envelope"])):
+            designation = OBSERVATION_POLICY
     config = MonitorConfiguration(paths["monitor"], policy, extension["host_identity_digest"], "0"*64,
-        monitor["resource_max_age_us"], monitor["protective_qualification_digest"])
+        monitor["resource_max_age_us"], monitor["protective_qualification_digest"], designation)
     # Include the exact accepted monitor path; never invent an exclusion.
     live_paths = tuple(target["paths"][k] for k in ("ledger", "producer", "operations", "evidence_store"))
     live_paths += (original_monitor["path"],)
@@ -162,8 +324,14 @@ def _construct(inputs):
         "plan_policy", "compute", "source_cut_semantics"), "DRY_PROFILE_EXPLICIT_PUBLIC_DRIVER_REQUIRED")
     endpoint = urlsplit(driver["endpoint"])
     require(endpoint.scheme == "https" and endpoint.hostname and not endpoint.username and not endpoint.password
-        and not endpoint.query and not endpoint.fragment, "DRY_PROFILE_PUBLIC_ENDPOINT_REQUIRED")
-    require(_same(driver["public_rpc_profile"], original["public_rpc_profile"]), "DRY_PROFILE_PUBLIC_RPC_CONFIG_CONFLICT")
+        and not endpoint.query and not endpoint.fragment and endpoint.path in ("", "/"),
+        "DRY_PROFILE_PUBLIC_ENDPOINT_REQUIRED")
+    if not synthetic:
+        public_configuration = read_reference({"path":target["public_configuration_path"],
+            "sha256":target["public_configuration_sha256"]})
+        require(driver["endpoint"] == public_configuration["public_rpc"]["url"],
+            "DRY_PROFILE_ACCEPTED_PUBLIC_ENDPOINT_CONFLICT")
+    require(_same(driver["public_rpc_profile"], public_rpc_profile), "DRY_PROFILE_PUBLIC_RPC_CONFIG_CONFLICT")
     rpc_profile = PublicRpcProfile(**driver["public_rpc_profile"])
     require(rpc_profile.fingerprint == domain.expected_profile_fingerprint, "DRY_PROFILE_PUBLIC_PROVIDER_CONFLICT")
     require(driver["facts_provider"] == FACTS_PROVIDER and type(driver["max_steps"]) is int

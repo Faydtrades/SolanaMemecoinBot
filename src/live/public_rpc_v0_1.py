@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import base64
+import asyncio
 import binascii
 import json
 import math
 import re
 import time
+from threading import Lock
 from dataclasses import asdict, dataclass, is_dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING
@@ -33,6 +35,10 @@ MAX_U64 = (1 << 64) - 1
 
 class PublicRpcError(ValueError):
     """Only a fixed local code is exposed; transport bodies are discarded."""
+
+
+class _MinimumContextUnavailable(PublicRpcError):
+    """Strict, request-bound -32016 response; never a usable account fact."""
 
 
 def u64(value: object) -> int:
@@ -275,7 +281,8 @@ def _json(content: bytes) -> dict:
 class PublicReadOnlyRpc:
     """Fixed methods and explicit budgets for one bounded public observation.
 
-    No retry/reset, arbitrary-call, simulation or mutation method.
+    No budget reset, arbitrary-call, simulation or mutation method. Explicit
+    same-floor retries for account/slot reads share every original budget.
     The endpoint stays private transport configuration and is never evidence.
     """
 
@@ -293,7 +300,9 @@ class PublicReadOnlyRpc:
         self._endpoint = url
         self._requests = 0
         self._response_bytes = 0
+        self._budget_lock = Lock()
         self._started = time.monotonic()
+        self._transport = transport
         self._client = httpx.Client(transport=transport, trust_env=False, follow_redirects=False,
                                    headers={"Content-Type": "application/json", "Accept-Encoding": "identity"},
                                    timeout=httpx.Timeout(profile.request_timeout_seconds))
@@ -307,19 +316,26 @@ class PublicReadOnlyRpc:
     def close(self) -> None:
         self._client.close()
 
-    def _post(self, method: _ReadMethod, params: list) -> object:
+    def _request(self, method: _ReadMethod, params: list, deadline: float | None) -> tuple[int, bytes]:
         if type(method) is not _ReadMethod:
             raise PublicRpcError("RPC_METHOD_NOT_ALLOWED")
-        if self._requests >= self.profile.max_requests:
-            raise PublicRpcError("RPC_REQUEST_BUDGET_EXHAUSTED")
-        if time.monotonic() - self._started >= self.profile.observation_timeout_seconds:
-            raise PublicRpcError("RPC_OBSERVATION_TIMEOUT")
-        self._requests += 1
-        request_id = self._requests
+        with self._budget_lock:
+            if deadline is not None and time.monotonic() >= deadline:
+                raise PublicRpcError("RPC_MINIMUM_CONTEXT_TIMEOUT")
+            if self._requests >= self.profile.max_requests:
+                raise PublicRpcError("RPC_REQUEST_BUDGET_EXHAUSTED")
+            if time.monotonic() - self._started >= self.profile.observation_timeout_seconds:
+                raise PublicRpcError("RPC_OBSERVATION_TIMEOUT")
+            self._requests += 1
+            request_id = self._requests
         request = json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method.value, "params": params},
                              separators=(",", ":"), allow_nan=False).encode("utf-8")
         if len(request) > 16384:
             raise PublicRpcError("RPC_REQUEST_TOO_LARGE")
+        return request_id, request
+
+    def _post(self, method: _ReadMethod, params: list) -> object:
+        request_id, request = self._request(method, params, None)
         try:
             with self._client.stream("POST", self._endpoint, content=request) as response:
                 if response.status_code != 200:
@@ -330,20 +346,110 @@ class PublicReadOnlyRpc:
                     raise PublicRpcError("RPC_CONTENT_TYPE_INVALID")
                 content = bytearray()
                 for chunk in response.iter_bytes(chunk_size=8192):
-                    self._response_bytes += len(chunk)
-                    if len(content) + len(chunk) > self.profile.max_response_bytes or self._response_bytes > self.profile.max_total_response_bytes:
-                        raise PublicRpcError("RPC_RESPONSE_BUDGET_EXHAUSTED")
+                    with self._budget_lock:
+                        self._response_bytes += len(chunk)
+                        if len(content) + len(chunk) > self.profile.max_response_bytes or self._response_bytes > self.profile.max_total_response_bytes:
+                            raise PublicRpcError("RPC_RESPONSE_BUDGET_EXHAUSTED")
                     if time.monotonic() - self._started >= self.profile.observation_timeout_seconds:
                         raise PublicRpcError("RPC_OBSERVATION_TIMEOUT")
                     content.extend(chunk)
         except (httpx.HTTPError, OSError):
             raise PublicRpcError("RPC_TRANSPORT_FAILURE") from None
+        return self._decode_response(method, params, request_id, bytes(content))
+
+    def _decode_response(self, method: _ReadMethod, params: list, request_id: int, content: bytes) -> object:
         envelope = _json(bytes(content))
         if set(envelope) != {"jsonrpc", "id", "result"}:
+            # A malformed/error envelope never becomes a fact. Only this
+            # exact matching request/version and strictly lower reported
+            # context can trigger an explicitly requested same-floor retry.
+            error = envelope.get("error")
+            floor = params[-1].get("minContextSlot") if params and type(params[-1]) is dict else None
+            if (method in (_ReadMethod.ACCOUNTS, _ReadMethod.SLOT)
+                    and set(envelope) == {"jsonrpc", "id", "error"} and envelope["jsonrpc"] == "2.0"
+                    and type(envelope["id"]) is int and envelope["id"] == request_id
+                    and type(error) is dict and set(error) == {"code", "message", "data"}
+                    and type(error["code"]) is int and error["code"] == -32016
+                    and type(error["message"]) is str and type(error["data"]) is dict
+                    and set(error["data"]) == {"contextSlot"} and type(floor) is int
+                    and type(error["data"]["contextSlot"]) is int
+                    and 0 <= error["data"]["contextSlot"] < floor <= MAX_U64):
+                raise _MinimumContextUnavailable("RPC_ERROR_OR_INVALID_ENVELOPE")
             raise PublicRpcError("RPC_ERROR_OR_INVALID_ENVELOPE")
         if envelope["jsonrpc"] != "2.0" or type(envelope["id"]) is not int or envelope["id"] != request_id:
             raise PublicRpcError("RPC_ENVELOPE_ID_OR_VERSION_MISMATCH")
         return envelope["result"]
+
+    @staticmethod
+    def _check_deadline(deadline: float | None) -> None:
+        if deadline is not None and time.monotonic() >= deadline:
+            raise PublicRpcError("RPC_MINIMUM_CONTEXT_TIMEOUT")
+
+    def _context_deadline(self, retry_min_context: bool) -> float | None:
+        if type(retry_min_context) is not bool:
+            raise PublicRpcError("EXPLICIT_MINIMUM_CONTEXT_RETRY_REQUIRED")
+        if not retry_min_context:
+            return None
+        return min(time.monotonic()+self.profile.request_timeout_seconds,
+                   self._started+self.profile.observation_timeout_seconds)
+
+    async def _post_context_async(self, method: _ReadMethod, params: list, deadline: float) -> object:
+        # Async cancellation bounds headers and every underlying body read,
+        # including slow trickles. An inactivity timeout alone cannot do so.
+        # A client is local to this logical acquisition/event loop; concurrent
+        # wallet reads share only the original locked request/byte budgets.
+        # This bounds usable facts, not process exit: native DNS executor
+        # cleanup may not be cancellable. The containing host supervisor (or
+        # finite qualification process harness) owns that termination bound.
+        try:
+            self._check_deadline(deadline)
+            async with asyncio.timeout(deadline-time.monotonic()):
+                async with httpx.AsyncClient(transport=self._transport, trust_env=False, follow_redirects=False,
+                        headers={"Content-Type": "application/json", "Accept-Encoding": "identity"}) as client:
+                    while True:
+                        request_id, request = self._request(method, params, deadline)
+                        async with client.stream("POST", self._endpoint, content=request,
+                                timeout=max(0.001, deadline-time.monotonic())) as response:
+                            self._check_deadline(deadline)
+                            if response.status_code != 200:
+                                raise PublicRpcError("RPC_HTTP_FAILURE")
+                            if response.headers.get("content-encoding", "identity").lower() != "identity":
+                                raise PublicRpcError("RPC_CONTENT_ENCODING_UNSUPPORTED")
+                            if response.headers.get("content-type", "").split(";", 1)[0].lower() != "application/json":
+                                raise PublicRpcError("RPC_CONTENT_TYPE_INVALID")
+                            content = bytearray()
+                            async for chunk in response.aiter_bytes():
+                                with self._budget_lock:
+                                    self._response_bytes += len(chunk)
+                                    if (len(content)+len(chunk) > self.profile.max_response_bytes
+                                            or self._response_bytes > self.profile.max_total_response_bytes):
+                                        raise PublicRpcError("RPC_RESPONSE_BUDGET_EXHAUSTED")
+                                self._check_deadline(deadline)
+                                content.extend(chunk)
+                        try:
+                            result = self._decode_response(method, params, request_id, bytes(content))
+                            self._check_deadline(deadline)
+                            return result
+                        except _MinimumContextUnavailable:
+                            self._check_deadline(deadline)
+                            await asyncio.sleep(min(0.1, deadline-time.monotonic()))
+        except TimeoutError:
+            raise PublicRpcError("RPC_MINIMUM_CONTEXT_TIMEOUT") from None
+        except (httpx.HTTPError, OSError):
+            raise PublicRpcError("RPC_TRANSPORT_FAILURE") from None
+
+    def _post_context(self, method: _ReadMethod, params: list, deadline: float | None) -> object:
+        if deadline is None:
+            return self._post(method, params)
+        # Only the disposable, stateless test transport may be borrowed across
+        # the sync client and separate async loops. Real calls own their client.
+        if self._transport is not None and type(self._transport) is not httpx.MockTransport:
+            raise PublicRpcError("RPC_ASYNC_TRANSPORT_REQUIRED")
+        try:
+            asyncio.get_running_loop()
+        except RuntimeError:
+            return asyncio.run(self._post_context_async(method, params, deadline))
+        raise PublicRpcError("RPC_SYNCHRONOUS_CALL_CONTEXT_REQUIRED")
 
     @staticmethod
     def _context(result: object, floor: int) -> tuple[RpcContext, object]:
@@ -381,11 +487,13 @@ class PublicReadOnlyRpc:
     def get_genesis_hash(self) -> str:
         return block_hash(self._post(_ReadMethod.GENESIS, []))
 
-    def get_finalized_slot(self, *, min_context_slot: int) -> int:
+    def get_finalized_slot(self, *, min_context_slot: int, retry_min_context: bool = False) -> int:
+        deadline = self._context_deadline(retry_min_context)
         floor = u64(min_context_slot)
-        slot = u64(self._post(_ReadMethod.SLOT, [{"commitment": "finalized", "minContextSlot": floor}]))
+        slot = u64(self._post_context(_ReadMethod.SLOT, [{"commitment": "finalized", "minContextSlot": floor}], deadline))
         if slot < floor:
             raise PublicRpcError("RPC_CONTEXT_BELOW_FLOOR")
+        self._check_deadline(deadline)
         return slot
 
     def get_finalized_block_anchor(self, slot: int) -> FinalizedBlockAnchor:
@@ -402,19 +510,23 @@ class PublicReadOnlyRpc:
                                     result["parentSlot"], result["blockHeight"], result["blockTime"],
                                     self.profile.fingerprint)
 
-    def get_multiple_accounts(self, keys: tuple[str, ...], *, min_context_slot: int) -> PublicAccountRead:
+    def get_multiple_accounts(self, keys: tuple[str, ...], *, min_context_slot: int,
+                              retry_min_context: bool = False) -> PublicAccountRead:
+        deadline = self._context_deadline(retry_min_context)
         immutable_tuple(keys, str)
         if not 1 <= len(keys) <= 100 or len(set(keys)) != len(keys):
             raise PublicRpcError("INVALID_ACCOUNT_KEY_COUNT")
         for key in keys:
             public_key(key)
         floor = u64(min_context_slot)
-        context, values = self._context(self._post(_ReadMethod.ACCOUNTS,
-            [list(keys), {"commitment": "finalized", "encoding": "base64", "minContextSlot": floor}]), floor)
+        context, values = self._context(self._post_context(_ReadMethod.ACCOUNTS,
+            [list(keys), {"commitment": "finalized", "encoding": "base64", "minContextSlot": floor}], deadline), floor)
         if type(values) is not list or len(values) != len(keys):
             raise PublicRpcError("ACCOUNT_COUNT_MISMATCH")
-        return PublicAccountRead(context, keys, tuple(None if value is None else self._account(key, value)
-                                                     for key, value in zip(keys, values, strict=True)))
+        result = PublicAccountRead(context, keys, tuple(None if value is None else self._account(key, value)
+                                                       for key, value in zip(keys, values, strict=True)))
+        self._check_deadline(deadline)
+        return result
 
     def get_token_accounts_by_owner(self, wallet: str, program: str, *, min_context_slot: int) -> TokenInventoryRead:
         public_key(wallet)

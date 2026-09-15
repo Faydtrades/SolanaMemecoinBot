@@ -6,7 +6,7 @@ from pathlib import Path
 
 from .source_health_v0_1 import (
     ZERO_DIGEST, SourceBinding, SourceProfile, SourceVerdict, canonical_json,
-    evaluate_source, verdict_from_json,
+    evaluate_source, verdict_from_json, _evaluate_source, _SourceReplayDecoder,
 )
 
 
@@ -88,18 +88,21 @@ class SourceEvidenceStore:
 
     def _verify_history(self) -> None:
         previous = None
+        previous_digest = ZERO_DIGEST
+        decoder = _SourceReplayDecoder(allow_append_prefix=True)
         sequence = 0
         for seq, predecessor, content, payload in self._conn.execute(
                 "SELECT seq,previous_digest,content_digest,payload_json FROM source_evidence ORDER BY seq"):
             sequence += 1
-            current = verdict_from_json(payload)
-            expected_previous = ZERO_DIGEST if previous is None else previous.content_digest
-            if (seq != sequence or predecessor != expected_previous or current.content_digest != content
+            current, current_digest = decoder.decode(payload)
+            if (seq != sequence or predecessor != previous_digest or current_digest != content
                     or current.binding != self.binding or current.profile != self.profile
-                    or current.snapshot.previous_verdict_digest != expected_previous
-                    or evaluate_source(self.binding, self.profile, current.snapshot, previous=previous) != current):
+                    or current.snapshot.previous_verdict_digest != previous_digest
+                    or _evaluate_source(self.binding, self.profile, current.snapshot, previous=previous,
+                        previous_digest=previous_digest) != current):
                 raise SourceJournalConflict("source journal evidence chain invalid")
             previous = current
+            previous_digest = current_digest
 
     def latest(self) -> SourceVerdict | None:
         record = self.latest_record()

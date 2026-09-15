@@ -77,12 +77,16 @@ def dry_monitor_fingerprint(configuration):
     from .operations_degradation_monitor_v0_1 import MonitorConfiguration
     authority.require(type(configuration) is MonitorConfiguration,
         "OPERATIONS_DRY_MONITOR_CONFIGURATION_REQUIRED")
-    return content_fingerprint((str(Path(configuration.path).resolve()),
+    values = (str(Path(configuration.path).resolve()),
         configuration.policy.persistent_unknown_alert_us,
         configuration.policy.recovery_evidence_max_age_us,
         tuple(asdict(limit) for limit in configuration.policy.resource_limits),
         configuration.host_identity_digest, configuration.resource_max_age_us,
-        configuration.protective_qualification_digest))
+        configuration.protective_qualification_digest)
+    # Preserve the legacy fingerprint exactly; explicit C2 policy cannot alias it.
+    if configuration.observation_policy is not None:
+        values += (configuration.observation_policy,)
+    return content_fingerprint(values)
 
 
 def configured_identity(domain, *, operations_path, ledger_path, producer_path,

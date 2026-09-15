@@ -203,7 +203,15 @@ class LiveContinuousProducerV01(accepted.ContinuousFirstPullbackBindingV01):
             raise ProducerConflict(f"LIVE checkpoint restore denied: {exc}") from exc
 
     def _rebuild_engine(self):
-        engine = accepted.DenominationAwareFeatureEngineV01()
+        # LIVE cold reconstruction consumes every retained event through the
+        # original process mutation/ordering path. Historical market snapshots
+        # are pure derived values and were immediately discarded by this loop.
+        # Suppress only those unused computations on this private local object;
+        # return an ordinary original engine for every subsequent live event.
+        class ColdAccumulator(accepted.DenominationAwareFeatureEngineV01):
+            def _build_state(self, acc, trigger):
+                return None
+        replay = ColdAccumulator()
         # Per-mint complete replay is the A2 retirement seam. No recent-window
         # approximation and no inferred launch-age expiry are permitted.
         for row in self.conn.execute("SELECT mint,event_json FROM paper_fp_binding_feature_events_v0_1 "
@@ -211,7 +219,9 @@ class LiveContinuousProducerV01(accepted.ContinuousFirstPullbackBindingV01):
             event = accepted._quote_event_from_json(row["event_json"])
             if event.base.mint != row["mint"] or event.base.mint not in self.market_source._launch_by_mint:
                 raise ProducerConflict("retained feature/launch registry conflict")
-            engine.process(event)
+            replay.process(event)
+        engine = accepted.DenominationAwareFeatureEngineV01()
+        engine._tokens = replay._tokens
         return engine
 
     @contextmanager

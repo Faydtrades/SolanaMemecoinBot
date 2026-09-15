@@ -1,0 +1,122 @@
+{
+  "M56": "OWNED_NOT_BUILT",
+  "M57": "OWNED_NOT_BUILT",
+  "T010": "NOT_STARTED",
+  "T011": "NOT_AUTHORIZED",
+  "actual_PUBLIC_ENVIRONMENT_REVIEWED_qualification": "NOT_COMPLETED_PENDING_CAPACITY_GATE",
+  "actual_resume_observation": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pending-guard-resume-v1\\result.json",
+    "sha256": "2cb43a5042fea02ff1c612223089c442e970dc16591fbb0bcc634eee17039ff7"
+  },
+  "affected_source_freeze": {
+    "content_digest": "27dc704b86e5be8c882d05be2552c17cdf0f18702c9f19c6566538d183ec1ff8",
+    "exit_code": 0,
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-evidence-20260913\\pending-guard-resume-v1\\affected-source-freeze.json",
+    "sha256": "824e8c9c32ecb2a528313786aee31dc4a57df05768a45f0a492bb51b110b823a"
+  },
+  "all_13_recorded_producer_dimensions_within_amended_limits": true,
+  "approval_scope": [
+    "T010",
+    "DRY",
+    "NO_BROADCAST",
+    "NON_SUBMITTED"
+  ],
+  "approved_change": {
+    "after": 2421,
+    "before": 2346,
+    "metric": "PRODUCER_PENDING_ROWS"
+  },
+  "approved_guard": {
+    "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\docs\\live\\MEME_LIVE_FIX2_APPROVED_PENDING_GUARD_V1.json",
+    "sha256": "cc515bcfd4c95016c86d9cf071a67e8cf76e9c8d3da4f6c4fa8a7b5be45cad4e"
+  },
+  "bounded_review": "NO_SUBSTANTIVE_FINDINGS_FOR_PENDING_GUARD_DELTA",
+  "bounded_review_correction": "Added the new focused test to the dossier source allowlist; source_freeze regenerated successfully. No full dossier qualification claimed.",
+  "bounded_review_details": {
+    "allowlist_finding_corrected_and_rechecked": true,
+    "artifact_source_hashes_verified": true,
+    "broad_regression": false,
+    "clock_packet_sample_verified_offline": true,
+    "component_evidence_not_full_qualification": true,
+    "exit_code": 0,
+    "focused_checks": 18,
+    "isolated_database_before_after_counts_verified": true,
+    "model": "gpt-6-astra",
+    "only_approved_guard_changed": true,
+    "reasoning_effort": "high",
+    "reviewer": "fix2_independent_review",
+    "reviewer_network_or_process_actions": false,
+    "source_cut_unchanged_verified": true
+  },
+  "candidate_published": false,
+  "candidate_sha": null,
+  "cause": "Original Runtime source advance prepares a strategy timer before processing another source batch. On a copy of the exact reviewed cut, that preparation adds one retained pending row, reaching 2422 before any newer market row is consumed. The component observation stops there; no full Runtime qualification is claimed.",
+  "changed_source_files": [
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\src\\live\\runtime_dry_profile_v0_1.py",
+      "sha256": "01bc34ff2872349abded694c8097bc1534215bcda9bdf17d83695ae8bb0578e1"
+    },
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\scripts\\live_fix2_pending_guard_delta_selftest_v0_1.py",
+      "sha256": "cda4a16ac9555c1df07b544f7a0d316eb651cd6df7dd439a9659210c52288371"
+    },
+    {
+      "path": "C:\\Users\\Mari1\\AppData\\Local\\Temp\\meme-live-fix2-20260913\\src\\live\\acceptance_dossier_v0_1.py",
+      "sha256": "f4030a163cc66227e65112cd8b6d3933aca9c09b8da24ba191b27936028e9b64"
+    }
+  ],
+  "collector_status": {
+    "launcher_pid": 55352,
+    "pid": 55500,
+    "start_time_local": "2026-09-13T14:39:49+02:00",
+    "status": "RUNNING_VERIFIED_GET_PROCESS",
+    "stop_or_restart_performed": false
+  },
+  "collector_stop_or_change_performed": false,
+  "directly_invalidated_surface": "Public DRY profile guard codec previously excluded PRODUCER_PENDING_ROWS; narrow exact-decision validation added. Prior unrelated engineering/review evidence is reused.",
+  "git": {
+    "candidate_published": false,
+    "diff_check_exit_code": 0,
+    "divergence": [
+      0,
+      0
+    ],
+    "fetched_remote": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2",
+    "head": "2b57b8642d5dc09ac01a7f9de09d7f42bc803fb2",
+    "staged": false,
+    "working_tree": "UNCOMMITTED_FIX2_PRESERVED"
+  },
+  "history_bytes": 8453,
+  "market_rows_consumed": 0,
+  "original_runtime_admissions": 0,
+  "other_limits_relaxed": false,
+  "recorded_cut_guard_conflict_closed": true,
+  "remaining_capacity_conflict": [
+    {
+      "condition": "RESOURCE_EXCEEDED",
+      "limit": 2421,
+      "metric": "PRODUCER_PENDING_ROWS",
+      "observed": 2422
+    }
+  ],
+  "required_resolution": "Project decision on PRODUCER_PENDING_ROWS 2422 > approved 2421 caused by the next original timer preparation. No headroom, further limit increase or retention change is authorized. 2422 is the observed next conflict, not a sufficient complete-qualification capacity proposal.",
+  "reviewed_source_cut_p1_rowid": 3143387,
+  "schema": "MEME_LIVE_FIX2_PENDING_GUARD_DELTA_V1",
+  "signer_send_broadcast": false,
+  "source_cut_after": 3143387,
+  "source_cut_before": 3143387,
+  "status": "BLOCKED_PENDING_ROWS_2422_EXCEEDS_APPROVED_2421",
+  "timer_executed": false,
+  "tombstone_1_to_2_sufficient": "NOT_ESTABLISHED",
+  "tombstone_adjustment_applied": false,
+  "tombstone_rows": 1,
+  "unmeasured_host_ledger_dimensions_qualified": false,
+  "validation": {
+    "checks": 18,
+    "command": "python -B scripts/live_fix2_pending_guard_delta_selftest_v0_1.py",
+    "exit_code": 0,
+    "interpreter": "C:\\Users\\Mari1\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+    "public_qualification": false,
+    "scope": "New exact pending decision codec, negative cases and constructor wiring only; disposable baseline is not capacity evidence."
+  }
+}
