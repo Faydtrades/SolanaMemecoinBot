@@ -1,0 +1,98 @@
+{
+  "T010": "NOT_STARTED",
+  "arithmetic_changed": false,
+  "changes": [
+    {
+      "argument": "Three new pure helpers. capture_source_at_completion is adapter.capture plus one extra clock() sample plus evaluate_source, byte-for-byte the same single read-only (mode=ro) source read as the former observe (which is capture plus evaluate_source); no write. entry_at_clock re-stamps wallet/protocol facts in memory. admission_clock takes an extra clock sample and one policy-bounded time.sleep; it fails closed to ENTRY_HELD without writing. Write sites unchanged: source.append 1->1, admit_authority_entry 1, retire 2, apply_settlement 1, record_nonacceptance 1, consume_authority_message_stage 1; only read calls increased (_authority 2->4, candidate 1->2). Monitor hand-over (observe(..., clock=), note_work(result, clock())) uses the same call sites.",
+      "bound": "Same ledger/evidence row count per work unit; the added branches can only hold (fewer writes). The one read-only source read was already counted by the former observe. The bounded sleep extends step time inside the validated policy interval and adds no store write.",
+      "file": "live/runtime_composition_v0_1.py"
+    },
+    {
+      "argument": "_observe_current takes clock; the source read moves to the top (capture plus evaluate) and is reused in the existing SOURCE_TRUTH_UNAVAILABLE branch (verdict = captured), otherwise the former observe runs: one read in both cases. source_consumer_evidence is a pure function over the verdict (no I/O). _record write sites identical (the extra textual match is latest_record(), a read); store.advance/record/execute sites 16->16. advance(now_us) receives the post-read stamp through the same call. No new condition, subject, observation or append site.",
+      "bound": "V5 bound stands: 20 metric pairs * 2924 + 4386 clock/source + 11 human + 2 coverage = 62879; 54 condition rows.",
+      "file": "live/operations_degradation_monitor_v0_1.py"
+    },
+    {
+      "argument": "Before _current, admission_clock/entry_at_clock run under _trusted_read (memory, clock, bounded sleep); monitor.observe receives clock=. evaluate remains read-only under mutation_guard/_trusted_read; no write site.",
+      "bound": "No row writer; readiness does not run in the admitted DRY loop's write path.",
+      "file": "live/operations_readiness_v0_1.py"
+    },
+    {
+      "argument": "source() replaces observe with capture_source_at_completion (same read-only read plus a clock sample); _recent_source_observations.append is an in-memory list, unchanged. Import line.",
+      "bound": "Same read, zero writes; public-facts cost remains measured in the final-code cohort.",
+      "file": "live/runtime_dry_public_facts_v0_1.py"
+    },
+    {
+      "argument": "Signature pass-through _source_page(sample, cut, clock) to the base; queue filtering unchanged.",
+      "bound": "None.",
+      "file": "live/runtime_reconstruction_v0_1.py"
+    },
+    {
+      "argument": "B04 registry (two frozenset lists) and _locate: reads of Temp\\meme-live-* links are served from the rescued copies, hash-verified against the same values, with dossier output proven byte-identical to the Temp-based build. Prelaunch construction only, outside the DRY loop, no writer to any of the five stores (V5's own argument still holds).",
+      "bound": "No growable runtime store; read volume moves from the Temp volume to D:; codec construction remains measured in the final-code cohort.",
+      "file": "live/acceptance_dossier_v0_1.py"
+    }
+  ],
+  "eol_rebinding": {
+    "argument": "Content LF-normalised identical to 03c201a; V5 pinned the mixed line endings of the retained Temp worktree, the production checkout D:\\Tradingbot\\live is pure CRLF. Rebound to the raw CRLF bytes of the checkout per the production-identity decision. No semantic change.",
+    "files": [
+      "live/authority_admission_v0_1.py",
+      "live/authority_controls_v0_1.py",
+      "live/authority_message_codec_v0_1.py",
+      "live/authority_message_evidence_v0_1.py",
+      "live/continuous_producer_v0_1.py",
+      "live/continuous_producer_v0_2.py",
+      "live/evidence_store_v0_1.py",
+      "live/execution_message_v0_1.py",
+      "live/ledger_repository_v0_1.py",
+      "live/operations_degradation_v0_1.py",
+      "live/operations_startup_v0_1.py",
+      "live/operations_supervisor_v0_1.py",
+      "live/public_rpc_v0_1.py",
+      "live/pump_current_state_v0_1.py",
+      "live/pump_protocol_compatibility_v0_1.py",
+      "live/pump_token2022_profile_v0_1.py",
+      "live/runtime_dry_public_driver_v0_1.py",
+      "live/runtime_dry_v0_1.py",
+      "live/runtime_public_clock_v0_1.py",
+      "live/simulation_public_cpi_v0_1.py",
+      "live/source_health_v0_1.py",
+      "live/t010_preflight_v0_1.py",
+      "live/t010_sqlite_boundary_v0_1.py",
+      "live/wallet_evidence_v0_1.py"
+    ]
+  },
+  "immutable_quantities": {
+    "actual_pager_sector_bytes": 4096,
+    "conservative_journal_header_allowance_bytes": 65536,
+    "logical_digest": "f267ad5aa169b537b575fe195a8ae6c396ab3200af806307628a71a3eb35c5f8",
+    "owned_peak_bytes": 893218177024,
+    "recovery_bytes": 893218177024,
+    "reserve_floor_bytes": 1073741824,
+    "temporary_peak_bytes": 207260041216
+  },
+  "issued_from": "D:\\Tradingbot\\live",
+  "native_schema_connections_changed": false,
+  "previous_certificate_sha256": "d5f9c6f3a37839f4986e874e5b58e1c36bf2602e2d0914acb0f4c530adca6834",
+  "project_acceptance_claimed": false,
+  "schema": "T20_PHYSICAL_PREMISE_SUCCESSOR_REVIEW_V1",
+  "schema_owning_modules_content_identical": [
+    "live/ledger_repository_v0_1.py",
+    "live/evidence_store_v0_1.py",
+    "live/operations_ownership_v0_1.py",
+    "live/operations_degradation_v0_1.py",
+    "live/continuous_producer_v0_1.py",
+    "live/continuous_producer_v0_2.py",
+    "live/t010_sqlite_boundary_v0_1.py",
+    "live/source_health_v0_1.py"
+  ],
+  "scope": "STRUCTURAL_PHYSICAL_COMPATIBILITY_NOT_QUALIFICATION",
+  "source_premises_removed": [],
+  "source_premises_retained": 123,
+  "validation_pending": [
+    "current exact certificate",
+    "all certified sources fail closed",
+    "native/schema/physical quantities",
+    "full current codec and consumer smoke"
+  ]
+}

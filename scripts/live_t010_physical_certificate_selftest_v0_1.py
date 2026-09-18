@@ -29,7 +29,7 @@ def fails(call):
 
 
 def main():
-    path = ROOT/'docs/live/MEME_LIVE_T010_PHYSICAL_PROOF_CERTIFICATE_V5.json'
+    path = ROOT/'docs/live/MEME_LIVE_T010_PHYSICAL_PROOF_CERTIFICATE_V6.json'
     proof = json.loads(path.read_text())
     reference = {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
     check('exact_certificate_pin', reference['sha256'] == CERTIFICATE_SHA256)
