@@ -118,7 +118,7 @@ def reduction(f, key, action, at, number, *, failed=False):
 
 def run(directory, *, exhaust=False):
     name = 'e02-partial-residual-cost-exhaustion' if exhaust else 'e02-partial-residual-retirement'
-    key = c2.Keypair()  # Ephemeral external synthetic signer; secret never serialized.
+    key = c2.keypair(name)  # Fixed external synthetic signer; secret never serialized.
     with patch.object(sf, 'WALLET', str(key.pubkey())), patch.object(sf.plans, 'ACTOR', str(key.pubkey())):
         f = prior.prepare(directory, name)
         try:
@@ -264,7 +264,7 @@ def main():
     args = parser.parse_args()
     started = time.perf_counter()
     try:
-        with tempfile.TemporaryDirectory(prefix='step10-e02-partial-') as directory:
+        with c2.fixed_producer_clock(), tempfile.TemporaryDirectory(prefix='step10-e02-partial-') as directory:
             run(Path(directory))
             if not args.default_call_compat:
                 run(Path(directory),exhaust=True)
@@ -282,7 +282,7 @@ def main():
                 'Owned cold reopen is in-process SQLite reconstruction, not full process-loss testing',
                 ('Original exhausted-cost qualification is referenced from e02-partial-targeted-03; not rerun'
                  if args.default_call_compat else 'Exhaustion uses two actual failed residual transactions under unchanged original failure allowance; no recovery is added')],
-            'artifact_hashes':{str(p.relative_to(c2.ROOT)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}}))
+            'artifact_hashes':{str(p.relative_to(c2.ROOT)).replace('\\','/'):prior.lf_sha256(p) for p in sorted(paths)}}))
 
 
 if __name__ == '__main__':

@@ -43,6 +43,17 @@ def wallet(f, at, *, mint=None, incomplete=False):
     return a3.WalletSupportInput(observation,a3.utc(at),request.min_context_slot)
 
 
+def held_retirement(clock, support):
+    """Retirement compares the support's evaluation stamp with the step's own
+    clock sample (Ledger retirement comparison input; Runtime unacquired
+    retirement). A ticking fixture clock cannot be predicted from outside the
+    step, so sample it once, hold that sample for the whole step, and stamp the
+    support with it, as production-owned retirement steps do with a fixed sample.
+    """
+    sample = clock()
+    return (lambda: sample), replace(support, evaluated_at_utc=sample.utc_upper_utc)
+
+
 def reduce_first(f, key):
     c2.acquisition(f,key)
     staged = f.step(NOW+16)

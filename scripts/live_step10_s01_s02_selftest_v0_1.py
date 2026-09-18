@@ -161,19 +161,34 @@ def prepare(directory, name, *, once=False):
         raise
 
 
+def persistent_clock(f, at):
+    # Monotonic fixture sample that persists across step calls and reopen (the
+    # same pattern as A07/A08): production retains evidence stamped by the last
+    # sample, so a per-call reset to `at` would regress the clock behind it.
+    sample = a3.clock(f.repo, at)
+    upper = datetime.fromisoformat(sample.utc_upper_utc)
+    previous = getattr(f, '_clock_upper', None)
+    target = upper if previous is None else max(upper, previous+timedelta(microseconds=1))
+    f._clock_upper = target
+    delta = target-upper
+    when = target.isoformat(timespec='microseconds')
+    return replace(sample, utc_lower_utc=when, utc_upper_utc=when,
+        monotonic_ns=sample.monotonic_ns+(delta.days*86400000000+delta.seconds*1000000+delta.microseconds)*1000)
+
+
+def lf_sha256(path):
+    # Git-LF content hash (CRLF checkout invariant), as acceptance_dossier._lf.
+    return hashlib.sha256(path.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+
+
 def prepare_owned(f, name, *, once):
     audit = ops.restart(f)
     owned_runtime = f.runtime
-    # Keep original monotonic per-call clock sampling, with current source cut.
+    # Keep original monotonic clock sampling, with current source cut.
     def step(at=NOW+4, **kwargs):
-        calls = []
-        def clock():
-            sample = a3.clock(f.repo, at)
-            micros = len(calls)
-            calls.append(None)
-            when = (datetime.fromisoformat(sample.utc_upper_utc)+timedelta(microseconds=micros)).isoformat(timespec='microseconds')
-            return replace(sample, utc_lower_utc=when, utc_upper_utc=when,
-                monotonic_ns=sample.monotonic_ns+1000*micros)
+        clock = lambda: persistent_clock(f, at)
+        if kwargs.get('retirement_wallet') is not None:
+            clock, kwargs['retirement_wallet'] = continuation.held_retirement(clock, kwargs['retirement_wallet'])
         result = f.runtime.step(clock=clock, source_cut_utc=a3.utc(f.source_cut),
             operations_resources=lambda: ops.host(f, at), **kwargs)
         check(f.name+'_monitor_and_owner_remain_attached', f.runtime._operations_degradation is not None
@@ -357,7 +372,7 @@ def lifecycle(f, key, *, shift=0, number=71):
 
 def run(directory, *, once=False):
     name = 's02-once' if once else 's01-s02-normal'
-    key = c2.Keypair()  # Ephemeral synthetic signing key; never serialized/logged.
+    key = c2.keypair(name)  # Fixed synthetic signing key; never serialized/logged.
     with patch.object(sf, 'WALLET', str(key.pubkey())), patch.object(sf.plans, 'ACTOR', str(key.pubkey())):
         f = prepare(directory, name, once=once)
         try:
@@ -434,12 +449,12 @@ def run(directory, *, once=False):
 
 
 def main():
-    with tempfile.TemporaryDirectory(prefix='step10-s01-s02-') as tmp:
+    with c2.fixed_producer_clock(), tempfile.TemporaryDirectory(prefix='step10-s01-s02-') as tmp:
         run(Path(tmp))
         run(Path(tmp), once=True)
     fixture_modules = (ops, continuation, c2, c2.q4, c2.q3, c2.q1, c2.a4, c2.a3, c2.a5, sf, hf, sf.plans, sf.plans.fx)
     paths = {Path(__file__), *(c2.ROOT/'src/live').glob('*.py'), *(Path(m.__file__) for m in fixture_modules)}
-    hashes = {str(p.relative_to(c2.ROOT)).replace('\\', '/'): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
+    hashes = {str(p.relative_to(c2.ROOT)).replace('\\', '/'): lf_sha256(p) for p in paths}
     print(c2.canonical_json({'status': 'IMPLEMENTED_PENDING_PROJECT_REVIEW', 'scope': ['S01', 'S02'],
         'fixture_version': FIXTURE_VERSION, 'qualification': 'SYNTHETIC_ENGINEERING_ONLY_NOT_HOST_PROFILE_OR_REAL_CAPITAL',
         'lifecycle_counts': {'normal': 2, 'one_time_variant': 1}, 'checks': CHECKS,

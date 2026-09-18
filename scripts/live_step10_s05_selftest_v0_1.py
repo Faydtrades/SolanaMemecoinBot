@@ -22,7 +22,7 @@ from solders.message import to_bytes_versioned
 ops, c2, a3, sf, NOW = prior.ops, prior.c2, prior.a3, prior.sf, prior.NOW
 CHECKS, EVIDENCE = {}, {}
 FIXTURE_VERSION = 'STEP10_S05_SYNTHETIC_ENGINEERING_V01'
-HELPER_SHA256 = '035638e53b7f3b6eed9373c400d6434a5682e63df320ba6f662b85319a28c331'
+HELPER_SHA256 = '775a01bcc7b7cc1142704e266c03dc64a377e33003dd785a2f5606822ea33964'
 ACCEPTED = {
     'B2.1': ('meme-live-b21-evidence', 'e5dafe878d1e5c25840a06468da7cdffc43079f219cf76893bb621acc10b4a54'),
     'B2.2': ('meme-live-b22-evidence', '94151bc3c7cc8a90b177f2b80c0d4024e4ebfe09d531739523a733c19c58d68a'),
@@ -174,7 +174,7 @@ def delayed(f, key, action, at, number):
 
 
 def run(directory):
-    key = c2.Keypair()  # Ephemeral synthetic key; public signature/wire only in evidence.
+    key = c2.keypair('s05-delayed-owned')  # Fixed synthetic key; public signature/wire only in evidence.
     with patch.object(sf, 'WALLET', str(key.pubkey())), patch.object(sf.plans, 'ACTOR', str(key.pubkey())):
         f = prior.prepare(directory, 's05-delayed-owned')
         try:
@@ -242,7 +242,7 @@ def run(directory):
 
 
 def main():
-    check('qualified_helper_unchanged', hashlib.sha256(Path(prior.__file__).read_bytes()).hexdigest() == HELPER_SHA256)
+    check('qualified_helper_unchanged', prior.lf_sha256(Path(prior.__file__)) == HELPER_SHA256)
     references = {}
     for label, (folder, expected) in ACCEPTED.items():
         path = Path(tempfile.gettempdir())/folder/'FINAL_FROZEN_MANIFEST.json'
@@ -264,7 +264,7 @@ def main():
             'No real host/profile/provider/capital qualification; synthetic monitoring limits',
             'One Pump FINAL-A full lifecycle; no route or exit-track permutation campaign'],
         'checks': CHECKS, 'reused_helper_checks': prior.CHECKS, 'evidence': EVIDENCE,
-        'artifact_hashes': {str(p.relative_to(c2.ROOT)).replace('\\', '/'): hashlib.sha256(p.read_bytes()).hexdigest()
+        'artifact_hashes': {str(p.relative_to(c2.ROOT)).replace('\\', '/'): prior.lf_sha256(p)
             for p in sorted(paths)}}))
 
 

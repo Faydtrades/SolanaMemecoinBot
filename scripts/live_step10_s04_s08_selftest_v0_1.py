@@ -24,7 +24,7 @@ import live_step10_s01_s02_selftest_v0_1 as prior
 ops, c2, a3, sf, hf, NOW = prior.ops, prior.c2, prior.a3, prior.sf, prior.hf, prior.NOW
 CHECKS, EVIDENCE = {}, {}
 EVIDENCE_ROOT = Path(tempfile.gettempdir())/'meme-live-step10-3fd8bcb-20260911'
-QUALIFIED_HELPER_SHA256 = '035638e53b7f3b6eed9373c400d6434a5682e63df320ba6f662b85319a28c331'
+QUALIFIED_HELPER_SHA256 = '775a01bcc7b7cc1142704e266c03dc64a377e33003dd785a2f5606822ea33964'
 
 
 class SyntheticProcessCut(BaseException):
@@ -40,13 +40,10 @@ def check(name, value):
 def attach_steps(f):
     runtime, fence = f.runtime, f.runtime._ownership.fence
     def step(at=NOW+4, **kwargs):
-        ticks = []
-        def clock():
-            sample = a3.clock(f.repo, at)
-            n = len(ticks)
-            ticks.append(None)
-            when = (datetime.fromisoformat(sample.utc_upper_utc)+timedelta(microseconds=n)).isoformat(timespec='microseconds')
-            return replace(sample, utc_lower_utc=when, utc_upper_utc=when, monotonic_ns=sample.monotonic_ns+n*1000)
+        # Persistent across calls and reopen; see prior.persistent_clock.
+        clock = lambda: prior.persistent_clock(f, at)
+        if kwargs.get('retirement_wallet') is not None:
+            clock, kwargs['retirement_wallet'] = prior.continuation.held_retirement(clock, kwargs['retirement_wallet'])
         result = f.runtime.step(clock=clock, source_cut_utc=a3.utc(f.source_cut),
             operations_resources=lambda: ops.host(f, at), **kwargs)
         check(f.name+'_owner_monitor_attached', f.runtime is runtime and f.runtime._ownership.fence == fence
@@ -128,7 +125,7 @@ def fresh_source(f, at):
     rowid = at-NOW+14
     f.append([(rowid, f.item.mint, 'BUY', 10100)])
     f.source_cut = at
-    observed = f.runtime._source_health(a3.clock(f.repo, at+4), a3.utc(at))
+    observed = f.runtime._source_health(a3.clock(f.repo, at+4), a3.utc(at), lambda:a3.clock(f.repo, at+4))
     check(f.name+'_actual_refreshed_source', observed.disposition == 'HEALTHY'
         and prior.continuation.utc_microseconds(observed.covered_through_utc) == at*1000000)
     return observed
@@ -288,7 +285,7 @@ def expired_backlog(directory):
 
 def competing(directory, *, unknown=False):
     name = 's08-unknown-BUY' if unknown else 's08-occupied-due-exit'
-    key = c2.Keypair()
+    key = c2.keypair(name)
     with patch.object(sf, 'WALLET', str(key.pubkey())), patch.object(sf.plans, 'ACTOR', str(key.pubkey())):
         f = cold(directory, name)
         try:
@@ -379,7 +376,7 @@ def main():
     parser.add_argument('--positive-evidence', type=Path, default=EVIDENCE_ROOT/'S01_S02.stdout.json')
     args = parser.parse_args()
     helper = Path(prior.__file__)
-    check('qualified_S01_S02_helper_unchanged', hashlib.sha256(helper.read_bytes()).hexdigest() == QUALIFIED_HELPER_SHA256)
+    check('qualified_S01_S02_helper_unchanged', prior.lf_sha256(helper) == QUALIFIED_HELPER_SHA256)
     positive_path = args.positive_evidence
     positive = json.loads(positive_path.read_text(encoding='utf-8-sig'))
     check('qualified_positive_retirement_source_binding', positive['artifact_hashes']['scripts/live_step10_s01_s02_selftest_v0_1.py'] == QUALIFIED_HELPER_SHA256
@@ -394,7 +391,7 @@ def main():
     print(c2.canonical_json({'status': 'IMPLEMENTED_PENDING_PROJECT_REVIEW', 'scope': ['S04', 'S08'],
         'qualification': 'SYNTHETIC_ENGINEERING_ONLY_NOT_HOST_PROFILE_OR_REAL_CAPITAL', 'checks': CHECKS,
         'reused_helper_checks': prior.CHECKS,
-        'artifact_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        'artifact_sha256': prior.lf_sha256(Path(__file__)),
         'qualified_helper_sha256': QUALIFIED_HELPER_SHA256, 'reused_after_retirement_boundary': {
             'artifact_path': str(positive_path), 'artifact_sha256': hashlib.sha256(positive_path.read_bytes()).hexdigest(),
             'normal_economics': positive['evidence']['s01-s02-normal']['economics']}, 'evidence': EVIDENCE}))

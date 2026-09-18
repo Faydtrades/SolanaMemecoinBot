@@ -10,6 +10,7 @@ import json
 import sys
 import tempfile
 from dataclasses import asdict, replace
+from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
@@ -19,6 +20,8 @@ import live_operations_startup_selftest_v0_1 as a2
 import live_runtime_continuation_selftest_v0_1 as c3
 from live import operations_readiness_v0_1 as barriers
 from live.execution_message_v0_1 import produce_exact_message
+from live.wallet_evidence_v0_1 import ledger_account_evidence
+from live import runtime_reconstruction_v0_1 as reconstruction
 
 rt, a3, sf, NOW = a2.rt, a2.a3, a2.sf, a2.NOW
 CHECKS = {}
@@ -31,9 +34,34 @@ def check(name, value):
         raise AssertionError(name)
 
 
+class Fixture(rt.Fixture):
+    """Local positive timeline; explicit negative samples still use a3.clock."""
+    def __init__(self, *args, **kwargs):
+        self._clock_upper = None
+        super().__init__(*args, **kwargs)
+
+    def clock(self, at=NOW+4):
+        sample = a3.clock(self.repo, at)
+        lower, upper = map(datetime.fromisoformat, (sample.utc_lower_utc, sample.utc_upper_utc))
+        # Schedule external fixture time, without consulting retained evidence.
+        target = upper if self._clock_upper is None else max(upper, self._clock_upper+timedelta(microseconds=1))
+        delta = target-upper
+        self._clock_upper = target
+        return replace(sample, utc_lower_utc=(lower+delta).isoformat(timespec='microseconds'),
+            utc_upper_utc=target.isoformat(timespec='microseconds'),
+            monotonic_ns=sample.monotonic_ns+(delta.days*86400000000+delta.seconds*1000000+delta.microseconds)*1000)
+
+    def step(self, at=NOW+4, **kwargs):
+        kwargs.setdefault('operations_resources', lambda: a2.host(self, at))
+        clock = lambda: self.clock(at)
+        if kwargs.get('retirement_wallet') is not None:
+            clock, kwargs['retirement_wallet'] = c3.held_retirement(clock, kwargs['retirement_wallet'])
+        return self.runtime.step(clock=clock, source_cut_utc=a3.utc(NOW+1), **kwargs)
+
+
 def read(f, at=NOW+4, **kwargs):
     kwargs.setdefault('operations_resources', lambda: a2.host(f, at))
-    return barriers.evaluate(f.started, clock=lambda: a3.clock(f.repo, at), **kwargs)
+    return barriers.evaluate(f.started, clock=lambda: f.clock(at), **kwargs)
 
 
 def entry(f, at=NOW+4):
@@ -83,7 +111,7 @@ def durable_digests(f):
 
 
 def normal(directory):
-    f = a2.installed(rt.Fixture(directory, 'a3-entry'))
+    f = a2.installed(Fixture(directory, 'a3-entry'))
     try:
         audit = a2.restart(f)
         cold = read(f)
@@ -91,6 +119,8 @@ def normal(directory):
             and cold.protective.state == 'NOT_REQUIRED' and not cold.protective.ready
             and cold.reconstruction.source_state == 'SOURCE_RECONSTRUCTED')
         f.candidate_ready()
+        check('original_candidate_delivered_without_durable_rejection', f.root in f.runtime.queued_roots
+            and f.repo.inbox_disposition(f.root) == 'RECEIVED' and f.item.trade_root(f.domain) == f.root)
         f.configure()
         facts = entry(f)
         before = f.repo.write_fence()
@@ -106,10 +136,26 @@ def normal(directory):
             and ready.authority_digest == f.repo._authority.content_digest and audit == f.started.audit)
         check('all_readiness_results_no_message_capabilities', all(not value.grants_permission for value in
             (ready, ready.entry, ready.protective)) and not ready.entry.may_sign and not ready.protective.may_send)
-        check('historical_matched_wallet_denied_at_new_clock', not read(f, NOW+5, entry=facts).entry.ready)
+        original_observation = facts.wallet.observation
+        current = read(f, NOW+5, entry=facts)
+        check('fresh_original_wallet_revalidated_at_new_clock', current.entry.ready
+            and facts.wallet.observation == original_observation and not current.grants_permission)
+        stale_wallet = replace(facts.wallet, observation=replace(original_observation,
+            observed_at_utc=a3.utc(NOW-100)))
+        denied_wallet = read(f, NOW+5, entry=replace(facts, wallet=stale_wallet))
+        # Production folds CONSUMER_OBSERVATION_STALE into the aggregate
+        # FRESH_FINALIZED_WALLET_ACCOUNT_MINT_FACTS_REQUIRED; prove staleness was
+        # the cause through the same consumer port at the clock actually used.
+        stale_port = ledger_account_evidence(stale_wallet.observation, expected_wallet=f.repo.domain.wallet,
+            expected_genesis=f.repo.domain.genesis_hash, expected_profile_fingerprint=f.repo.domain.expected_profile_fingerprint,
+            required_min_context_slot=stale_wallet.required_min_context_slot, now_utc=denied_wallet.clock.utc_upper_utc)
+        check('stale_original_wallet_denied_at_new_clock', not denied_wallet.entry.ready
+            and 'FRESH_FINALIZED_WALLET_ACCOUNT_MINT_FACTS_REQUIRED' in denied_wallet.entry.reasons
+            and stale_port.consumer_reasons == ('CONSUMER_OBSERVATION_STALE',) and not stale_port.account_facts_usable
+            and facts.wallet.observation == original_observation)
         stale_clock = replace(a3.clock(f.repo), status='UNKNOWN')
         check('unknown_clock_denied', not barriers.evaluate(f.started, clock=lambda: stale_clock, entry=facts).entry.ready)
-        old_receipt = f.repo.evaluate_authority_entry(f.root, f.policy.selected_track, a3.clock(f.repo), f.source,
+        old_receipt = f.repo.evaluate_authority_entry(f.root, f.policy.selected_track, f.clock(NOW+5), f.source,
             command_id='historical-only', fence=f.repo.write_fence())
         check('original_positive_Authority_receipt_is_context', old_receipt.decision.disposition == 'ELIGIBLE_CONTEXT_ONLY')
         a3.control(f.repo, 'STOP_ENTRY', 'entry-stop', at=NOW+5)
@@ -127,7 +173,7 @@ def normal(directory):
             and not read(f).protective.ready and f.step().work == 'OPERATIONS_HELD')
     finally:
         a2.close(f)
-    f = a2.installed(rt.Fixture(directory, 'a3-stale-source'))
+    f = a2.installed(Fixture(directory, 'a3-stale-source'))
     try:
         a2.restart(f)
         f.candidate_ready(); f.configure()
@@ -144,10 +190,16 @@ def normal(directory):
         a2.close(f)
 
 
+def keypair(name):
+    # Fixed fixture wallet: the actor fingerprint feeds the hashed fee-recipient
+    # choice, so a random key made the lifecycle outcome vary per run.
+    return rt.Keypair.from_seed(hashlib.sha256(name.encode()).digest())
+
+
 def lifecycle(directory):
-    key = rt.Keypair()
+    key = keypair('a3-lifecycle')
     with patch.object(sf, 'WALLET', str(key.pubkey())), patch.object(sf.plans, 'ACTOR', str(key.pubkey())):
-        f = a2.installed(rt.Fixture(directory, 'a3-lifecycle'))
+        f = a2.installed(Fixture(directory, 'a3-lifecycle'))
         try:
             a2.restart(f)
             acquired = rt.acquisition(f, key)
@@ -225,7 +277,7 @@ def lifecycle(directory):
             fresh_rows = [(n+48, rt.hf.MINT_C, kind, price) for n, _, kind, price in rt.hf.FIRST if n not in (5, 7)]
             f.append(fresh_rows)
             for _ in range(128):
-                candidate = f.runtime.step(clock=lambda: a3.clock(f.repo, NOW+52), source_cut_utc=a3.utc(NOW+48),
+                candidate = f.runtime.step(clock=lambda: f.clock(NOW+52), source_cut_utc=a3.utc(NOW+48),
                     operations_resources=lambda: a2.host(f, NOW+52))
                 if candidate.work == 'NEED_ENTRY_FACTS': break
             item = f.repo.candidate(candidate.root_id)
@@ -234,7 +286,7 @@ def lifecycle(directory):
             check('legal_eventual_current_entry_after_truth_retirement_source', ready.entry.ready
                 and ready.entry.root_id == candidate.root_id and ready.entry.root_id != original.root_id
                 and ready.entry.deadline_us == item.generated_at_us+15000000 and ready.protective.state == 'NOT_REQUIRED')
-            admitted = f.runtime.step(clock=lambda: a3.clock(f.repo, NOW+52), source_cut_utc=a3.utc(NOW+48), entry=facts,
+            admitted = f.runtime.step(clock=lambda: f.clock(NOW+52), source_cut_utc=a3.utc(NOW+48), entry=facts,
                 operations_resources=lambda: a2.host(f, NOW+52))
             check('eventual_entry_actual_Authority_independently_admits_no_second_execution', admitted.work == 'ENTRY_ADMITTED'
                 and f.repo.authority_acceptance(item.trade_root(f.domain)).accepted and f.repo.audit()['attempt_count'] == 3)
@@ -244,9 +296,9 @@ def lifecycle(directory):
 
 def stale_proof(directory):
     # The future-time probe has its own durable monitor; this timeline ends here.
-    key = rt.Keypair()
+    key = keypair('a3-stale-proof')
     with patch.object(sf, 'WALLET', str(key.pubkey())), patch.object(sf.plans, 'ACTOR', str(key.pubkey())):
-        f = a2.installed(rt.Fixture(directory, 'a3-stale-proof'))
+        f = a2.installed(Fixture(directory, 'a3-stale-proof'))
         try:
             a2.restart(f)
             acquired = rt.acquisition(f, key)
@@ -264,9 +316,9 @@ def stale_proof(directory):
 
 
 def source_failure(directory):
-    key = rt.Keypair()
+    key = keypair('a3-source-failure')
     with patch.object(sf, 'WALLET', str(key.pubkey())), patch.object(sf.plans, 'ACTOR', str(key.pubkey())):
-        f = a2.installed(rt.Fixture(directory, 'a3-source-failure'))
+        f = a2.installed(Fixture(directory, 'a3-source-failure'))
         try:
             a2.restart(f)
             rt.acquisition(f, key)
@@ -309,8 +361,20 @@ def structural():
         'prepare_attempt', 'record_authority_control', 'initialize', 'reopen', 'step', 'commit', 'sign_exact', 'send_exact'})
 
 
+def fixed_clock_producer(conn, market_source, **kwargs):
+    # Cold startup builds the producer without wall_clock, so datetime.now()
+    # P1 stamps reach exit-evidence digests, the B3 SELL intent and the hashed
+    # fee-recipient choice that rt.original_chain assumes fixed. Same fixed
+    # clock as hf.Fixture.open_producer; exact production type retained.
+    return PRODUCER(conn, market_source, wall_clock=lambda: rt.hf.BASE, **kwargs)
+
+
+PRODUCER = reconstruction.LiveContinuousProducerV02
+
+
 def main():
-    with tempfile.TemporaryDirectory(prefix='live-operations-readiness-') as temporary:
+    with patch.object(reconstruction, 'LiveContinuousProducerV02', fixed_clock_producer), \
+            tempfile.TemporaryDirectory(prefix='live-operations-readiness-') as temporary:
         directory = Path(temporary)
         normal(directory)
         lifecycle(directory)

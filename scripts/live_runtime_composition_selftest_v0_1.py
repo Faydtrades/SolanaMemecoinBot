@@ -3,11 +3,12 @@ from __future__ import annotations
 import ast
 import base64
 import copy
+import hashlib
 import json
 import sqlite3
 import sys
 import tempfile
-from contextlib import closing
+from contextlib import closing, contextmanager
 from dataclasses import replace
 from datetime import datetime,timedelta
 from pathlib import Path
@@ -24,6 +25,7 @@ from live.runtime_composition_v0_1 import RuntimeCompositionV01, EntryFacts, Exe
 from live.execution_readonly_v0_1 import ExecutionReadOnlyRpc
 from live.execution_signer_v0_1 import AutonomousLocalSigner
 from live.execution_message_v0_1 import ComputeBudget
+from live.ledger_actions_v0_1 import decode_message
 from live.public_rpc_v0_1 import PublicReadOnlyRpc
 from live.protective_outcome_v0_1 import protective_outcome
 from live.evidence_store_v0_1 import SourceEvidenceStore
@@ -41,6 +43,24 @@ def fails(call):
     try: call()
     except (ValueError, RuntimeError, TypeError): return True
     return False
+
+def keypair(name):
+    # Fixed fixture wallet: the actor fingerprint feeds the hashed fee-recipient
+    # choice, so a random key made lifecycle outcomes vary per run.
+    return Keypair.from_seed(hashlib.sha256(name.encode()).digest())
+
+@contextmanager
+def fixed_producer_clock():
+    # Cold startup builds the producer without wall_clock, so datetime.now()
+    # P1 stamps reach exit-evidence digests, the B3 SELL intent and the hashed
+    # fee-recipient choice. Same fixed clock as hf.Fixture.open_producer;
+    # exact production type retained (A07 fixed_clock_producer pattern).
+    import live.runtime_reconstruction_v0_1 as reconstruction
+    production = reconstruction.LiveContinuousProducerV02
+    def fixed(conn, market_source, **kwargs):
+        return production(conn, market_source, wall_clock=lambda: hf.BASE, **kwargs)
+    with patch.object(reconstruction, 'LiveContinuousProducerV02', fixed):
+        yield
 
 
 class Fixture(hf.Fixture):
@@ -107,6 +127,66 @@ class Fixture(hf.Fixture):
         return result
 
 
+def recipient_accounts(seed,side,originals):
+    """Public accounts for every verified fee recipient the production plan may select.
+
+    Production picks fee/buyback recipients by hash over quote/actor/policy
+    fingerprints, so the seed's own selection binds nothing. Each candidate is
+    shaped exactly as the seed shaped its selection: a plain system account, and
+    a WSOL ATA that is absent (pump) or an empty token account (pumpswap SELL).
+    Retained public facts win, as in the seed.
+    """
+    e,venue,plans,fx=seed.evidence,a4.venue,a4.plans,sf.plans.fx
+    raw={key:value.account for batch in (e.venue_read.primary,e.venue_read.dependent)
+        for key,value in zip(batch.requested_keys,batch.accounts) if value is not None}
+    cut=e.venue_read.primary.cut;mint=e.intent.mint
+    curve=venue.build_pump_state(e.intent,*(raw[key] for key in (venue.derive_bonding_curve_pda(mint),mint,
+        venue.derive_pump_global_pda(),venue.derive_pump_fee_config_pda())),
+        slot_min=cut.context_slot,slot_max=cut.context_slot,observed_at_us=cut.observed_at_us)
+    pool=None
+    if raw.get(venue.derive_pumpswap_pool_pda(mint)) is not None:
+        decoded=venue.decode_pumpswap_pool(raw[venue.derive_pumpswap_pool_pda(mint)],mint)
+        pool=venue.build_pumpswap_state(e.intent,*(raw[key] for key in (venue.derive_pumpswap_pool_pda(mint),
+            decoded.pool_base_token_account,decoded.pool_quote_token_account,mint,
+            venue.derive_pumpswap_global_pda(),venue.derive_pumpswap_fee_config_pda())),
+            slot_min=cut.context_slot,slot_max=cut.context_slot,observed_at_us=cut.observed_at_us)
+    route=venue.decide_route(e.intent,curve,pool)
+    pump=route.selected_state_id==curve.state_id
+    state=curve if pump else pool
+    recipients=plans.decode_verified_recipient_evidence(state,raw[venue.derive_pump_global_pda() if pump else venue.derive_pumpswap_global_pda()])
+    accounts={}
+    for key in recipients.normal_fee_recipients+recipients.reserved_fee_recipients+recipients.buyback_fee_recipients:
+        ata=plans.derive_associated_token_address(key,sf.WSOL_MINT,sf.TOKEN_PROGRAM_ID)
+        accounts[key]=originals.get(key) or a4.original_public(fx.account(key,sf.SYSTEM_PROGRAM_ID,b''))
+        accounts[ata]=originals.get(ata) or (None if pump or side=='BUY' else
+            a4.original_public(fx.account(ata,sf.TOKEN_PROGRAM_ID,a3.token_data(sf.WSOL_MINT,key,0,reserve=sf.R)),sf.R))
+    return accounts
+
+
+def recipient_agnostic_cpi(seed,recipients,transaction_base64,groups):
+    """Seed CPI rows re-indexed onto the exact simulated message.
+
+    Only a fee-recipient substitution (and its ATA) is translated; any other
+    difference leaves the seed rows untouched so production still rejects it.
+    """
+    if type(groups) is not list:return groups
+    message=decode_message(base64.b64decode(transaction_base64)[65:].hex())
+    seed_message=decode_message(seed.evidence.simulation.envelopes[0].message_hex)
+    keys=tuple(map(str,message.account_keys));seed_keys=tuple(map(str,seed_message.account_keys))
+    if keys==seed_keys or len(message.instructions)!=len(seed_message.instructions):return groups
+    alias={}
+    for s,p in zip(seed_message.instructions,message.instructions):
+        if len(s.accounts)!=len(p.accounts):return groups
+        for a,b in zip((s.program_id_index,*s.accounts),(p.program_id_index,*p.accounts)):
+            if alias.setdefault(seed_keys[a],keys[b])!=keys[b]:return groups
+    changed={a for a,b in alias.items() if a!=b}
+    if not(changed<=set(recipients) and {alias[a] for a in changed}<=set(recipients)):return groups
+    index={key:i for i,key in enumerate(keys)}
+    remap=lambda i:index[alias.get(seed_keys[i],seed_keys[i])]
+    return [{**group,'instructions':[{**row,'programIdIndex':remap(row['programIdIndex']),
+        'accounts':[remap(i) for i in row['accounts']]} for row in group['instructions']]} for group in groups]
+
+
 def execution(f,key,action,*,at,number,outcome='ACKNOWLEDGED',gap_during_read=False,stop_during_read=False):
     intent=q1._intent(q1.capture_message_context(f.repo,action.action_id),at*1000000+1)
     seed,_=a4.evidence(f,action,a5.wallet_scenario(f.public,f.lower),at=at,context_slot=f.lower.slot,
@@ -114,13 +194,22 @@ def execution(f,key,action,*,at,number,outcome='ACKNOWLEDGED',gap_during_read=Fa
         last_valid_height=f.lower.block_height+30,validity_height=f.lower.block_height+1,original_accounts=f.public)
     if f.repo.authority_message_profile(action.policy_digest) is None: q1.install(f,seed)
     class ReadBoundary(q1.PublicTransport):
+        def __init__(self,seed,**kwargs):
+            super().__init__(seed,**kwargs)
+            # Recipient-agnostic: the seed's hash-selected recipients stay
+            # authoritative; every other verified recipient is answered the same way.
+            self.recipients=recipient_accounts(seed,action.side,f.public)
+            self.setup={**self.recipients,**self.setup}
         def __call__(self,request):
             response=super().__call__(request)
-            value=response.json();method=json.loads(request.content)['method']
+            value=response.json();payload=json.loads(request.content);method=payload['method']
             if method=='getLatestBlockhash':value['result']['value']['lastValidBlockHeight']=f.lower.block_height+30
             elif method=='getBlockHeight':value['result']=f.lower.block_height+1
             if method=='simulateTransaction' and stop_during_read:
                 a3.control(f.repo,'HARD_STOP','during-execution-stop',at=at)
+            if method=='simulateTransaction' and value.get('result'):
+                value['result']['value']['innerInstructions']=recipient_agnostic_cpi(self.seed,self.recipients,
+                    payload['params'][0],value['result']['value']['innerInstructions'])
             return httpx.Response(200,json=value)
     read=ReadBoundary(seed)
     send=q3.Boundary(f,outcome)
@@ -146,6 +235,9 @@ def original_chain(f,result,at,*,failed=False):
     inputs=original.evidence.setup_accounts
     pre=dict(f._fixture_chain_accounts)
     pre.update(zip(inputs.requested_keys,inputs.accounts))
+    # Exactly the accounts of the message production actually built; declared
+    # chain facts for recipients it did not select are not part of this chain.
+    pre={key:pre[key] for key in map(str,decode_message(envelope.preparation.message_hex).account_keys) if key in pre}
     actual=sf.Fixture('pump',action.side,failed=failed,token_program=action.token_program,
         external_plan=plan,external_message_hex=envelope.preparation.message_hex,
         external_wire=base64.b64decode(envelope.signed_wire_base64),external_pre_accounts=pre)
@@ -201,7 +293,7 @@ def acquisition(f,key):
 
 
 def lifecycle(directory):
-    key=Keypair()
+    key=keypair('actual-composition')
     with patch.object(sf,'WALLET',str(key.pubkey())),patch.object(sf.plans,'ACTOR',str(key.pubkey())):
         f=Fixture(directory,'actual-composition',page=1,queue=1)
         try:
@@ -271,7 +363,7 @@ def lifecycle(directory):
 
 
 def admission_and_identity_negatives(directory):
-    key=Keypair()
+    key=keypair('same-clock-gap')
     with patch.object(sf,'WALLET',str(key.pubkey())),patch.object(sf.plans,'ACTOR',str(key.pubkey())):
         f=Fixture(directory,'same-clock-gap')
         other=Fixture(directory,'other-handles')
@@ -334,7 +426,7 @@ def timer_fences(directory):
 def market_and_interrupted_evaluation(directory):
     import live_exit_observation_selftest_v0_1 as b2
     import live.runtime_composition_v0_1 as module
-    key=Keypair()
+    key=keypair('market-root')
     with patch.object(sf,'WALLET',str(key.pubkey())),patch.object(sf.plans,'ACTOR',str(key.pubkey())):
         f=Fixture(directory,'market-root')
         try:

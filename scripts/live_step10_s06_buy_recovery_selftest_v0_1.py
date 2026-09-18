@@ -116,7 +116,7 @@ def public_attempt(sent, application):
 
 def run(directory, *, expired=False):
     name = 's06-expired-failed-BUY' if expired else 's06-same-root-failed-BUY-retry'
-    key = c2.Keypair()
+    key = c2.keypair(name)
     with patch.object(sf, 'WALLET', str(key.pubkey())), patch.object(sf.plans, 'ACTOR', str(key.pubkey())):
         f = prior.prepare(directory, name)
         try:
@@ -245,11 +245,11 @@ def run(directory, *, expired=False):
 
 
 def main():
-    preserved = {'scripts/live_step10_s01_s02_selftest_v0_1.py':'035638e53b7f3b6eed9373c400d6434a5682e63df320ba6f662b85319a28c331',
-        'scripts/live_step10_s04_s08_selftest_v0_1.py':'3d265060fe185e0e428c8ddd2d511bbef401e278f6ccf8d2d1a6d212e0e3995c',
-        'scripts/live_step10_s05_selftest_v0_1.py':'3331b6b1068535cb04d383b63bf04b815ffd8a6ff7f13a73d6a908061498245f'}
+    preserved = {'scripts/live_step10_s01_s02_selftest_v0_1.py':'775a01bcc7b7cc1142704e266c03dc64a377e33003dd785a2f5606822ea33964',
+        'scripts/live_step10_s04_s08_selftest_v0_1.py':'112b2a171adbbabb784b189643e2fb52b78be90f542a5421001cb77cd7b74092',
+        'scripts/live_step10_s05_selftest_v0_1.py':'722d59de66259cfa15974408f984dafdd7e7ee2bd5045d791f475346dc761afa'}
     for path,digest in preserved.items():
-        check('preserved_'+path, hashlib.sha256((c2.ROOT/path).read_bytes()).hexdigest()==digest)
+        check('preserved_'+path, prior.lf_sha256(c2.ROOT/path)==digest)
     with tempfile.TemporaryDirectory(prefix='step10-s06-buy-recovery-') as tmp:
         run(Path(tmp))
         run(Path(tmp), expired=True)
@@ -265,7 +265,7 @@ def main():
             'No production key/network or real host qualification; synthetic policy and monitor'],
         'historical_probe':{'path':str(EVIDENCE_ROOT/'S06.historical_probe.stdout.json'),
             'sha256':hashlib.sha256((EVIDENCE_ROOT/'S06.historical_probe.stdout.json').read_bytes()).hexdigest()},
-        'artifact_hashes':{str(p.relative_to(c2.ROOT)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}}))
+        'artifact_hashes':{str(p.relative_to(c2.ROOT)).replace('\\','/'):prior.lf_sha256(p) for p in sorted(paths)}}))
 
 
 if __name__ == '__main__':

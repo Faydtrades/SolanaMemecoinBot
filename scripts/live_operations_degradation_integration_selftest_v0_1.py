@@ -7,6 +7,7 @@ import sys
 import tempfile
 from contextlib import closing
 from dataclasses import asdict, replace
+from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
@@ -34,6 +35,7 @@ def check(name, value):
 
 class Fixture(rt.Fixture):
     def __init__(self, directory, name, *, restart_profile=RestartProfile(100,1000000,0)):
+        self._clock_upper = None
         self.now, self.host_mode = NOW+4, 'healthy'
         self.host_calls = 0
         super().__init__(directory, name, page=1, queue=2)
@@ -70,13 +72,25 @@ class Fixture(rt.Fixture):
             D(999) if self.host_mode == 'unbound' else self.monitor_config.policy.reviewed_configuration_digest,
             content_fingerprint(asdict(self.runtime._ownership.fence)), metrics)
 
+    def clock(self, at=NOW+4):
+        # One local positive timeline, independent of retained evidence times.
+        sample = rt.a3.clock(self.repo, at)
+        lower, upper = map(datetime.fromisoformat, (sample.utc_lower_utc, sample.utc_upper_utc))
+        target = upper if self._clock_upper is None else max(upper, self._clock_upper+timedelta(microseconds=1))
+        delta = target-upper
+        self._clock_upper = target
+        return replace(sample, utc_lower_utc=(lower+delta).isoformat(timespec='microseconds'),
+            utc_upper_utc=target.isoformat(timespec='microseconds'),
+            monotonic_ns=sample.monotonic_ns+(delta.days*86400000000+delta.seconds*1000000+delta.microseconds)*1000)
+
     def step(self, at=NOW+4, **kwargs):
         self.now = at
-        return super().step(at, operations_resources=self.host, **kwargs)
+        return self.runtime.step(clock=lambda: self.clock(at), source_cut_utc=rt.a3.utc(NOW+1),
+            operations_resources=self.host, **kwargs)
 
     def sample(self, at=None):
         self.now = self.now+1 if at is None else at
-        return self.monitor.observe(rt.a3.clock(self.repo,self.now), resources=self.host,
+        return self.monitor.observe(self.clock(self.now), resources=self.host,
             source_cut_utc=rt.a3.utc(NOW+1))
 
     def alerts(self, code=None, state='ACTIVE'):
@@ -86,6 +100,29 @@ class Fixture(rt.Fixture):
 
 def close(f):
     a2.close(f)
+
+
+def clock_order(directory):
+    f = Fixture(directory, 'c2-clock-order')
+    try:
+        f.start()
+        retained = f.source.latest_record()
+        # Deliberate regression bypasses the positive fixture clock scheduler.
+        early = rt.a3.clock(f.repo, NOW+4)
+        view = f.monitor.observe(early, resources=f.host, source_cut_utc=rt.a3.utc(NOW+1))
+        check('monitor_before_source_knowledge_stays_degraded', view.entry_held
+            and f.alerts('SOURCE_TRUTH_UNAVAILABLE')
+            and datetime.fromisoformat(early.utc_upper_utc) < datetime.fromisoformat(retained[1].snapshot.observed_at_utc)
+            and f.source.latest_record() == retained)
+        recovered = f.sample(NOW+4)
+        check('later_known_fresh_source_recovers_original_condition', not recovered.entry_held
+            and f.alerts('SOURCE_TRUTH_UNAVAILABLE', state='RECOVERED')
+            and f.source.latest_record() == retained and not recovered.grants_permission)
+        expired = f.sample(NOW+100)
+        check('expired_source_cannot_reuse_healthy_recovery', expired.entry_held
+            and f.alerts('SOURCE_TRUTH_UNAVAILABLE') and not expired.grants_permission)
+    finally:
+        close(f)
 
 
 def preflight(directory):
@@ -131,7 +168,7 @@ def preflight(directory):
         partial_config=replace(f.monitor_config,path=partial_path,policy=partial_policy)
         partial=OperationsMonitor(f.started,partial_config,source_binding=f.binding,
             source_profile=f.source.profile,producer_profile=f.producer.profile)
-        view=partial.observe(rt.a3.clock(f.repo,NOW+9),resources=lambda:replace(f.host(),configuration_digest=partial_binding))
+        view=partial.observe(f.clock(NOW+9),resources=lambda:replace(f.host(),configuration_digest=partial_binding))
         check('empty_resource_profile_cannot_grant_entry',view.entry_held and
             any(row.condition=='PROFILE_UNRESOLVED' for row in view.conditions))
     finally:
@@ -144,14 +181,14 @@ def resources_and_source(directory):
         f.start(configured=False)
         check('missing_configuration_holds_actual_runtime',f.step().work=='OPERATIONS_ENTRY_HELD')
         check('missing_configuration_readiness_agrees', 'CURRENT_DEGRADATION_ENTRY_HOLD' in
-            readiness.evaluate(f.started,clock=lambda:rt.a3.clock(f.repo,NOW+4)).entry.reasons)
+            readiness.evaluate(f.started,clock=lambda:f.clock(NOW+4)).entry.reasons)
         f.start()
         check('configured_healthy_initial',not f.sample(NOW+5).entry_held)
         f.host_mode='high'
         check('resource_high_actual_runtime_entry_hold',f.step(NOW+6).work=='OPERATIONS_ENTRY_HELD'
             and f.alerts('RESOURCE_EXCEEDED'))
         check('resource_high_actual_readiness_agrees','CURRENT_DEGRADATION_ENTRY_HOLD' in
-            readiness.evaluate(f.started,clock=lambda:rt.a3.clock(f.repo,NOW+6),operations_resources=f.host).entry.reasons)
+            readiness.evaluate(f.started,clock=lambda:f.clock(NOW+6),operations_resources=f.host).entry.reasons)
         for index,mode in enumerate(('unknown','stale','unbound'),7):
             f.host_mode=mode
             check('resource_'+mode+'_unresolved',f.sample(NOW+index).entry_held and f.alerts('PROFILE_UNRESOLVED'))
@@ -188,7 +225,7 @@ def acquisition(f):
 
 
 def prepared_buy(directory):
-    key=rt.Keypair()
+    key=rt.keypair('c2-prepared-buy')
     with patch.object(rt.sf,'WALLET',str(key.pubkey())),patch.object(rt.sf.plans,'ACTOR',str(key.pubkey())):
         f=Fixture(directory,'c2-prepared-buy')
         try:
@@ -226,7 +263,7 @@ def prepared_buy(directory):
 
 def signed_unsent(directory):
     from live import runtime_composition_v0_1 as composition
-    key=rt.Keypair()
+    key=rt.keypair('c2-signed-unsent')
     with patch.object(rt.sf,'WALLET',str(key.pubkey())),patch.object(rt.sf.plans,'ACTOR',str(key.pubkey())):
         f=Fixture(directory,'c2-signed-unsent')
         try:
@@ -255,7 +292,7 @@ def signed_unsent(directory):
 
 
 def unknown_and_protection(directory):
-    key=rt.Keypair()
+    key=rt.keypair('c2-unknown')
     with patch.object(rt.sf,'WALLET',str(key.pubkey())),patch.object(rt.sf.plans,'ACTOR',str(key.pubkey())):
         f=Fixture(directory,'c2-unknown')
         try:
@@ -345,6 +382,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='meme-live-c2-integration-') as temporary:
         directory=Path(temporary)
         if args.preflight or args.case=='all':
+            clock_order(directory)
             preflight(directory)
         if not args.preflight:
             for name,run in (('resources',resources_and_source),('buy',prepared_buy),('buy',signed_unsent),('unknown',unknown_and_protection),('supervisor',supervisor_alerts)):
