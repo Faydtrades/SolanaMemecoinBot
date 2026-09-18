@@ -20,6 +20,18 @@ FIX2_BRANCH_PREFIX = "codex/step12a-fix2-"
 # Absolute source links embedded in immutable accepted evidence refer to this
 # development checkout. Its working bytes are not historical evidence.
 ACCEPTED_DEVELOPMENT_CHECKOUT = Path(r"C:\Users\Mari1\AppData\Local\Temp\meme-live-audit-e6b9a4b")
+# Immutable accepted evidence links absolute paths to meme-live-* roots under
+# the Windows Temp folder. Those bytes are preserved outside Temp; every read of
+# such a link is served from the rescued copy, never from Temp, while the
+# recorded path string remains the artifact's identity and hashes are verified
+# against the same values. Other Temp paths (fresh fixtures) are read in place.
+TEMP_ROOT = Path(r"C:\Users\Mari1\AppData\Local\Temp")
+RESCUED_PREFIX = "meme-live-"
+RESCUED_ROOTS = (
+    (TEMP_ROOT / "meme-live-fix2-evidence-20260913",
+     Path(r"D:\Tradingbot\rescued_evidence\meme-live-fix2-evidence-20260913")),
+    (TEMP_ROOT, Path(r"D:\Tradingbot\rescued_temp")),
+)
 HUMAN_ROWS = ("M09", "M10", "M58", "M59", "M60", "M61")
 # Historical accepted Step11-B remainder; never the current matrix policy.
 STEP11B_REMAINING_OWNED_ROWS = ("M56", "M57")
@@ -115,6 +127,7 @@ NEW_CODE = frozenset({
     "src/live/t010_resource_environment_v0_1.py",
     "src/live/t010_resource_measurement_v0_1.py",
     "src/live/t010_sqlite_boundary_v0_1.py",
+    "scripts/live_runtime_acquisition_handoff_selftest_v0_1.py",
 })
 CORE_OVERLAY = frozenset({
     "src/live/runtime_composition_v0_1.py", "src/live/runtime_reconstruction_v0_1.py",
@@ -145,6 +158,22 @@ CORE_OVERLAY = frozenset({
     "scripts/live_execution_composition_selftest_v0_1.py",
     "scripts/live_runtime_composition_selftest_v0_1.py",
     "scripts/live_wallet_immutable_owner_selftest_v0_1.py",
+    # P1 (gate T20) reviewed fixture/oracle/helper-binding changes; test code only.
+    "scripts/live_operations_degradation_integration_selftest_v0_1.py",
+    "scripts/live_operations_readiness_selftest_v0_1.py",
+    "scripts/live_runtime_continuation_selftest_v0_1.py",
+    "scripts/live_step10_e01_selftest_v0_1.py",
+    "scripts/live_step10_e02_partial_selftest_v0_1.py",
+    "scripts/live_step10_e03_contradiction_selftest_v0_1.py",
+    "scripts/live_step10_s03_s07_selftest_v0_1.py",
+    "scripts/live_step10_s04_s08_selftest_v0_1.py",
+    "scripts/live_step10_s05_selftest_v0_1.py",
+    "scripts/live_step10_s06_buy_recovery_selftest_v0_1.py",
+    "scripts/live_step10_s06_nonlanding_protection_selftest_v0_1.py",
+    "scripts/live_step10_s09_selftest_v0_1.py",
+    "scripts/live_step10_s10_selftest_v0_1.py",
+    "scripts/live_step10_s11_selftest_v0_1.py",
+    "scripts/live_step10_s12_selftest_v0_1.py",
 })
 ASSEMBLY = {
     "producer": "src/live/continuous_producer_v0_2.py",
@@ -170,6 +199,18 @@ ASSEMBLY = {
 
 class DossierError(ValueError):
     pass
+
+
+def _locate(path):
+    """Where a linked artifact's bytes are read; the link itself is not rewritten."""
+    path = Path(path)
+    if not (path.is_relative_to(TEMP_ROOT) and path != TEMP_ROOT
+            and path.relative_to(TEMP_ROOT).parts[0].startswith(RESCUED_PREFIX)):
+        return path
+    for original, rescued in RESCUED_ROOTS:
+        if path.is_relative_to(original):
+            return rescued / path.relative_to(original)
+    return path
 
 
 def require(condition, reason):
@@ -200,7 +241,7 @@ def _pairs(pairs):
 
 def read_json(path):
     try:
-        return json.loads(Path(path).read_text(encoding="utf-8-sig"),
+        return json.loads(_locate(path).read_text(encoding="utf-8-sig"),
                           object_pairs_hook=_pairs,
                           parse_constant=lambda _: require(False, "NONFINITE_JSON"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
@@ -347,7 +388,7 @@ class EvidenceGraph:
             return
         require(len(self.nodes) < 4096, "EVIDENCE_GRAPH_TOO_LARGE")
         try:
-            actual = target.read_bytes()
+            actual = _locate(target).read_bytes()
         except OSError as exc:
             raise DossierError("MISSING_ARTIFACT:" + key) from exc
         require(sha256(actual) == expected, "ARTIFACT_HASH_MISMATCH:" + key)
