@@ -13,7 +13,7 @@ from .t010_resource_measurement_v0_1 import logical_digest
 
 # Exact arithmetic plus native-premise and current-source proof supplements.
 # This certificate does not discharge timing, containment or public gates.
-CERTIFICATE_SHA256 = "0912152c59352efa23b56cc506aec07745bd8cf19271cb8496476a3d39d36f43"
+CERTIFICATE_SHA256 = "0c7ae4ba838040db6c8e8402ec6894ea2f15e8516bf45d4738cc4aa112548616"
 
 
 def validate_model(model, derivation, environment):

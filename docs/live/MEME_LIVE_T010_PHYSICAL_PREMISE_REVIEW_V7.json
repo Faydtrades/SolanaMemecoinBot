@@ -1,0 +1,56 @@
+{
+  "T010": "NOT_STARTED",
+  "arithmetic_changed": false,
+  "changes": [
+    {
+      "argument": "read_reference is the module's only file reader: it validates the reference shape, the sha256 literal, an absolute .json path, reads at most 16 MiB and requires sha256(raw) == reference['sha256'] before json.loads. _locate sits between that validation and the read: an absolute path under C:\\Users\\Mari1\\AppData\\Local\\Temp whose first component starts with 'meme-live-' is read from D:\\Tradingbot\\rescued_evidence\\meme-live-fix2-evidence-20260913 (that root) or D:\\Tradingbot\\rescued_temp (any other meme-live-* root) at the same relative path, with no Temp fallback; every other path (other Temp fixtures such as step11c-*, t010-*, m56-selftest-*; D: paths; repository docs) is read exactly as before. The reference's path string and sha256 are never rewritten and the same hash check applies to the bytes actually read, so read_reference returns either the byte-identical JSON value it returned before or fails closed (FileNotFoundError from the rescued path, or DRY_PROFILE_REFERENCE_HASH_CONFLICT). It is the rule acceptance_dossier_v0_1._locate already carries under V6. Schema: read_reference opens no sqlite connection, and the eight schema-owning modules (ledger_repository, evidence_store, operations_ownership, operations_degradation, continuous_producer v0_1/v0_2, t010_sqlite_boundary, source_health) are byte-identical to V6, so the certified connections, pragmas and compile options are untouched. Codec: every codec module (ledger_evidence_codec, ledger_chain_codec, authority_message_codec, authority_message_control_codec) is a certified premise and unchanged; construct_codec_cost_graph, _construct_graph and derive in this module are textually unchanged and consume the hash-identical JSON values, so the codec cost graph and content_digest are functions of the same inputs. Write amplification: the change adds zero writes (read_reference performs none; _locate is pure path arithmetic) and touches no DRY-loop write site; profile construction is read-only by contract (module docstring) and runs before the loop. Resource arithmetic: derive, logical_digest and the guard validation are unchanged text over unchanged inputs; logical_digest f267ad5a... is retained; owned/recovery/temporary peak and reserve floor are unchanged.",
+      "bound": "No growable runtime store, no new row writer, no codec or schema change. Read volume for meme-live-* links moves from the Temp volume (C:) to D:, as V6 already argued for the dossier; the physical bound is unchanged. The change removes a silent dependency on Temp retention: P3 samples that bind these references now resolve the same hash-verified bytes after Temp cleanup.",
+      "certified_premise": false,
+      "diff": "+26/-1 lines: three module constants (TEMP_ROOT, RESCUED_PREFIX, RESCUED_ROOTS), one pure path helper _locate, and one call site in read_reference (raw = _locate(path).read_bytes() instead of path.read_bytes()). No other line of the module changes; no new import.",
+      "file": "live/runtime_dry_profile_v0_1.py"
+    }
+  ],
+  "eol_rebinding": {
+    "argument": "None. Every premise keeps the pure CRLF byte identity of the production checkout pinned by V6; no line-ending change between V6 and V7.",
+    "files": []
+  },
+  "immutable_quantities": {
+    "actual_pager_sector_bytes": 4096,
+    "conservative_journal_header_allowance_bytes": 65536,
+    "logical_digest": "f267ad5aa169b537b575fe195a8ae6c396ab3200af806307628a71a3eb35c5f8",
+    "owned_peak_bytes": 893218177024,
+    "recovery_bytes": 893218177024,
+    "reserve_floor_bytes": 1073741824,
+    "temporary_peak_bytes": 207260041216
+  },
+  "issued_from": "D:\\Tradingbot\\live",
+  "native_schema_connections_changed": false,
+  "previous_certificate_sha256": "0912152c59352efa23b56cc506aec07745bd8cf19271cb8496476a3d39d36f43",
+  "project_acceptance_claimed": false,
+  "runtime_code_digest": {
+    "argument": "runtime_code_digest covers every src/live, src/phase4 and src/phase5 module and therefore moves with runtime_dry_profile_v0_1.py, which is not one of the 123 certified premises (runtime_binding_obligation: it is bound by runtime_code_digest in every repeated-process measurement). V7 is issued so that the certificate pinned in P3 sample provenance postdates the redirect and carries this review; all 123 source premises re-verify unchanged against the raw checkout bytes.",
+    "current": "961705da277473322c31ac9ffa4db65ec2ab579c79d5c6413a98e55f4e2324ca",
+    "previous": "3a13cbfe0e3e40afb5e19003025aa9630324bf21269eade0c3d1add73189b317"
+  },
+  "schema": "T20_PHYSICAL_PREMISE_SUCCESSOR_REVIEW_V1",
+  "schema_owning_modules_content_identical": [
+    "live/ledger_repository_v0_1.py",
+    "live/evidence_store_v0_1.py",
+    "live/operations_ownership_v0_1.py",
+    "live/operations_degradation_v0_1.py",
+    "live/continuous_producer_v0_1.py",
+    "live/continuous_producer_v0_2.py",
+    "live/t010_sqlite_boundary_v0_1.py",
+    "live/source_health_v0_1.py"
+  ],
+  "scope": "STRUCTURAL_PHYSICAL_COMPATIBILITY_NOT_QUALIFICATION",
+  "source_premises_rebound": 0,
+  "source_premises_removed": [],
+  "source_premises_retained": 123,
+  "validation_pending": [
+    "current exact certificate",
+    "all certified sources fail closed",
+    "native/schema/physical quantities",
+    "full current codec and consumer smoke"
+  ]
+}

@@ -35,6 +35,19 @@ SOURCE_START = "EXPLICIT_RETAINED_ANCHOR_ORIGINAL_CONTINUATION_NO_REPAIR"
 FACTS_PROVIDER = "ORIGINAL_TYPED_PUBLIC_FACTS_NO_ECONOMIC_CALLBACK"
 KEYS = {"accepted_profile", "accepted_extension", "accepted_monitor", "guard_amendment", "baseline", "source_start", "store_paths",
     "producer_schema_digest", "evidence_schema_digest", "monitor", "driver", "qualification_substitutions"}
+# Immutable accepted evidence links absolute paths to meme-live-* roots under
+# the Windows Temp folder. Those bytes are preserved outside Temp; every read of
+# such a link is served from the rescued copy, never from Temp, while the
+# recorded path string remains the reference's identity and the sha256 is
+# verified against the same value. Other Temp paths (fresh fixtures) are read
+# in place. Same rule as acceptance_dossier_v0_1._locate.
+TEMP_ROOT = Path(r"C:\Users\Mari1\AppData\Local\Temp")
+RESCUED_PREFIX = "meme-live-"
+RESCUED_ROOTS = (
+    (TEMP_ROOT / "meme-live-fix2-evidence-20260913",
+     Path(r"D:\Tradingbot\rescued_evidence\meme-live-fix2-evidence-20260913")),
+    (TEMP_ROOT, Path(r"D:\Tradingbot\rescued_temp")),
+)
 
 
 def _keys(value, keys, reason):
@@ -45,12 +58,24 @@ def _same(left, right):
     return canonical_json(left) == canonical_json(right)
 
 
+def _locate(path):
+    """Where a referenced artifact's bytes are read; the reference itself is not rewritten."""
+    path = Path(path)
+    if not (path.is_relative_to(TEMP_ROOT) and path != TEMP_ROOT
+            and path.relative_to(TEMP_ROOT).parts[0].startswith(RESCUED_PREFIX)):
+        return path
+    for original, rescued in RESCUED_ROOTS:
+        if path.is_relative_to(original):
+            return rescued / path.relative_to(original)
+    return path
+
+
 def read_reference(reference):
     _keys(reference, ("path", "sha256"), "DRY_PROFILE_REFERENCE_REQUIRED")
     path = Path(reference["path"])
     digest_value(reference["sha256"])
     require(path.is_absolute() and path.suffix.lower() == ".json", "DRY_PROFILE_PUBLIC_JSON_REQUIRED")
-    raw = path.read_bytes()
+    raw = _locate(path).read_bytes()
     require(len(raw) <= 16777216 and hashlib.sha256(raw).hexdigest() == reference["sha256"],
         "DRY_PROFILE_REFERENCE_HASH_CONFLICT")
     return json.loads(raw)
