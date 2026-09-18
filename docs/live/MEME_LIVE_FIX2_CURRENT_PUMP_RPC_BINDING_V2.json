@@ -1,0 +1,48 @@
+{
+  "accepted_profile": {
+    "path": "D:\\Tradingbot\\meme_live\\evidence\\step11a-3630b2\\m52-profile-02\\profile.json",
+    "sha256": "fc924b5d572211b82a889b6933e9fb191bea9c9e9e2e82c95d2fd7a89fdc6440"
+  },
+  "authorization_reference": "CHATGPT_PROJECT_FIX2_CURRENT_PUMP_COMPATIBILITY_32f99c54_AND_FINITE_RESOURCE_ENVELOPE_581413c0",
+  "derivation": {
+    "admin": 32,
+    "bump": 1,
+    "discriminator": 8,
+    "exotic_flat_fees": 24,
+    "fee_tier_bytes": 40,
+    "flat_fees": 24,
+    "maximum_tiers_per_vector": 128,
+    "vector_count": 2,
+    "vector_count_bytes": 8
+  },
+  "project_acceptance_claimed": false,
+  "public_rpc_profile": {
+    "finalized_block_freshness_seconds": 120,
+    "max_account_bytes": 10337,
+    "max_block_signatures": 8192,
+    "max_inner_instructions": 1024,
+    "max_instruction_data_bytes": 16384,
+    "max_inventory_accounts_per_program": 64,
+    "max_requests": 320,
+    "max_response_bytes": 1048576,
+    "max_total_response_bytes": 67108864,
+    "max_transaction_wire_bytes": 1232,
+    "observation_freshness_seconds": 30,
+    "observation_timeout_seconds": 180,
+    "provider_id": "SOLANA_PUBLIC_MAINNET_BETA",
+    "provider_version": "JSONRPC2",
+    "request_timeout_seconds": 10,
+    "trust_profile": "HONEST-COMPLETE-STANDARD-SOLANA-RPC-0001"
+  },
+  "schema": "MEME_LIVE_T010_CURRENT_PUMP_RPC_BINDING_V1",
+  "scope": [
+    "T010",
+    "DRY",
+    "NO_BROADCAST",
+    "NON_SUBMITTED"
+  ],
+  "source_evidence": {
+    "path": "D:\\Tradingbot\\rescued_evidence\\meme-live-fix2-evidence-20260913\\pump-buy-component-v1\\account-bound-diagnosis.json",
+    "sha256": "35d99b09afa8c350d524f1dfc402b3c2883a5536cfd360847b16406595fc3f7a"
+  }
+}
