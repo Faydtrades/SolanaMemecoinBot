@@ -21,7 +21,7 @@ from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'scripts')]
-EVIDENCE=Path(r'C:\Users\Mari1\AppData\Local\Temp\meme-live-fix2-evidence-20260913')
+EVIDENCE=Path(r'D:\Tradingbot\rescued_evidence\meme-live-fix2-evidence-20260913')
 
 
 def native_memory():
@@ -297,12 +297,18 @@ def collect_c2_observations(manifests,output):
             for key in series:
                 series[key].append(original['parent_boundary']['spawn_to_first_legal_unit_us'] if key=='parent_first_legal_unit_us' else original['first_step_us'] if key=='first_runtime_step_us' else value['metrics'][key])
     record=dict(schema='MEME_LIVE_T010_RESOURCE_OBSERVATIONS_V1',runtime_code_digest=runtime,native_digest=native,scenarios=scenarios,series=series)
-    pending=output.with_name(output.name+'.pending')
+    # Stage under a .json name: the production reference validator admits public
+    # JSON paths only, and the staged bytes are renamed unchanged into place, so
+    # the hash it verified is the hash of the final output.
+    assert output.suffix=='.json','EMPIRICAL_OUTPUT_JSON_REQUIRED'
+    pending=output.with_name(output.stem+'.pending'+output.suffix)
     assert not pending.exists(),'EMPIRICAL_OUTPUT_ALREADY_PENDING'
     write(pending,record)
-    validate_observations({'path':str(pending),'sha256':sha(pending)})
+    validated=sha(pending)
+    validate_observations({'path':str(pending),'sha256':validated})
     assert not output.exists(),'EMPIRICAL_OUTPUT_EXISTS'
     pending.rename(output)
+    assert sha(output)==validated,'EMPIRICAL_OUTPUT_BYTES_CHANGED'
     write(provenance_path,dict(scope='ORIGINAL_EMPIRICAL_COLLECTION_NOT_PUBLIC_QUALIFICATION',manifests=used,measurement_harness_sha256=sha(Path(__file__)),observations={'path':str(output),'sha256':sha(output)},synthetic_codec_records_eligible=False))
     return {'path':str(output),'sha256':sha(output)}
 

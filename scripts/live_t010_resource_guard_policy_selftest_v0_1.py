@@ -68,25 +68,46 @@ class PolicyTests(unittest.TestCase):
             value = copy.deepcopy(self.envelope); value['observation_policy'] = policy
             with self.assertRaises(ValueError): resource.observation_only(value)
     def observation_fixture(self):
+        # Shape of an original fresh-process cohort as the hardened validator
+        # admits it: real native identity, the current measurement harness
+        # bytes, a native process instance and retained codec bindings. The
+        # runtime digest stays a fixture value patched at the validator.
         from live.t010_resource_measurement_v0_1 import SCENARIOS
+        from live.t010_resource_environment_v0_1 import native_identity
+        native = resource.content_fingerprint(native_identity())
+        harness = hashlib.sha256((ROOT/'scripts/live_t010_joint_hot_measure_v0_3.py').read_bytes()).hexdigest()
+        codec = self.ref({'scope': 'TEST_ONLY_PROFILE_CODEC_COST_NOT_QUALIFICATION'})
         series = {key: [] for key in resource.OBSERVATION_METRICS}; scenarios = {}
         number = 0
         for scenario in sorted(SCENARIOS):
             scenarios[scenario] = []
             for _ in range(3):
-                number += 1; identity = f'{number:064x}'
-                raw = {'process_instance': {'digest': identity}, 'runtime_code_digest': 'runtime',
-                    'native_digest': 'native', 'parent_boundary': {'spawn_to_first_legal_unit_us': number}, 'first_step_us': number}
+                number += 1
+                instance = {'pid': number, 'creation_filetime': number}
+                identity = resource.content_fingerprint(instance); instance['digest'] = identity
+                raw = {'scope': resource.EMPIRICAL_ORIGINAL_SCOPE, 'process_instance': instance,
+                    'runtime_code_digest': 'runtime', 'native_digest': native, 'measurement_harness_sha256': harness,
+                    'prepared_codec_cost_binding': codec, 'effective_measurement_codec_cost_binding': codec,
+                    'codec_cost': [{'reference': codec, 'start_ns': 1, 'end_ns': 2, 'rebuilt_content_digest': 'c'*64}],
+                    'parent_boundary': {'spawn_begin_ns': 0, 'started_arrived_ns': 0, 'started_validated_ns': 0,
+                        'spawn_to_validated_us': 0, 'spawn_to_first_legal_unit_us': number},
+                    'step_end_ns': number*1000, 'first_step_us': number}
+                original_result = self.ref(raw)
                 metrics = {key: number for key in resource.OBSERVATION_METRICS if key not in ('parent_first_legal_unit_us', 'first_runtime_step_us')}
                 metrics['OLDEST_UNCONSUMED_AGE_US'] = None
-                normalized = {'scenario': scenario, 'empty_backlog_verified': True,
-                    'runtime_code_digest': 'runtime', 'native_digest': 'native', 'exit_code': 0,
+                normalized = {'scope': resource.EMPIRICAL_RESULT_SCOPE, 'scenario': scenario, 'empty_backlog_verified': True,
+                    'runtime_code_digest': 'runtime', 'native_digest': native, 'exit_code': 0,
                     'fresh_process': True, 'unresolved_constraints': [], 'process_instance_digest': identity,
-                    'original_result': self.ref(raw), 'metrics': metrics}
+                    'process_instance': instance, 'original_result': original_result, 'metrics': metrics,
+                    'codec_cost_call_count': 1,
+                    'measurement_provenance': {'schema': 'MEME_LIVE_EMPIRICAL_PROCESS_PROVENANCE_V1',
+                        'kind': 'ORIGINAL_FRESH_PROCESS_MEASUREMENT', 'original_result': original_result,
+                        'process_instance_digest': identity, 'measurement_harness_sha256': harness,
+                        'prepared_codec_cost_binding': codec, 'effective_measurement_codec_cost_binding': codec}}
                 scenarios[scenario].append(self.ref(normalized))
                 for key in series: series[key].append(number)
         return {'schema': 'MEME_LIVE_T010_RESOURCE_OBSERVATIONS_V1', 'runtime_code_digest': 'runtime',
-            'native_digest': 'native', 'scenarios': scenarios, 'series': series}
+            'native_digest': native, 'scenarios': scenarios, 'series': series}
     def test_observations_validated_as_evidence_not_thresholds(self):
         evidence = self.observation_fixture()
         with patch('live.t010_resource_measurement_v0_1.runtime_code_digest', return_value='runtime'):
@@ -158,7 +179,7 @@ class PolicyTests(unittest.TestCase):
                 'monitor': {'resource_limits': copy.deepcopy(record['derivation']['resource_limits'])}}
             record['bound_inputs_digest'] = resource.bound_inputs(inputs)
             inputs['resource_envelope'] = self.ref(record)
-            with patch.object(resource, 'derive', side_effect=lambda *args: copy.deepcopy(calculated)), patch.object(resource, 'validate_observations', return_value={}):
+            with patch.object(resource, 'derive', side_effect=lambda *args: copy.deepcopy(calculated)), patch.object(resource, '_validate_observations', return_value={}):
                 self.assertEqual(resource.validate(inputs, require_physical=False), record)
                 inputs['monitor']['resource_limits']['HOST_RSS_BYTES'] = 124
                 with self.assertRaisesRegex(ValueError, 'T010_RESOURCE_LIMITS_CONFLICT'):
@@ -208,7 +229,7 @@ class PolicyTests(unittest.TestCase):
 
     def validate_physical_fixture(self, fixture):
         physical, record, spec, inputs, measured, _ = fixture
-        with (patch.object(resource, 'validate_observations', return_value=measured),
+        with (patch.object(resource, '_validate_observations', return_value=measured),
             patch('live.t010_resource_measurement_v0_1.runtime_code_digest', return_value='runtime'),
             patch('live.t010_resource_measurement_v0_1.process_metrics', side_effect=lambda value, scenario: value['metrics']),
             patch('live.t010_resource_environment_v0_1.validate_binding'),

@@ -29,7 +29,7 @@ from live.t010_resource_envelope_v0_1 import derive, ResourceGate
 from live_t010_resource_envelope_selftest_v0_1 import fixture as resource_fixture
 from phase5.shadow_domain_v0_1 import content_fingerprint
 from solders.pubkey import Pubkey
-EVIDENCE=Path(r'C:\Users\Mari1\AppData\Local\Temp\meme-live-fix2-evidence-20260913')
+EVIDENCE=Path(r'D:\Tradingbot\rescued_evidence\meme-live-fix2-evidence-20260913')
 
 
 def protocol_fixture():

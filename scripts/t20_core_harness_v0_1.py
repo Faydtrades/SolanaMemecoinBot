@@ -2,8 +2,10 @@
 
 Runs the ~14-script core set (A01-A09 + S01/S02, S05, S06 BUY, E02) in
 artifact-dependency order, one child process per script, using the codex
-runtime interpreter with the retained evidence-venv site-packages on
-PYTHONPATH. Fixes nothing; records everything.
+runtime interpreter with the accepted evidence environment's site-packages
+(.codex_venv, in which all P1/P2 evidence was produced; the retained
+evidence venv was lost to Temp cleanup) on PYTHONPATH. Fixes nothing;
+records everything.
 
 Parent:  python t20_core_harness_v0_1.py [--only S01_S02,A07] [--timeout 300]
 Child:   python t20_core_harness_v0_1.py --child <script.py> [args...]
@@ -27,7 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / 'scripts'
 CODEX_PYTHON = Path(r'C:\Users\Mari1\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe')
-VENV_SITE = Path(r'C:\Users\Mari1\AppData\Local\Temp\meme-live-evidence-venv\Lib\site-packages')
+VENV_SITE = Path(r'D:\Tradingbot\solana_memecoin_bot_phase1_v0_1\.codex_venv\Lib\site-packages')
 DEFAULT_EVIDENCE_ROOT = ROOT.parent / 'rescued_evidence' / 't20-core-harness'
 DEFAULT_TIMEOUT = 300
 
@@ -181,7 +183,7 @@ def main():
     parser.add_argument('--no-chain', action='store_true',
         help='do not pass this run\'s S01_S02 stdout to S04/S08 --positive-evidence even when it passes')
     parser.add_argument('--site-packages', type=Path, default=VENV_SITE,
-        help='site-packages placed on PYTHONPATH; default is the retained evidence venv')
+        help='site-packages placed on PYTHONPATH; default is the accepted evidence environment')
     args = parser.parse_args()
 
     if not CODEX_PYTHON.is_file():
@@ -213,14 +215,14 @@ def main():
         'root': str(ROOT), 'head': git('rev-parse', 'HEAD'), 'branch': git('branch', '--show-current'),
         'git_status_lines': [l for l in git('status', '--porcelain').splitlines() if l],
         'interpreter': interpreter_identity(env), 'pythonpath': str(site),
-        'site_packages_is_retained_evidence_venv': site == VENV_SITE.resolve(),
+        'site_packages_is_accepted_environment': site == VENV_SITE.resolve(),
         'network': 'httpx.HTTPTransport.handle_request and socket.socket.connect patched to raise',
         'tempfile_tempdir_overridden': False, 'timeout_seconds': args.timeout,
         'results': [], 'chained_positive_evidence': None,
     }
     print(f'T20 core harness  run={run_id}  head={summary["head"][:12]}  branch={summary["branch"]}  '
           f'wip={len(summary["git_status_lines"])}  evidence={evidence}')
-    if not summary['site_packages_is_retained_evidence_venv']:
+    if not summary['site_packages_is_accepted_environment']:
         print(f'!! DEVIATION: site-packages substitute in use: {site}')
     print(f'{"label":12s} {"status":7s} {"secs":>7s} {"checks":>9s}  script')
 

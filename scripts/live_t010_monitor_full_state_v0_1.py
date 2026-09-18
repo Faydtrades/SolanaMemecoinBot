@@ -9,7 +9,7 @@ from live.operations_degradation_v0_1 import ConditionEvidence,CONDITIONS,Degrad
 from live.operations_degradation_monitor_v0_1 import _subject
 from phase5.shadow_domain_v0_1 import content_fingerprint
 
-DERIVATION=Path(r'C:\Users\Mari1\AppData\Local\Temp\meme-live-fix2-evidence-20260913\monitor-full-envelope-derivation-v1.json')
+DERIVATION=Path(r'D:\Tradingbot\rescued_evidence\meme-live-fix2-evidence-20260913\monitor-full-envelope-derivation-v1.json')
 DERIVATION_SHA='4edcd7083f4e6cc117cd2c893edbd39f97ac18f03b236344f9b1004063d7014e'
 
 def prepare(original,config,origin,root,observations=2193,staging_root=None,max_records=None,*,resume=False):

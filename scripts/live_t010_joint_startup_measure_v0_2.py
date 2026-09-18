@@ -21,7 +21,7 @@ from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'scripts')]
-EVIDENCE=Path(r'C:\Users\Mari1\AppData\Local\Temp\meme-live-fix2-evidence-20260913')
+EVIDENCE=Path(r'D:\Tradingbot\rescued_evidence\meme-live-fix2-evidence-20260913')
 
 
 def native_memory():
