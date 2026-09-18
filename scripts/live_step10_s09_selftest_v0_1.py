@@ -34,6 +34,12 @@ def prepare(directory, name, venue='PUMPSWAP', *, admit=True):
     f = ops.installed(c2.Fixture(directory, name))
     try:
         audit = ops.restart(f)
+        # Local owned step: the shared c2.Fixture.step resets its clock per call,
+        # which regresses behind retained evidence; keep its source cut and host.
+        def step(at=NOW+4, **kwargs):
+            kwargs.setdefault('operations_resources', lambda: ops.host(f, at))
+            return f.runtime.step(clock=lambda: s1.persistent_clock(f, at), source_cut_utc=a3.utc(NOW+1), **kwargs)
+        f.step = step
         check(name+'_owned_startup', not audit.grants_permission and f.runtime._operations_degradation is not None)
         f.candidate_ready()
         f.configure()
@@ -360,7 +366,7 @@ def main():
     paths.extend(c2.ROOT/'src/live'/name for name in ('runtime_composition_v0_1.py', 'execution_reconciliation_v0_1.py',
         'ledger_repository_v0_1.py', 'ledger_custody_v0_1.py', 'ledger_settlement_v0_1.py', 'authority_admission_v0_1.py',
         'authority_message_evidence_v0_1.py', 'execution_message_v0_1.py', 'wallet_evidence_v0_1.py'))
-    hashes = {str(p.relative_to(c2.ROOT)).replace('\\', '/'): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
+    hashes = {str(p.relative_to(c2.ROOT)).replace('\\', '/'): s1.lf_sha256(p) for p in paths}
     print(c2.canonical_json({'status': 'IMPLEMENTED_PENDING_PROJECT_REVIEW', 'scope': ['S09', 'E03_ACCOUNT_AND_VENUE_TRANSITIONS_ONLY'],
         'qualification': 'SYNTHETIC_ENGINEERING_ONLY', 'checks': {**CHECKS, **s1.CHECKS},
         'artifact_hashes': hashes, 'evidence': EVIDENCE}))

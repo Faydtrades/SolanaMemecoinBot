@@ -104,6 +104,209 @@ def write(path,record):
     path.write_text(json.dumps(record,sort_keys=True,indent=2)+'\n',encoding='utf-8')
 
 
+def generate_c2_codec_fixture(historical,output,certificate):
+    """Create synthetic codec input data, never empirical qualification evidence.
+
+    Production validators run unchanged. Only the enclosing TEST_ONLY fixture
+    owns these invented process records; real measurements must use other IDs.
+    """
+    from live.runtime_dry_profile_v0_1 import read_reference
+    from live.t010_resource_envelope_v0_1 import derive,bound_inputs,OBSERVATION_POLICY,OBSERVATION_METRICS
+    from live.t010_resource_measurement_v0_1 import runtime_code_digest,logical_digest,SCENARIOS,SCENARIO_METRICS
+    from live.t010_resource_environment_v0_1 import native_identity
+    from phase5.shadow_domain_v0_1 import content_fingerprint
+    historical=historical.resolve();output=output.resolve()
+    source_ref={'path':str(historical),'sha256':sha(historical)}
+    source=read_reference(source_ref)
+    assert source['scope']=='TEST_ONLY_PROFILE_CODEC_COST_NOT_QUALIFICATION'
+    assert source['synthetic_process_records'] is True
+    assert output.name.startswith('codec-cost-current-') and not output.exists(),'NEW_TEST_ONLY_CODEC_DIRECTORY_REQUIRED'
+    inputs=json.loads(json.dumps(source['inputs']))
+    old_envelope=read_reference(inputs['resource_envelope'])
+    old_physical=read_reference(old_envelope['physical_evidence'])
+    environment=read_reference(old_physical['environment'])
+    certificate=certificate.resolve()
+    certificate_ref={'path':str(certificate),'sha256':sha(certificate)}
+    from live.t010_physical_certificate_v0_1 import CERTIFICATE_SHA256,validate_model
+    assert certificate_ref['sha256']==CERTIFICATE_SHA256,'CURRENT_PINNED_CODEC_CERTIFICATE_REQUIRED'
+    assert environment['native']==native_identity(),'T010_RESOURCE_NATIVE_BINDING_CHANGED'
+    runtime=runtime_code_digest();native=content_fingerprint(environment['native'])
+    monitor=read_reference(inputs['accepted_monitor'])['monitor']
+    inputs['monitor'].update(resource_max_age_us=monitor['resource_max_age_us'],
+        recovery_evidence_max_age_us=monitor['policy']['recovery_evidence_max_age_us'],
+        protective_qualification_digest=monitor['protective_qualification_digest'])
+    calculated=derive(inputs,read_reference(inputs['accepted_profile']),read_reference(inputs['accepted_extension']))
+    for key in OBSERVATION_METRICS:calculated['resource_limits'].pop(key,None)
+    inputs['monitor']['resource_limits']=calculated['resource_limits']
+    binding=bound_inputs(inputs);derivation_digest=content_fingerprint(calculated)
+    validate_model(dict(scope='ALL_GROWABLE_STORES_PHYSICAL_UPPER_BOUND',
+        derivation_digest=derivation_digest,logical_digest=logical_digest(calculated),certificate=certificate_ref),
+        calculated,environment)
+    output.mkdir(parents=True)
+    generated=[]
+    def emit(name,value):
+        path=output/('TEST_ONLY_'+name+'.json')
+        assert not path.exists(),'CODEC_FIXTURE_OVERWRITE_DENIED'
+        write(path,value);ref={'path':str(path),'sha256':sha(path)};generated.append(ref)
+        return ref
+    series={key:[] for key in OBSERVATION_METRICS};scenarios={};identities=[]
+    for scenario in sorted(SCENARIOS):
+        scenarios[scenario]=[]
+        for repetition in range(3):
+            synthetic_instance={'pid':len(identities)+1,'creation_filetime':int(content_fingerprint(
+                {'scope':'CODEC_ONLY_NOT_A_REAL_PROCESS','output':str(output),'scenario':scenario,'repetition':repetition})[:15],16)+1}
+            identity=content_fingerprint(synthetic_instance)
+            synthetic_instance['digest']=identity
+            identities.append(identity)
+            # Deliberately invented, independently generated values. No old
+            # observation or process identity is re-labelled with current code.
+            metrics={key:(1000000000 if key in ('HOST_RSS_BYTES','child_private_bytes') else 10000000)+repetition
+                for key in SCENARIO_METRICS[scenario]}
+            original=emit(scenario+'_'+str(repetition)+'_original',dict(
+                scope='TEST_ONLY_CODEC_SYNTHETIC_PROCESS_NOT_EMPIRICAL',synthetic_process_records=True,
+                process_instance=synthetic_instance,runtime_code_digest=runtime,native_digest=native,
+                measurement_harness_sha256=sha(Path(__file__)),prepared_codec_cost_binding=source_ref,
+                effective_measurement_codec_cost_binding=source_ref,
+                codec_cost=[dict(reference=source_ref,start_ns=1,end_ns=2,rebuilt_content_digest='0'*64)],
+                step_end_ns=(10000010+repetition)*1000,
+                parent_boundary=dict(spawn_begin_ns=0,started_arrived_ns=1,
+                    started_validated_ns=metrics['STARTUP_US']*1000,spawn_to_validated_us=metrics['STARTUP_US'],
+                    spawn_to_first_legal_unit_us=10000010+repetition),first_step_us=10000020+repetition))
+            normalized=emit(scenario+'_'+str(repetition),dict(
+                schema='MEME_LIVE_T010_NORMALIZED_PROCESS_MEASUREMENT_V1',scenario=scenario,
+                scope='TEST_ONLY_CODEC_SYNTHETIC_PROCESS_NOT_EMPIRICAL',synthetic_process_records=True,
+                runtime_code_digest=runtime,native_digest=native,exit_code=0,fresh_process=True,
+                process_instance_digest=identity,process_instance=synthetic_instance,
+                metrics=metrics,original_result=original,unresolved_constraints=[],codec_cost_call_count=1,
+                measurement_provenance=dict(schema='MEME_LIVE_EMPIRICAL_PROCESS_PROVENANCE_V1',
+                    kind='CODEC_STRUCTURE_ONLY',original_result=original,process_instance_digest=identity,
+                    measurement_harness_sha256=sha(Path(__file__)),prepared_codec_cost_binding=source_ref,
+                    effective_measurement_codec_cost_binding=source_ref)))
+            scenarios[scenario].append(normalized)
+            for key in OBSERVATION_METRICS:
+                series[key].append(10000010+repetition if key=='parent_first_legal_unit_us' else
+                    10000020+repetition if key=='first_runtime_step_us' else metrics[key])
+    observations=emit('observations',dict(schema='MEME_LIVE_T010_RESOURCE_OBSERVATIONS_V1',
+        runtime_code_digest=runtime,native_digest=native,scenarios=scenarios,series=series))
+    boundary=emit('observed_boundary',dict(schema='MEME_LIVE_T010_OBSERVED_RESOURCE_BOUNDARY_V1',
+        scope='ORIGINAL_MAXIMUM_STATE_BOUNDARY_SCENARIOS',derivation_digest=derivation_digest,
+        runtime_code_digest=runtime,measurement=observations,scenarios=scenarios,unresolved_constraints=[]))
+    environment_ref=emit('environment',environment)
+    model=emit('model',dict(scope='ALL_GROWABLE_STORES_PHYSICAL_UPPER_BOUND',
+        derivation_digest=derivation_digest,logical_digest=logical_digest(calculated),certificate=certificate_ref))
+    physical=emit('physical',dict(schema='MEME_LIVE_T010_MAXIMUM_STATE_RESOURCE_VALIDATION_V1',
+        scope='ISOLATED_ORIGINAL_BOUNDARY_VALIDATION',bound_inputs_digest=binding,
+        derivation_digest=derivation_digest,coverage=calculated['physical_validation_required'],
+        physical_size_model=model,boundary_evidence=boundary,host_identity_digest=old_physical['host_identity_digest'],
+        runtime_code_digest=runtime,maxima={k:max(v) for k,v in series.items()},
+        disk_reserve_minimum_bytes=calculated['resource_limits']['HOST_DISK_RESERVE_BYTES'],
+        environment=environment_ref,unresolved_constraints=[]))
+    inputs['resource_envelope']=emit('envelope',dict(schema='MEME_LIVE_T010_RESOURCE_ENVELOPE_V1',
+        scope='PUBLIC_ENVIRONMENT_REVIEWED',bound_inputs_digest=binding,derivation=calculated,
+        observation_policy=OBSERVATION_POLICY,observation_evidence=observations,physical_evidence=physical,
+        authorization_reference='TEST_ONLY_CODEC_COST_NOT_QUALIFICATION_AUTHORIZATION',project_acceptance_claimed=False))
+    codec=emit('codec_inputs',dict(scope='TEST_ONLY_PROFILE_CODEC_COST_NOT_QUALIFICATION',inputs=inputs,
+        synthetic_process_records=True,stores_initialized=False,qualification_evidence=False,
+        empirical_resource_observation=False,final_observation_cohort_eligible=False))
+    provenance=dict(scope='TEST_ONLY_CODEC_COST_NOT_QUALIFICATION',generator_script=str(Path(__file__).resolve()),
+        generator_script_sha256=sha(Path(__file__)),starting_historical_codec_input=source_ref,
+        runtime_code_digest=runtime,native_digest=native,generated_json=generated,
+        current_certificate=certificate_ref,synthetic_process_identities=identities,qualification_evidence=False,empirical_resource_observation=False,
+        final_observation_cohort_eligible=False,historical_artifacts_modified=False,codec_input=codec)
+    write(output/'fixture-provenance.json',provenance)
+    assert sha(historical)==source_ref['sha256'],'HISTORICAL_CODEC_INPUT_CHANGED'
+    return codec
+
+
+def validate_retained_codec_binding(value,effective):
+    """Only completed calls in the actual original result prove codec coverage."""
+    calls=value['codec_cost']
+    assert type(calls) is list and (len(calls)>=1 if effective is not None else not calls),'RETAINED_CODEC_CALL_COUNT_CHANGED'
+    for call in calls:
+        assert call['reference']==effective,'RETAINED_CODEC_INPUT_CHANGED'
+        assert type(call['start_ns']) is int and type(call['end_ns']) is int and 0<=call['start_ns']<=call['end_ns'],'RETAINED_CODEC_CALL_INCOMPLETE'
+        assert type(call['rebuilt_content_digest']) is str and len(call['rebuilt_content_digest'])==64,'RETAINED_CODEC_CALL_INCOMPLETE'
+
+
+def validate_codec_cost_input(reference):
+    """The child and cheap preflight share this full unmodified codec boundary."""
+    from live.runtime_dry_profile_v0_1 import read_reference,construct_codec_cost_graph
+    began=time.perf_counter_ns()
+    value=read_reference(reference)
+    assert value['scope']=='TEST_ONLY_PROFILE_CODEC_COST_NOT_QUALIFICATION'
+    assert value.get('synthetic_process_records') is True,'EXPLICIT_CODEC_COST_FIXTURE_REQUIRED'
+    # Current native binding is checked by physical validation inside _construct.
+    rebuilt=construct_codec_cost_graph(value['inputs'])
+    return dict(start_ns=began,end_ns=time.perf_counter_ns(),reference=reference,
+        rebuilt_content_digest=rebuilt['content_digest'],memory=native_memory())
+
+
+def collect_c2_observations(manifests,output):
+    """Only completed original harness sequences may supply empirical inputs.
+
+    Codec fixtures are deliberately accepted by shape validators for costing,
+    but cannot enter through this collection boundary. No result is relabelled.
+    """
+    from live.runtime_dry_profile_v0_1 import read_reference
+    from live.t010_resource_measurement_v0_1 import SCENARIOS,runtime_code_digest
+    from live.t010_resource_environment_v0_1 import native_identity
+    from live.t010_resource_envelope_v0_1 import OBSERVATION_METRICS,validate_observations
+    from phase5.shadow_domain_v0_1 import content_fingerprint
+    assert len(manifests)==4 and not output.exists(),'FOUR_NEW_EMPIRICAL_SEQUENCES_REQUIRED'
+    runtime=runtime_code_digest();native=content_fingerprint(native_identity())
+    scenarios={};instances=set();originals={};used=[];cohort_codec=None
+    provenance_path=output.with_name(output.name+'.provenance.json')
+    assert not provenance_path.exists(),'EMPIRICAL_PROVENANCE_EXISTS'
+    for path in manifests:
+        path=path.resolve();manifest=json.loads(path.read_text())
+        assert manifest.get('scope')=='REPEATED_FRESH_PROCESS_UNCONSTRAINED_JOINT_CONSTRUCTOR_AND_RECOVERY','EMPIRICAL_SEQUENCE_REQUIRED'
+        assert manifest.get('measurement_harness_sha256')==sha(Path(__file__)),'EMPIRICAL_HARNESS_CHANGED'
+        assert len(manifest['repetitions'])==3,'EMPIRICAL_THREE_REPETITIONS_REQUIRED'
+        binding=manifest['effective_measurement_codec_cost_binding']
+        assert binding is not None and (cohort_codec is None or binding==cohort_codec),'EMPIRICAL_CODEC_BINDING_CHANGED'
+        read_reference(binding);cohort_codec=binding
+        scenario=None;references=[]
+        for row in manifest['repetitions']:
+            original_ref={'path':row['path'],'sha256':row['sha256']}
+            value=read_reference(original_ref);normalized_path=Path(row['path']).parent/'normalized.json'
+            ref={'path':str(normalized_path),'sha256':row['normalized_sha256']};normalized=read_reference(ref)
+            assert normalized.get('scope')=='SYNTHETIC_EXTERNAL_FACTS_ORIGINAL_CONSTRUCTORS_AND_CODEC_COST_NOT_PUBLIC_QUALIFICATION','CODEC_SYNTHETIC_OBSERVATION_DENIED'
+            assert not normalized.get('synthetic_process_records') and not value.get('synthetic_process_records'),'CODEC_SYNTHETIC_OBSERVATION_DENIED'
+            assert value.get('measurement_harness_sha256')==manifest['measurement_harness_sha256'],'EMPIRICAL_HARNESS_CHANGED'
+            assert normalized['original_result']==original_ref and normalized['unresolved_constraints']==[],'EMPIRICAL_ORIGINAL_BINDING_REQUIRED'
+            assert normalized['runtime_code_digest']==value['runtime_code_digest']==runtime and normalized['native_digest']==value['native_digest']==native,'EMPIRICAL_CURRENT_IDENTITY_REQUIRED'
+            assert normalized['exit_code']==0 and normalized['fresh_process'] is True,'EMPIRICAL_SUCCESS_REQUIRED'
+            pi=value['process_instance'];identity=content_fingerprint({'pid':pi['pid'],'creation_filetime':pi['creation_filetime']})
+            assert type(pi['pid']) is int and pi['pid']>0 and type(pi['creation_filetime']) is int and pi['creation_filetime']>0,'EMPIRICAL_NATIVE_PROCESS_REQUIRED'
+            assert pi['digest']==normalized['process_instance_digest']==identity and identity not in instances,'EMPIRICAL_DISTINCT_PROCESS_REQUIRED'
+            instances.add(identity)
+            assert value['effective_measurement_codec_cost_binding']==manifest['effective_measurement_codec_cost_binding'],'EMPIRICAL_CODEC_BINDING_CHANGED'
+            validate_retained_codec_binding(value,manifest['effective_measurement_codec_cost_binding'])
+            closed=json.loads((normalized_path.parent/'closed-state-manifest.json').read_text())
+            assert closed['files'] and set(closed['physical'])=={'ledger','source','producer','operations','monitor'},'EMPIRICAL_CLOSED_STATE_REQUIRED'
+            assert all(x['pragmas']['integrity_check']=='ok' for x in closed['physical'].values()),'EMPIRICAL_CLOSED_STATE_REQUIRED'
+            assert normalized['scenario'] in SCENARIOS and (scenario is None or scenario==normalized['scenario']),'EMPIRICAL_SCENARIO_CONFLICT'
+            scenario=normalized['scenario'];references.append(ref);originals[identity]=value
+        assert scenario not in scenarios,'EMPIRICAL_SCENARIO_REPEATED'
+        scenarios[scenario]=references;used.append({'path':str(path),'sha256':sha(path)})
+    assert set(scenarios)==set(SCENARIOS),'EMPIRICAL_COMPLETE_SCENARIOS_REQUIRED'
+    series={k:[] for k in OBSERVATION_METRICS}
+    for scenario in sorted(SCENARIOS):
+        for ref in scenarios[scenario]:
+            value=read_reference(ref);original=originals[value['process_instance_digest']]
+            for key in series:
+                series[key].append(original['parent_boundary']['spawn_to_first_legal_unit_us'] if key=='parent_first_legal_unit_us' else original['first_step_us'] if key=='first_runtime_step_us' else value['metrics'][key])
+    record=dict(schema='MEME_LIVE_T010_RESOURCE_OBSERVATIONS_V1',runtime_code_digest=runtime,native_digest=native,scenarios=scenarios,series=series)
+    pending=output.with_name(output.name+'.pending')
+    assert not pending.exists(),'EMPIRICAL_OUTPUT_ALREADY_PENDING'
+    write(pending,record)
+    validate_observations({'path':str(pending),'sha256':sha(pending)})
+    assert not output.exists(),'EMPIRICAL_OUTPUT_EXISTS'
+    pending.rename(output)
+    write(provenance_path,dict(scope='ORIGINAL_EMPIRICAL_COLLECTION_NOT_PUBLIC_QUALIFICATION',manifests=used,measurement_harness_sha256=sha(Path(__file__)),observations={'path':str(output),'sha256':sha(output)},synthetic_codec_records_eligible=False))
+    return {'path':str(output),'sha256':sha(output)}
+
+
 def build_configuration(record):
     from live.operations_startup_v0_1 import StartupIdentity,configured_identity,dry_monitor_fingerprint,schema_fingerprint
     from live.ledger_domain_v0_1 import LedgerDomain
@@ -248,15 +451,7 @@ def child(config_path,result_path,codec_cost_inputs=None,guards_path=None,startu
     def validate_profile_cost():
         reference=record.get('codec_cost_inputs')
         if reference is None:return
-        from live.runtime_dry_profile_v0_1 import read_reference,_construct
-        began=time.perf_counter_ns()
-        # Full original codec/proof path, not the historical Runtime fixture's
-        # distinct domain. Its entire extra cost is conservatively colocated.
-        value=read_reference(reference)
-        assert value['scope']=='TEST_ONLY_PROFILE_CODEC_COST_NOT_QUALIFICATION'
-        rebuilt,unused=_construct(value['inputs'])
-        codec_cost.append(dict(start_ns=began,end_ns=time.perf_counter_ns(),
-            reference=reference,rebuilt_content_digest=rebuilt['content_digest'],memory=native_memory()))
+        codec_cost.append(validate_codec_cost_input(reference))
     def timed(label,call):
         def invoke(*a,**kw):
             start=time.perf_counter_ns()
@@ -711,12 +906,16 @@ def prepared_repetition_directory(output,number,continuing):
 
 def measure_prepared(output,repetitions,codec_cost_inputs=None,guards_path=None,*,continue_from=None):
     from live.operations_ownership_v0_1 import OperationsStore
+    if codec_cost_inputs is not None:codec_cost_inputs=codec_cost_inputs.resolve()
     retained=json.loads((output/'prepared-start-manifest.json').read_text())
     origin=Path(retained['origin']);original_hashes=retained['original_files_unchanged']
     monitor_evidence=retained['monitor'];prepared_hashes=retained['files']
     root=output/'active';prepared=output/'prepared-start'
     assert prepared_hashes=={p.name:sha(p) for p in prepared.iterdir()}
     config_path=root/'configuration.json';config=json.loads((prepared/'configuration.json').read_text())
+    prepared_codec=config.get('codec_cost_inputs')
+    effective_codec=({'path':str(codec_cost_inputs.resolve()),'sha256':sha(codec_cost_inputs)}
+        if codec_cost_inputs is not None else prepared_codec)
     results=[]
     if continue_from is not None:
         assert guards_path is None,'CONTINUATION_REQUIRES_UNCONSTRAINED_MEASUREMENT'
@@ -728,10 +927,10 @@ def measure_prepared(output,repetitions,codec_cost_inputs=None,guards_path=None,
             normalized=json.loads((Path(row['path']).parent/'normalized.json').read_text())
             assert 'verified_quota' not in normalized,'CONTINUATION_REQUIRES_UNCONSTRAINED_SAMPLES'
             assert normalized['construction']=={'path':str(origin/'construction.json'),'sha256':sha(origin/'construction.json')},'RETAINED_CONSTRUCTION_CHANGED'
-        if config.get('codec_cost_inputs'):
-            binding=config['codec_cost_inputs']
-            assert codec_cost_inputs is not None and codec_cost_inputs.resolve()==Path(binding['path']).resolve()
-            assert sha(codec_cost_inputs)==binding['sha256'],'RETAINED_CODEC_INPUT_CHANGED'
+            validate_retained_codec_binding(json.loads(Path(row['path']).read_text()),effective_codec)
+            from live.t010_resource_envelope_v0_1 import validate_empirical_process_result
+            validate_empirical_process_result(normalized,json.loads(Path(row['path']).read_text()),
+                runtime=normalized['runtime_code_digest'],native=normalized['native_digest'])
     retained_count=len(results)
     for n in range(retained_count,repetitions):
         run_root=prepared_repetition_directory(output,n+1,continue_from is not None)
@@ -763,6 +962,10 @@ def measure_prepared(output,repetitions,codec_cost_inputs=None,guards_path=None,
             with (run_root/'stdout.txt').open('a') as stream:stream.write(remaining)
             code=process.wait();assert code==0,(code,str(run_root/'stderr.txt'))
             value=json.loads(result_path.read_text())
+            validate_retained_codec_binding(value,effective_codec)
+            value['prepared_codec_cost_binding']=prepared_codec
+            value['effective_measurement_codec_cost_binding']=effective_codec
+            value['measurement_harness_sha256']=sha(Path(__file__))
             value['parent_boundary']=dict(spawn_begin_ns=begin,started_arrived_ns=arrived,
                 started_validated_ns=validated,spawn_to_started_us=(arrived-begin)//1000,
                 spawn_to_validated_us=(validated-begin)//1000,
@@ -814,6 +1017,8 @@ def measure_prepared(output,repetitions,codec_cost_inputs=None,guards_path=None,
         assert len({(v['scenario'],v['native_digest'],v['runtime_code_digest']) for v in normalized_results})==1,'CONTINUATION_MEASUREMENT_BINDING_CHANGED'
         assert not (output/'manifest.json').exists(),'COMPLETED_SEQUENCE_MUST_NOT_BE_OVERWRITTEN'
     write(output/'manifest.json',dict(scope='REPEATED_FRESH_PROCESS_UNCONSTRAINED_JOINT_CONSTRUCTOR_AND_RECOVERY',
+        prepared_codec_cost_binding=prepared_codec,effective_measurement_codec_cost_binding=effective_codec,
+        measurement_harness_sha256=sha(Path(__file__)),
         origin=str(origin),origin_construction_sha256=sha(origin/'construction.json'),
         original_files_unchanged=original_hashes,repetitions=results,
         full_monitor_fixture=monitor_evidence,prepared_start_sha256=sha(output/'prepared-start-manifest.json'),
@@ -962,12 +1167,21 @@ def normalize_process_result(value,scenario,result_path):
             'child_private_bytes':'native process peak private commit',
             'OLDEST_UNCONSUMED_AGE_US':'original same source-fence query; None only positive empty count'},
         'unresolved_constraints':[] if value['codec_cost'] else ['full original codec cost not exercised']}
+    result['measurement_provenance']=dict(schema='MEME_LIVE_EMPIRICAL_PROCESS_PROVENANCE_V1',
+        kind='ORIGINAL_FRESH_PROCESS_MEASUREMENT',original_result=result['original_result'],
+        process_instance_digest=result['process_instance_digest'],measurement_harness_sha256=value.get('measurement_harness_sha256'),
+        prepared_codec_cost_binding=value.get('prepared_codec_cost_binding'),
+        effective_measurement_codec_cost_binding=value.get('effective_measurement_codec_cost_binding'))
     process_metrics(result,scenario)
     return result
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();s=p.add_subparsers(dest='command',required=True)
+    f=s.add_parser('generate-c2-codec-fixture');f.add_argument('--historical',type=Path,required=True)
+    f.add_argument('--output',type=Path,required=True);f.add_argument('--certificate',type=Path,required=True)
+    v=s.add_parser('codec-preflight');v.add_argument('--codec-cost-inputs',type=Path,required=True)
+    k=s.add_parser('collect-c2-observations');k.add_argument('--manifest',type=Path,action='append',required=True);k.add_argument('--output',type=Path,required=True)
     c=s.add_parser('child');c.add_argument('--config',type=Path,required=True);c.add_argument('--result',type=Path,required=True)
     c.add_argument('--codec-cost-inputs',type=Path)
     c.add_argument('--guards',type=Path)
@@ -992,7 +1206,10 @@ if __name__=='__main__':
     u.add_argument('--blocked-cleanup',action='store_true')
     u.add_argument('--launch-ns',type=int)
     a=p.parse_args()
-    if a.command=='child':child(a.config,a.result,a.codec_cost_inputs,a.guards,a.startup_only)
+    if a.command=='generate-c2-codec-fixture':print(json.dumps(generate_c2_codec_fixture(a.historical,a.output,a.certificate)))
+    elif a.command=='codec-preflight':print(json.dumps(dict(scope='CODEC_PREFLIGHT_ONLY_NOT_MEASUREMENT_NOT_QUALIFICATION',call=validate_codec_cost_input({'path':str(a.codec_cost_inputs.resolve()),'sha256':sha(a.codec_cost_inputs)}))))
+    elif a.command=='collect-c2-observations':print(json.dumps(collect_c2_observations(a.manifest,a.output)))
+    elif a.command=='child':child(a.config,a.result,a.codec_cost_inputs,a.guards,a.startup_only)
     elif a.command=='measure-preserved':measure_preserved(a.witness,a.output)
     elif a.command=='measure-prepared':measure_prepared(a.output,a.repetitions,a.codec_cost_inputs,a.guards,continue_from=a.continue_from)
     elif a.command=='supervisor':

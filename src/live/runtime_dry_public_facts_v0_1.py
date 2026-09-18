@@ -22,7 +22,7 @@ from .ledger_evidence_codec_v0_1 import wallet_observation_to_json
 from .ledger_settlement_v0_1 import WalletSupportInput
 from .public_rpc_v0_1 import PublicReadOnlyRpc, PublicRpcProfile
 from .wallet_evidence_v0_1 import WalletEvidenceAdapter, WalletEvidenceRequest, ExpectedTokenAccount, ledger_account_evidence
-from .runtime_composition_v0_1 import EntryFacts
+from .runtime_composition_v0_1 import EntryFacts, capture_source_at_completion
 from .runtime_dry_public_driver_v0_1 import DryPublicFacts
 from .runtime_dry_profile_v0_1 import read_reference, _keys
 from .source_health_v0_1 import CollectorSourceAdapter
@@ -183,8 +183,8 @@ class ReviewedPublicFacts:
     def source(self, *, max_raw_bytes=None, reserve_rows=None, reserve_verdict=None):
         sample = self.clock()
         cut = utc_from_us(utc_microseconds(sample.utc_lower_utc)-self.settings["source_lag_us"])
-        verdict = CollectorSourceAdapter(self.config["market_source"].db_path).observe(self.config["source_binding"],
-            self.config["source_profile"], observed_at_utc=sample.utc_upper_utc, requested_cut_utc=cut,
+        _, verdict = capture_source_at_completion(CollectorSourceAdapter(self.config["market_source"].db_path),
+            self.config["source_binding"], self.config["source_profile"], sample, self.clock, cut=cut,
             max_raw_bytes=max_raw_bytes, reserve_rows=reserve_rows)
         require(reserve_verdict is None or reserve_verdict(verdict), "PUBLIC_SOURCE_RECORD_CAPACITY_HELD")
         self._recent_source_observations.append({"kind":"SOURCE", "scope":self.scope, "verdict":asdict(verdict),

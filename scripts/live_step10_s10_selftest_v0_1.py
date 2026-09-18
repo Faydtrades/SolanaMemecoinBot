@@ -25,6 +25,7 @@ import httpx
 import live_candidate_handoff_selftest_v0_1 as source_fixture
 import live_runtime_dry_selftest_v0_1 as accepted_dry
 from live.ledger_ports_v0_1 import port_receipt_from_record
+from live.acceptance_dossier_v0_1 import _lf  # git-LF content hash, CRLF checkout invariant
 
 ROOT = Path(__file__).resolve().parents[1]
 a3, a4, sf, dry = accepted_dry.a3, accepted_dry.a4, accepted_dry.sf, accepted_dry.dry
@@ -398,7 +399,7 @@ def main(directory):
         "runtime_dry_v0_1.py", "ledger_repository_v0_1.py", "ledger_ports_v0_1.py",
         "authority_admission_v0_1.py", "authority_controls_v0_1.py", "execution_message_v0_1.py",
         "execution_readonly_v0_1.py", "runtime_composition_v0_1.py", "execution_reconciliation_v0_1.py"))
-    hashes = {path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
+    hashes = {path.relative_to(ROOT).as_posix(): hashlib.sha256(_lf(path.read_bytes())).hexdigest() for path in paths}
     integrity = {}
     for path in directory.glob("*.sqlite"):
         with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)) as conn:

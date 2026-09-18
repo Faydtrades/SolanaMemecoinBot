@@ -91,8 +91,8 @@ class ColdRuntimeV01(RuntimeCompositionV01):
             elif root not in self._queue:
                 self._queue.append(root)
 
-    def _source_page(self, sample, cut):
-        result = super()._source_page(sample, cut)
+    def _source_page(self, sample, cut, clock):
+        result = super()._source_page(sample, cut, clock)
         self._queue[:] = [root for root in self._queue if not self._consumed(root)]
         return result
 

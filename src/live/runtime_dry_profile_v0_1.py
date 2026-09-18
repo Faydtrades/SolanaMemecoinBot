@@ -145,6 +145,23 @@ def _validate_pending_guard_decision(measured, start, limits, proposed):
 
 
 def _construct(inputs):
+    return _construct_graph(inputs, codec_only=False)
+
+
+def construct_codec_cost_graph(inputs):
+    """Cost the complete typed graph without creating a supported profile.
+
+    Physical/source/native checks and all structural decoders remain shared.
+    Only explicitly tagged synthetic process observations inhabit this separate
+    non-qualification data type. Public build/load never selects this path.
+    """
+    record, _ = _construct_graph(json.loads(canonical_json(inputs)), codec_only=True)
+    return {"schema": "MEME_LIVE_CODEC_COST_RECEIPT_V1",
+        "scope": "TEST_ONLY_CODEC_COST_NOT_QUALIFICATION", "content_digest": record["content_digest"],
+        "grants_permission": False, "supported_profile": False}
+
+
+def _construct_graph(inputs, *, codec_only):
     _keys(inputs, KEYS | ({"deployment_rebind", "public_rpc_rebind", "resource_envelope"} & inputs.keys()),
         "DRY_PROFILE_EXPLICIT_INPUTS_REQUIRED")
     accepted, extension = read_reference(inputs["accepted_profile"]), read_reference(inputs["accepted_extension"])
@@ -250,7 +267,11 @@ def _construct(inputs):
         limits = dict(extension["limits"], **amendment["proposed_guard_limits"])
     elif inputs.get("resource_envelope") is not None:
         from .t010_resource_envelope_v0_1 import validate as validate_resource_envelope
-        limits = validate_resource_envelope(inputs)["derivation"]["resource_limits"]
+        if codec_only:
+            from .t010_resource_envelope_v0_1 import _validate_codec_envelope
+            limits = _validate_codec_envelope(inputs)["derivation"]["resource_limits"]
+        else:
+            limits = validate_resource_envelope(inputs)["derivation"]["resource_limits"]
     else:
         limits = dict(extension["limits"])
         if inputs["guard_amendment"] is not None:
@@ -344,6 +365,9 @@ def _construct(inputs):
         "source_identity":market.source_identity, "startup_identity":asdict(identity),
         "monitor_configuration":asdict(config), "capability":"NO_BROADCAST", "runtime_type":identity.runtime_type,
         "store_initialization":False, "grants_permission":False, "capital_authority":False}
+    if codec_only:
+        require(inputs.get("resource_envelope") is not None, "CODEC_COST_RESOURCE_GRAPH_REQUIRED")
+        record["schema"] = "MEME_LIVE_TEST_ONLY_CODEC_GRAPH_V1"
     record["content_digest"] = content_fingerprint(record)
     return record, arguments
 

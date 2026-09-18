@@ -47,7 +47,82 @@ def observation_only(envelope):
     return True
 
 
+EMPIRICAL_RESULT_SCOPE = "SYNTHETIC_EXTERNAL_FACTS_ORIGINAL_CONSTRUCTORS_AND_CODEC_COST_NOT_PUBLIC_QUALIFICATION"
+EMPIRICAL_ORIGINAL_SCOPE = "ISOLATED_ORIGINAL_OWNED_DRY_STARTUP_NOT_T010_HOST_LAUNCH"
+CODEC_RESULT_SCOPE = "TEST_ONLY_CODEC_SYNTHETIC_PROCESS_NOT_EMPIRICAL"
+
+
+def validate_empirical_process_result(value, original, *, runtime, native):
+    return _validate_process_provenance(value, original, runtime=runtime, native=native, codec_only=False)
+
+
+def _validate_process_provenance(value, original, *, runtime, native, codec_only):
+    """Admit original harness process evidence, not codec-shaped observations.
+
+    Hash-bound local provenance is not remote attestation. The producer of the
+    retained original files remains trusted; labels alone never establish it.
+    """
+    from .runtime_dry_profile_v0_1 import read_reference
+    import hashlib
+    if codec_only:
+        require(value.get("scope") == original.get("scope")
+            and value.get("scope") in (CODEC_RESULT_SCOPE, "SMOKE_ONLY_NOT_QUALIFICATION")
+            and value.get("synthetic_process_records") is True and original.get("synthetic_process_records") is True,
+            "T010_EXPLICIT_CODEC_ONLY_OBSERVATIONS_REQUIRED")
+    else:
+        for record, scope in ((value, EMPIRICAL_RESULT_SCOPE), (original, EMPIRICAL_ORIGINAL_SCOPE)):
+            require(record.get("scope") == scope
+                and not any(key in record for key in ("synthetic_process_records", "smoke_scope", "test_only")),
+                "T010_OBSERVATION_EMPIRICAL_PROVENANCE_REQUIRED")
+    provenance = value.get("measurement_provenance")
+    _keys(provenance, ("schema", "kind", "original_result", "process_instance_digest",
+        "measurement_harness_sha256", "prepared_codec_cost_binding", "effective_measurement_codec_cost_binding"),
+        "T010_OBSERVATION_EMPIRICAL_PROVENANCE_REQUIRED")
+    harness = Path(__file__).resolve().parents[2]/"scripts/live_t010_joint_hot_measure_v0_3.py"
+    harness_digest = hashlib.sha256(harness.read_bytes()).hexdigest()
+    require(provenance["schema"] == "MEME_LIVE_EMPIRICAL_PROCESS_PROVENANCE_V1"
+        and provenance["kind"] == ("CODEC_STRUCTURE_ONLY" if codec_only else "ORIGINAL_FRESH_PROCESS_MEASUREMENT")
+        and provenance["original_result"] == value["original_result"]
+        and provenance["measurement_harness_sha256"] == original.get("measurement_harness_sha256") == harness_digest,
+        "T010_OBSERVATION_PROVENANCE_BINDING_CONFLICT")
+    instance = original.get("process_instance")
+    require(type(instance) is dict and set(instance) == {"pid", "creation_filetime", "digest"}
+        and type(instance["pid"]) is int and instance["pid"] > 0
+        and type(instance["creation_filetime"]) is int and instance["creation_filetime"] > 0,
+        "T010_OBSERVATION_NATIVE_PROCESS_REQUIRED")
+    identity = content_fingerprint({k: instance[k] for k in ("pid", "creation_filetime")})
+    require(instance == value.get("process_instance") and instance["digest"] == identity
+        == value["process_instance_digest"] == provenance["process_instance_digest"]
+        and original["runtime_code_digest"] == runtime and original["native_digest"] == native,
+        "T010_OBSERVATION_PROVENANCE_BINDING_CONFLICT")
+    for key in ("prepared_codec_cost_binding", "effective_measurement_codec_cost_binding"):
+        require(key in original and provenance[key] == original[key], "T010_OBSERVATION_CODEC_PROVENANCE_CONFLICT")
+    binding = original["effective_measurement_codec_cost_binding"]
+    require(type(binding) is dict, "T010_OBSERVATION_CODEC_PROVENANCE_CONFLICT")
+    codec = read_reference(binding)
+    require(codec.get("scope") == "TEST_ONLY_PROFILE_CODEC_COST_NOT_QUALIFICATION",
+        "T010_OBSERVATION_CODEC_PROVENANCE_CONFLICT")
+    calls = original.get("codec_cost")
+    require(type(calls) is list and bool(calls) and value.get("codec_cost_call_count") == len(calls),
+        "T010_OBSERVATION_CODEC_PROVENANCE_CONFLICT")
+    for call in calls:
+        require(call.get("reference") == binding and type(call.get("start_ns")) is int
+            and type(call.get("end_ns")) is int and 0 <= call["start_ns"] <= call["end_ns"]
+            and type(call.get("rebuilt_content_digest")) is str and len(call["rebuilt_content_digest"]) == 64,
+            "T010_OBSERVATION_CODEC_PROVENANCE_CONFLICT")
+    parent = original["parent_boundary"]
+    require(0 <= parent["spawn_begin_ns"] <= parent["started_arrived_ns"] <= parent["started_validated_ns"]
+        <= original["step_end_ns"] and parent["spawn_to_validated_us"] == (parent["started_validated_ns"]-parent["spawn_begin_ns"])//1000
+        and parent["spawn_to_first_legal_unit_us"] == (original["step_end_ns"]-parent["spawn_begin_ns"])//1000,
+        "T010_OBSERVATION_PARENT_BOUNDARY_CONFLICT")
+
+
 def validate_observations(reference):
+    """Production empirical admission; no test/codec opt-out exists here."""
+    return _validate_observations(reference, codec_only=False)
+
+
+def _validate_observations(reference, *, codec_only):
     """Validate retained fresh-process evidence, without deriving numerical limits."""
     from .runtime_dry_profile_v0_1 import read_reference
     from .t010_resource_measurement_v0_1 import SCENARIOS, process_metrics, runtime_code_digest
@@ -57,6 +132,8 @@ def validate_observations(reference):
     require(evidence["schema"] == "MEME_LIVE_T010_RESOURCE_OBSERVATIONS_V1"
         and evidence["runtime_code_digest"] == runtime_code_digest()
         and set(evidence["scenarios"]) == set(SCENARIOS), "T010_OBSERVATION_IDENTITY_CONFLICT")
+    from .t010_resource_environment_v0_1 import native_identity
+    require(evidence["native_digest"] == content_fingerprint(native_identity()), "T010_OBSERVATION_NATIVE_IDENTITY_CONFLICT")
     series = {key: [] for key in OBSERVATION_METRICS}
     instances = set()
     for scenario in sorted(SCENARIOS):
@@ -80,6 +157,8 @@ def validate_observations(reference):
                 and original["native_digest"] == evidence["native_digest"]
                 and original["runtime_code_digest"] == evidence["runtime_code_digest"],
                 "T010_OBSERVATION_ORIGINAL_RESULT_CONFLICT")
+            _validate_process_provenance(value, original, runtime=evidence["runtime_code_digest"],
+                native=evidence["native_digest"], codec_only=codec_only)
             values = {key: metrics[key] for key in OBSERVATION_METRICS
                 if key not in ("parent_first_legal_unit_us", "first_runtime_step_us")}
             values.update(parent_first_legal_unit_us=original["parent_boundary"]["spawn_to_first_legal_unit_us"],
@@ -283,6 +362,15 @@ def derive(inputs, accepted_profile, extension):
 
 
 def validate(inputs, *, require_physical=True):
+    return _validate_envelope(inputs, require_physical=require_physical, codec_only=False)
+
+
+def _validate_codec_envelope(inputs):
+    """Structural cost graph only; not a public resource-admission API."""
+    return _validate_envelope(inputs, require_physical=True, codec_only=True)
+
+
+def _validate_envelope(inputs, *, require_physical, codec_only):
     from .runtime_dry_profile_v0_1 import read_reference
     record = read_reference(inputs["resource_envelope"])
     _keys(record, {"schema", "scope", "bound_inputs_digest", "derivation", "physical_evidence",
@@ -298,7 +386,7 @@ def validate(inputs, *, require_physical=True):
     calculated = derive(inputs, read_reference(inputs["accepted_profile"]), read_reference(inputs["accepted_extension"]))
     observing = observation_only(record)
     if observing:
-        validate_observations(record["observation_evidence"])
+        _validate_observations(record["observation_evidence"], codec_only=codec_only)
         # Keep architectural ceilings and independent source/freshness contracts.
         # Empirical maxima are evidence, not admission thresholds.
         for key in OBSERVATION_METRICS:
@@ -328,11 +416,15 @@ def validate(inputs, *, require_physical=True):
     if require_physical:
         require(record["physical_evidence"] is not None, "T010_RESOURCE_MAXIMUM_STATE_PHYSICAL_EVIDENCE_REQUIRED")
         physical = read_reference(record["physical_evidence"])
-        validate_physical(physical, record, calculated, inputs=inputs)
+        _validate_physical(physical, record, calculated, inputs=inputs, codec_only=codec_only)
     return record
 
 
 def validate_physical(physical, record, calculated, *, inputs=None):
+    return _validate_physical(physical, record, calculated, inputs=inputs, codec_only=False)
+
+
+def _validate_physical(physical, record, calculated, *, inputs, codec_only):
     """Require full derivation coverage; an ordinary point-run is ineligible.
 
     This deliberately does not manufacture a physical proof. The retained
@@ -372,7 +464,7 @@ def validate_physical(physical, record, calculated, *, inputs=None):
     # and before ordinary work, not before ownership has been reconstructed.
     validate_binding(environment, store_paths=inputs["store_paths"], check_reserve=False,
         immutable_references=constructor_input_references(inputs))
-    measured = (validate_observations(record["observation_evidence"]) if observing
+    measured = (_validate_observations(record["observation_evidence"], codec_only=codec_only) if observing
         else read_reference(record["measured_guard_evidence"]))
     require(physical["runtime_code_digest"] == runtime_code_digest() == measured["runtime_code_digest"]
         and physical["host_identity_digest"] == read_reference(inputs["accepted_extension"])["host_identity_digest"]

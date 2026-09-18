@@ -253,7 +253,7 @@ def protocol_candidate_source_unit(f, ordinal, at):
     began=time.perf_counter_ns();before=set(f.runtime.queued_roots)
     cursor=f.producer.durable_p1_rowid;count=f.source.count()
     add_source_rows(f,ordinal,at,1)
-    result=f.runtime._source_page(owned.a3.clock(f.repo,at),owned.a3.utc(at))
+    result=f.runtime._source_page(owned.a3.clock(f.repo,at),owned.a3.utc(at),lambda:owned.a3.clock(f.repo,at))
     assert result=='SOURCE_PAGE_CONSUMED' and f.source.count()==count+1,result
     verdict=f.source.latest();assert verdict.disposition=='HEALTHY'
     roots=[r for r in f.runtime.queued_roots if r not in before]

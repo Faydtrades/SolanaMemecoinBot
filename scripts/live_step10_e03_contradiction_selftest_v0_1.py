@@ -238,7 +238,7 @@ def main():
     result = {'status': 'IMPLEMENTED_PENDING_PROJECT_REVIEW', 'scope': 'E03_RUNTIME_CANONICAL_PARENT_CONTRADICTION',
         'qualification': 'SYNTHETIC_ENGINEERING_ONLY_NOT_HOST_PROFILE_OR_REAL_CAPITAL',
         'checks': CHECKS, 'fixture_checks': {'admission': prior.CHECKS, 'send': s06.CHECKS},
-        'artifact_hashes': {str(p.relative_to(c2.ROOT)).replace('\\', '/'): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
+        'artifact_hashes': {str(p.relative_to(c2.ROOT)).replace('\\', '/'): prior.lf_sha256(p) for p in paths},
         'evidence': evidence}
     encoded = c2.canonical_json(result)
     json.loads(encoded)  # Validate exact JSON; no lossy fallback serialization.

@@ -395,7 +395,7 @@ def main():
     checks = {**read(directory / "loss-ready.json")["checks"], **read(directory / "finished.json")["checks"], **CHECKS}
     check("all_targeted_checks", all(checks.values()))
     files = {str(p.relative_to(directory)): hashlib.sha256(p.read_bytes()).hexdigest() for p in directory.iterdir() if p.is_file()}
-    contracts = {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
+    contracts = {str(p.relative_to(ROOT)).replace("\\", "/"): prior.lf_sha256(p)
                  for p in [Path(__file__), *(ROOT / "src/live").glob("*.py"),
                            *(Path(m.__file__) for m in (prior, shared, delayed, b1, cuts, facts_helper, c2, raw_rpc))]}
     result = {"status": "IMPLEMENTED_PENDING_PROJECT_REVIEW", "scope": "S12", "checks": checks,

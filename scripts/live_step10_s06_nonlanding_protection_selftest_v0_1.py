@@ -338,7 +338,7 @@ def main():
                 'Full remaining units after failure; partial-reduction E02 excluded',
                 'Contradictory coverage checked at existing Evidence port only; actual Runtime quarantine references prior accepted faults'],
             'duration_seconds':time.perf_counter()-started,
-            'artifact_hashes':{str(p.relative_to(c2.ROOT)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}}))
+            'artifact_hashes':{str(p.relative_to(c2.ROOT)).replace('\\','/'):prior.lf_sha256(p) for p in sorted(paths)}}))
 
 
 if __name__ == '__main__':

@@ -235,7 +235,7 @@ def main():
                 'facts': '9 cases / 18 children; source failure retains exposure/protection; hard stop, operator stop, stale-generation controls'},
             'E04': {'source': 'docs/live/MEME_LIVE_OPERATIONS_FOUNDATION_V1.md:29-48',
                 'facts': 'Actual SIGN/SEND final-clock stop/takeover guard, zero later dispatch, original REBROADCAST fence loss; dispatched call cannot be recalled'}},
-        'artifact_hashes': {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
+        'artifact_hashes': {p.relative_to(ROOT).as_posix(): prior.lf_sha256(p) for p in paths},
         'checks': CHECKS, 'reused_helper_checks': {m.__name__: m.CHECKS for m in (prior, owned, public, venue)},
         'evidence': EVIDENCE}))
 

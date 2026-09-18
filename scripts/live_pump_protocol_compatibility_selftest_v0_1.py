@@ -2,6 +2,7 @@
 from pathlib import Path
 import sys, tempfile, json
 from dataclasses import replace
+from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1];sys.path[:0]=[str(ROOT/'src'),str(ROOT/'scripts')]
 import live_runtime_composition_selftest_v0_1 as c
 import phase5_shadow_venue_route_quote_selftest_v0_1 as v
@@ -9,6 +10,8 @@ from live.pump_protocol_compatibility_v0_1 import PumpProtocolObservation, selec
 from live.public_rpc_v0_1 import PublicAccountRead, PublicAccount, RpcContext
 from live.runtime_composition_v0_1 import EntryFacts
 from live.ledger_repository_v0_1 import LedgerRepository
+from live.ledger_actions_v0_1 import utc_microseconds
+from live.authority_controls_v0_1 import utc_from_us
 CHECKS={}
 def check(name,value):
     CHECKS[name]=bool(value);assert value,name
@@ -23,7 +26,19 @@ def facts(f,wallet,raw):
         f.domain.expected_profile_fingerprint,read,anchor,wallet.evaluated_at_utc)
 
 def run():
-    with tempfile.TemporaryDirectory(prefix='pump-current-protocol-') as tmp:
+    original_clock = c.a3.clock
+    last_upper = None
+    def monotonic_clock(repo, *args, **kwargs):
+        nonlocal last_upper
+        sample = original_clock(repo, *args, **kwargs)
+        lower, upper = utc_microseconds(sample.utc_lower_utc), utc_microseconds(sample.utc_upper_utc)
+        # One synthetic timeline across discovery, replay and admission, including
+        # Fixture.step's local microsecond increments and post-capture sampling.
+        delta = max(0, (last_upper + 100 if last_upper is not None else upper) - upper)
+        last_upper = upper + delta
+        return replace(sample, utc_lower_utc=utc_from_us(lower + delta),
+            utc_upper_utc=utc_from_us(upper + delta), monotonic_ns=sample.monotonic_ns + delta * 1000)
+    with tempfile.TemporaryDirectory(prefix='pump-current-protocol-') as tmp, patch.object(c.a3, 'clock', monotonic_clock):
         f=c.Fixture(Path(tmp),'skip')
         try:
             f.candidate_ready();f.configure()
@@ -51,7 +66,7 @@ def run():
             f.handoff.ledger=f.repo
             check('cold_reconstruction_preserves_skip',f.repo.inbox_disposition(oldroot)=='REJECTED')
             # Replaying the same source page cannot enqueue the rejected root.
-            f.runtime._source_page(c.a3.clock(f.repo,c.NOW+4),c.a3.utc(c.NOW+1))
+            f.runtime._source_page(c.a3.clock(f.repo,c.NOW+4),c.a3.utc(c.NOW+1),lambda:c.a3.clock(f.repo,c.NOW+4))
             check('replayed_source_does_not_requeue',oldroot not in f.runtime.queued_roots)
             proof=record['protocol_evidence'];proof['protocol']['read']['accounts'][1]['owner']=v.TOKEN_PROGRAM_ID
             try:validate_rejection_proof(proof,f.domain,f.repo._authority,f.item,record);denied=False

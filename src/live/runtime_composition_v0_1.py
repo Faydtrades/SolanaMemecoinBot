@@ -10,7 +10,8 @@ The domain fixes LIVE or NO_BROADCAST DRY capability for the lifetime of the roo
 from __future__ import annotations
 
 import sqlite3
-from dataclasses import dataclass
+import time
+from dataclasses import dataclass, replace
 from datetime import datetime
 
 from phase5.shadow_domain_v0_1 import content_fingerprint
@@ -20,7 +21,7 @@ from .authority_message_control_v0_1 import MessageStageRequest, FreshStageConsu
 from .candidate_handoff_v0_1 import CandidateHandoffV01
 from .continuous_producer_v0_2 import LiveContinuousProducerV02
 from .evidence_store_v0_1 import SourceEvidenceStore
-from .source_health_v0_1 import CollectorSourceAdapter, ZERO_DIGEST, utc
+from .source_health_v0_1 import CollectorSourceAdapter, ZERO_DIGEST, utc, evaluate_source
 from .ledger_repository_v0_1 import LedgerRepository
 from .ledger_ports_v0_1 import RetirementInput
 from .ledger_custody_v0_1 import REPLACEABLE
@@ -48,6 +49,60 @@ class EntryFacts:
     token_program: str
     wallet: object
     protocol: object = None
+
+
+def capture_source_at_completion(adapter, binding, profile, sample, clock, *, cut, previous=None, **bounds):
+    """Retain the original read/cut; timestamp only after that read completes."""
+    snapshot = adapter.capture(binding, profile, observed_at_utc=sample.utc_upper_utc,
+        requested_cut_utc=cut, previous=previous, **bounds)
+    completed = clock()
+    require(type(completed) is TrustedClockSample and completed.status == "QUALIFIED"
+        and utc_microseconds(completed.utc_upper_utc) >= utc_microseconds(sample.utc_upper_utc),
+        "RUNTIME_SOURCE_COMPLETION_CLOCK_REQUIRED")
+    snapshot = replace(snapshot, observed_at_utc=completed.utc_upper_utc)
+    return completed, evaluate_source(binding, profile, snapshot, previous=previous)
+
+
+def entry_at_clock(entry, sample):
+    """Re-evaluation input, never acceptance: original consumers still adjudicate."""
+    if entry is None:
+        return None
+    require(type(entry) is EntryFacts and type(entry.wallet) is WalletSupportInput,
+        "RUNTIME_ORIGINAL_ENTRY_WALLET_REQUIRED")
+    require(utc_microseconds(entry.wallet.evaluated_at_utc) <= utc_microseconds(sample.utc_upper_utc),
+        "RUNTIME_WALLET_EVALUATION_CLOCK_REGRESSION")
+    wallet = replace(entry.wallet, evaluated_at_utc=sample.utc_upper_utc)
+    protocol = entry.protocol
+    if protocol is not None:
+        from .pump_protocol_compatibility_v0_1 import PumpProtocolObservation
+        require(type(protocol) is PumpProtocolObservation and protocol.wallet_support_digest == entry.wallet.digest,
+            "RUNTIME_ORIGINAL_PROTOCOL_WALLET_BINDING_REQUIRED")
+        protocol = replace(protocol, wallet_support_digest=wallet.digest)
+    return replace(entry, wallet=wallet, protocol=protocol)
+
+
+def admission_clock(clock, state, source_observed_at, entry=None):
+    """One policy-bounded overlap wait; uncertain/future knowledge fails closed."""
+    sample = clock()
+    require(type(sample) is TrustedClockSample and not clock_reasons(state, sample),
+        "RUNTIME_ADMISSION_QUALIFIED_CLOCK_REQUIRED")
+    known = [utc_microseconds(source_observed_at)]
+    if entry is not None:
+        known.append(utc_microseconds(entry.wallet.observation.observed_at_utc))
+        if entry.protocol is not None:
+            known.append(utc_microseconds(entry.protocol.observed_at_utc))
+    target = max(known)
+    lower, upper = utc_microseconds(sample.utc_lower_utc), utc_microseconds(sample.utc_upper_utc)
+    require(target <= upper, "RUNTIME_ADMISSION_FUTURE_KNOWLEDGE")
+    if target > lower:
+        # The validated policy interval bounds this single wait. Never alter
+        # a provider observation or infer a clock from the evidence timestamp.
+        time.sleep((target-lower)/1000000)
+        sample = clock()
+    require(type(sample) is TrustedClockSample and not clock_reasons(state, sample)
+        and utc_microseconds(sample.utc_lower_utc) >= target,
+        "RUNTIME_ADMISSION_KNOWLEDGE_UNPROVEN")
+    return sample
 
 
 @dataclass(frozen=True, slots=True)
@@ -155,12 +210,12 @@ class RuntimeCompositionV01:
         return RuntimeStep(work, reason, root if action is None else action.root_id,
             None if action is None else action.action_id, attempt, key, self.queued_roots)
 
-    def _source_health(self, sample, cut):
+    def _source_health(self, sample, cut, clock):
         cut = utc(cut or sample.utc_lower_utc)
         prior = self.source.latest_record()
         previous = None if prior is None else prior[1]
-        observed = CollectorSourceAdapter(self.producer.market_source.db_path).observe(self.handoff.binding,
-            self.source.profile, observed_at_utc=sample.utc_upper_utc, requested_cut_utc=cut, previous=previous,
+        _, observed = capture_source_at_completion(CollectorSourceAdapter(self.producer.market_source.db_path),
+            self.handoff.binding, self.source.profile, sample, clock, cut=cut, previous=previous,
             max_raw_bytes=getattr(self, "_resource_raw_bytes", None),
             reserve_rows=getattr(self, "_resource_capture_reservation", None))
         append_guard = getattr(self, "_resource_source_append_guard", None)
@@ -168,7 +223,7 @@ class RuntimeCompositionV01:
         self.source.append(observed, expected_previous_digest=ZERO_DIGEST if previous is None else previous.content_digest)
         return observed
 
-    def _source_page(self, sample, cut):
+    def _source_page(self, sample, cut, clock):
         if self.producer is None:
             return "SOURCE_UNAVAILABLE_OR_PROFILE_EXHAUSTED"
         try:
@@ -189,7 +244,7 @@ class RuntimeCompositionV01:
             else:
                 self.producer.process_next_batch(batch_size=reserved, max_raw_bytes=raw_bytes)
             self.producer.execute_prepared_timer(timer)
-            self._source_health(sample, cut)
+            self._source_health(sample, cut, clock)
             available = self.queue_limit-len(self._queue)
             if available <= 0:
                 return "QUEUE_FULL_SOURCE_ADVANCED"
@@ -267,7 +322,7 @@ class RuntimeCompositionV01:
         if self.capability == "NO_BROADCAST":
             return monitor is not None and monitor.snapshot().entry_held
         return monitor is not None and monitor.observe(clock(), entry=entry, resources=resources,
-            source_cut_utc=source_cut_utc).entry_held
+            source_cut_utc=source_cut_utc, clock=clock).entry_held
 
     def _execute(self, action, ports, clock, *, fence, ordinal, entry=None, operations_resources=None):
         require(self.capability == "LIVE", "RUNTIME_LIVE_EXECUTION_CAPABILITY_REQUIRED")
@@ -416,14 +471,7 @@ class RuntimeCompositionV01:
         if monitor is not None:
             initial_sample = original_clock()
             monitor.observe(initial_sample, entry=entry, resources=operations_resources,
-                source_cut_utc=resources.get("source_cut_utc"))
-            first = True
-            def clock():
-                nonlocal first
-                if first:
-                    first = False
-                    return initial_sample
-                return original_clock()
+                source_cut_utc=resources.get("source_cut_utc"), clock=original_clock)
         if self.capability == "NO_BROADCAST":
             try:
                 # One bounded DRY unit, including source/admission/terminal writes,
@@ -437,8 +485,8 @@ class RuntimeCompositionV01:
         if monitor is not None:
             final_sample = clock()
             monitor.observe(final_sample, entry=entry, resources=operations_resources,
-                source_cut_utc=resources.get("source_cut_utc"))
-            monitor.note_work(result, final_sample)
+                source_cut_utc=resources.get("source_cut_utc"), clock=clock)
+            monitor.note_work(result, clock())
         return result
 
     def _dry_pending(self, sample, ports, clock, entry, resources):
@@ -535,7 +583,7 @@ class RuntimeCompositionV01:
             if self.producer is None:
                 return self._result("SOURCE_HELD", "COLD_SOURCE_RECONSTRUCTION_UNAVAILABLE", action=action)
             try:
-                self._source_health(sample, source_cut_utc)
+                self._source_health(sample, source_cut_utc, clock)
             except (ValueError, RuntimeError, sqlite3.DatabaseError, OSError):
                 return self._result("SOURCE_HELD", "CURRENT_SOURCE_UNAVAILABLE", action=action)
             return self._execute(action, execution, clock, fence=snapshot["fence"], ordinal=ordinal,
@@ -544,7 +592,7 @@ class RuntimeCompositionV01:
 
     def _admit_next(self, sample, clock, entry, operations_resources, source_cut_utc, protection=None):
         """Shared original producer/Authority path; capability selects no economics."""
-        source_state = self._source_page(sample, source_cut_utc)
+        source_state = self._source_page(sample, source_cut_utc, clock)
         snapshot = self.ledger.consumer_snapshot()
         if snapshot["positions"] or snapshot["reservations"] or snapshot["funding"].quarantine_reasons:
             reason = "V1_OCCUPIED_OR_QUARANTINED" if protection is None else "PROTECTED_"+protection.state+":"+protection.reason
@@ -565,6 +613,12 @@ class RuntimeCompositionV01:
             return self._result("ENTRY_HELD", "EXTERNAL_AUTHORITY_POLICY_REQUIRED", root=root)
         if self.capability == "LIVE" and not self._owner_current():
             return self._result("OPERATIONS_HELD", "CURRENT_OWNER_REQUIRED", root=root)
+        try:
+            sample = admission_clock(clock, self.ledger._authority,
+                self.source.latest().snapshot.observed_at_utc, entry)
+            entry = entry_at_clock(entry, sample)
+        except (ValueError, RuntimeError, TypeError):
+            return self._result("ENTRY_HELD", "CURRENT_ADMISSION_KNOWLEDGE_UNPROVEN", root=root)
         if entry.protocol is not None:
             from .pump_protocol_compatibility_v0_1 import PumpProtocolObservation, rejection_proof
             require(type(entry.protocol) is PumpProtocolObservation, "RUNTIME_TYPED_PUMP_PROTOCOL_FACTS_REQUIRED")
@@ -589,6 +643,15 @@ class RuntimeCompositionV01:
             entry = EntryFacts(selected_venue, entry.protocol.read.accounts[0].account.owner, entry.wallet, entry.protocol)
         if entry.protocol is not None and self._entry_degradation(clock, entry, operations_resources, source_cut_utc):
             return self._result("OPERATIONS_ENTRY_HELD", "CURRENT_DEGRADATION_ENTRY_HOLD")
+        try:
+            sample = admission_clock(clock, self.ledger._authority,
+                self.source.latest().snapshot.observed_at_utc, entry)
+            entry = entry_at_clock(entry, sample)
+        except (ValueError, RuntimeError, TypeError):
+            return self._result("ENTRY_HELD", "CURRENT_ADMISSION_KNOWLEDGE_UNPROVEN", root=root)
+        if entry.protocol is not None and entry.protocol.classify(
+                self.ledger.domain, self.ledger.candidate(root), sample, entry.wallet)[0] != "SUPPORTED":
+            return self._result("ENTRY_HELD", "CURRENT_PROTOCOL_REVALIDATION_REQUIRED", root=root)
         key = self._key("admission", root, sample.utc_upper_utc)
         receipt = self.ledger.admit_authority_entry(EntryRequest(root, entry.venue, entry.token_program, policy.selected_track),
             sample, self.source, entry.wallet, command_id=key, fence=snapshot["fence"])

@@ -38,7 +38,7 @@ from .operations_degradation_v0_1 import (
 )
 from .operations_ownership_v0_1 import OperationsOwnership, OperationsStore
 from .ledger_actions_v0_1 import utc_microseconds
-from .source_health_v0_1 import CollectorSourceAdapter, INTEGRITY_REASONS
+from .source_health_v0_1 import CollectorSourceAdapter, INTEGRITY_REASONS, source_consumer_evidence
 
 VERSION = "live_operations_degradation_monitor_v0.1"
 HOST_METRICS = frozenset(("HOST_RSS_BYTES", "HOST_DISK_RESERVE_BYTES", "STARTUP_US", "PROTECTIVE_STEP_US"))
@@ -324,7 +324,7 @@ class OperationsMonitor:
             self._step_unavailable = True
         return result
 
-    def _observe(self, sample, *, entry=None, reduction=None, resources=None, readiness=None, source_cut_utc=None):
+    def _observe(self, sample, *, entry=None, reduction=None, resources=None, readiness=None, source_cut_utc=None, clock=None):
         runtime, config = self.started.runtime, self.configuration
         if self.store is None:
             return self.last
@@ -342,8 +342,8 @@ class OperationsMonitor:
             # transitions. A stale owner cannot write a clearing observation.
             with owner.mutation_guard(runtime.ledger.domain), runtime.ledger._trusted_read():
                 owner_valid = True
-                self._observe_current(sample, entry, reduction, resources, readiness, source_cut_utc)
-                self.last = alert_view(self.store.advance(now_us=now_us))
+                sample = self._observe_current(sample, entry, reduction, resources, readiness, source_cut_utc, clock)
+                self.last = alert_view(self.store.advance(now_us=utc_microseconds(sample.utc_upper_utc)))
         except ERRORS:
             if owner_valid:
                 self.last = unavailable("OPERATIONS_CURRENT_EVIDENCE_UNAVAILABLE")
@@ -356,9 +356,28 @@ class OperationsMonitor:
                 self.last = unavailable()
         return self.last
 
-    def _observe_current(self, sample, entry, reduction, resources, readiness, source_cut_utc):
+    def _observe_current(self, sample, entry, reduction, resources, readiness, source_cut_utc, clock=None):
         from .operations_readiness_v0_1 import _current
         runtime, store, config = self.started.runtime, self.store, self.configuration
+        captured, captured_previous = None, None
+        if clock is not None:
+            from .runtime_composition_v0_1 import capture_source_at_completion, admission_clock, entry_at_clock
+            source = runtime.source
+            require(source is not None and runtime.producer is not None
+                and source.binding == self.source_binding and source.profile == self.source_profile,
+                "OPERATIONS_CURRENT_SOURCE_REQUIRED")
+            captured_previous = source.latest_record()
+            require(captured_previous is not None)
+            sample, captured = capture_source_at_completion(
+                CollectorSourceAdapter(runtime.producer.market_source.db_path),
+                self.source_binding, self.source_profile, sample, clock,
+                cut=source_cut_utc or captured_previous[1].snapshot.requested_cut_utc,
+                previous=captured_previous[1])
+            if entry is not None and runtime.ledger._authority.policy is not None:
+                sample = admission_clock(clock, runtime.ledger._authority,
+                    captured.snapshot.observed_at_utc, entry)
+                entry = entry_at_clock(entry, sample)
+            readiness = None  # A preview at the pre-read clock is not current.
         repo, now_us = runtime.ledger, utc_microseconds(sample.utc_upper_utc)
         owner_digest = content_fingerprint(asdict(runtime._ownership.fence))
         cut = repo.consumer_snapshot()
@@ -397,16 +416,26 @@ class OperationsMonitor:
             else:
                 previous = source.latest_record()
                 require(previous is not None and runtime.producer is not None)
-                verdict = CollectorSourceAdapter(runtime.producer.market_source.db_path).observe(
-                    self.source_binding, self.source_profile, observed_at_utc=sample.utc_upper_utc,
-                    requested_cut_utc=source_cut_utc or previous[1].snapshot.requested_cut_utc, previous=previous[1])
+                if captured is None:
+                    # Fixed-sample callers cannot claim post-read knowledge.
+                    # Original future/tail predicates remain fail-closed.
+                    verdict = CollectorSourceAdapter(runtime.producer.market_source.db_path).observe(
+                        self.source_binding, self.source_profile, observed_at_utc=sample.utc_upper_utc,
+                        requested_cut_utc=source_cut_utc or previous[1].snapshot.requested_cut_utc, previous=previous[1])
+                else:
+                    require(previous == captured_previous, "OPERATIONS_SOURCE_CUT_CHANGED")
+                    verdict = captured
                 require(source.latest_record() == previous, "OPERATIONS_SOURCE_CUT_CHANGED")
                 witness = content_fingerprint((common, verdict.content_digest))
                 broken = bool(set(verdict.reasons) & INTEGRITY_REASONS or verdict.progress.integrity_reasons)
                 if broken:
                     _record(store, "SOURCE_IDENTITY_OR_HISTORY_BROKEN", source_subject, witness, now_us)
+                consumer = source_consumer_evidence(verdict,
+                    expected_source_identity=self.source_binding.source_identity,
+                    required_cut_utc=source_cut_utc or previous[1].snapshot.requested_cut_utc,
+                    now_utc=sample.utc_upper_utc)
                 _record(store, "SOURCE_TRUTH_UNAVAILABLE", source_subject, witness, now_us,
-                    healthy=not broken and verdict.disposition == "HEALTHY" and producer_witness is not None)
+                    healthy=not broken and consumer.observed_prefix_supported and producer_witness is not None)
         except ERRORS:
             _record(store, "SOURCE_TRUTH_UNAVAILABLE", source_subject, common, now_us)
         backlog_count = None
@@ -434,6 +463,7 @@ class OperationsMonitor:
         self._observe_resources(metrics, common, producer_witness, host_witness, backlog_count, now_us)
         self._attempts(cut, common, now_us)
         require(repo.consumer_snapshot()["consumer_cut"] == cut["consumer_cut"], "OPERATIONS_LEDGER_CUT_CHANGED")
+        return sample
 
     def _observe_resources(self, metrics, common, producer_witness, host_witness, backlog_count, now_us):
         repo, store, config = self.started.runtime.ledger, self.store, self.configuration

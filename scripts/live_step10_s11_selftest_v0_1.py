@@ -358,7 +358,7 @@ def main():
         'interruption_model': 'IN_PROCESS_OWNED_REOPEN',
         'established_inputs_not_rerun': ['Step8A A2 exact differential/no-t0 age/corrupt checkpoint/missing tail guards',
             'Step9 C1/C3 measured active/hottest-mint/aggregate bounds and causal cuts'],
-        'artifact_hashes': {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
+        'artifact_hashes': {p.relative_to(ROOT).as_posix(): prior.lf_sha256(p) for p in paths},
         'checks': CHECKS, 'reused_helper_checks': {m.__name__: m.CHECKS for m in (prior, owned, public)},
         'evidence': EVIDENCE_LOG}))
 

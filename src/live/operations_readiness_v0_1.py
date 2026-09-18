@@ -132,11 +132,15 @@ def evaluate(started, *, clock, entry=None, reduction=None, operations_resources
         authority.require(type(owner) is OperationsOwnership and owner.fence == started.audit.owner_fence,
             "OPERATIONS_ACTUAL_STARTUP_OWNER_REQUIRED")
         with owner.mutation_guard(repo.domain), repo._trusted_read():
+            if entry is not None and repo._authority.policy is not None and runtime.source is not None:
+                from .runtime_composition_v0_1 import admission_clock, entry_at_clock
+                sample = admission_clock(clock, repo._authority, runtime.source.latest().snapshot.observed_at_utc, entry)
+                entry = entry_at_clock(entry, sample)
             result = _current(runtime, sample, entry, reduction)
         monitor = runtime._operations_degradation
         if monitor is not None:
             alerts = monitor.observe(sample, entry=entry, reduction=reduction, resources=operations_resources,
-                readiness=result)
+                readiness=result, clock=clock)
             if alerts.entry_held:
                 result = replace(result, entry=replace(result.entry, state="HELD", ready=False,
                     reasons=tuple(sorted(set((*result.entry.reasons, "CURRENT_DEGRADATION_ENTRY_HOLD"))))))

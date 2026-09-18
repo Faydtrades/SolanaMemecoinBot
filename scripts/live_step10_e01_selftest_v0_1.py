@@ -348,7 +348,7 @@ def main():
         c2.ROOT/'scripts/live_step10_s01_s02_selftest_v0_1.py']
     print(c2.canonical_json({'status': 'IMPLEMENTED_PENDING_PROJECT_REVIEW', 'scope': 'Step10 E01 only',
         'qualification': 'SYNTHETIC_ENGINEERING_ONLY', 'checks': CHECKS, 'evidence': EVIDENCE,
-        'artifact_hashes': {str(p.relative_to(c2.ROOT)).replace('\\', '/'): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
+        'artifact_hashes': {str(p.relative_to(c2.ROOT)).replace('\\', '/'): s1.lf_sha256(p) for p in paths},
         'accepted_lower_level_facts_not_rerun': 'Steps4-9 generic guard/fault/cut catalogs remain prior evidence; this adds owned runtime transitions.'}))
 
 
